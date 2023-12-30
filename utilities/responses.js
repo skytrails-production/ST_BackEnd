@@ -86,5 +86,8 @@ module.exports = {
 	SUBADMIN_UPDATED:"SubAdmin status updated successfully",
 	PAYMENT_INTIATE:"Payment link generated successfully,Please make payment to book ticket",
 	PAYMENT_FAILURE:"Payment failed due to some reason.",
-	EVENT_NOT_FOUND:"Event not found."
+	EVENT_NOT_FOUND:"Event not found.",
+	SLOT_NOT_AVAILABLE:'Slot is not available.',
+	TRANSACTION_NOT_FOUND:"Transaction not found.",
+	SLOT_BOOKED:"Slot booked successfully.",
 };

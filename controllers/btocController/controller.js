@@ -262,17 +262,19 @@ exports.verifyUserOtp = async (req, res, next) => {
       { _id: updation._id },
       { username: fullName, dob: dob,email:email, otp: "", firstTime: false }
     );
+    console.log("updateData=================",updateData)
     const token = await commonFunction.getToken({
       _id: updation._id,
       mobile_number: updation.phone.mobile_number,
-      username: fullName,
+      username: updateData.username,
     });
     const result = {
       phoneNumber: updateData.phone,
       _id: updateData._id,
       firstTime: updation.firstTime,
       dob: updateData.dob,
-      username:updation.username,
+      username:updateData.username,
+      email:updateData.email,
       token: token,
       status: updateData.status,
       otpVerified: updateData.otpVerified,

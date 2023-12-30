@@ -47,7 +47,8 @@ exports.createEvent = async (req, res, next) => {
       noOfShows,
       slotTime,
       latitude,
-      longitude
+      longitude,
+      noOfMember
     } = req.body;
     if (!req.file) {
       return res.status(400).send({ message: "No file uploaded." });
@@ -96,6 +97,7 @@ exports.createEvent = async (req, res, next) => {
             startTime: startingTime.format("HH:mm"),
             endTime: slotEndTime.format("HH:mm"),
             isAvailable: true,
+            peoples:Number(noOfMember)
           });
           startingTime.add(slotTime, "minutes");
           if (i < noOfShows - 1) {

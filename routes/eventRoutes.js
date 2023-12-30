@@ -13,7 +13,7 @@ module.exports = function (app) {
     });
   
     app.post(
-      "/skyTrails/api/user/createEvents",handleFileUpload,SchemaValidator(schemas.eventSchema),controller.createEvent
+      "/skyTrails/api/admin/events/createEvents",handleFileUpload,SchemaValidator(schemas.eventSchema),controller.createEvent
     );
     app.get(
         "/skyTrails/api/user/getEvents",
