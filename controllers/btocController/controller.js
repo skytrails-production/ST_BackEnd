@@ -172,7 +172,7 @@ exports.login = async (req, res, next) => {
 };
 exports.verifyUserOtp = async (req, res, next) => {
   try {
-    const { otp, fullName, dob } = req.body;
+    const { otp, fullName, dob ,email} = req.body;
     const isUserExist = await findUserData({ _id: req.userId });
     if (!isUserExist) {
       return res
@@ -181,14 +181,6 @@ exports.verifyUserOtp = async (req, res, next) => {
           statusCode: statusCode.NotFound,
           message: responseMessage.USERS_NOT_FOUND,
         });
-    }
-    if(isUserExist.otpVerified===true){
-      return res
-      .status(statusCode.badRequest)
-      .send({
-        statusCode: statusCode.badRequest,
-        message: responseMessage.ALREADY_VERIFIED,
-      });
     }
     if (isUserExist.otp !== otp) {
       return res
@@ -268,7 +260,7 @@ exports.verifyUserOtp = async (req, res, next) => {
     }
     const updateData = await updateUser(
       { _id: updation._id },
-      { username: fullName, dob: dob, otp: "", firstTime: false }
+      { username: fullName, dob: dob,email:email, otp: "", firstTime: false }
     );
     const token = await commonFunction.getToken({
       _id: updation._id,

@@ -12,7 +12,7 @@ const eventServices={
         return await eventModel.create(insertObj);
     },
 
-    findeventData: async (query) => {
+    findEventData: async (query) => {
         return await eventModel.findOne(query)
     },
 

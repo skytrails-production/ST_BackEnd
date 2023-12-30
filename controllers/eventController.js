@@ -17,7 +17,7 @@ const { eventServices } = require("../services/eventServices");
 const { triggerAsyncId } = require("async_hooks");
 const {
   createEvent,
-  findeventData,
+  findEventData,
   deleteEvent,
   eventList,
   updateEvent,
@@ -134,6 +134,28 @@ exports.getAllEvents = async (req, res, next) => {
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });
     }
+    // console.log("result=============",result);
+    // const object={
+    //   _id:result._id,
+    //   image:result.image,
+    //   title:result.title,
+    //   content:result.content,
+    //   startDate:result.startDate,
+    //   endDate:result.endDate,
+    //   price:result.price,
+    //   slot:result.slot,
+    //   bookingPrice: result.bookingPrice,
+    // adultPrice: result.adultPrice,
+    // childPrice: result.childPrice,
+    // couplePrice: result.couplePrice,
+    // showType: result.showType,
+    // age: result.age,
+    // venue: result.venue,
+    // status: result.status,
+    // createdAt: result.createdAt,
+    // updatedAt: result.updatedAt,
+    // location:result.coordinates
+    // }
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.DATA_FOUND,
@@ -148,7 +170,7 @@ exports.getAllEvents = async (req, res, next) => {
 exports.getEventById = async (req, res, next) => {
   try {
     const { eventId } = req.query;
-    const isEventExist = await findeventData({
+    const isEventExist = await findEventData({
       _id: eventId,
       status: status.ACTIVE,
     });

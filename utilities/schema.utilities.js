@@ -505,15 +505,15 @@ const schemas = {
     isPaid:joi.boolean().required()
   }),
   eventBookingSchema: joi.object().keys({
-    price: joi.number().required(),
+    price: joi.number().optional(),
     eventDate: joi.string().required(),
     adults: joi.number().optional(),
     child: joi.number().optional(),
     couple: joi.number().optional(),
-    transactionId: joi.number().required(),
-    eventId: joi.number().required(),
+    transactionId: joi.string().optional(),
+    eventId: joi.string().required(),
     startTime: joi.string().required(),
-    EndTime: joi.string().required(),
+    EndTime: joi.string().optional(),
     
   }),
 

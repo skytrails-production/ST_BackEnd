@@ -18,13 +18,13 @@ const bookEventSchema = new mongoose.Schema(
       type: Number,
     },
     adults:{
-      type: Number,
+      type: Boolean,
     },
     child:{
-      type: Number,
+      type: Boolean,
     },
     couple:{
-      type: Number,
+      type: Boolean,
     },
     price: {
       type: Number,
@@ -40,9 +40,9 @@ const bookEventSchema = new mongoose.Schema(
       type: Schema.Types.ObjectId,
       ref: "skyTraislEvents",
     },
-    tickets: [{ 
-      ticketNumber: { type: String } ,
-    }],
+    tickets: [
+       { type: String } 
+    ],
     status: {
       type: String,
       enum: [status.ACTIVE, status.BLOCK, status.DELETE],

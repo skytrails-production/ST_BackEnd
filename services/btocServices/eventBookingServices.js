@@ -1,4 +1,4 @@
-const addEventsModel = require('../../model/addEventsModel');
+const bookEventModel = require('../../model/btocModel/bookEventModel');
 const userType = require("../../enums/userType");
 const status = require("../../enums/status");
 const approvalStatus=require("../../enums/approveStatus")
@@ -8,30 +8,30 @@ const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 //**********CHARU YADAV*****************//
 //**********NODE JS DEVELOPER, This is a services which we need mongodb queries to perform operation on db********//
 
-const eventServices={
-    createEvent: async (insertObj) => {
-        return await addEventsModel.create(insertObj);
+const eventBookingServices={
+    createBookingEvent: async (insertObj) => {
+        return await bookEventModel.create(insertObj);
     },
 
-    findEventData: async (query) => {
-        return await addEventsModel.findOne(query)
+    findBookingEventData: async (query) => {
+        return await bookEventModel.findOne(query)
     },
 
-    deleteEvent: async (query) => {
-        return await addEventsModel.deleteOne(query);
+    deleteBookingEvent: async (query) => {
+        return await bookEventModel.deleteOne(query);
     },
 
-    EventList: async (query) => {
-        return await addEventsModel.find(query)
+    eventBookingList: async (query) => {
+        return await bookEventModel.find(query)
     },
-    updateEvent: async (query, updateObj) => {
-        return await addEventsModel.findOneAndUpdate(query, updateObj, { new: true });
+    updateBookingEvent: async (query, updateObj) => {
+        return await bookEventModel.findOneAndUpdate(query, updateObj, { new: true });
     },
 
-    countTotalEvent: async (body) => {
-        return await addEventsModel.countDocuments(body)
+    countTotalBookingEvent: async (body) => {
+        return await bookEventModel.countDocuments(body)
     },
-    getEvent:async(body)=>{
+    getBookingEvent:async(body)=>{
         const {page,limit}=body;
         const currentDate = new Date().toISOString();
         let query={status:status.ACTIVE,endDate: { $gt: currentDate }}
@@ -40,7 +40,7 @@ const eventServices={
             limit: Number(limit) || 8,
             sort: { createdAt: -1 },
         };
-        return await addEventsModel.paginate(query, options);
+        return await bookEventModel.paginate(query, options);
     }
 }
-module.exports ={eventServices}
+module.exports ={eventBookingServices}

@@ -12,5 +12,5 @@ module.exports = function (app) {
     });
     // SchemaValidator(schemas.userbusBookingSchema),   SchemaValidator(schemas.userflightBookingSchema),  ,SchemaValidator(schemas.userhotelBookingSchema) 
     app.post('/skyTrails/api/user/event/eventBookingControler',[authJwt.verifcationToken],SchemaValidator(schemas.eventBookingSchema), eventBookingControler.eventBooking);
-
+    app.post('/skyTrails/api/user/event/bookFreeEvents',[authJwt.verifcationToken],SchemaValidator(schemas.eventBookingSchema), eventBookingControler.bookFreeEvents);
 }

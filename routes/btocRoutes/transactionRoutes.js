@@ -16,8 +16,8 @@ module.exports = function (app) {
     app.post('/skyTrails/api/transaction/easebussPayment',[authJwt.verifcationToken],SchemaValidator(schemas.transactionSchema),userTransactionsController.easebussPayment)
     app.post('/skyTrails/api/transaction/paymentSuccess',userTransactionsController.paymentSuccess);
     app.post('/skyTrails/api/transaction/paymentFailure',userTransactionsController.paymentFailure);
-    app.get('/skyTrails/api/transaction/paymentSuccess',userTransactionsController.paymentSuccessPhonePe);
-    app.get('/skyTrails/api/transaction/paymentFailure',userTransactionsController.paymentFailurePhonePe);
+    app.get('/skyTrails/api/transaction/paymentSuccessPhonePe',userTransactionsController.paymentSuccessPhonePe);
+    app.get('/skyTrails/api/transaction/paymentFailurePhonePe',userTransactionsController.paymentFailurePhonePe);
     app.get('/skyTrails/api/transaction/checkPaymentStatus',userTransactionsController.checkPaymentStatus)
     
 }
