@@ -390,7 +390,7 @@ exports.makePhonePayPayment1 = async (req, res, next) => {
     encodedParams.set("hash", sha512Hash);
     const options = {
       method: "POST",
-      url: "https://pay.easebuzz.in/payment/initiateLink",
+      url: "https://testpay.easebuzz.in/payment/initiateLink",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         Accept: "application/json",
