@@ -9,11 +9,7 @@ module.exports = function (app) {
     next();
   });
   // app.post('/skyTrails/visa/createVisa', SchemaValidator(schemas.weeklyVisaSchema),controller.createVisa)
-  app.post(
-    "/skyTrails/api/visa/createVisa",
-    SchemaValidator(schemas.weeklyVisaSchema),
-    controller.createVisa
-  );
+  app.post("/skyTrails/api/visa/createVisa",SchemaValidator(schemas.weeklyVisaSchema),controller.createVisa);
   app.get("/skyTrails/api/visa/getVisa", controller.getVisa);
   app.put("/skyTrails/api/visa/updateVisa", controller.updateVisa);
   app.delete("/skyTrails/api/visa/deleteVisa", controller.deleteVisa);

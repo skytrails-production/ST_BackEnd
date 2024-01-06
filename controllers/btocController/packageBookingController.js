@@ -39,16 +39,17 @@ const {
 exports.packageBooking = async (req, res, next) => {
   try {
     const {
-      pakageid,
+      packageId,
       email,
       fullName,
-      contryCode,
+      countryCode,
       phone,
       departureCity,
       adults,
       child,
-      selectRoom,
-      checkIndate,
+      packageType,
+      departureDate,
+      noOfPeople,
     } = req.body;
     const isUserExist = await findUser({
       _id: req.userId,
@@ -61,19 +62,20 @@ exports.packageBooking = async (req, res, next) => {
       });
     }
     const object = {
-      pakageid: pakageid,
+      packageId: packageId,
       userId: isUserExist._id,
       email: email,
       fullName: fullName,
-      contactNumber: { contryCode: contryCode, phone: phone },
-      departureCity: departureCity,
+      contactNumber: { countryCode: countryCode, phone: phone },
+      departureDate: departureDate,
+      departureCity:departureCity,
       adults: adults,
       child: child,
-      selectRoom: selectRoom,
-      checkIndate: checkIndate,
+      packageType: packageType,
+      noOfPeople:noOfPeople
     };
     const result = await createPackage(object);
-    const message = `Hello ${fullName} ,Thank you for booking your package stay with TheSkytrails. Your reservation is confirmed! Please click on url to see details:. Or You Can login theskytrails.com/login`;
+    const message = `Hello ${fullName} ,Thank you for enquiry of your package stay with TheSkytrails. Please click on url to see details:. Or You Can login theskytrails.com/login`;
     // await sendSMS.sendSMSBusBooking(result.contactNumber.phone, userName);
     await whatsApi.sendWhatsAppMessage(result.contactNumber.phone, message);
     // await commonFunction.packageBookingConfirmationMail(result);
@@ -81,7 +83,7 @@ exports.packageBooking = async (req, res, next) => {
     if (result) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
-        responseMessage: responseMessage.BUS_BOOKING_CREATED,
+        responseMessage: responseMessage.CREATED_SUCCESS,
         result: result,
       });
     }

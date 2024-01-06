@@ -105,7 +105,7 @@ const schemas = {
       .valid(...Object.values(issuedType))
       .required(),
     continent: joi.string().required(),
-    daysToProcess: joi.number().required(),
+    daysToProcess: joi.number().optional(),
     visaCategoryName: joi.string().required(),
   }),
   //static content validation via joi
@@ -408,16 +408,17 @@ const schemas = {
     amount: joi.number().required(),
   }),
   packageBookingSchema: joi.object().keys({
-    pakageid: joi.string().required(),
+    packageId: joi.string().required(),
     email: joi.string().required(),
     fullName: joi.string().required(),
-    contryCode: joi.string().required(),
+    countryCode: joi.string().optional(),
     phone: joi.string().required(),
     departureCity: joi.string().required(),
     adults: joi.number().required(),
     child: joi.number().required(),
-    selectRoom: joi.number().required(),
-    checkIndate: joi.string().required(),
+    packageType: joi.string().required(),
+    departureDate: joi.string().required(),
+    noOfPeople:joi.number().required()
   }),
   changeUserRequest: joi.object().keys({
     reason: joi.string().required(),
@@ -450,12 +451,12 @@ const schemas = {
       .string()
       .valid(...Object.values(queryType))
       .required(),
-      journeyDate: joi.string().optional(),
-      cityName: joi.string().optional(),
-      checkin: joi.string().optional(),
-      checkout: joi.string().optional(),
-      rooms: joi.number().optional(),
-      days: joi.number().optional(),
+    journeyDate: joi.string().optional(),
+    cityName: joi.string().optional(),
+    checkin: joi.string().optional(),
+    checkout: joi.string().optional(),
+    rooms: joi.number().optional(),
+    days: joi.number().optional(),
   }),
   createAgentSchema: joi.object().keys({
     email: joi.string().required(),
@@ -578,12 +579,12 @@ const schemas = {
     categoryName: joi.string().required(),
     description: joi.string().required(),
   }),
-  docRequireSchema:joi.object().keys({
+  docRequireSchema: joi.object().keys({
     visaCountry: joi.string().required(),
     visaCategory: joi.string().required(),
     requiredDocCategory: joi.array().required(),
     visaType: joi.valid(...Object.values(visaType)).optional(),
-  })
+  }),
 };
 
 module.exports = schemas;

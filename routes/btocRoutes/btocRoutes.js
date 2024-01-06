@@ -52,7 +52,7 @@ module.exports = function (app) {
     app.get('/skyTrails/api/user/getCancelUserFlightBooking',[authJwt.verifcationToken],userCancelController.getCancelUserFlightBooking);
     app.get('/skyTrails/api/user/getCancelUserHotelBooking',[authJwt.verifcationToken],userCancelController.getCancelUserHotelBooking);
     app.get('/skyTrails/api/user/getCancelUserBusBooking',[authJwt.verifcationToken],userCancelController.getCancelUserBusBooking);
-    app.post('/skyTrails/api/user/packageBooking',[authJwt.verifcationToken],SchemaValidator(schemas.packageBookingSchema),packageController.packageBooking);
+    app.post('/skyTrails/api/user/packageBookingEnquiry',[authJwt.verifcationToken],SchemaValidator(schemas.packageBookingSchema),packageController.packageBooking);
     app.get('/skyTrails/api/user/getPackageBookigs',[authJwt.verifcationToken],packageController.getPackageBookigs);
      app.post('/skyTrails/api/user/changeUserFlightBooking',[authJwt.verifcationToken],SchemaValidator(schemas.changeUserRequest),changeRequestController.createFlightTicketChangeRequest)
     // app.post('/skyTrails/api/user/cancelUserBusBooking',[authJwt.verifcationToken],SchemaValidator(schemas.cancelUserBusBookingSchema),changeRequestController.cancelUserBusBooking)

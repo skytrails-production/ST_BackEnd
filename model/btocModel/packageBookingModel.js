@@ -6,7 +6,7 @@ const mongoosePaginate = require("mongoose-paginate-v2");
 
 const packageBookingSchema = new mongoose.Schema(
   {
-    pakageid: {
+    packageId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "internationl",
     },
@@ -21,7 +21,7 @@ const packageBookingSchema = new mongoose.Schema(
       type: String,
     },
     contactNumber: {
-      contryCode: {
+      countryCode: {
         type: String,
         default: "+91",
       },
@@ -38,15 +38,18 @@ const packageBookingSchema = new mongoose.Schema(
     child: {
       type: Number,
     },
-    selectRoom: {
-      type: Number,
+    packageType: {
+      type: String,
     },
-    checkIndate: {
+    departureDate: {
       type: String,
     },
     connected: {
       type: Boolean,
       default: false,
+    },
+    noOfPeople:{
+      type: Number,
     },
     status: {
       type: String,
@@ -59,6 +62,6 @@ const packageBookingSchema = new mongoose.Schema(
 packageBookingSchema.plugin(mongoosePaginate);
 
 packageBookingSchema.plugin(aggregatePaginate);
-const package = mongoose.model("userPackageBooking", packageBookingSchema);
+const package = mongoose.model("userPackageEnquiry", packageBookingSchema);
 
 module.exports = package;
