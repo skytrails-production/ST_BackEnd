@@ -23,7 +23,7 @@ const cancelBookingDataSchema = new mongoose.Schema(
             type: Number,
         },
         pnr: {
-            type: Number,
+            type: String,
         },
         amount:{
             type: Number,

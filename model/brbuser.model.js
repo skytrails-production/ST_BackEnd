@@ -64,8 +64,9 @@ const Userb2bSchema =
         },
         pan_number: {
           type: String, 
-          // default:" ",
-          unique:true
+          default:" ",
+          unique:true,
+          // sparse: true
         },
         agency_mobile: {
           country_code: {

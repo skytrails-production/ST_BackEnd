@@ -20,8 +20,23 @@ const userSearchSchema = new mongoose.Schema(
     journeyDate: {
       type: String,
     },
-    journeyType:{
-        type: String, 
+    journeyType: {
+      type: String,
+    },
+    cityName: {
+      type: String,
+    },
+    checkin: {
+      type: String,
+    },
+    checkout: {
+      type: String,
+    },
+    rooms: {
+      type: Number,
+    },
+    days:{
+      type: Number,
     },
     status: {
       type: String,
@@ -37,6 +52,7 @@ const userSearchSchema = new mongoose.Schema(
         searchType.HOTELS,
         searchType.TRAINS,
         searchType.HOLIDAYS,
+        searchType.PACKAGES
       ],
     },
   },

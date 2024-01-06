@@ -101,9 +101,9 @@ exports.getBusBookingList = async (req, res, next) => {
     console.log("result=========", result);
     if (result.docs.length == 0) {
       return res
-        .status(statusCode.NotFound)
+        .status(statusCode.OK)
         .send({
-          statusCode: statusCode.NotFound,
+          statusCode: statusCode.OK,
           message: responseMessage.DATA_NOT_FOUND,
         });
     }
@@ -201,9 +201,9 @@ exports.getUserBusData = async (req, res, next) => {
     }
 
     const result = await userBusBookingList({ status: status.ACTIVE,userId:isUserExist._id });
-    if (result) {
-      return res.status(statusCode.NotFound).send({
-        statusCode: statusCode.NotFound,
+    if (!result) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
         message: responseMessage.DATA_NOT_FOUND,
       });
     }

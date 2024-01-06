@@ -2,7 +2,7 @@ const responseMessage = require("../../utilities/responses");
 const statusCode = require("../../utilities/responceCode");
 const status = require("../../enums/status");
 const crypto = require("crypto");
-
+const paymentStatus=require("../../enums/paymentStatus")
 //*****************************************SERVICES************************************************/
 const { eventServices } = require("../../services/eventServices");
 const {
@@ -80,6 +80,7 @@ exports.eventBooking = async (req, res, next) => {
         message: responseMessage.EVENT_NOT_FOUND,
       });
     }
+    console.log("isEventExist=============",isEventExist)
     const selectedSlot = isEventExist.slot.find(
       (slot) => slot.startTime === startTime && slot.isAvailable === true
     );
@@ -90,8 +91,14 @@ exports.eventBooking = async (req, res, next) => {
         responseMessage: responseMessage.SLOT_NOT_AVAILABLE,
       });
     }
+    if(isEventExist.price>=1){
+      if(!transactionId){
+        return res.status(statusCode.badRequest).send({statusCode:statusCode.badRequest, responseMessage:"transactionId  is required"});
+      }
+     
+    }
     if (transactionId) {
-      const isPaid = await findUsertransaction({ _id: transactionId });
+      const isPaid = await findUsertransaction({ _id: transactionId,userId:isUserExist._id,transactionStatus:paymentStatus.SUCCESS });
       if (!isPaid) {
         return res.status(statusCode.NotFound).send({
           statusCode: statusCode.NotFound,
@@ -106,7 +113,7 @@ exports.eventBooking = async (req, res, next) => {
       } else {
         await updateEvent(
           { _id: eventId, "slot.startTime": startTime },
-          { $set: { "slot.$.isAvailable": false } }
+          { $inc: { "slot.$.peoples": -noOfMember } }
         );
       }
       const object = {
@@ -121,11 +128,12 @@ exports.eventBooking = async (req, res, next) => {
         transactionId: transactionId,
         tickets: [],
       };
-      for(var i=0;i<=noOfMember;i++){
+      for(var i=0;i<noOfMember;i++){
         const ticketNumber = await generateUniqueRandomString(15);
         object.tickets.push(ticketNumber)
       }
       const makeBooking = await createBookingEvent(object);
+      await updateEvent({_id:eventId},{$inc:{saleCount:+noOfMember}});
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.SLOT_BOOKED,
@@ -137,27 +145,10 @@ exports.eventBooking = async (req, res, next) => {
         { _id: eventId, "slot.startTime": startTime },
         { $set: { "slot.$.isAvailable": false } }
       );
-      const ticketNumber = await generateUniqueRandomString(15);
-      const object = {
-        userId: isUserExist._id,
-        noOfMember: noOfMember,
-        adults: adults,
-        child: child,
-        couple: couple,
-        eventDate: eventDate,
-        eventId: eventId,
-        tickets: [ticketNumber],
-      };
-      const makeBooking = await createBookingEvent(object);
-      return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.SLOT_BOOKED,
-        result: makeBooking,
-      });
     } else {
       await updateEvent(
         { _id: eventId, "slot.startTime": startTime },
-        { $inc: { "slot.$.peoples": -1 } }
+        { $inc: { "slot.$.peoples": -noOfMember } }
       );
     }
     const object = {
@@ -170,11 +161,12 @@ exports.eventBooking = async (req, res, next) => {
       eventId: eventId,
       tickets: [],
     };
-    for(var i=0;i<=noOfMember;i++){
+    const makeBooking = await createBookingEvent(object);
+    await updateEvent({_id:eventId},{$inc:{saleCount:+noOfMember}})
+    for(var i=0;i<noOfMember;i++){
       const ticketNumber = await generateUniqueRandomString(15);
       object.tickets.push(ticketNumber)
     }
-    const makeBooking = await createBookingEvent(object);
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.SLOT_BOOKED,

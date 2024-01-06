@@ -484,9 +484,10 @@ exports.easebussPayment = async (req, res, next) => {
         key: process.env.EASEBUZZ_KEY,
         env:process.env.EASEBUZZ_ENV
       }
-      // data.config.key=config.key;
-      // const env = config.env;
-      // const redirectURL = `${env}/v2/pay/${data.data}`;
+      const env = config.env;
+      // https://pay.easebuzz.in/
+      const redirectURL = `${env}/v2/pay/${data.data}`;
+      console.log("redirectURL=========",redirectURL)
       const object = {
         userId: isUserExist._id,
         amount: amount,
@@ -519,19 +520,18 @@ exports.easebussPayment = async (req, res, next) => {
 // }
 exports.refundApi = async (req, res, next) => {
   try {
-    const {} = req.body;
+    const {refund_amount,txnId} = req.body;
+    console.log(refund_amount,txnId,"body data")
     const hashComponents = [
       config.key,
-      "T" + Date.now(),
-      "T1703663988309",
-      200.4,
-      // 100.8,
-      // 'charuyadav594@gmail.com',
-      // '8115199076'
+      "M1703663988309",
+      txnId,
+      refund_amount
     ];
     const hashString = hashComponents.join("|");
     const inputString = `${hashString}|${config.salt}`;
     const sha512Hash = generateSHA512Hash(inputString);
+    console.log(sha512Hash,"hash")
     const options = {
       method: "POST",
       url: "https://dashboard.easebuzz.in/transaction/v2/refund",
@@ -541,9 +541,9 @@ exports.refundApi = async (req, res, next) => {
       },
       data: {
         key: config.key,
-        merchant_refund_id: "T" + Date.now(),
-        easebuzz_id: "T1703663988309",
-        refund_amount: 1,
+        merchant_refund_id: "M1703663988309",
+        easebuzz_id: txnId,
+        refund_amount: refund_amount,
         hash: sha512Hash,
       },
     };
@@ -683,12 +683,12 @@ exports.paymentSuccess = async (req, res, next) => {
       if(isTransactionExist){
       console.log("isTransactionExist=========",isTransactionExist);
       const result=await updateUsertransaction({_id:isTransactionExist._id},{transactionStatus:paymentStatus.SUCCESS})
-
       return res
         .status(statusCode.OK)
         .send({
           statusCode: statusCode.OK,
           responseMessage: responseMessage.PAYMENT_SUCCESS,
+          result:result
         });
     }
   } catch (error) {

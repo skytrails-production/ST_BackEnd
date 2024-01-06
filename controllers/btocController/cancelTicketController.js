@@ -28,20 +28,16 @@ exports.cancelUserFlightBooking = async (req, res, next) => {
     try {
         const { reason, flightBookingId, bookingId, pnr } = req.body;
         const isUserExist = await findUser({ _id: req.userId,status:status.ACTIVE, userType:userType.USER });
-        // console.log("isAgentExists", isAgentExists);
         if (!isUserExist) {
             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
         }
-        const currentDate = new Date().toISOString();
-        console.log("currentDate:", currentDate);
         const isBookingExist = await findUserflightBooking({
             userId: isUserExist._id,
             bookingId: bookingId,
-            dateOfJourney: { $gt: currentDate }
+            
         });
-        console.log("bookingDate=====", isBookingExist)
         if (!isBookingExist) {
-            return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.BOOKING_NOT_FOUND });
+            return res.status(statusCode.OK).send({ statusCode: statusCode.OK, message: responseMessage.BOOKING_NOT_FOUND });
         }
         const object = {
             userId: isUserExist._id,
@@ -49,7 +45,7 @@ exports.cancelUserFlightBooking = async (req, res, next) => {
             flightBookingId: flightBookingId,
             bookingId: bookingId,
             pnr: pnr,
-            // amount:isBookingExist
+            amount:isBookingExist.totalAmount
         }
         const result = await createcancelFlightBookings(object);
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.CANCEL_REQUEST_SEND, result: result });
@@ -103,28 +99,23 @@ exports.getCancelUserFlightBooking = async (req, res, next) => {
 
 exports.cancelUserHotelBooking = async (req, res, next) => {
     try {
-        const { reason, hotelBookingId, bookingId, pnr } = req.body;
+        const { reason, hotelBookingId, bookingId } = req.body;
         const isUserExist = await findUser({ _id: req.userId, status: status.ACTIVE });
     if (!isUserExist) {
       return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.USERS_NOT_FOUND });
     }
-        const currentDate = new Date().toISOString().split('T')[0];
-        console.log("currentDate:", currentDate);
         const isBookingExist = await findUserhotelBookingModel({
             userId: isUserExist._id,
             bookingId: bookingId,
-            CheckInDate: { $gt: currentDate }
         });
-        console.log("bookingDate=====", isBookingExist)
         if (!isBookingExist) {
-            return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.BOOKING_NOT_FOUND });
+            return res.status(statusCode.OK).send({ statusCode: statusCode.OK, message: responseMessage.BOOKING_NOT_FOUND });
         }
         const object = {
             userId: isUserExist._id,
             reason: reason,
             hotelBookingId: hotelBookingId,
             bookingId: bookingId,
-            pnr: pnr,
         }
         const result = await createHotelCancelRequest(object);
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.CANCEL_REQUEST_SEND, result: result });
@@ -158,19 +149,15 @@ exports.cancelUserBusBooking=async(req,res,next)=>{
     try {
         const { reason, busBookingId, busId, pnr } = req.body;
         const isUserExist = await findUser({ _id: req.userId, status: status.ACTIVE });
-        console.log("isUserExist",isUserExist)
         if (!isUserExist) {
           return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.USERS_NOT_FOUND });
         }
-        const currentDate = new Date().toISOString();
-        console.log("currentDate:", currentDate);
         const isBookingExist=await findUserBusBooking({
             userId: isUserExist._id,
             busId:busId,
-            dateOfJourney:{ $gt: currentDate }
         });
         if (!isBookingExist) {
-            return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.BOOKING_NOT_FOUND });
+            return res.status(statusCode.OK).send({ statusCode: statusCode.OK, message: responseMessage.BOOKING_NOT_FOUND });
         }
         const object={
             userId:isUserExist._id,

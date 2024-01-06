@@ -8,12 +8,490 @@ const nodemailer = require("nodemailer");
 const { Client } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
 const config = require("../config/auth.config.js");
+const {flightMail, busMail, otpMail, welcomeMail}=require("./mailingFunction.js")
 let cloudinary = require("cloudinary");
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+
+// function flightMail(name){
+//   return`<!DOCTYPE html>
+
+//   <html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
+//   <head>
+//   <title></title>
+//   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+//   <meta content="width=device-width, initial-scale=1.0" name="viewport"/><!--[if mso]><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch><o:AllowPNG/></o:OfficeDocumentSettings></xml><![endif]--><!--[if !mso]><!-->
+//   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;400;700;900&display=swap" rel="stylesheet" type="text/css"/><!--<![endif]-->
+//   <style>
+//           * {
+//               box-sizing: border-box;
+//           }
+  
+//           body {
+//               margin: 0;
+//               padding: 0;
+//           }
+  
+//           a[x-apple-data-detectors] {
+//               color: inherit !important;
+//               text-decoration: inherit !important;
+//           }
+  
+//           #MessageViewBody a {
+//               color: inherit;
+//               text-decoration: none;
+//           }
+  
+//           p {
+//               line-height: inherit
+//           }
+  
+//           .desktop_hide,
+//           .desktop_hide table {
+//               mso-hide: all;
+//               display: none;
+//               max-height: 0px;
+//               overflow: hidden;
+//           }
+  
+//           .image_block img+div {
+//               display: none;
+//           }
+  
+//           @media (max-width:620px) {
+//               .social_block.desktop_hide .social-table {
+//                   display: inline-block !important;
+//               }
+  
+//               .mobile_hide {
+//                   display: none;
+//               }
+  
+//               .row-content {
+//                   width: 100% !important;
+//               }
+  
+//               .stack .column {
+//                   width: 100%;
+//                   display: block;
+//               }
+  
+//               .mobile_hide {
+//                   min-height: 0;
+//                   max-height: 0;
+//                   max-width: 0;
+//                   overflow: hidden;
+//                   font-size: 0px;
+//               }
+  
+//               .desktop_hide,
+//               .desktop_hide table {
+//                   display: table !important;
+//                   max-height: none !important;
+//               }
+  
+//               .reverse {
+//                   display: table;
+//                   width: 100%;
+//               }
+  
+//               .reverse .column.first {
+//                   display: table-footer-group !important;
+//               }
+  
+//               .reverse .column.last {
+//                   display: table-header-group !important;
+//               }
+  
+//               .row-4 td.column.first .border,
+//               .row-4 td.column.last .border {
+//                   padding: 10px 0 0;
+//                   border-top: 0;
+//                   border-right: 0px;
+//                   border-bottom: 0;
+//                   border-left: 0;
+//               }
+//           }
+//       </style>
+//   </head>
+//   <body style="background-color: #ffffff; margin: 0; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
+//   <table border="0" cellpadding="0" cellspacing="0" class="nl-container" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff;" width="100%">
+//   <tbody>
+//   <tr>
+//   <td>
+//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+//   <tbody>
+//   <tr>
+//   <td>
+//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 600px; margin: 0 auto;" width="600">
+//   <tbody>
+//   <tr>
+//   <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-top: 20px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="33.333333333333336%">
+//   <table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+//   <tr>
+//   <td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
+//   <div align="center" class="alignment" style="line-height:10px">
+//   <div style="max-width: 200px;"><img alt="I'm an image" src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/flightMail/logo.png" style="display: block; height: auto; border: 0; width: 100%;" title="I'm an image" width="200"/></div>
+//   </div>
+//   </td>
+//   </tr>
+//   </table>
+//   </td>
+//   <td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="66.66666666666667%">
+//   <table border="0" cellpadding="0" cellspacing="0" class="social_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+//   <tr>
+//   <td class="pad" style="padding-right:15px;padding-top:20px;text-align:right;padding-left:0px;">
+//   <div align="right" class="alignment">
+//   <table border="0" cellpadding="0" cellspacing="0" class="social-table" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; display: inline-block;" width="126px">
+//   <tr>
+//   <td style="padding:0 0 0 10px;"><a href="https://www.facebook.com/theskytrailsofficials" target="_blank"><img alt="Facebook" height="32" src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/flightMail/facebook-icon.png" style="display: block; height: auto; border: 0;" title="facebook" width="32"/></a></td>
+//   <td style="padding:0 0 0 10px;"><a href="https://twitter.com/TheSkytrails" target="_blank"><img alt="Twitter" height="32" src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/flightMail/twitter-icon.png" style="display: block; height: auto; border: 0;" title="twitter" width="32"/></a></td>
+//   <td style="padding:0 0 0 10px;"><a href="https://www.instagram.com/theskytrails" target="_blank"><img alt="Instagram" height="32" src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/flightMail/instagram-icon.png" style="display: block; height: auto; border: 0;" title="instagram" width="32"/></a></td>
+//   </tr>
+//   </table>
+//   </div>
+//   </td>
+//   </tr>
+//   </table>
+//   </td>
+//   </tr>
+//   </tbody>
+//   </table>
+//   </td>
+//   </tr>
+//   </tbody>
+//   </table>
+//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+//   <tbody>
+//   <tr>
+//   <td>
+//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-repeat: no-repeat; color: #000000; background-image: url('https://raw.githubusercontent.com/The-SkyTrails/Images/main/flightMail/flight.jpg'); background-position: top center; background-size: auto; width: 600px; margin: 0 auto;" width="600">
+//   <tbody>
+//   <tr>
+//   <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+//   <table border="0" cellpadding="0" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+//   <tr>
+//   <td class="pad" style="padding-bottom:60px;padding-right:60px;padding-top:60px;">
+//   <div style="font-family: sans-serif">
+//   <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+//   <p style="margin: 0; font-size: 30px; text-align: center; mso-line-height-alt: 36px; letter-spacing: normal;"><span style="font-size:30px;"><strong><span style="color:#e51111;">Thank You</span></strong></span></p>
+//   <p style="margin: 0; font-size: 30px; text-align: center; mso-line-height-alt: 36px; letter-spacing: normal;"><span style="font-size:30px;"><span style=""><strong><span style="color:#e51111;">For </span></strong></span><span style=""><strong><span style="color:#e51111;">Booking with us</span></strong></span></span></p>
+//   </div>
+//   </div>
+//   </td>
+//   </tr>
+//   </table>
+//   <table border="0" cellpadding="60" cellspacing="0" class="text_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+//   <tr>
+//   <td class="pad">
+//   <div style="font-family: sans-serif">
+//   <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+//   <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px; letter-spacing: normal;"> </p>
+//   </div>
+//   </div>
+//   </td>
+//   </tr>
+//   </table>
+//   </td>
+//   </tr>
+//   </tbody>
+//   </table>
+//   </td>
+//   </tr>
+//   </tbody>
+//   </table>
+//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+//   <tbody>
+//   <tr>
+//   <td>
+//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-repeat: no-repeat; color: #000000; background-image: url('https://raw.githubusercontent.com/The-SkyTrails/Images/main/flightMail/map.png'); width: 600px; margin: 0 auto;" width="600">
+//   <tbody>
+//   <tr>
+//   <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+//   <table border="0" cellpadding="0" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+//   <tr>
+//   <td class="pad" style="padding-bottom:10px;padding-left:10px;padding-right:10px;padding-top:35px;">
+//   <div style="font-family: sans-serif">
+//   <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+//   <p style="margin: 0; font-size: 16px; text-align: center; mso-line-height-alt: 19.2px;"><span style="color:#071c2c;font-size:20px;"><em><strong>Hi XYZ </strong></em></span></p>
+//   </div>
+//   </div>
+//   </td>
+//   </tr>
+//   </table>
+//   <table border="0" cellpadding="20" cellspacing="0" class="text_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+//   <tr>
+//   <td class="pad">
+//   <div style="font-family: sans-serif">
+//   <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 18px; color: #555555; line-height: 1.5;">
+//   <p style="margin: 0; font-size: 15px; text-align: center; mso-line-height-alt: 22.5px;"><span style="color:#0d0d32;"><strong><span style="font-size:15px;"><em><span style="">Your trip to london is scheduled for January 4, 2024 check in for yourself and you travelling companions online</span></em></span></strong></span></p>
+//   <p style="margin: 0; font-size: 15px; text-align: center; mso-line-height-alt: 22.5px;"><span style="color:#0d0d32;"><strong><span style="font-size:15px;"><em><span style=""> right way to make your trip smoother, make most of your trip by looking into the additional services we </span></em><em><span style="">provide below .</span></em></span></strong></span></p>
+//   </div>
+//   </div>
+//   </td>
+//   </tr>
+//   </table>
+//   <table border="0" cellpadding="20" cellspacing="0" class="button_block block-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+//   <tr>
+//   <td class="pad">
+//   <div align="center" class="alignment"><!--[if mso]>
+//   <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" style="height:42px;width:154px;v-text-anchor:middle;" arcsize="10%" stroke="false" fillcolor="#d52828">
+//   <w:anchorlock/>
+//   <v:textbox inset="0px,0px,0px,0px">
+//   <center style="color:#ffffff; font-family:'Trebuchet MS', Tahoma, sans-serif; font-size:16px">
+//   <![endif]-->
+//   <div style="text-decoration:none;display:inline-block;color:#ffffff;background-color:#d52828;border-radius:4px;width:auto;border-top:0px solid transparent;font-weight:undefined;border-right:0px solid transparent;border-bottom:0px solid transparent;border-left:0px solid transparent;padding-top:5px;padding-bottom:5px;font-family:'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;font-size:16px;text-align:center;mso-border-alt:none;word-break:keep-all;"><span style="padding-left:20px;padding-right:20px;font-size:16px;display:inline-block;letter-spacing:normal;"><span style="margin: 0; word-break: break-word; line-height: 32px;">Check-in-Now</span></span></div><!--[if mso]></center></v:textbox></v:roundrect><![endif]-->
+//   </div>
+//   </td>
+//   </tr>
+//   </table>
+//   <table border="0" cellpadding="0" cellspacing="0" class="image_block block-4" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+//   <tr>
+//   <td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
+//   <div align="center" class="alignment" style="line-height:10px">
+//   <div style="max-width: 300px;"><img src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/flightMail/flight-banner.png" style="display: block; height: auto; border: 0; width: 100%;" width="300"/></div>
+//   </div>
+//   </td>
+//   </tr>
+//   </table>
+//   </td>
+//   </tr>
+//   </tbody>
+//   </table>
+//   </td>
+//   </tr>
+//   </tbody>
+//   </table>
+//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-4" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+//   <tbody>
+//   <tr>
+//   <td>
+//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f5dddd; color: #000000; width: 600px; margin: 0 auto;" width="600">
+//   <tbody>
+//   <tr class="reverse">
+//   <td class="column column-1 last" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-top: 10px; vertical-align: bottom; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+//   <div class="border">
+//   <table border="0" cellpadding="10" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+//   <tr>
+//   <td class="pad">
+//   <div style="font-family: sans-serif">
+//   <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+//   <p style="margin: 0; font-size: 16px; text-align: center; mso-line-height-alt: 19.2px;"><span style="font-size:22px;color:#000000;"><em><strong>YOUR TRIP</strong></em></span></p>
+//   </div>
+//   </div>
+//   </td>
+//   </tr>
+//   </table>
+//   <table border="0" cellpadding="10" cellspacing="0" class="text_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+//   <tr>
+//   <td class="pad">
+//   <div style="font-family: sans-serif">
+//   <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+//   <p style="margin: 0; font-size: 16px; text-align: center; mso-line-height-alt: 19.2px;"><span style="font-size:18px;color:#000000;">Your first trip OHNQO&AY1416 departs from paris at 19:25</span></p>
+//   </div>
+//   </div>
+//   </td>
+//   </tr>
+//   </table>
+//   </div>
+//   </td>
+//   </tr>
+//   </tbody>
+//   </table>
+//   </td>
+//   </tr>
+//   </tbody>
+//   </table>
+//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-5" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+//   <tbody>
+//   <tr>
+//   <td>
+//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f5dddd; color: #000000; width: 600px; margin: 0 auto;" width="600">
+//   <tbody>
+//   <tr>
+//   <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-right: 25px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="33.333333333333336%">
+//   <table border="0" cellpadding="10" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+//   <tr>
+//   <td class="pad">
+//   <div style="font-family: sans-serif">
+//   <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 21.6px; color: #555555; line-height: 1.8;">
+//   <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;color:#000000;">From </span></p>
+//   <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;color:#000000;">18:25</span></p>
+//   <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;color:#000000;">04.01.24</span></p>
+//   <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;color:#000000;">Paris</span></p>
+//   </div>
+//   </div>
+//   </td>
+//   </tr>
+//   </table>
+//   </td>
+//   <td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="33.333333333333336%">
+//   <table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+//   <tr>
+//   <td class="pad" style="padding-top:35px;width:100%;padding-right:0px;padding-left:0px;">
+//   <div align="center" class="alignment" style="line-height:10px">
+//   <div style="max-width: 50px;"><img src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/flightMail/plane.png" style="display: block; height: auto; border: 0; width: 100%;" width="50"/></div>
+//   </div>
+//   </td>
+//   </tr>
+//   </table>
+//   </td>
+//   <td class="column column-3" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="33.333333333333336%">
+//   <table border="0" cellpadding="10" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+//   <tr>
+//   <td class="pad">
+//   <div style="font-family: sans-serif">
+//   <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 21.6px; color: #555555; line-height: 1.8;">
+//   <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;color:#000000;">To </span></p>
+//   <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;color:#000000;">19:25</span></p>
+//   <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;color:#000000;">04.01.24</span></p>
+//   <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;color:#000000;">London</span></p>
+//   </div>
+//   </div>
+//   </td>
+//   </tr>
+//   </table>
+//   </td>
+//   </tr>
+//   </tbody>
+//   </table>
+//   </td>
+//   </tr>
+//   </tbody>
+//   </table>
+//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-6" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+//   <tbody>
+//   <tr>
+//   <td>
+//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f5dddd; color: #000000; width: 600px; margin: 0 auto;" width="600">
+//   <tbody>
+//   <tr>
+//   <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 15px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+//   <table border="0" cellpadding="10" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+//   <tr>
+//   <td class="pad">
+//   <div style="font-family: sans-serif">
+//   <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 18px; color: #555555; line-height: 1.5;">
+//   <p style="margin: 0; text-align: center; font-size: 16px; mso-line-height-alt: 24px;"><span style="font-size:16px;color:#000000;">Flight Duration: 2h 45min</span></p>
+//   <p style="margin: 0; text-align: center; font-size: 16px; mso-line-height-alt: 24px;"><span style="font-size:16px;color:#000000;">Travel category: Economy</span></p>
+//   <p style="margin: 0; font-size: 16px; mso-line-height-alt: 18px;"> </p>
+//   </div>
+//   </div>
+//   </td>
+//   </tr>
+//   </table>
+//   </td>
+//   </tr>
+//   </tbody>
+//   </table>
+//   </td>
+//   </tr>
+//   </tbody>
+//   </table>
+//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-7" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+//   <tbody>
+//   <tr>
+//   <td>
+//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f1f0ef; border-radius: 0; color: #000000; width: 600px; margin: 0 auto;" width="600">
+//   <tbody>
+//   <tr>
+//   <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 15px; padding-left: 15px; padding-right: 15px; padding-top: 15px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+//   <table border="0" cellpadding="10" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+//   <tr>
+//   <td class="pad">
+//   <div style="font-family: 'Trebuchet MS', Tahoma, sans-serif">
+//   <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+//   <p style="margin: 0; font-size: 16px; text-align: center; mso-line-height-alt: 19.2px;"><span style="color:#000000;"><strong><span style="font-size:22px;">Comfort For Your Travel</span></strong></span></p>
+//   </div>
+//   </div>
+//   </td>
+//   </tr>
+//   </table>
+//   <table border="0" cellpadding="10" cellspacing="0" class="button_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+//   <tr>
+//   <td class="pad">
+//   <div align="center" class="alignment"><!--[if mso]>
+//   <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" style="height:42px;width:184px;v-text-anchor:middle;" arcsize="10%" stroke="false" fillcolor="#0d0d32">
+//   <w:anchorlock/>
+//   <v:textbox inset="0px,0px,0px,0px">
+//   <center style="color:#ffffff; font-family:'Trebuchet MS', Tahoma, sans-serif; font-size:16px">
+//   <![endif]-->
+//   <div style="text-decoration:none;display:inline-block;color:#ffffff;background-color:#0d0d32;border-radius:4px;width:auto;border-top:0px solid transparent;font-weight:undefined;border-right:0px solid transparent;border-bottom:0px solid transparent;border-left:0px solid transparent;padding-top:5px;padding-bottom:5px;font-family:'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;font-size:16px;text-align:center;mso-border-alt:none;word-break:keep-all;"><span style="padding-left:20px;padding-right:20px;font-size:16px;display:inline-block;letter-spacing:normal;"><span style="margin: 0; word-break: break-word; line-height: 32px;">Go Extra Baggage</span></span></div><!--[if mso]></center></v:textbox></v:roundrect><![endif]-->
+//   </div>
+//   </td>
+//   </tr>
+//   </table>
+//   <table border="0" cellpadding="10" cellspacing="0" class="button_block block-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+//   <tr>
+//   <td class="pad">
+//   <div align="center" class="alignment"><!--[if mso]>
+//   <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" style="height:42px;width:179px;v-text-anchor:middle;" arcsize="10%" stroke="false" fillcolor="#0d0d32">
+//   <w:anchorlock/>
+//   <v:textbox inset="0px,0px,0px,0px">
+//   <center style="color:#ffffff; font-family:'Trebuchet MS', Tahoma, sans-serif; font-size:16px">
+//   <![endif]-->
+//   <div style="text-decoration:none;display:inline-block;color:#ffffff;background-color:#0d0d32;border-radius:4px;width:auto;border-top:0px solid transparent;font-weight:undefined;border-right:0px solid transparent;border-bottom:0px solid transparent;border-left:0px solid transparent;padding-top:5px;padding-bottom:5px;font-family:'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;font-size:16px;text-align:center;mso-border-alt:none;word-break:keep-all;"><span style="padding-left:20px;padding-right:20px;font-size:16px;display:inline-block;letter-spacing:normal;"><span style="word-break: break-word; line-height: 32px;">Choose Your Seat</span></span></div><!--[if mso]></center></v:textbox></v:roundrect><![endif]-->
+//   </div>
+//   </td>
+//   </tr>
+//   </table>
+//   <table border="0" cellpadding="10" cellspacing="0" class="button_block block-4" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+//   <tr>
+//   <td class="pad">
+//   <div align="center" class="alignment"><!--[if mso]>
+//   <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" style="height:42px;width:178px;v-text-anchor:middle;" arcsize="10%" stroke="false" fillcolor="#0d0d32">
+//   <w:anchorlock/>
+//   <v:textbox inset="0px,0px,0px,0px">
+//   <center style="color:#ffffff; font-family:'Trebuchet MS', Tahoma, sans-serif; font-size:16px">
+//   <![endif]-->
+//   <div style="text-decoration:none;display:inline-block;color:#ffffff;background-color:#0d0d32;border-radius:4px;width:auto;border-top:0px solid transparent;font-weight:undefined;border-right:0px solid transparent;border-bottom:0px solid transparent;border-left:0px solid transparent;padding-top:5px;padding-bottom:5px;font-family:'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;font-size:16px;text-align:center;mso-border-alt:none;word-break:keep-all;"><span style="padding-left:20px;padding-right:20px;font-size:16px;display:inline-block;letter-spacing:normal;"><span style="word-break: break-word; line-height: 32px;">Meals & Delicious</span></span></div><!--[if mso]></center></v:textbox></v:roundrect><![endif]-->
+//   </div>
+//   </td>
+//   </tr>
+//   </table>
+//   </td>
+//   </tr>
+//   </tbody>
+//   </table>
+//   </td>
+//   </tr>
+//   </tbody>
+//   </table>
+//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-8" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+//   <tbody>
+//   <tr>
+//   <td>
+//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 600px; margin: 0 auto;" width="600">
+//   <tbody>
+//   <tr>
+//   <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+//   <table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+//   <tr>
+//   <td class="pad" style="width:100%;">
+//   <div align="center" class="alignment" style="line-height:10px">
+//   <div style="max-width: 600px;"><img src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/flightMail/skyTrails-banner.png" style="display: block; height: auto; border: 0; width: 100%;" width="600"/></div>
+//   </div>
+//   </td>
+//   </tr>
+//   </table>
+//   </td>
+//   </tr>
+//   </tbody>
+//   </table>
+//   </td>
+//   </tr>
+//   </tbody>
+//   </table>
+//   </td>
+//   </tr>
+//   </tbody>
+//   </table><!-- End -->
+//   </body>
+//   </html>`
+// }
 
 function getHtmlContent(name) {
   return `
@@ -46,7 +524,7 @@ function getHtmlContent(name) {
 
 module.exports = {
   getOTP() {
-    var otp = Math.floor(1000 + Math.random() * 9000);
+    var otp = Math.floor(1000 + Math.random() * 900000);
     return otp;
   },
 
@@ -1236,7 +1714,7 @@ module.exports = {
         user: nodemailerConfig.options.auth.user,
         pass: nodemailerConfig.options.auth.pass,
       },
-      connectionTimeout: 60000,
+      connectionTimeout: 120000,
     });
   
     const passengerEmail = email;
@@ -1244,7 +1722,7 @@ module.exports = {
       from: nodemailerConfig.options.auth.user,
       to: email,
       subject: 'Flight Booking Confirmation Mail',
-      html: getHtmlContent(name),
+      html: flightMail(to),
       attachments: [{ filename: 'flightBooking.pdf', path: pdfFilePath }],
     };
   
@@ -1708,7 +2186,7 @@ module.exports = {
       from: nodemailerConfig.options.auth.user,
       to: passengerEmail,
       subject: 'Flight Booking Confirmation Mail',
-      html: getHtmlContent(name),
+      html: flightMail(to),
       attachments: [{ filename: 'flightBooking.pdf', path: pdfFilePath }],
     };
   
@@ -2267,7 +2745,7 @@ module.exports = {
       from: nodemailerConfig.options.auth.user,
       to: passengerEmail,
       subject: 'Bus Booking Confirmation Mail',
-      html: getHtmlContent(name),
+      html:busMail(to),
       attachments: [{ filename: 'Bus_Booking.pdf', path: pdfFilePath }],
     };
   
@@ -2814,7 +3292,7 @@ module.exports = {
       from: nodemailerConfig.options.auth.user,
       to: passengerEmail,
       subject: 'Bus Booking Confirmation Mail',
-      html: getHtmlContent(name),
+      html: busMail(to),
       attachments: [{ filename: 'Bus_Booking.pdf', path: pdfFilePath }],
     };
   
@@ -3663,32 +4141,32 @@ module.exports = {
   },
 
   sendVerificationMail:async(to,otp)=> {
-    let html = `<!DOCTYPE html>
-    <html lang="en">
+    // let html = `<!DOCTYPE html>
+    // <html lang="en">
     
-    <head>
-        <title>Reset Password</title>
-    </head>
-    <body>
-        <div class="card" style=" box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-            transition: 0.3s;
-            width: 100%; margin: auto; min-height:15em;margin-top: 25px;">
-            <div class="main" style="background-image: url('');">
-                <div class="main-container" style="text-align: center;">
-                    <!-- <h1 style="padding-top: 30px;"> <strong> GFMI </strong></h1> -->
-                    <img src="https://travvolt.s3.amazonaws.com/ST-Main-LogoPdf.png" alt="logo" style="width:25%;margin-top: -10px;" />
-                    <div style="width: 90%;margin: auto; text-align: left;">
-                        <br><br>
-                        <p style="color: #333030;font-size: 18px;margin-top: 0px;"> Dear User,
-                            ${otp} is your OTP for verify and reset your password.
-                    </div>
-                </div>
+    // <head>
+    //     <title>Reset Password</title>
+    // </head>
+    // <body>
+    //     <div class="card" style=" box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    //         transition: 0.3s;
+    //         width: 100%; margin: auto; min-height:15em;margin-top: 25px;">
+    //         <div class="main" style="background-image: url('');">
+    //             <div class="main-container" style="text-align: center;">
+    //                 <!-- <h1 style="padding-top: 30px;"> <strong> GFMI </strong></h1> -->
+    //                 <img src="https://travvolt.s3.amazonaws.com/ST-Main-LogoPdf.png" alt="logo" style="width:25%;margin-top: -10px;" />
+    //                 <div style="width: 90%;margin: auto; text-align: left;">
+    //                     <br><br>
+    //                     <p style="color: #333030;font-size: 18px;margin-top: 0px;"> Dear User,
+    //                         ${otp} is your OTP for verify and reset your password.
+    //                 </div>
+    //             </div>
     
-            </div>
-        </div>
+    //         </div>
+    //     </div>
     
-    </body>
-    </html>`;
+    // </body>
+    // </html>`;
 var transporter = nodemailerConfig.createTransport({
   service: nodemailerConfig.service,
   auth: {
@@ -3700,40 +4178,40 @@ var mailOptions = {
   from: nodemailerConfig.user,
   to: to,
   subject: "Reset Password",
-  html: html,
+  html: otpMail(otp),
 };
 return await transporter.sendMail(mailOptions);
   },
 
   sendEmailOtp: async (email, otp) => {
-    let html = `<!DOCTYPE html>
-    <html lang="en">
+    // let html = `<!DOCTYPE html>
+    // <html lang="en">
     
-    <head>
-        <title></title>
-    </head>
-    <body>
-        <div class="card" style=" box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-            transition: 0.3s;
-            width: 100%; margin: auto; min-height:15em;margin-top: 25px;">
-            <div class="main" style="background-image: url('');">
-                <div class="main-container" style="text-align: center;">
-                    <!-- <h1 style="padding-top: 30px;"> <strong> GFMI </strong></h1> -->
-                    <img src="https://res.cloudinary.com/nandkishor/image/upload/v1676882752/Group_1171275777_gge2f0.png"
-                        style="width: 30%;" alt="logo">
+    // <head>
+    //     <title></title>
+    // </head>
+    // <body>
+    //     <div class="card" style=" box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    //         transition: 0.3s;
+    //         width: 100%; margin: auto; min-height:15em;margin-top: 25px;">
+    //         <div class="main" style="background-image: url('');">
+    //             <div class="main-container" style="text-align: center;">
+    //                 <!-- <h1 style="padding-top: 30px;"> <strong> GFMI </strong></h1> -->
+    //                 <img src="https://res.cloudinary.com/nandkishor/image/upload/v1676882752/Group_1171275777_gge2f0.png"
+    //                     style="width: 30%;" alt="logo">
     
-                    <div style="width: 90%;margin: auto; text-align: left;">
-                        <br><br>
-                        <p style="color: #333030;font-size: 18px;margin-top: 0px;"> Dear User,
-                        Use the One Time Password(OTP) ${otp} to verify your accoount.
-                    </div>
-                </div>
+    //                 <div style="width: 90%;margin: auto; text-align: left;">
+    //                     <br><br>
+    //                     <p style="color: #333030;font-size: 18px;margin-top: 0px;"> Dear User,
+    //                     Use the One Time Password(OTP) ${otp} to verify your accoount.
+    //                 </div>
+    //             </div>
     
-            </div>
-        </div>
+    //         </div>
+    //     </div>
     
-    </body>
-    </html>`;
+    // </body>
+    // </html>`;
     let transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -3746,93 +4224,93 @@ return await transporter.sendMail(mailOptions);
       from: config.get('nodemailer.email'),
       to: email,
       subject: 'Otp for verication',
-      html: html,
+      html: otpMail(otp),
     };
     return await transporter.sendMail(mailOptions)
   },
 
   sendSubAdmin:async(to,userName,pass)=> {
-    let html = `<!DOCTYPE html>
-    <html lang="en">
+    // let html = `<!DOCTYPE html>
+    // <html lang="en">
     
-    <head>
-        <title>Welcome to TheSkytrails!</title>
-        <style>
-            .card {
-                border-radius: 10px;
-                background-color: #fff;
-                box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-                width: 80%;
-                margin: auto;
-                min-height: 25em;
-                margin-top: 25px;
-                padding: 20px;
-            }
+    // <head>
+    //     <title>Welcome to TheSkytrails!</title>
+    //     <style>
+    //         .card {
+    //             border-radius: 10px;
+    //             background-color: #fff;
+    //             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    //             width: 80%;
+    //             margin: auto;
+    //             min-height: 25em;
+    //             margin-top: 25px;
+    //             padding: 20px;
+    //         }
     
-            .main {
-                background-image: url('path/to/your/image.jpg');
-                background-size: cover;
-                background-position: center;
-                opacity: 0.8;
-            }
+    //         .main {
+    //             background-image: url('path/to/your/image.jpg');
+    //             background-size: cover;
+    //             background-position: center;
+    //             opacity: 0.8;
+    //         }
     
-            .main-container {
-                text-align: center;
-            }
+    //         .main-container {
+    //             text-align: center;
+    //         }
     
-            h1 {
-                font-family: 'Poppins', sans-serif;
-                font-weight: 600;
-                color: #333030;
-                font-size: 24px;
-                margin-top: 30px;
-            }
+    //         h1 {
+    //             font-family: 'Poppins', sans-serif;
+    //             font-weight: 600;
+    //             color: #333030;
+    //             font-size: 24px;
+    //             margin-top: 30px;
+    //         }
     
-            img {
-                width: 30%;
-                margin-bottom: 20px;
-            }
+    //         img {
+    //             width: 30%;
+    //             margin-bottom: 20px;
+    //         }
     
-            p {
-                font-family: 'Open Sans', sans-serif;
-                font-size: 16px;
-                line-height: 1.5;
-                color: #444;
-                margin-top: 0;
-            }
+    //         p {
+    //             font-family: 'Open Sans', sans-serif;
+    //             font-size: 16px;
+    //             line-height: 1.5;
+    //             color: #444;
+    //             margin-top: 0;
+    //         }
     
-            button {
-                background-color: #4285F4;
-                color: #fff;
-                padding: 10px 20px;
-                border: none;
-                border-radius: 5px;
-                font-size: 16px;
-                cursor: pointer;
-                margin-top: 20px;
-            }
+    //         button {
+    //             background-color: #4285F4;
+    //             color: #fff;
+    //             padding: 10px 20px;
+    //             border: none;
+    //             border-radius: 5px;
+    //             font-size: 16px;
+    //             cursor: pointer;
+    //             margin-top: 20px;
+    //         }
     
-            button:hover {
-                background-color: #3D7AF1;
-            }
-        </style>
-    </head>
+    //         button:hover {
+    //             background-color: #3D7AF1;
+    //         }
+    //     </style>
+    // </head>
     
-    <body>
-        <div class="card">
-            <div class="main-container">
-                <h1>Hi, ${userName}!</h1>
-                <img src="https://travvolt.s3.amazonaws.com/ST-Main-LogoPdf.png" alt="logo">
-                <p>Welcome to TheSkytrails! Your journey begins now.</p>
-                <p>Your login credentials are:</p>
-                <p>Username: ${userName}<br> Password: ${pass}</p>
-                <button>Unlock your Skytrails adventure now!</button>
-            </div>
-        </div>
-    </body>
+    // <body>
+    //     <div class="card">
+    //         <div class="main-container">
+    //             <h1>Hi, ${userName}!</h1>
+    //             <img src="https://travvolt.s3.amazonaws.com/ST-Main-LogoPdf.png" alt="logo">
+    //             <p>Welcome to TheSkytrails! Your journey begins now.</p>
+    //             <p>Your login credentials are:</p>
+    //             <p>Username: ${userName}<br> Password: ${pass}</p>
+    //             <button>Unlock your Skytrails adventure now!</button>
+    //         </div>
+    //     </div>
+    // </body>
     
-    </html>
-    `;
+    // </html>
+    // `;
 var transporter = nodemailer.createTransport({
   service: 'gmail',
  auth: {
@@ -3853,7 +4331,7 @@ var mailOptions = {
   from: nodemailerConfig.user,
   to: to,
   subject: "Congratulations,your are become member of theSkyTrais, ",
-  html: html,
+  html: welcomeMail(to,userName,pass),
 };
 return await transporter.sendMail(mailOptions);
   },

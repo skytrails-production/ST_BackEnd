@@ -21,7 +21,10 @@ const eventServices={
     },
 
     eventList: async (query) => {
-        return await eventModel.find(query)
+        return await eventModel.find(query).sort({ createdAt: -1 })
+    },
+    allEvent:async(query)=>{
+        return await eventModel.find(query).sort({saleCount:-1}).limit(4)
     },
     updateEvent: async (query, updateObj) => {
         return await eventModel.findOneAndUpdate(query, updateObj, { new: true });

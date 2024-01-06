@@ -3,6 +3,7 @@ joi.objectId = require("joi-objectid")(joi);
 const issuedType = require("../enums/issuedType");
 const authType = require("../enums/authType");
 const queryType = require("../enums/offerType");
+const visaType = require("../enums/visaType");
 // const bookingType=require("../enums/")
 const schemas = {
   flightBookingSchema: joi.object().keys({
@@ -97,7 +98,7 @@ const schemas = {
     validityPeriod: joi.string().optional(),
     lengthOfStay: joi.string().optional(),
     gallery: joi.array().items(joi.string()).optional(),
-    visaType: joi.string().optional(),
+    visaType: joi.valid(...Object.values(visaType)).optional(),
     platFormFees: joi.number().optional(),
     issuedType: joi
       .string()
@@ -105,6 +106,7 @@ const schemas = {
       .required(),
     continent: joi.string().required(),
     daysToProcess: joi.number().required(),
+    visaCategoryName: joi.string().required(),
   }),
   //static content validation via joi
   staticContentSchema: joi.object().keys({
@@ -131,10 +133,16 @@ const schemas = {
         "ABOUTUS",
         "RETURNPOLICY",
         "BOOKINGPOLICY",
-        "QUESTION"
+        "QUESTION",
+        "CONTACTUS"
       )
       .required(),
     subType: joi.string().optional(),
+    contactNumber: joi.string().optional(),
+    email: joi.string().optional(),
+    address: joi.array().optional(),
+    latitude: joi.array().optional(),
+    longitude: joi.array().optional(),
   }),
 
   faqSchema: joi.object().keys({
@@ -435,17 +443,23 @@ const schemas = {
     policyName: joi.string().required(),
   }),
   searchSchema: joi.object().keys({
-    origin: joi.string().required(),
-    destination: joi.string().required(),
-    journeyType: joi.string().required(),
+    origin: joi.string().optional(),
+    destination: joi.string().optional(),
+    journeyType: joi.string().optional(),
     searchType: joi
       .string()
       .valid(...Object.values(queryType))
       .required(),
-    journeyDate: joi.string().required(),
+      journeyDate: joi.string().optional(),
+      cityName: joi.string().optional(),
+      checkin: joi.string().optional(),
+      checkout: joi.string().optional(),
+      rooms: joi.number().optional(),
+      days: joi.number().optional(),
   }),
-  ceateAgentSchema: joi.object().keys({
+  createAgentSchema: joi.object().keys({
     email: joi.string().required(),
+    panNumber: joi.string().required(),
     mobile_number: joi.string().required(),
     password: joi.string().required(),
   }),
@@ -479,7 +493,7 @@ const schemas = {
     productinfo: joi.string().required(),
     surl: joi.string().optional(),
     furl: joi.string().optional(),
-    bookingType: joi.valid(...Object.values(queryType)).required(),
+    bookingType: joi.string().required(),
   }),
   eventSchema: joi.object().keys({
     title: joi.string().required(),
@@ -515,7 +529,7 @@ const schemas = {
     eventId: joi.string().required(),
     startTime: joi.string().required(),
     EndTime: joi.string().optional(),
-    noOfMember: joi.number().required()
+    noOfMember: joi.number().required(),
   }),
 
   webAddSchema: joi.object().keys({
@@ -547,28 +561,29 @@ const schemas = {
     furl: joi.string().optional(),
     bookingType: joi.string().required(),
   }),
-  // eventSchema: joi.object().keys({
-  //   title: joi.string().required(),
-  //   content: joi.string().required(),
-  //   startDate: joi.string().required(),
-  //   endDate: joi.string().required(),
-  //   remainingDays: joi.number().optional(),
-  //   price: joi.number().required(),
-  //   bookingPrice: joi.number().required(),
-  //   age: joi.string().required(),
-  //   venue: joi.string().required(),
-  //   showType: joi.string().required(),
-  //   adultPrice: joi.number().required(),
-  //   childPrice: joi.number().required(),
-  //   couplePrice: joi.number().required(),
-  //   startTime: joi.string().required(),
-  //   endTime: joi.string().required(),
-  //   breakTime: joi.number().required(),
-  //   noOfShows: joi.string().required(),
-  //   slotTime: joi.number().required(),
-  //   latitude: joi.number().required(),
-  //   longitude: joi.number().required(),
-  // }),
+  postLikesSchema: {
+    postId: joi.string().required(),
+  },
+  createDocSchema: joi.object().keys({
+    documentName: joi.string().required(),
+    description: joi.string().required(),
+  }),
+  docCategorySchema: joi.object().keys({
+    categoryName: joi.string().required(),
+    description: joi.string().required(),
+    documentTypes: joi.string().required(),
+  }),
+  createVisaCategorySchema: joi.object().keys({
+    visaType: joi.valid(...Object.values(visaType)).required(),
+    categoryName: joi.string().required(),
+    description: joi.string().required(),
+  }),
+  docRequireSchema:joi.object().keys({
+    visaCountry: joi.string().required(),
+    visaCategory: joi.string().required(),
+    requiredDocCategory: joi.array().required(),
+    visaType: joi.valid(...Object.values(visaType)).optional(),
+  })
 };
 
 module.exports = schemas;

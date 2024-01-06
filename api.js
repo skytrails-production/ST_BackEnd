@@ -49,9 +49,9 @@ wsServer.on('request', (request) => {
   });
 });
 
-server.listen(7000, () => {
-  console.log('WebSocket server running on port 7000');
-});
+// server.listen(7000, () => {
+//   console.log('WebSocket server running on port 7000');
+// });
 
 
 /**
@@ -151,6 +151,10 @@ require("./routes/razorpayRoutes")(app)
 require("./routes/btocRoutes/transactionRoutes")(app)
 require("./routes/eventRoutes")(app)
 require("./routes/btocRoutes/eventBookingRoutes")(app)
+require("./routes/visaRoutes/documentCategory")(app)
+require("./routes/visaRoutes/documentType")(app)
+require("./routes/visaRoutes/visaCategoryRoutes")(app)
+require("./routes/visaRoutes/createRequireDocumentRoutes")(app)
 mongoose
   .connect(configs.mongoUrl.DEVELOPMENT, {
     useNewUrlParser: true,
@@ -223,4 +227,10 @@ process.on("unhandledRejection", (err) => {
 
 
 
+
+// const { v4: uuidv4 } = require('uuid');
+
+// const uuid = uuidv4();
+
+// console.log(uuid);
 

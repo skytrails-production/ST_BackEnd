@@ -21,5 +21,6 @@ module.exports = function (app) {
   app.get("/skyTrails/api/visa/getMonthlyList", controller.getMonthlyList);
   app.get("/skyTrails/api/visa/getonArrivalList", controller.getonArrivalList);
   app.get("/skyTrails/api/visa/getWeeklyVisa",controller.getWeeklyVisa);
-  app.get("/skyTrails/api/visa/getVisaById",controller.getVisaById)
+  app.get("/skyTrails/api/visa/getVisaById",controller.getVisaById);
+  app.get("/skyTrails/api/visa/getAllVisaCountry",controller.getAllVisaCountry)
 };

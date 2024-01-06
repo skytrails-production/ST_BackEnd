@@ -199,7 +199,7 @@ exports.socialLogin = async (req, res, next) => {
         },
         password: hashedPass || ''
       };
-      const result = await User.create(data)
+      // const result = await User.create(data)
       return res.status(200).send({ message: 'Your account created successfully.', result: result })
     }
     let token = await commonFunction.getToken({
@@ -1093,45 +1093,79 @@ exports.getSearchHistory=async(req,res,next)=>{
 }
 
 //**********************************************CREATE AGENTS********************************/
-
-exports.ceateAgent=async(req,res,next)=>{
+exports.createAgent = async (req, res, next) => {
   try {
-    const {email,mobile_number,password}=req.body;
-    const hashPass=bcrypt.hashSync(password,10);
-    const object={
+    const { email, mobile_number, password, panNumber } = req.body;
+
+    // Check if pan_number is provided and not an empty string
+    if (!panNumber || panNumber.trim() === "") {
+      return res.status(statusCode.badRequest).send({
+        statusCode: statusCode.badRequest,
+        responseMessage: "PAN Number is required and cannot be empty.",
+      });
+    }
+
+    // Hash the password
+    const hashPass = bcrypt.hashSync(password, 10);
+
+    // Create the object with personal_details and agency_details including pan_number
+    const object = {
       personal_details: {
         email: email,
         mobile: {
-            mobile_number: mobile_number,
+          mobile_number: mobile_number,
         },
-        password:hashPass,},
-        approveStatus:'APPROVED'
-      }
-    const isExist=await b2bUser.findOne({'personal_details.email':email});
-   if(isExist){
-    res.status(statusCode.Conflict).send({statusCode:statusCode.Conflict,responseMessage:responseMessage.USER_ALREADY_EXIST,result:result})
-   }
-    const result=await b2bUser.create(object);
-    const msg=`Welcome to the TheSkyTrails, Admin add you as agent please use this credential to login and fill form which are mandatory.
-               Your Credential:   
-               email:${password}, 
-               password:${password}`
-    await whatsappAPIUrl.sendWhatsAppMessage(mobile_number,msg);
-    await commonFunction.sendAgent(email,password);
-    if(result){
-      res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.CREATED_SUCCESS,result:result})
+        password: hashPass,
+      },
+      agency_details: {
+        pan_number: panNumber.trim(),
+      },
+      approveStatus: 'APPROVED',
+    };
+
+    // Check if the user already exists based on email
+    const isExist = await b2bUser.findOne({ 'personal_details.email': email });
+    if (isExist) {
+      return res.status(statusCode.Conflict).send({
+        statusCode: statusCode.Conflict,
+        responseMessage: responseMessage.USER_ALREADY_EXIST,
+        result: result,
+      });
+    }
+
+    // Create the agent and handle the unique index constraint
+    const result = await b2bUser.create(object);
+
+    // Send welcome message
+    const message={
+      email:email,
+      password:password
+    }
+    await sendSMS.sendSMSAgents(mobile_number,message)
+    const msg = `Welcome to TheSkyTrails, Admin added you as an agent. Please use the following credentials to login and fill in the mandatory form:\nEmail: ${email}\nPassword: ${password}`;
+    await whatsappAPIUrl.sendWhatsAppMessage(mobile_number, msg);
+    await commonFunction.sendAgent(email, password);
+
+    // Respond with success
+    if (result) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.CREATED_SUCCESS,
+        result: result,
+      });
     }
   } catch (error) {
-    console.log("error====",error);
+    console.error("Error:", error);
     return next(error);
   }
-}
+};
+
 
 exports.getAllUsers=async(req,res,next)=>{
   try {
     const {page, limit, search}=req.query;
     // req.query.userType==="USER"
-    const result=await aggregatePaginateUser(req.query);
+    const result=await paginateUserSearch(req.query);
     if(!result||result.length<=0){
       res.status(statusCode.NotFound).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
     }
@@ -1141,7 +1175,6 @@ exports.getAllUsers=async(req,res,next)=>{
     return next(error);
   }
 }
-
 
 exports.statusChange=async(req,res,next)=>{
 try {

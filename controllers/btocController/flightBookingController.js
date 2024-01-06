@@ -126,8 +126,8 @@ exports.getUserflightBooking = async (req, res, next) => {
     const result = await aggregatePaginateGetBooking(body);
     console.log("result=========", result);
     if (result.docs.length == 0) {
-      return res.status(statusCode.NotFound).send({
-        statusCode: statusCode.NotFound,
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
         message: responseMessage.DATA_NOT_FOUND,
       });
     }
@@ -146,19 +146,17 @@ exports.getUserFlightData = async (req, res, next) => {
       _id: req.userId,
       status: status.ACTIVE,
     });
-    console.log("isUSerExist", isUserExist);
     if (!isUserExist) {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.USERS_NOT_FOUND,
       });
     }
-
     const result = await findUserflightBookingData({ status: status.ACTIVE,userId:isUserExist._id });
-    if (result) {
-      return res.status(statusCode.NotFound).send({
-        statusCode: statusCode.NotFound,
-        message: responseMessage.DATA_NOT_FOUND,
+    if (!result) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.BOOKING_NOT_FOUND,
       });
     }
     return res

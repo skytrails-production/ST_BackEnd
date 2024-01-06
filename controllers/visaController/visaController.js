@@ -1,14 +1,13 @@
 let cloudinary = require("cloudinary");
-cloudinary.config({
-    cloud_name: "dultedeh8",
-    api_key: "461991833927796",
-    api_secret: "ruuF-4CFhQVh205cif_tQqNBBcA",
-});
+
 //*********SERVICES********************* */
 const { visaServices } = require('../../services/visaServices');
-const { createWeeklyVisa, findWeeklyVisa, deleteWeeklyVisa, weeklyVisaList, updateWeeklyVisa, weeklyVisaListPaginate, getNoVisaByPaginate, montholyVisaListPaginate, onarrivalVisaListPaginate } = visaServices;
+const { createWeeklyVisa, findWeeklyVisa,populatedVisaList, deleteWeeklyVisa, weeklyVisaList, updateWeeklyVisa, weeklyVisaListPaginate, getNoVisaByPaginate, montholyVisaListPaginate, onarrivalVisaListPaginate } = visaServices;
 const { userServices } = require('../../services/userServices');
 const { createUser, findUser, getUser, findUserData, updateUser } = userServices;
+const {visaCategoryServices}=require("../../services/visaAppServices/visaCategoryServices");
+const {createVisaCategory,findVisaCategoryData,deleteVisaCategory,visaCategoryList,updateVisaCategory,countTotalVisaCategory,getVisaCategory}=visaCategoryServices;
+
 const {
     actionCompleteResponse,
     sendActionFailedResponse,
@@ -22,11 +21,11 @@ const { RecordingRulesList } = require("twilio/lib/rest/video/v1/room/roomRecord
 
 exports.createVisa = async (req, res, next) => {
     try {
-        const { countryName, price, validityPeriod, lengthOfStay, gallery, visaType, governmentFees, platFormFees, issuedType, continent } = req.body;
-        // const isAdmin = await findUser({ _id: req.userId });
-        // if(!isAdmin){
-        //     sendActionFailedResponse(res,{},'Unauthorised user')
-        // }
+        const { countryName, price, validityPeriod, lengthOfStay, gallery, visaType, governmentFees, platFormFees, issuedType, continent ,visaCategoryName} = req.body;
+        const iscategoryIdExist=await findVisaCategoryData({visaCategoryName:visaCategoryName}); 
+        if(!iscategoryIdExist){
+            return res.status(statusCode.badRequest).send({ statusCode: statusCode.badRequest, responseMessage: responseMessage.CATEGORY_NOT_FOUND });
+        }
         if (gallery) {
             var galleryData = [];
             for (var i = 0; i < gallery.length; i++) {
@@ -51,7 +50,20 @@ exports.createVisa = async (req, res, next) => {
             } else if (!governmentFees) {
                 return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: " platFormFees or required" })
             }
-            req.body.price = governmentFees + platFormFees
+            req.body.price = governmentFees + platFormFees;
+            req.body.visaType=iscategoryIdExist.visaType;
+            req.body.visaCategoryId=iscategoryIdExist._id;
+
+            // const object={
+            //     countryName:countryName,
+            //     price:req.body.price,
+            //     validityPeriod:validityPeriod,
+            //     lengthOfStay:lengthOfStay,
+            //     gallery:gallery,
+            //     visaType:iscategoryIdExist.visaType,
+            //     continent:continent,
+            //     visaCategoryId:iscategoryIdExist._id
+            // }
             const result = await createWeeklyVisa(req.body);
             return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.VISA_CREATED, result: result })
         }
@@ -75,7 +87,7 @@ exports.getVisa = async (req, res, next) => {
         const formattedDate = `${currentDate.getDate()} ${currentDate.toLocaleString('default', { month: 'short' })}, ${hours}:${(currentDate.getMinutes() < 10 ? '0' : '')}${currentDate.getMinutes()} ${amOrPm}`;
         result.docs.forEach(doc => {
             doc._doc.pricePerPerson = `${doc.price}/person`
-            doc._doc.getData = `Submit Today For Guaranteed Visa By: ${formattedDate}`;
+            doc._doc.getData = `${formattedDate}`;
         });
         if (!result) {
             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.NOT_FOUND, result: result })
@@ -91,7 +103,6 @@ exports.updateVisa = async (req, res, next) => {
     const weeklyVisaDataId = req.body.weeklyVisaDataId;
     try {
         if (!weeklyVisaDataId) {
-            console.log("====================");
             sendActionFailedResponse(res, {}, 'weeklyVisaDataId is required')
         }
         const { countryName, price, validityPeriod, lengthOfStay, visaType, continent } = req.body;
@@ -259,3 +270,16 @@ exports.getVisaById=async(req,res,next)=>{
     }
 }
 
+exports.getAllVisaCountry=async(req,res,next)=>{
+    try {
+       const result=await populatedVisaList({status:status.ACTIVE});
+       if(!result||result.length==0){
+        return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.DATA_NOT_FOUND});
+    }
+    return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.DATA_FOUND, result: result });
+    
+    } catch (error) {
+        console.log("error while get visaCountry.",error);
+        return next(error )
+    }
+}

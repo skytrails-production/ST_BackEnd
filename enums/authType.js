@@ -3,5 +3,5 @@ module.exports = Object.freeze({
     ADS_HANDLER: 'ADS_HANDLER',
     PACKAGE_HANDLER: 'PACKAGE_HANDLER',
     ACCESS_HANDLER:'ACCESS_HANDLER',
-     
+    VISA_HANDLER:'VISA_HANDLER'
 })

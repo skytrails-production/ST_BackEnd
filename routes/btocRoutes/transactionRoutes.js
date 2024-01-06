@@ -19,5 +19,9 @@ module.exports = function (app) {
     app.get('/skyTrails/api/transaction/paymentSuccessPhonePe',userTransactionsController.paymentSuccessPhonePe);
     app.get('/skyTrails/api/transaction/paymentFailurePhonePe',userTransactionsController.paymentFailurePhonePe);
     app.get('/skyTrails/api/transaction/checkPaymentStatus',userTransactionsController.checkPaymentStatus)
+
+    //refund api
+
+    app.post('/skyTrails/api/transaction/refundPolicy',userTransactionsController.refundApi);
     
 }

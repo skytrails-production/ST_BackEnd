@@ -235,6 +235,35 @@ exports.internationalgetAll = async (req, res) => {
   }
 };
 
+function escapeRegex(text) {
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+}
+exports.packageCityList = async (req, res) => {
+  try {
+    const regex = new RegExp(escapeRegex(req.query.keyword), "gi");
+    
+    const response = await internationl.aggregate([
+      { $match: { 'destination.addMore': regex } },
+      { $unwind: '$destination' },
+      { $match: { 'destination.addMore': regex } },
+      { $group: { _id: null, addMoreList: { $addToSet: '$destination.addMore' } } }
+    ]);
+    
+    if (response.length > 0) {
+      const addMoreList = response[0].addMoreList;
+      const msg = "List of Package City List values retrieved successfully";
+      actionCompleteResponse(res, addMoreList, msg);
+    } else {
+      const msg = "No matching Package City values found";
+      actionCompleteResponse(res, [], msg);
+    }
+  } catch (error) {
+    sendActionFailedResponse(res, {}, error.message);
+  }
+};
+
+
+
 exports.internationalSetActive = async (req, res) => {
   const { pakageId, isAdmin, activeStatus } = req.body;
   try {

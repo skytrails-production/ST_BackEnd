@@ -20,14 +20,15 @@ const { createUserhotelBookingModel, findUserhotelBookingModel, getUserhotelBook
 
 exports.createFlightTicketChangeRequest=async(req,res,next)=>{
     try {
-        const  {reason,bookingId,flightBookingId,contactNumber,changerequest,amount,pnr}=req.body;
+        const  {reason,bookingId,flightBookingId,contactNumber,changerequest,pnr}=req.body;
         const isUserExist = await findUser({ _id: req.userId,status:status.ACTIVE, userType:userType.USER });
         if (!isUserExist) {
             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
         }
         const currentDate = new Date().toISOString();
         console.log("currentDate:", currentDate);
-        const isBookingExist=await findUserflightBooking({ userId: isUserExist._id,bookingId: bookingId,_id:flightBookingId,status:status.ACTIVE})
+        const isBookingExist=await findUserflightBooking({ userId: isUserExist._id,bookingId: bookingId,_id:flightBookingId,status:status.ACTIVE});
+
         if (!isBookingExist) {
             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.BOOKING_NOT_FOUND });
         }else if(isBookingExist.airlineDetails[0].Origin.DepTime<=currentDate){
@@ -41,7 +42,7 @@ exports.createFlightTicketChangeRequest=async(req,res,next)=>{
             pnr: pnr,
             contactNumber:contactNumber,
             changerequest:changerequest,
-            amount:isBookingExist.amount
+            amount:isBookingExist.totalAmount
         }
         const result=await  createUserFlightChangeRequest(object);
         if(result){

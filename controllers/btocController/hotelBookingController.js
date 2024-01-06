@@ -79,7 +79,7 @@ exports.hotelBooking = async (req, res, next) => {
       }
       const result = await aggregatePaginateHotelBookingList(body);
       if (result.docs.length == 0) {
-        return res.status(statusCode.NotFound).send({ message: responseMessage.DATA_NOT_FOUND });
+        return res.status(statusCode.OK).send({statusCode: statusCode.OK, message: responseMessage.DATA_NOT_FOUND });
       }
       return res.status(statusCode.OK).send({ message: responseMessage.DATA_FOUND, result: result });
     } catch (error) {
@@ -102,9 +102,9 @@ exports.hotelBooking = async (req, res, next) => {
         });
       }
       const result = await userhotelBookingModelList({ status: status.ACTIVE,userId:isUserExist._id,CheckInDate:-1});
-      if (result) {
-        return res.status(statusCode.NotFound).send({
-          statusCode: statusCode.NotFound,
+      if (!result) {
+        return res.status(statusCode.OK).send({
+          statusCode: statusCode.OK,
           message: responseMessage.DATA_NOT_FOUND,
         });
       }

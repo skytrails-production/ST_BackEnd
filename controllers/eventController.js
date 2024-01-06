@@ -20,6 +20,7 @@ const {
   findEventData,
   deleteEvent,
   eventList,
+  allEvent,
   updateEvent,
   countTotalEvent,
   getEvent,
@@ -48,7 +49,7 @@ exports.createEvent = async (req, res, next) => {
       slotTime,
       latitude,
       longitude,
-      noOfMember
+      noOfMember,
     } = req.body;
     if (!req.file) {
       return res.status(400).send({ message: "No file uploaded." });
@@ -75,39 +76,42 @@ exports.createEvent = async (req, res, next) => {
       adultPrice: adultPrice,
       childPrice: childPrice,
       couplePrice: couplePrice,
-      location:{coordinates:[longitude,latitude]},
+      location: { coordinates: [longitude, latitude] },
       slot: [],
     };
     const startingDate = Moment(startDate, "YYYY-MM-DD");
     const endingDate = Moment(endDate, "YYYY-MM-DD");
-    console.log("startingDate:",startingDate,"endingDate:,",endingDate)
+    const storeStartDate=startingDate.format("YYYY-MM-DD");
+    console.log("startingDate:", startingDate, "endingDate:,", endingDate);
     while (startingDate <= endingDate) {
-        const startingTime = Moment(startTime, "HH:mm");
-        const endingTime = Moment(endTime, "HH:mm");
-      
-        for (let i = 0; i < noOfShows; i++) {
-          const slotEndTime = Moment(startingTime).add(slotTime, "minutes");
-      
-          // Ensure that the show doesn't exceed the ending time
-          if (slotEndTime.isAfter(endingTime)) {
-            break;
-          }
-      
-          object.slot.push({
-            startTime: startingTime.format("HH:mm"),
-            endTime: slotEndTime.format("HH:mm"),
-            isAvailable: true,
-            peoples:Number(noOfMember)
-          });
-          startingTime.add(slotTime, "minutes");
-          if (i < noOfShows - 1) {
-            startingTime.add(breakTime, "minutes");
-          }
+      const startingTime = Moment(startTime, "HH:mm");
+      const endingTime = Moment(endTime, "HH:mm");
+
+      for (let i = 0; i < noOfShows; i++) {
+        const slotEndTime = Moment(startingTime).add(slotTime, "minutes");
+
+        // Ensure that the show doesn't exceed the ending time
+        if (slotEndTime.isAfter(endingTime)) {
+          break;
         }
-      
-        startingDate.add(1, "day");
+
+        object.slot.push({
+          startTime: startingTime.format("HH:mm"),
+          endTime: slotEndTime.format("HH:mm"),
+          startDate:startingDate.format("YYYY-MM-DD"),
+          endDate:endingDate.format("YYYY-MM-DD"),
+          isAvailable: true,
+          peoples: Number(noOfMember),
+        });
+        startingTime.add(slotTime, "minutes");
+        if (i < noOfShows - 1) {
+          startingTime.add(breakTime, "minutes");
+        }
       }
-      
+
+      startingDate.add(1, "day");
+    }
+
     // console.log("object======", object);
     const result = await createEvent(object);
     if (!result) {
@@ -192,3 +196,26 @@ exports.getEventById = async (req, res, next) => {
     return next(error);
   }
 };
+
+
+exports.getTopEvents=async(req,res,next)=>{
+  try {
+
+    const result = await allEvent({ status: status.ACTIVE });
+    if (!result || result.length === 0) {
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
+      });
+    }
+    // console.log("length=============",result.length)
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
+  } catch (error) {
+    console.log("Error while get data: " + error);
+    return next(error);
+  }
+}

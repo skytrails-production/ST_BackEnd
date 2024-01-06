@@ -5,8 +5,8 @@ cloudinary.config({
   api_secret: "ruuF-4CFhQVh205cif_tQqNBBcA",
 });
 const status = require("../enums/status");
-const responseMessage = require('../utilities/responses');
-const statusCode = require('../utilities/responceCode')
+const responseMessage = require("../utilities/responses");
+const statusCode = require("../utilities/responceCode");
 //********************************SERVICES***************************************************/
 const { staticContentServices } = require("../services/staticContentServices");
 const {
@@ -24,34 +24,49 @@ const {
 const staticContentType = require("../enums/staticContentType");
 exports.createStaticContent = async (req, res, next) => {
   try {
-    const { title, description, type } = req.body;
+    const {
+      title,
+      description,
+      type,
+      contactNumber,
+      email,
+      address,
+      latitude,
+      longitude,
+      regAddress,
+      optAddress,
+    } = req.body;
     // const isAdmin = await findUser({ _id: req.userId });
     // if(!isAdmin){
     //     sendActionFailedResponse(res,{},'Unauthorised user')
     // }
+    const obj = {
+      title: title,
+      description: description,
+      type: type,
+      contactNumber: contactNumber,
+      email: email,
+      address: address,
+      location: { coordinates: [longitude, latitude] },
+    };
     const existingData = await findstaticContent({ type: type });
-    console.log("existingData==========", existingData);
     if (existingData) {
       const updatedData = await updatestaticContentStatic(
         { _id: existingData._id },
         req.body
       );
-      return res
-        .status(statusCode.OK)
-        .send({
-          statusCode: statusCode.OK,
-          message: responseMessage.UPDATE_SUCCESS,
-          result: updatedData,
-        });
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        message: responseMessage.UPDATE_SUCCESS,
+        result: updatedData,
+      });
     } else {
       const result = await createstaticContent(req.body);
-      return res
-        .status(statusCode.OK)
-        .send({
-          statusCode: statusCode.OK,
-          message: responseMessage.STATIC_CREATED,
-          result: result,
-        });
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        message: responseMessage.STATIC_CREATED,
+        result: result,
+      });
     }
   } catch (error) {
     console.log("error========>>>>>>", error);
@@ -69,21 +84,17 @@ exports.listStaticContent = async (req, res, next) => {
       status: status.ACTIVE,
     });
     if (!result) {
-      return res
-        .status(statusCode.OK)
-        .send({
-          statusCode: statusCode.OK,
-          message: responseMessage.DATA_FOUND,
-          result: result,
-        });
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        message: responseMessage.DATA_FOUND,
+        result: result,
+      });
     } else {
-      return res
-        .status(statusCode.OK)
-        .send({
-          statusCode: statusCode.OK,
-          message: responseMessage.DATA_NOT_FOUND,
-          result: result,
-        });
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        message: responseMessage.DATA_NOT_FOUND,
+        result: result,
+      });
     }
   } catch (error) {
     console.log("error========>>>>>>", error);
@@ -103,21 +114,17 @@ exports.updateStaticContent = async (req, res, next) => {
       req.body
     );
     if (!result) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          message: responseMessage.DATA_NOT_FOUND,
-          result: result,
-        });
-    }
-    return res
-      .status(statusCode.OK)
-      .send({
-        statusCode: statusCode.OK,
-        message: responseMessage.UPDATE_SUCCESS,
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.DATA_NOT_FOUND,
         result: result,
       });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      message: responseMessage.UPDATE_SUCCESS,
+      result: result,
+    });
   } catch (error) {
     console.log("error========>>>>>>", error);
     // sendActionFailedResponse(res,{},error.message);
@@ -137,25 +144,21 @@ exports.deleteStaticContent = async (req, res, next) => {
       status: status.ACTIVE,
     });
     if (!isDataExist) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          message: responseMessage.DATA_NOT_FOUND,
-          result: result,
-        });
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.DATA_NOT_FOUND,
+        result: result,
+      });
     }
     const result = await updatestaticContentStatic(
       { _id: isDataExist._id },
       { status: status.DELETE }
     );
-    return res
-      .status(statusCode.OK)
-      .send({
-        statusCode: statusCode.OK,
-        message: responseMessage.STATIC_DELETED,
-        result: result,
-      });
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      message: responseMessage.STATIC_DELETED,
+      result: result,
+    });
   } catch (error) {
     console.log("error========>>>>>>", error);
     // sendActionFailedResponse(res,{},error.message);

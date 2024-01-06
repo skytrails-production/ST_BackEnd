@@ -1,10 +1,6 @@
 const responseMessage = require("../../utilities/responses");
 const statusCode = require("../../utilities/responceCode");
 const status = require("../../enums/status");
-const {
-  actionCompleteResponse,
-  sendActionFailedResponse,
-} = require("../../common/common");
 const bcrypt = require("bcryptjs");
 /**********************************SERVICES********************************** */
 const { userServices } = require("../../services/userServices");
@@ -22,36 +18,7 @@ const sendSMS = require("../../utilities/sendSms");
 const commonFunction = require("../../utilities/commonFunctions");
 const whatsappAPIUrl = require("../../utilities/whatsApi");
 //******************************************User SignUp api*************************/
-// exports.signUp = async (req, res, next) => {
-//   try {
-//     const { email, mobileNumber, password } = req.body;
-//     const isAlreadyExist = await findUser({
-//       mobileNumber: mobileNumber,
-//       status: status.ACTIVE,
-//     });
-//     if (!isAlreadyExist) {
-//       return res
-//         .status(statusCode.NotFound)
-//         .send({ message: responseMessage.USERS_NOT_FOUND });
-//     }
-//     const hashPass = bcrypt.hashSync(password, 10);
-//     otp = commonFunction.getOTP();
-//     otpExpireTime = new Date().getTime() + 300000;
-//     const object = {
-//       mobileNumber: mobileNumber,
-//       password: hashPass,
-//       otp: otp,
-//       otpExpireTime: otpExpireTime,
-//     };
-//     const result = createUser(object);
-//     return res
-//       .status(statusCode.OK)
-//       .send({ message: responseMessage.SIGNUP_SUCCESS, result: result });
-//   } catch (error) {
-//     console.log("error=====>", error);
-//     return next(error);
-//   }
-// };
+
 exports.login = async (req, res, next) => {
   try {
     const { mobileNumber } = req.body;
@@ -76,7 +43,7 @@ exports.login = async (req, res, next) => {
     };
     if (!isExist) {
       const result1 = await createUser(obj);
-      await sendSMS.sendSMSForOtp(mobileNumber, otp);
+      const data=await sendSMS.sendSMSForOtp(mobileNumber, otp);
       const message = `Use this OTP ${otp} to login to your. theskytrails account`;
       await whatsappAPIUrl.sendWhatsAppMessage(mobileNumber, message);
       token = await commonFunction.getToken({
@@ -133,9 +100,9 @@ exports.login = async (req, res, next) => {
       { "phone.mobile_number": mobileNumber, status: status.ACTIVE},
       obj
     );
-    await sendSMS.sendSMSForOtp(mobileNumber, otp);
+    // await sendSMS.sendSMSForOtp(mobileNumber, otp);
     const message = `Use this OTP ${otp} to login to your. theskytrails account`;
-    await whatsappAPIUrl.sendWhatsAppMessage(mobileNumber, message);
+   await whatsappAPIUrl.sendWhatsAppMessage(mobileNumber, message);
     if (!updatedUser) {
       return res
         .status(statusCode.InternalError)
@@ -322,7 +289,7 @@ exports.resendOtp = async (req, res, next) => {
         });
     }
     await whatsappAPIUrl.sendWhatsAppMessage(mobileNumber, otp);
-    await commonFunction.sendSMS(mobileNumber, otp);
+    await sendSMS.sendSMSForOtp(mobileNumber, otp);
     const token = await commonFunction.getToken({
       _id: updateData._id,
       mobile_number: updateData.phone.mobile_number,
@@ -625,102 +592,6 @@ exports.editProfile = async (req, res, next) => {
       return next(error);
   }
 };
-exports.verifyUserOtpWithMail = async (req, res, next) => {
-  try {
-    const { otp, fullName, dob,email } = req.body;
-    const isUserExist = await findUserData({ _id: req.userId });
-    if (!isUserExist) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          message: responseMessage.USERS_NOT_FOUND,
-        });
-    }
-    console.log("isUserExist.otp !== otp", isUserExist.otp !== otp);
-    if (isUserExist.otp !== otp) {
-      return res
-        .status(statusCode.badRequest)
-        .json({
-          statusCode: statusCode.badRequest,
-          message: responseMessage.INCORRECT_OTP,
-        });
-    }
-    if (new Date().getTime() > isUserExist.otpExpireTime) {
-      return res
-        .status(statusCode.badRequest)
-        .json({
-          statusCode: statusCode.badRequest,
-          message: responseMessage.OTP_EXPIRED,
-        });
-    }
-    const updation = await updateUser(
-      { _id: isUserExist._id, status: status.ACTIVE },
-      { otpVerified: true,otp:" " }
-    );
-    console.log("======================", updation);
-    if (updation.firstTime === false) {
-      const token = await commonFunction.getToken({
-        _id: updation._id,
-        mobile_number: updation.phone.mobile_number,
-      });
-      const result = {
-        firstTime: updation.firstTime,
-        _id: updation._id,
-        phone: updation.phone,
-        userType: updation.userType,
-        username:updation.username,
-        otpVerified: updation.otpVerified,
-        status: updation.status,
-        token: token,
-      };
-      return res
-        .status(statusCode.OK)
-        .send({
-          statusCode: statusCode.OK,
-          message: responseMessage.OTP_VERIFY,
-          result: result,
-        });
-    }
-    if (!fullName & !dob) {
-      return res
-        .status(statusCode.OK)
-        .send({
-          statusCode: statusCode.Forbidden,
-          message: responseMessage.FIELD_REQUIRED,
-        });
-    }
-    const updateData = await updateUser(
-      { _id: updation._id },
-      { username: fullName, dob: dob,email:email, otp: "", firstTime: false }
-    );
-    const token = await commonFunction.getToken({
-      _id: updation._id,
-      mobile_number: updation.phone.mobile_number,
-      username: fullName,
-    });
-    const result = {
-      phoneNumber: updateData.phone,
-      _id: updateData._id,
-      firstTime: updation.firstTime,
-      dob: updateData.dob,
-      username:updation.username,
-      token: token,
-      status: updateData.status,
-      otpVerified: updateData.otpVerified,
-      userType: updateData.userType,
-    };
-    return res
-      .status(statusCode.OK)
-      .send({
-        statusCode: statusCode.OK,
-        message: responseMessage.REGISTER_SUCCESS,
-        result: result,
-      });
-  } catch (error) {
-    console.log("Error==============>", error);
-    return next(error);
-  }
-};
+
 
 

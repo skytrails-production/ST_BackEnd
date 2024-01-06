@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const status = require("../../enums/status");
 const mongoosePaginate = require("mongoose-paginate-v2");
 const issuedType = require("../../enums/issuedType");
+const visaType=require("../../enums/visaType")
 mongoose.pluralize(null);
 const visaSchema = new mongoose.Schema(
   {
@@ -32,6 +33,7 @@ const visaSchema = new mongoose.Schema(
     },
     visaType: {
       type: String,
+      enum:[visaType.Business,visaType.Companion,visaType.Crewmember,visaType.Employment,visaType.PR,visaType.Student,visaType.Tourist]
     },
     governmentFees: {
       type: Number,
@@ -45,6 +47,14 @@ const visaSchema = new mongoose.Schema(
     },
     continent:{
       type:String
+    },
+    visaCategoryId:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref:'VisaCategory'
+    },
+    requireDocumentId:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref:'RequiredDocument'
     }
   },
   { timestamps: true }

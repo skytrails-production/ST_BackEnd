@@ -39,7 +39,7 @@ const subAdminSchema = new mongoose.Schema(
     },
     authType:{
         type: String,
-        enum:[authType.ADS_HANDLER,authType.PACKAGE_HANDLER,authType.REQUEST_HANDLER],
+        // enum:[authType.ADS_HANDLER,authType.PACKAGE_HANDLER,authType.REQUEST_HANDLER],
     }
   },
   { timestamps: true }

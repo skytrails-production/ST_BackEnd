@@ -185,7 +185,7 @@ exports.api = {
     "http://utilitywebapi.bisplindia.in/api/Recharge/GetService",
 
   getRechargePlanULR:
-    "https://utilitywebapi.bisplindia.in/api/Recharge/GetRechargePlan",
+    "https://utilitywebapi.bisplindia.in/api/Recharge/GetRechargePlanDetailNew",
 
   getPlanDetailURL:
     "https://utilitywebapi.bisplindia.in/api/Recharge/GetRechargePlanDetail",

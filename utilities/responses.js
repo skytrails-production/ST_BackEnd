@@ -70,7 +70,9 @@ module.exports = {
 	ADS_CREATED: "Advertisement added successfull, waiting for approval.",
 	POST_CREATED: 'You are posted created successfully.',
 	REMOVE_FROM_LIKE: "You have removed your like from the comment.",
+	REMOVE_POST_LIKE:"You have removed your like from the post",
 	LIKED: "You have liked the comment.",
+	POST_LIKED: "You are like the post.",
 	CREATED_SUCCESS:"Data was created successfully.",
 	QUERY_SUBMITTED:"Dear user your query submitted to our support team, we will reach you soon.",
 	QUERY_RESOLVED:"Query is resolved.",
@@ -90,4 +92,5 @@ module.exports = {
 	SLOT_NOT_AVAILABLE:'Slot is not available.',
 	TRANSACTION_NOT_FOUND:"Transaction not found.",
 	SLOT_BOOKED:"Slot booked successfully.",
+	DOCUMENTTYPE_NOT_EXIST:"Document Type not exist."
 };

@@ -20,6 +20,6 @@ module.exports = function (app) {
         controller.getAllEvents
       );
       app.get("/skyTrails/api/user/getEventById",controller.getEventById)
-
+app.get('/skyTrails/api/events/getTopEvents',controller.getTopEvents)
   };
   

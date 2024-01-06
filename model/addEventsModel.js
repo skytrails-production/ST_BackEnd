@@ -66,6 +66,9 @@ const eventsSchema = new mongoose.Schema(
       enum: [status.ACTIVE, status.BLOCK, status.DELETE],
       default: status.ACTIVE,
     },
+    saleCount:{
+      type:Number
+    }
   },
   { timestamps: true }
 );

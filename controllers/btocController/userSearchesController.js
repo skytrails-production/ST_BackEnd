@@ -24,7 +24,7 @@ const {createUserSearch,findUserSearch,getUserSearch,deleteUserSearch,userSearch
 
 exports.createSearchHistory=async(req,res,next)=>{
   try {
-    const {origin,destination,journeyType,searchType,journeyDate}=req.body;
+    const {origin,destination,journeyType,searchType,journeyDate,cityName,checkin,checkout,rooms,days}=req.body;
     const isUserExist = await findUserData({_id: req.userId,status: status.ACTIVE,});
     if (!isUserExist) {return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,message: responseMessage.USERS_NOT_FOUND,});}
     req.body.userId=isUserExist._id;

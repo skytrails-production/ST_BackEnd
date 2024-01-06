@@ -33,7 +33,7 @@ exports.getAllVisa = async (req,res)=>{
 
 exports.VisaCountry = async (req,res)=>{
   try {
-    const response = await axios.get('https://dev.theskytrails.com/Api/VisaCountry/?format=json');
+    const response = await axios.get('https://crm.theskytrails.com/Api/VisaCountry/?format=json');
     const countries = response.data; // Assuming the response contains country data
 
     res.status(200).json({ countries });
@@ -46,7 +46,7 @@ exports.VisaCountry = async (req,res)=>{
 
 exports.VisaCategory=async (req,res)=>{
   try {
-    const response = await axios.get('https://dev.theskytrails.com/Api/VisaCategory/?format=json');
+    const response = await axios.get('https://crm.theskytrails.com/Api/VisaCategory/?format=json');
     const categories = response.data; // Assuming the response contains country data
 
     res.status(200).json({ categories });

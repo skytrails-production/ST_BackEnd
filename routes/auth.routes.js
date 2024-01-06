@@ -52,7 +52,7 @@ module.exports = function (app) {
   app.get('/skyTrails/api/admin/getCancelAgentHotelBooking',controller.getCancelAgentHotelBooking);
   app.get('/skyTrails/api/admin/getCancelAgentBusBooking',controller.getCancelAgentBusBooking);
   app.get('/skyTrails/api/admin/getSearchHistory',controller.getSearchHistory);
-  app.post('/skyTrails/api/admin/createAgent',SchemaValidator(schemas.ceateAgentSchema),controller.ceateAgent);
+  app.post('/skyTrails/api/admin/createAgent',SchemaValidator(schemas.createAgentSchema),controller.createAgent);
   app.get('/skyTrails/api/admin/getAllUsers',controller.getAllUsers)
   app.put('/skyTrails/api/admin/updateSubAdminStatus',SchemaValidator(schemas.statusSchema),controller.statusChange);
   app.post('/skyTrails/api/admin/createWebAdvertisment',upload.handleFileUpload,SchemaValidator(schemas.webAddSchema),addWebBanner.createWebAdvertisement)

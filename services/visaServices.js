@@ -16,13 +16,21 @@ const visaServices = {
     findWeeklyVisa: async (query) => {
         return await visaModel.findOne(query);
     },
-
+    findWeeklyVisaPopulate: async (query) => {
+        return await visaModel.findOne(query).populate({path:'visaCategoryId'});
+    },
     deleteWeeklyVisa: async (query) => {
         return await visaModel.deleteOne(query);
     },
 
     weeklyVisaList:async(query)=>{
         return await visaModel.find(query);
+    },
+
+    populatedVisaList: async (query) => {
+        return await visaModel.find(query)
+            .populate('visaCategoryId') // Populating VisaCategory reference
+            .populate('requireDocumentId'); // Populating RequiredDocument reference
     },
     updateWeeklyVisa: async (query, updateObj) => {
         return await visaModel.findOneAndUpdate(query, updateObj, { new: true });
@@ -35,6 +43,10 @@ const visaServices = {
             limit: Number(limit) || 200,
             sort: { createdAt: -1 ,},
         };
+        options.populate = [
+            { path: 'visaCategoryId',},
+            { path: 'requireDocumentId',select:'-createdAt -updatedAt -visaCountry -requiredDocumentCategories', populate: { path: 'visaCategory',select:'-description  -createdAt -updatedAt' }}
+        ]; 
         const result= await visaModel.paginate(query, options);
         return result;
     },
@@ -57,6 +69,10 @@ const visaServices = {
             limit: Number(limit) || 200,
             sort: { createdAt: -1 },
         };
+        options.populate = [
+            { path: 'visaCategoryId',},
+            { path: 'requireDocumentId',select:'-createdAt -updatedAt -visaCountry -requiredDocumentCategories', populate: { path: 'visaCategory',select:'-description  -createdAt -updatedAt' }}
+        ]; 
         return await visaModel.paginate(query, options);
     },
     onarrivalVisaListPaginate: async (validatedBody) => {
@@ -67,6 +83,10 @@ const visaServices = {
             limit: Number(limit) || 200,
             sort: { createdAt: -1 ,},
         };
+        options.populate = [
+            { path: 'visaCategoryId',},
+            { path: 'requireDocumentId',select:'-createdAt -updatedAt -visaCountry -requiredDocumentCategories', populate: { path: 'visaCategory',select:'-description  -createdAt -updatedAt' }}
+        ];     
         return await visaModel.paginate(query, options);
     },
 }

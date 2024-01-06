@@ -17,17 +17,11 @@ const userServices = {
   getUser: async (query) => {
     return await userModel
       .findOne(query)
-      .select(
-        "-otp -location -isOnline -coinBalance -isChange -otpExpireTime -firstTime"
-      );
   },
 
   findUserData: async (query) => {
     return await userModel
       .findOne(query)
-      .select(
-        "-createdAt -updatedAt -roles -password -isOnline -firstTime -isApproved"
-      );
   },
 
   deleteUser: async (query) => {
@@ -37,9 +31,9 @@ const userServices = {
   userList: async (query) => {
     return await userModel
       .find(query)
-      .select(
-        "-otp -location -isOnline -coinBalance -isChange -otpExpireTime -firstTime -approveStatus -socialLinks -confirmPassword -password  -isApprove -createdAt -updatedAt"
-      );
+      // .select(
+      //   "-otp -location -isOnline -coinBalance -isChange -otpExpireTime -firstTime -approveStatus -socialLinks -confirmPassword -password  -isApprove -createdAt -updatedAt"
+      // );
   },
   updateUser: async (query, updateObj) => {
     return await userModel.findOneAndUpdate(query, updateObj, { new: true });
@@ -48,18 +42,16 @@ const userServices = {
   paginateUserSearch: async (body) => {
     // userType: { $ne: [userType.ADMIN,userType.SUBADMIN] }
     let query = { userType: { $nin: [userType.ADMIN, userType.SUBADMIN] } };
-    const { page, limit, usersType1, search } = body;
+    const { page, limit, search } = body;
     if (search) {
+      const searchRegex = new RegExp(search, 'i');
       query.$or = [
-        { username: { $regex: search, $options: "i" } },
-        { email: { $regex: search, $options: "i" } },
-        { _id: { $regex: search, $options: "i" } },
-        { status: { $regex: search, $options: "i" } },
+        { username: searchRegex },
+        { email: searchRegex },
+        { status: searchRegex },
       ];
     }
-    if (usersType1) {
-      query.userType = usersType1;
-    }
+   
 
     let options = {
       page: Number(page) || 1,
@@ -102,6 +94,18 @@ const userServices = {
     };
     return await userModel.paginate(aggregate, options);
   },
+
+  aggregatePaginateUserList:async(body)=>{
+    let query ={userType:userType.USER}
+    const { page, limit, search } = body;
+ if (search) {
+      var filter = search;
+    }
+    let data = filter || "";
+  
+
+
+  }
   
   
 };

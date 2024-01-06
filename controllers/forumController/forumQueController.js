@@ -16,7 +16,7 @@ const {
   forumQueListLookUp,
   forumQueListLookUp1,
   getTopSTories,
-  forumQueListLookUpOfUser
+  forumQueListLookUpOfUser,
 } = forumQueServices;
 const { userServices } = require("../../services/userServices");
 const {
@@ -49,18 +49,25 @@ const {
   bookmarkListPaginate,
 } = bookmarkServices;
 
+const { PostlikesServices } = require("../../services/likesForumServices");
+const {
+  createPostlikes,
+  findPostlikes,
+  findPostlikesData,
+  deletePostlikes,
+  updatePostlikes,
+} = PostlikesServices;
+
 exports.createPost = async (req, res, next) => {
   try {
-    console.log("req.files",req.file)
+    console.log("req.files", req.file);
     const { content } = req.body;
-    const isUser = await findUser({ _id: req.userId, status: status.ACTIVE });
+    const isUser = await findUser({ _id: req.isUser._id, status: status.ACTIVE });
     if (!isUser) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          responseMessage: responseMessage.USERS_NOT_FOUND,
-        });
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.USERS_NOT_FOUND,
+      });
     }
     if (req.file) {
       const secureurl = await commonFuction.getImageUrl(req.file);
@@ -72,13 +79,11 @@ exports.createPost = async (req, res, next) => {
       image: req.file,
     };
     const result = await createforumQue(obj);
-    return res
-      .status(statusCode.OK)
-      .send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.POST_CREATED,
-        result: result,
-      });
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.POST_CREATED,
+      result: result,
+    });
   } catch (error) {
     console.log("error========>>>>>>", error);
     return next(error);
@@ -93,40 +98,32 @@ exports.getPost = async (req, res, next) => {
     if (post) {
       result.post = post;
     } else {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          message: responseMessage.DATA_NOT_FOUND,
-        });
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.DATA_NOT_FOUND,
+      });
     }
     console.log("lenghth", post.length);
     const unanswered = await forumQueListLookUp(req.query);
     if (unanswered) {
       result.unanswered = unanswered;
     } else {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          message: responseMessage.DATA_NOT_FOUND,
-        });
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.DATA_NOT_FOUND,
+      });
     }
     if (result.unanswered) {
-      return res
-        .status(statusCode.OK)
-        .send({
-          statusCode: statusCode.OK,
-          responseMessage: responseMessage.DATA_FOUND,
-          result: result,
-        });
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.DATA_FOUND,
+        result: result,
+      });
     } else {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          message: responseMessage.DATA_NOT_FOUND,
-        });
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.DATA_NOT_FOUND,
+      });
     }
   } catch (error) {
     console.log("error========>>>>>>", error);
@@ -174,28 +171,31 @@ exports.deletePost = async (req, res, next) => {
 exports.getPostOfUser = async (req, res, next) => {
   try {
     const { search, page, limit, questionId, userId } = req.query;
-    const isUserExist = await findUser({ _id: req.userId,status:status.ACTIVE,otpVerified:true });
-        console.log("isAgentExists", isUserExist);
-        if (!isUserExist) {
-            return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
-        }
-         req.query.userId=isUserExist._id;
-        const result=await forumQueListLookUp1(req.query)
-        if(!result){
-          return res
-          .status(statusCode.NotFound)
-          .send({
-            statusCode: statusCode.NotFound,
-            message: responseMessage.DATA_NOT_FOUND,
-          });
-        }
-        return res
-        .status(statusCode.OK)
-        .send({
-          statusCode: statusCode.OK,
-          responseMessage: responseMessage.DATA_FOUND,
-          result: result,
-        });
+    const isUserExist = await findUser({
+      _id: req.userId,
+      status: status.ACTIVE,
+      otpVerified: true,
+    });
+    console.log("isAgentExists", isUserExist);
+    if (!isUserExist) {
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+    req.query.userId = isUserExist._id;
+    const result = await forumQueListLookUp1(req.query);
+    if (!result) {
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.DATA_NOT_FOUND,
+      });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
     // const unanswered = await forumQueListLookUp(req.query);
     // const answered = await forumListLookUp(req.query);
     // const result = {
@@ -274,20 +274,16 @@ exports.getTopStories = async (req, res, next) => {
     const { search, page, limit, questionId, userId } = req.query;
     const result = await getTopSTories(req.query);
     if (!result) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          message: responseMessage.DATA_NOT_FOUND,
-        });
-    }
-    return res
-      .status(statusCode.OK)
-      .send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.DATA_FOUND,
-        result: result,
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.DATA_NOT_FOUND,
       });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
   } catch (error) {
     console.log("error========", error);
     return next(error);
@@ -300,27 +296,21 @@ exports.getPostByID = async (req, res, next) => {
     const postId = req.query.postId;
     const result = await findforumQue({ _id: postId, status: status.ACTIVE });
     if (!result) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          message: responseMessage.DATA_NOT_FOUND,
-        });
-    }
-    return res
-      .status(statusCode.OK)
-      .send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.DATA_FOUND,
-        result: result,
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.DATA_NOT_FOUND,
       });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
   } catch (error) {
     console.log("Error to get data from server", error);
     return next(error);
   }
 };
-
-
 
 exports.getComments = async (req, res, next) => {
   try {
@@ -330,22 +320,99 @@ exports.getComments = async (req, res, next) => {
       status: status.ACTIVE,
     });
     if (!getComments) {
-      return res
-        .status(statusCode.badRequest)
-        .send({
-          statusCode: statusCode.badRequest,
-          message: responseMessage.BAD_REQUEST,
-        });
-    }
-    return res
-      .status(statusCode.OK)
-      .send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.DATA_FOUND,
-        result: getComments,
+      return res.status(statusCode.badRequest).send({
+        statusCode: statusCode.badRequest,
+        message: responseMessage.BAD_REQUEST,
       });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: getComments,
+    });
   } catch (error) {
     console.log("get comments ============", error);
+    return next(error);
+  }
+};
+
+//like posy which user give on post*********************************************
+exports.likePost = async (req, res, next) => {
+  try {
+    const {postId} = req.body;
+    const isUser = await findUserData({
+      _id: req.userId,
+      status: status.ACTIVE,
+    });
+
+    if (!isUser) {
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+    const isPostExist = await findforumQue({
+      _id: postId,
+      status: status.ACTIVE,
+    });
+    if (!isPostExist) {
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.DATA_NOT_FOUND,
+      });
+    }
+    const isAlreadyLiked = await findPostlikes({
+      postId: postId,
+      status: status.ACTIVE,
+    });
+console.log("isAlreadyLiked.likes.includes(userId)",isAlreadyLiked.likes.includes(isUser._id))
+    if (isAlreadyLiked.likes.includes(isUser._id)) {
+      console.log("isAlreadyLiked========",isAlreadyLiked.likes.includes(isUser._id));
+      const updateResult = await updatePostlikes(
+        { postId: isPostExist._id, status: status.ACTIVE },
+        { $pull: { likes: isUser._id } }
+      );
+      console.log("updateResult=======",updateResult)
+      updateResult.ikeslength = updateResult.likes.length;
+      console.log("updateResult==updateResult=====",updateResult)
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.REMOVE_POST_LIKE,
+        result: updateResult,
+      });
+    } else {
+      const updateResult = await updatePostlikes(
+        { postId: isPostExist._id, status: status.ACTIVE },
+        { $push: { likes: isUser._id } }
+      );
+      console.log("updateResult===========", updateResult);
+      updateResult.likeslength = updateResult.likes.length;
+
+      res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.POST_LIKED,
+        result: updateResult,
+      }); 
+    }
+    if (!isAlreadyLiked) {
+      // Only create a new like if it doesn't already exist
+      const newLike = {
+        postId: postId,
+        likes: [isUser._id],
+        status: "ACTIVE",
+      };
+      const savedLike = await createPostlikes(newLike);
+      savedLike.likeslength = savedLike.likes.length;
+      console.log("=================", savedLike);
+
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.POST_LIKED,
+        result: savedLike,
+      });
+    }
+  } catch (error) {
+    console.log("error========>>>>>>", error);
     return next(error);
   }
 };

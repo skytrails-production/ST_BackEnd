@@ -1,4 +1,5 @@
 const controller = require('../../controllers/forumController/forumQueController');
+// const postLikeControler=require('../../controllers/forumController/forumQueController')
 const schemas = require('../../utilities/schema.utilities');
 const SchemaValidator = require('../../utilities/validations.utilities');
 const { authJwt } = require("../../middleware");
@@ -18,5 +19,6 @@ module.exports = function (app) {
     app.get('/skyTrails/forumPost/getTopStories',controller.getTopStories);
     app.get('/skyTrails/forumPost/getPostOfUser',[authJwt.verifcationToken],controller.getPostOfUser);
     app.get('/skyTrails/forumPost/getComments',controller.getComments);
-    app.get('/skyTrails/forumPost/getPostByID',controller.getPostByID)
+    app.get('/skyTrails/forumPost/getPostByID',controller.getPostByID);
+    app.post('/skyTrails/forumPost/postLikes',[authJwt.verifcationToken],controller.likePost)
 }

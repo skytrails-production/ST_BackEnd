@@ -35,17 +35,29 @@ const staticContentSchema = new mongoose.Schema(
         staticContentsType.TRAINS,
         staticContentsType.TRAVELINSURENCE,
         staticContentsType.QUESTION,
-        staticContentsType.CONTACTUS
+        staticContentsType.CONTACTUS,
       ],
     },
-    contactNumber:{
+    contactNumber: {
       type: String,
     },
-    email:{
+    email: {
       type: String,
     },
-    address:{
-      type: String,
+    address: [
+      { OperationalAddress: { type: String } },
+      { RegisteredAddress: { type: String } },
+    ],
+
+    location: {
+      type: {
+        type: String,
+        default: "Point",
+      },
+      coordinates: {
+        type: [Number],
+        default: [0, 0],
+      },
     },
     status: {
       type: String,
@@ -56,6 +68,7 @@ const staticContentSchema = new mongoose.Schema(
   { timestamps: true }
 );
 staticContentSchema.plugin(mongoosePaginate);
+staticContentSchema.index({ location: "2dsphere" });
 module.exports = mongoose.model("staticContent", staticContentSchema);
 
 mongoose
@@ -114,24 +127,24 @@ mongoose
         description:
           "You can find your booking ID in your registered email, SMS sent to mobile no. used for booking or in ‘My Trips’ section.",
       };
-      mongoose
-        .model("staticContent", staticContentSchema)
-        .create(
-          obj1,
-          obj2,
-          obj3,
-          obj4,
-          obj5,
-          obj6,
-          obj7,
-          obj8,
-          (staticErr, staticResult) => {
-            if (staticErr) {
-              console.log("Static content error.", staticErr);
-            } else {
-              console.log("Static content created.", staticResult);
-            }
+
+      mongoose.model("staticContent", staticContentSchema).create(
+        obj1,
+        obj2,
+        obj3,
+        obj4,
+        obj5,
+        obj6,
+        obj7,
+        obj8,
+
+        (staticErr, staticResult) => {
+          if (staticErr) {
+            console.log("Static content error.", staticErr);
+          } else {
+            console.log("Static content created.", staticResult);
           }
-        );
+        }
+      );
     }
   });
