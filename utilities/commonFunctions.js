@@ -8,7 +8,7 @@ const nodemailer = require("nodemailer");
 const { Client } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
 const config = require("../config/auth.config.js");
-const {flightMail, busMail, otpMail, welcomeMail}=require("./mailingFunction.js")
+const {flightMail, busMail, hotelMail, otpMail, welcomeMail,welcomeAgentMail}=require("./mailingFunction.js")
 let cloudinary = require("cloudinary");
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -16,482 +16,6 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// function flightMail(name){
-//   return`<!DOCTYPE html>
-
-//   <html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
-//   <head>
-//   <title></title>
-//   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-//   <meta content="width=device-width, initial-scale=1.0" name="viewport"/><!--[if mso]><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch><o:AllowPNG/></o:OfficeDocumentSettings></xml><![endif]--><!--[if !mso]><!-->
-//   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;400;700;900&display=swap" rel="stylesheet" type="text/css"/><!--<![endif]-->
-//   <style>
-//           * {
-//               box-sizing: border-box;
-//           }
-  
-//           body {
-//               margin: 0;
-//               padding: 0;
-//           }
-  
-//           a[x-apple-data-detectors] {
-//               color: inherit !important;
-//               text-decoration: inherit !important;
-//           }
-  
-//           #MessageViewBody a {
-//               color: inherit;
-//               text-decoration: none;
-//           }
-  
-//           p {
-//               line-height: inherit
-//           }
-  
-//           .desktop_hide,
-//           .desktop_hide table {
-//               mso-hide: all;
-//               display: none;
-//               max-height: 0px;
-//               overflow: hidden;
-//           }
-  
-//           .image_block img+div {
-//               display: none;
-//           }
-  
-//           @media (max-width:620px) {
-//               .social_block.desktop_hide .social-table {
-//                   display: inline-block !important;
-//               }
-  
-//               .mobile_hide {
-//                   display: none;
-//               }
-  
-//               .row-content {
-//                   width: 100% !important;
-//               }
-  
-//               .stack .column {
-//                   width: 100%;
-//                   display: block;
-//               }
-  
-//               .mobile_hide {
-//                   min-height: 0;
-//                   max-height: 0;
-//                   max-width: 0;
-//                   overflow: hidden;
-//                   font-size: 0px;
-//               }
-  
-//               .desktop_hide,
-//               .desktop_hide table {
-//                   display: table !important;
-//                   max-height: none !important;
-//               }
-  
-//               .reverse {
-//                   display: table;
-//                   width: 100%;
-//               }
-  
-//               .reverse .column.first {
-//                   display: table-footer-group !important;
-//               }
-  
-//               .reverse .column.last {
-//                   display: table-header-group !important;
-//               }
-  
-//               .row-4 td.column.first .border,
-//               .row-4 td.column.last .border {
-//                   padding: 10px 0 0;
-//                   border-top: 0;
-//                   border-right: 0px;
-//                   border-bottom: 0;
-//                   border-left: 0;
-//               }
-//           }
-//       </style>
-//   </head>
-//   <body style="background-color: #ffffff; margin: 0; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
-//   <table border="0" cellpadding="0" cellspacing="0" class="nl-container" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff;" width="100%">
-//   <tbody>
-//   <tr>
-//   <td>
-//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-//   <tbody>
-//   <tr>
-//   <td>
-//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 600px; margin: 0 auto;" width="600">
-//   <tbody>
-//   <tr>
-//   <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-top: 20px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="33.333333333333336%">
-//   <table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-//   <tr>
-//   <td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-//   <div align="center" class="alignment" style="line-height:10px">
-//   <div style="max-width: 200px;"><img alt="I'm an image" src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/flightMail/logo.png" style="display: block; height: auto; border: 0; width: 100%;" title="I'm an image" width="200"/></div>
-//   </div>
-//   </td>
-//   </tr>
-//   </table>
-//   </td>
-//   <td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="66.66666666666667%">
-//   <table border="0" cellpadding="0" cellspacing="0" class="social_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-//   <tr>
-//   <td class="pad" style="padding-right:15px;padding-top:20px;text-align:right;padding-left:0px;">
-//   <div align="right" class="alignment">
-//   <table border="0" cellpadding="0" cellspacing="0" class="social-table" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; display: inline-block;" width="126px">
-//   <tr>
-//   <td style="padding:0 0 0 10px;"><a href="https://www.facebook.com/theskytrailsofficials" target="_blank"><img alt="Facebook" height="32" src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/flightMail/facebook-icon.png" style="display: block; height: auto; border: 0;" title="facebook" width="32"/></a></td>
-//   <td style="padding:0 0 0 10px;"><a href="https://twitter.com/TheSkytrails" target="_blank"><img alt="Twitter" height="32" src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/flightMail/twitter-icon.png" style="display: block; height: auto; border: 0;" title="twitter" width="32"/></a></td>
-//   <td style="padding:0 0 0 10px;"><a href="https://www.instagram.com/theskytrails" target="_blank"><img alt="Instagram" height="32" src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/flightMail/instagram-icon.png" style="display: block; height: auto; border: 0;" title="instagram" width="32"/></a></td>
-//   </tr>
-//   </table>
-//   </div>
-//   </td>
-//   </tr>
-//   </table>
-//   </td>
-//   </tr>
-//   </tbody>
-//   </table>
-//   </td>
-//   </tr>
-//   </tbody>
-//   </table>
-//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-//   <tbody>
-//   <tr>
-//   <td>
-//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-repeat: no-repeat; color: #000000; background-image: url('https://raw.githubusercontent.com/The-SkyTrails/Images/main/flightMail/flight.jpg'); background-position: top center; background-size: auto; width: 600px; margin: 0 auto;" width="600">
-//   <tbody>
-//   <tr>
-//   <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
-//   <table border="0" cellpadding="0" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-//   <tr>
-//   <td class="pad" style="padding-bottom:60px;padding-right:60px;padding-top:60px;">
-//   <div style="font-family: sans-serif">
-//   <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
-//   <p style="margin: 0; font-size: 30px; text-align: center; mso-line-height-alt: 36px; letter-spacing: normal;"><span style="font-size:30px;"><strong><span style="color:#e51111;">Thank You</span></strong></span></p>
-//   <p style="margin: 0; font-size: 30px; text-align: center; mso-line-height-alt: 36px; letter-spacing: normal;"><span style="font-size:30px;"><span style=""><strong><span style="color:#e51111;">For </span></strong></span><span style=""><strong><span style="color:#e51111;">Booking with us</span></strong></span></span></p>
-//   </div>
-//   </div>
-//   </td>
-//   </tr>
-//   </table>
-//   <table border="0" cellpadding="60" cellspacing="0" class="text_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-//   <tr>
-//   <td class="pad">
-//   <div style="font-family: sans-serif">
-//   <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
-//   <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px; letter-spacing: normal;"> </p>
-//   </div>
-//   </div>
-//   </td>
-//   </tr>
-//   </table>
-//   </td>
-//   </tr>
-//   </tbody>
-//   </table>
-//   </td>
-//   </tr>
-//   </tbody>
-//   </table>
-//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-//   <tbody>
-//   <tr>
-//   <td>
-//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-repeat: no-repeat; color: #000000; background-image: url('https://raw.githubusercontent.com/The-SkyTrails/Images/main/flightMail/map.png'); width: 600px; margin: 0 auto;" width="600">
-//   <tbody>
-//   <tr>
-//   <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
-//   <table border="0" cellpadding="0" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-//   <tr>
-//   <td class="pad" style="padding-bottom:10px;padding-left:10px;padding-right:10px;padding-top:35px;">
-//   <div style="font-family: sans-serif">
-//   <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
-//   <p style="margin: 0; font-size: 16px; text-align: center; mso-line-height-alt: 19.2px;"><span style="color:#071c2c;font-size:20px;"><em><strong>Hi XYZ </strong></em></span></p>
-//   </div>
-//   </div>
-//   </td>
-//   </tr>
-//   </table>
-//   <table border="0" cellpadding="20" cellspacing="0" class="text_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-//   <tr>
-//   <td class="pad">
-//   <div style="font-family: sans-serif">
-//   <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 18px; color: #555555; line-height: 1.5;">
-//   <p style="margin: 0; font-size: 15px; text-align: center; mso-line-height-alt: 22.5px;"><span style="color:#0d0d32;"><strong><span style="font-size:15px;"><em><span style="">Your trip to london is scheduled for January 4, 2024 check in for yourself and you travelling companions online</span></em></span></strong></span></p>
-//   <p style="margin: 0; font-size: 15px; text-align: center; mso-line-height-alt: 22.5px;"><span style="color:#0d0d32;"><strong><span style="font-size:15px;"><em><span style=""> right way to make your trip smoother, make most of your trip by looking into the additional services we </span></em><em><span style="">provide below .</span></em></span></strong></span></p>
-//   </div>
-//   </div>
-//   </td>
-//   </tr>
-//   </table>
-//   <table border="0" cellpadding="20" cellspacing="0" class="button_block block-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-//   <tr>
-//   <td class="pad">
-//   <div align="center" class="alignment"><!--[if mso]>
-//   <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" style="height:42px;width:154px;v-text-anchor:middle;" arcsize="10%" stroke="false" fillcolor="#d52828">
-//   <w:anchorlock/>
-//   <v:textbox inset="0px,0px,0px,0px">
-//   <center style="color:#ffffff; font-family:'Trebuchet MS', Tahoma, sans-serif; font-size:16px">
-//   <![endif]-->
-//   <div style="text-decoration:none;display:inline-block;color:#ffffff;background-color:#d52828;border-radius:4px;width:auto;border-top:0px solid transparent;font-weight:undefined;border-right:0px solid transparent;border-bottom:0px solid transparent;border-left:0px solid transparent;padding-top:5px;padding-bottom:5px;font-family:'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;font-size:16px;text-align:center;mso-border-alt:none;word-break:keep-all;"><span style="padding-left:20px;padding-right:20px;font-size:16px;display:inline-block;letter-spacing:normal;"><span style="margin: 0; word-break: break-word; line-height: 32px;">Check-in-Now</span></span></div><!--[if mso]></center></v:textbox></v:roundrect><![endif]-->
-//   </div>
-//   </td>
-//   </tr>
-//   </table>
-//   <table border="0" cellpadding="0" cellspacing="0" class="image_block block-4" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-//   <tr>
-//   <td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-//   <div align="center" class="alignment" style="line-height:10px">
-//   <div style="max-width: 300px;"><img src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/flightMail/flight-banner.png" style="display: block; height: auto; border: 0; width: 100%;" width="300"/></div>
-//   </div>
-//   </td>
-//   </tr>
-//   </table>
-//   </td>
-//   </tr>
-//   </tbody>
-//   </table>
-//   </td>
-//   </tr>
-//   </tbody>
-//   </table>
-//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-4" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-//   <tbody>
-//   <tr>
-//   <td>
-//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f5dddd; color: #000000; width: 600px; margin: 0 auto;" width="600">
-//   <tbody>
-//   <tr class="reverse">
-//   <td class="column column-1 last" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-top: 10px; vertical-align: bottom; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
-//   <div class="border">
-//   <table border="0" cellpadding="10" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-//   <tr>
-//   <td class="pad">
-//   <div style="font-family: sans-serif">
-//   <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
-//   <p style="margin: 0; font-size: 16px; text-align: center; mso-line-height-alt: 19.2px;"><span style="font-size:22px;color:#000000;"><em><strong>YOUR TRIP</strong></em></span></p>
-//   </div>
-//   </div>
-//   </td>
-//   </tr>
-//   </table>
-//   <table border="0" cellpadding="10" cellspacing="0" class="text_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-//   <tr>
-//   <td class="pad">
-//   <div style="font-family: sans-serif">
-//   <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
-//   <p style="margin: 0; font-size: 16px; text-align: center; mso-line-height-alt: 19.2px;"><span style="font-size:18px;color:#000000;">Your first trip OHNQO&AY1416 departs from paris at 19:25</span></p>
-//   </div>
-//   </div>
-//   </td>
-//   </tr>
-//   </table>
-//   </div>
-//   </td>
-//   </tr>
-//   </tbody>
-//   </table>
-//   </td>
-//   </tr>
-//   </tbody>
-//   </table>
-//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-5" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-//   <tbody>
-//   <tr>
-//   <td>
-//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f5dddd; color: #000000; width: 600px; margin: 0 auto;" width="600">
-//   <tbody>
-//   <tr>
-//   <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-right: 25px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="33.333333333333336%">
-//   <table border="0" cellpadding="10" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-//   <tr>
-//   <td class="pad">
-//   <div style="font-family: sans-serif">
-//   <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 21.6px; color: #555555; line-height: 1.8;">
-//   <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;color:#000000;">From </span></p>
-//   <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;color:#000000;">18:25</span></p>
-//   <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;color:#000000;">04.01.24</span></p>
-//   <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;color:#000000;">Paris</span></p>
-//   </div>
-//   </div>
-//   </td>
-//   </tr>
-//   </table>
-//   </td>
-//   <td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="33.333333333333336%">
-//   <table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-//   <tr>
-//   <td class="pad" style="padding-top:35px;width:100%;padding-right:0px;padding-left:0px;">
-//   <div align="center" class="alignment" style="line-height:10px">
-//   <div style="max-width: 50px;"><img src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/flightMail/plane.png" style="display: block; height: auto; border: 0; width: 100%;" width="50"/></div>
-//   </div>
-//   </td>
-//   </tr>
-//   </table>
-//   </td>
-//   <td class="column column-3" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="33.333333333333336%">
-//   <table border="0" cellpadding="10" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-//   <tr>
-//   <td class="pad">
-//   <div style="font-family: sans-serif">
-//   <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 21.6px; color: #555555; line-height: 1.8;">
-//   <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;color:#000000;">To </span></p>
-//   <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;color:#000000;">19:25</span></p>
-//   <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;color:#000000;">04.01.24</span></p>
-//   <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;color:#000000;">London</span></p>
-//   </div>
-//   </div>
-//   </td>
-//   </tr>
-//   </table>
-//   </td>
-//   </tr>
-//   </tbody>
-//   </table>
-//   </td>
-//   </tr>
-//   </tbody>
-//   </table>
-//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-6" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-//   <tbody>
-//   <tr>
-//   <td>
-//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f5dddd; color: #000000; width: 600px; margin: 0 auto;" width="600">
-//   <tbody>
-//   <tr>
-//   <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 15px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
-//   <table border="0" cellpadding="10" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-//   <tr>
-//   <td class="pad">
-//   <div style="font-family: sans-serif">
-//   <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 18px; color: #555555; line-height: 1.5;">
-//   <p style="margin: 0; text-align: center; font-size: 16px; mso-line-height-alt: 24px;"><span style="font-size:16px;color:#000000;">Flight Duration: 2h 45min</span></p>
-//   <p style="margin: 0; text-align: center; font-size: 16px; mso-line-height-alt: 24px;"><span style="font-size:16px;color:#000000;">Travel category: Economy</span></p>
-//   <p style="margin: 0; font-size: 16px; mso-line-height-alt: 18px;"> </p>
-//   </div>
-//   </div>
-//   </td>
-//   </tr>
-//   </table>
-//   </td>
-//   </tr>
-//   </tbody>
-//   </table>
-//   </td>
-//   </tr>
-//   </tbody>
-//   </table>
-//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-7" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-//   <tbody>
-//   <tr>
-//   <td>
-//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f1f0ef; border-radius: 0; color: #000000; width: 600px; margin: 0 auto;" width="600">
-//   <tbody>
-//   <tr>
-//   <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 15px; padding-left: 15px; padding-right: 15px; padding-top: 15px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
-//   <table border="0" cellpadding="10" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-//   <tr>
-//   <td class="pad">
-//   <div style="font-family: 'Trebuchet MS', Tahoma, sans-serif">
-//   <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
-//   <p style="margin: 0; font-size: 16px; text-align: center; mso-line-height-alt: 19.2px;"><span style="color:#000000;"><strong><span style="font-size:22px;">Comfort For Your Travel</span></strong></span></p>
-//   </div>
-//   </div>
-//   </td>
-//   </tr>
-//   </table>
-//   <table border="0" cellpadding="10" cellspacing="0" class="button_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-//   <tr>
-//   <td class="pad">
-//   <div align="center" class="alignment"><!--[if mso]>
-//   <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" style="height:42px;width:184px;v-text-anchor:middle;" arcsize="10%" stroke="false" fillcolor="#0d0d32">
-//   <w:anchorlock/>
-//   <v:textbox inset="0px,0px,0px,0px">
-//   <center style="color:#ffffff; font-family:'Trebuchet MS', Tahoma, sans-serif; font-size:16px">
-//   <![endif]-->
-//   <div style="text-decoration:none;display:inline-block;color:#ffffff;background-color:#0d0d32;border-radius:4px;width:auto;border-top:0px solid transparent;font-weight:undefined;border-right:0px solid transparent;border-bottom:0px solid transparent;border-left:0px solid transparent;padding-top:5px;padding-bottom:5px;font-family:'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;font-size:16px;text-align:center;mso-border-alt:none;word-break:keep-all;"><span style="padding-left:20px;padding-right:20px;font-size:16px;display:inline-block;letter-spacing:normal;"><span style="margin: 0; word-break: break-word; line-height: 32px;">Go Extra Baggage</span></span></div><!--[if mso]></center></v:textbox></v:roundrect><![endif]-->
-//   </div>
-//   </td>
-//   </tr>
-//   </table>
-//   <table border="0" cellpadding="10" cellspacing="0" class="button_block block-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-//   <tr>
-//   <td class="pad">
-//   <div align="center" class="alignment"><!--[if mso]>
-//   <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" style="height:42px;width:179px;v-text-anchor:middle;" arcsize="10%" stroke="false" fillcolor="#0d0d32">
-//   <w:anchorlock/>
-//   <v:textbox inset="0px,0px,0px,0px">
-//   <center style="color:#ffffff; font-family:'Trebuchet MS', Tahoma, sans-serif; font-size:16px">
-//   <![endif]-->
-//   <div style="text-decoration:none;display:inline-block;color:#ffffff;background-color:#0d0d32;border-radius:4px;width:auto;border-top:0px solid transparent;font-weight:undefined;border-right:0px solid transparent;border-bottom:0px solid transparent;border-left:0px solid transparent;padding-top:5px;padding-bottom:5px;font-family:'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;font-size:16px;text-align:center;mso-border-alt:none;word-break:keep-all;"><span style="padding-left:20px;padding-right:20px;font-size:16px;display:inline-block;letter-spacing:normal;"><span style="word-break: break-word; line-height: 32px;">Choose Your Seat</span></span></div><!--[if mso]></center></v:textbox></v:roundrect><![endif]-->
-//   </div>
-//   </td>
-//   </tr>
-//   </table>
-//   <table border="0" cellpadding="10" cellspacing="0" class="button_block block-4" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-//   <tr>
-//   <td class="pad">
-//   <div align="center" class="alignment"><!--[if mso]>
-//   <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" style="height:42px;width:178px;v-text-anchor:middle;" arcsize="10%" stroke="false" fillcolor="#0d0d32">
-//   <w:anchorlock/>
-//   <v:textbox inset="0px,0px,0px,0px">
-//   <center style="color:#ffffff; font-family:'Trebuchet MS', Tahoma, sans-serif; font-size:16px">
-//   <![endif]-->
-//   <div style="text-decoration:none;display:inline-block;color:#ffffff;background-color:#0d0d32;border-radius:4px;width:auto;border-top:0px solid transparent;font-weight:undefined;border-right:0px solid transparent;border-bottom:0px solid transparent;border-left:0px solid transparent;padding-top:5px;padding-bottom:5px;font-family:'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;font-size:16px;text-align:center;mso-border-alt:none;word-break:keep-all;"><span style="padding-left:20px;padding-right:20px;font-size:16px;display:inline-block;letter-spacing:normal;"><span style="word-break: break-word; line-height: 32px;">Meals & Delicious</span></span></div><!--[if mso]></center></v:textbox></v:roundrect><![endif]-->
-//   </div>
-//   </td>
-//   </tr>
-//   </table>
-//   </td>
-//   </tr>
-//   </tbody>
-//   </table>
-//   </td>
-//   </tr>
-//   </tbody>
-//   </table>
-//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-8" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-//   <tbody>
-//   <tr>
-//   <td>
-//   <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 600px; margin: 0 auto;" width="600">
-//   <tbody>
-//   <tr>
-//   <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
-//   <table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-//   <tr>
-//   <td class="pad" style="width:100%;">
-//   <div align="center" class="alignment" style="line-height:10px">
-//   <div style="max-width: 600px;"><img src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/flightMail/skyTrails-banner.png" style="display: block; height: auto; border: 0; width: 100%;" width="600"/></div>
-//   </div>
-//   </td>
-//   </tr>
-//   </table>
-//   </td>
-//   </tr>
-//   </tbody>
-//   </table>
-//   </td>
-//   </tr>
-//   </tbody>
-//   </table>
-//   </td>
-//   </tr>
-//   </tbody>
-//   </table><!-- End -->
-//   </body>
-//   </html>`
-// }
 
 function getHtmlContent(name) {
   return `
@@ -1261,7 +785,7 @@ module.exports = {
       from: nodemailerConfig.options.auth.user,
       to: passengerEmail,
       subject: 'Flight Booking Confirmation Mail',
-      html: getHtmlContent(name),
+      html: flightMail(to),
       attachments: [{ filename: 'flightBooking.pdf', path: pdfFilePath }],
     };
   
@@ -3955,7 +3479,7 @@ module.exports = {
       from: nodemailerConfig.options.auth.user,
       to: email,
       subject: "Hotel Booking Confirmation Mail",
-      html: getHtmlContent(to.name),
+      html: hotelMail(to),
       attachments: [{ filename: "hotel_booking.pdf", path: pdfFilePath }],
     };
     try {
@@ -3980,6 +3504,667 @@ module.exports = {
       throw error;
     }
   },
+
+
+  hotelBookingConfirmationMailWithNewEmail:async (to,emailTicket) => {
+
+    const currentDate = new Date(to.createdAt);
+    const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
+    const formattedDate = currentDate.toLocaleDateString('en-US', options);
+  
+    
+    const noOfNights = () => { 
+      const checkInDateOld = new Date(to.CheckInDate);
+      const checkOutDateOld = new Date(to.CheckOutDate);
+      const timeDifference = checkOutDateOld.getTime() - checkInDateOld.getTime();
+      return timeDifference / (1000 * 60 * 60 * 24);
+    }
+  
+    const checkInDate=()=>{
+      const date = new Date(to.CheckInDate);
+      const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
+      const formattedDate = date.toLocaleDateString('en-US', options);
+      return formattedDate;
+    }
+   //Check Out Date formate
+    const checkOutDate=()=>{
+      const date = new Date(to.CheckOutDate);
+      const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
+      const formattedDate = date.toLocaleDateString('en-US', options);
+      return formattedDate;
+    }
+    
+  
+       let htmlContent = `<!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>Hotel booking pdf</title>
+        </head>
+        <body
+          style="margin: 0; padding: 0; box-sizing: border-box; background: #f4f3f3"
+        >
+          <div style="width: 80vw; margin: 5% 10%">
+            <div
+              style="
+                justify-content: space-between;
+                align-items: center;
+                display: flex;
+                height: 156px;
+              "
+            >
+              <img
+                src="https://travvolt.s3.amazonaws.com/ST-Main-Logo.png"
+                alt="logo"
+                style="height: 100%"
+              />
+              <div
+                style="
+                  color: black;
+                  font-size: 24px;
+                  font-family: Montserrat;
+                  font-weight: 600;
+                  word-wrap: break-word;
+                "
+              >
+                Booking Voucher
+              </div>
+              <div
+                style="
+                  flex-direction: column;
+                  justify-content: center;
+                  align-items: center;
+                  gap: 8px;
+                  display: flex;
+                "
+              >
+                <div
+                  style="
+                    justify-content: center;
+                    align-items: center;
+                    gap: 4px;
+                    display: flex;
+                  "
+                >
+                  <div
+                    style="
+                      color: #868686;
+                      font-size: 12px;
+                      font-family: Montserrat;
+                      font-weight: 500;
+                      word-wrap: break-word;
+                    "
+                  >
+                    Booking Id:
+                  </div>
+                  <div
+                    style="
+                      color: #071c2c;
+                      font-size: 12px;
+                      font-family: Montserrat;
+                      font-weight: 500;
+                      word-wrap: break-word;
+                    "
+                  >
+                    ${to.bookingId}
+                  </div>
+                </div>
+                <div
+                  style="
+                    justify-content: center;
+                    align-items: center;
+                    gap: 4px;
+                    display: flex;
+                  "
+                >
+                  <div
+                    style="
+                      color: #868686;
+                      font-size: 12px;
+                      font-family: Montserrat;
+                      font-weight: 500;
+                      word-wrap: break-word;
+                    "
+                  >
+                    PNR:
+                  </div>
+                  <div
+                    style="
+                      color: #071c2c;
+                      font-size: 12px;
+                      font-family: Montserrat;
+                      font-weight: 500;
+                      word-wrap: break-word;
+                    "
+                  >
+                    ${to.bookingId}
+                  </div>
+                </div>
+                <div
+                  style="
+                    justify-content: center;
+                    align-items: center;
+                    gap: 4px;
+                    display: flex;
+                  "
+                >
+                  <div
+                    style="
+                      color: #868686;
+                      font-size: 12px;
+                      font-family: Montserrat;
+                      font-weight: 500;
+                      word-wrap: break-word;
+                    "
+                  >
+                    (Booked on ${formattedDate})
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              style="
+                background: white;
+                padding: 24px;
+                box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+                border-radius: 12px;
+                height: 700px;
+              "
+            >
+              <!-- <div style="display: flex; justify-content: space-between">
+                <div>
+                  <div
+                    style="
+                      color: black;
+                      font-size: 20px;
+                      font-family: Montserrat;
+                      font-weight: 600;
+                      word-wrap: break-word;
+                    "
+                  >
+                    ${to.hotelName}
+                  </div>
+                </div>
+                <div>
+                  <h2
+                    style="
+                      color: #e73c33;
+                      font-size: 24px;
+                      font-family: Montserrat;
+                      font-weight: 600;
+                      word-wrap: break-word;
+                    "
+                  >
+                    CONFIRM
+                  </h2>
+                  <p>THANK YOU</p>
+                </div>
+              </div> -->
+             
+              <!--  -->
+              <div style="width: 100%; height: 53px; justify-content: space-between; align-items: flex-start; display: inline-flex">
+                <div style="flex-direction: column; justify-content: center; align-items: flex-start; gap: 4px; display: inline-flex">
+                  <div style="color: black; font-size: 20px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">${to.hotelName}</div>
+                  <div style="height: 24px; justify-content: flex-start; align-items: flex-start; display: inline-flex">
+                    <div style="width: 24px; height: 24px; position: relative">
+                      <div style="width: 24px; height: 24px; left: 0px; top: 0px; position: absolute; background: #071C2C"></div>
+                      <div style="width: 20px; height: 19px; left: 2px; top: 3px; position: absolute; background: #071C2C"></div>
+                    </div>
+                    <div style="width: 24px; height: 24px; position: relative">
+                      <div style="width: 24px; height: 24px; left: 0px; top: 0px; position: absolute; background: #071C2C"></div>
+                      <div style="width: 20px; height: 19px; left: 2px; top: 3px; position: absolute; background: #071C2C"></div>
+                    </div>
+                    <div style="width: 24px; height: 24px; position: relative">
+                      <div style="width: 24px; height: 24px; left: 0px; top: 0px; position: absolute; background: #071C2C"></div>
+                      <div style="width: 20px; height: 19px; left: 2px; top: 3px; position: absolute; background: #071C2C"></div>
+                    </div>
+                    <div style="width: 24px; height: 24px; position: relative">
+                      <div style="width: 24px; height: 24px; left: 0px; top: 0px; position: absolute; background: #071C2C"></div>
+                      <div style="width: 20px; height: 19px; left: 2px; top: 3px; position: absolute; background: #071C2C"></div>
+                    </div>
+                    <div style="width: 24px; height: 24px; position: relative">
+                      <div style="width: 24px; height: 24px; left: 0px; top: 0px; position: absolute; background: #071C2C"></div>
+                      <div style="width: 20px; height: 19px; left: 2px; top: 3px; position: absolute; background: #071C2C"></div>
+                    </div>
+                  </div>
+                </div>
+                <div style="flex-direction: column; justify-content: flex-start; align-items: flex-end; display: inline-flex">
+                  <div style="color: #E73C33; font-size: 24px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">CONFIRMED </div>
+                  <div style="color: #071C2C; font-size: 20px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">THANK YOU</div>
+                </div>
+              </div>
+      
+      
+              <div style="width: 100%; height: 84px; flex-direction: column; justify-content: center; align-items: flex-start; gap: 12px; display: inline-flex">
+                <div style="color: #868686; font-size: 16px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">${to.address}</div>
+                <div style="justify-content: flex-start; align-items: flex-start; gap: 8px; display: inline-flex">
+                  <div style="width: 20px; height: 20px; position: relative">
+                    <div style="width: 20px; height: 20px; left: 0px; top: 0px; position: absolute; background: #D9D9D9"></div>
+                    <div style="width: 15px; height: 15px; left: 2.50px; top: 2.50px; position: absolute; background: #21325D"></div>
+                  </div>
+                  <div style="color: #21325D; font-size: 16px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">98173678181, 8912731729</div>
+                </div>
+                <div style="justify-content: flex-start; align-items: flex-start; gap: 8px; display: inline-flex">
+                  <div style="width: 20px; height: 20px; position: relative">
+                    <div style="width: 20px; height: 20px; left: 0px; top: 0px; position: absolute; background: #21325D"></div>
+                    <div style="width: 16.67px; height: 13.33px; left: 1.67px; top: 3.33px; position: absolute; background: #21325D"></div>
+                  </div>
+                  <div style="color: #21325D; font-size: 16px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">HB374-RE@Skytrails.com</div>
+                </div>
+              </div>
+             
+      
+              <!--  -->
+              
+              <div style="width: 100%; height: 428.67px; padding-top: 20px; padding-bottom: 20px; border-radius: 12px; flex-direction: column; justify-content: center; align-items: flex-start; gap: 36px; display: inline-flex">
+                <div style="align-self: stretch; height: 0px; border: 1px black solid"></div>
+                <div style="align-self: stretch; height: 66.33px; padding-left: 20px; padding-right: 20px; justify-content: space-between; align-items: flex-start; display: inline-flex">
+                  <div style="justify-content: center; align-items: center; gap: 8px; display: flex">
+                    <div style="width: 20px; height: 20px; justify-content: center; align-items: center; gap: 10px; display: flex">
+                      <div style="flex: 1 1 0; align-self: stretch"></div>
+                      <div style="width: 15px; height: 16.67px; left: 2.50px; top: 1.66px; position: absolute; background: #E73C33"></div>
+                    </div>
+                    <div style="text-align: center; color: #E73C33; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">${noOfNights()}-Nights Stay</div>
+                  </div>
+                  <div style="flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 4px; display: inline-flex">
+                    <div style="text-align: center; color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">Check-in</div>
+                    <div style="text-align: center"><span style="color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">${checkInDate()}</span></div>
+                    <div style="text-align: center; color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">After 03:00 PM</div>
+                  </div>
+                  <div style="flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 4px; display: inline-flex">
+                    <div style="text-align: center; color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">Check-out</div>
+                    <div style="text-align: center"><span style="color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">${checkOutDate()} </span></div>
+                    <div style="text-align: center; color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">Before 12:00 PM</div>
+                  </div>
+                </div>
+                <div style="align-self: stretch; height: 0px; border: 1px black solid"></div>
+                <div style="align-self: stretch; height: 66.33px; padding-left: 20px; padding-right: 20px; justify-content: flex-start; align-items: center; gap: 120px; display: inline-flex">
+                  <div style="justify-content: flex-start; align-items: flex-start; gap: 8px; display: flex">
+                    <div style="width: 20px; height: 20px; position: relative">
+                      <div style="width: 20px; height: 20px; left: 0px; top: 0px; position: absolute; background: #D9D9D9"></div>
+                      <div style="width: 18.33px; height: 13.33px; left: 0.83px; top: 3.33px; position: absolute; background: #E73C33"></div>
+                    </div>
+                    <div><span style="color: #E73C33; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">${to.noOfPeople} Guests<br/></span><span style="color: #868686; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">(${to.noOfPeople} Adults)</span></div>
+                  </div>
+                  <div style="align-self: stretch; flex-direction: column; justify-content: center; align-items: flex-start; gap: 20px; display: inline-flex">
+                    <div style="text-align: center"><span style="color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">${to.name} </span><span style="color: #868686; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">(Primary Guest)</span></div>
+                    <div style="text-align: center; color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">${to.email}, ${to.phone}</div>
+                  </div>
+                </div>
+                <div style="align-self: stretch; height: 0px; border: 1px black solid"></div>
+                <div style="align-self: stretch; padding-left: 20px; padding-right: 20px; justify-content: flex-start; align-items: flex-start; gap: 136px; display: inline-flex">
+                  <div style="justify-content: center; align-items: center; gap: 8px; display: flex">
+                    <div style="width: 20px; height: 20px; position: relative">
+                      <div style="width: 20px; height: 20px; left: 0px; top: 0px; position: absolute; background: #071C2C"></div>
+                      <div style="width: 16.67px; height: 11.67px; left: 1.67px; top: 4.17px; position: absolute; background: #E73C33"></div>
+                    </div>
+                    <div style="text-align: center; color: #E73C33; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">${to.room} Room</div>
+                  </div>
+                  <div style="flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 8px; display: inline-flex">
+                    <div style="text-align: center; color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">Standard Room With 2 Single Beds</div>
+                    <div style="justify-content: center; align-items: center; gap: 8px; display: inline-flex">
+                      <div style="width: 20px; height: 20px; flex-direction: column; justify-content: flex-start; align-items: center; gap: 58px; display: inline-flex">
+                        <div style="justify-content: flex-start; align-items: flex-start; gap: 10px; display: inline-flex">
+                          <div style="width: 12px; height: 16px; left: 6px; top: 4px; position: absolute; background: #071C2C"></div>
+                        </div>
+                      </div>
+                      <div style="text-align: center; color: #071C2C; font-size: 12px; font-family: Montserrat; font-weight: 700; word-wrap: break-word">Restaurant</div>
+                    </div>
+                    <div style="justify-content: flex-start; align-items: flex-start; gap: 8px; display: inline-flex">
+                      <div style="width: 20px; height: 20px; position: relative">
+                        <div style="width: 20px; height: 20px; left: 0px; top: 0px; position: absolute; background: #D9D9D9"></div>
+                        <div style="width: 18.33px; height: 13.33px; left: 0.83px; top: 3.33px; position: absolute; background: #071C2C"></div>
+                      </div>
+                      <div style="color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">${to.noOfPeople} Adults</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              
+            </div>
+            <div style="width: 100%; margin-top: 5px; height: 200px; padding-top: 24px; padding-bottom: 24px; background: white; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border-radius: 12px; flex-direction: column; justify-content: flex-start; align-items: center; gap: 20px; display: inline-flex">
+              <div style="align-self: stretch; justify-content: space-between; align-items: flex-start; display: inline-flex">
+                <div style="flex-direction: column; justify-content: flex-start;  padding-left: 28px; padding-right: 28px; align-items: flex-start; gap: 12px; display: inline-flex">
+                  <div style="color: #071C2C; font-size: 24px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">${to.hotelName}</div>
+                  <div style="justify-content: center; align-items: center; gap: 24px; display: inline-flex">
+                    <div style="width: 120px; justify-content: flex-start; align-items: flex-start; display: flex">
+                      <div style="width: 24px; height: 24px; position: relative">
+                        <div style="width: 24px; height: 24px; left: 0px; top: 0px; position: absolute; background: #071C2C"></div>
+                        <div style="width: 20px; height: 19px; left: 2px; top: 3px; position: absolute; background: #071C2C"></div>
+                      </div>
+                      <div style="width: 24px; height: 24px; position: relative">
+                        <div style="width: 24px; height: 24px; left: 0px; top: 0px; position: absolute; background: #071C2C"></div>
+                        <div style="width: 20px; height: 19px; left: 2px; top: 3px; position: absolute; background: #071C2C"></div>
+                      </div>
+                      <div style="width: 24px; height: 24px; position: relative">
+                        <div style="width: 24px; height: 24px; left: 0px; top: 0px; position: absolute; background: #071C2C"></div>
+                        <div style="width: 20px; height: 19px; left: 2px; top: 3px; position: absolute; background: #071C2C"></div>
+                      </div>
+                      <div style="width: 24px; height: 24px; position: relative">
+                        <div style="width: 24px; height: 24px; left: 0px; top: 0px; position: absolute; background: #071C2C"></div>
+                        <div style="width: 20px; height: 19px; left: 2px; top: 3px; position: absolute; background: #071C2C"></div>
+                      </div>
+                      <div style="width: 24px; height: 24px; position: relative">
+                        <div style="width: 24px; height: 24px; left: 0px; top: 0px; position: absolute; background: #071C2C"></div>
+                        <div style="width: 20px; height: 19px; left: 2px; top: 3px; position: absolute; background: #071C2C"></div>
+                      </div>
+                    </div>
+                    <div style="padding: 4px; border-radius: 4px; border: 2px #E73C33 solid; justify-content: center; align-items: center; gap: 10px; display: flex">
+                      <div style="color: #071C2C; font-size: 8px; font-family: Montserrat; font-weight: 700; word-wrap: break-word">Couple Friendly</div>
+                    </div>
+                  </div>
+                </div>
+                <img style="width: 247px; height: 117px; background: linear-gradient(0deg, #D9D9D9 0%, #D9D9D9 100%); border-radius: 8px" src="https://r2imghtlak.mmtcdn.com/r2-mmt-htl-image/room-imgs/201610072207462380-180447-1ba3a1c68aaf11e898ae0a9df65c8753.jpg" />
+              </div>
+              <div style="align-self: stretch; padding-left: 28px; padding-right: 28px; justify-content: flex-start; align-items: center; gap: 10px; display: inline-flex">
+                <div style="flex: 1 1 0; color: #BBBBBB; font-size: 12px; font-family: Montserrat; font-weight: 700; letter-spacing: 0.48px; word-wrap: break-word">${checkInDate()} - ${checkOutDate()} | ${to.room} Room | ${to.noOfPeople} Adults (${to.name} + ${to.noOfPeople-1})</div>
+              </div>
+            </div>
+      
+            <div style="width: 100%; margin-top: 5px; height: 422px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 24px; display: inline-flex">
+              <div style="color: #071C2C; font-size: 24px; font-family: Montserrat; font-weight: 700; word-wrap: break-word">Room Type & Amenities </div>
+              <div style="height: 369px; padding: 24px; border-radius: 12px; border: 1px #868686 solid; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 24px; display: flex">
+                <div style="color: #071C2C; font-size: 20px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">Standard Room With 2 Single Beds</div>
+                <div style="justify-content: flex-start; align-items: center; gap: 8px; display: inline-flex">
+                  <div style="width: 20px; height: 20px; position: relative">
+                    <div style="width: 20px; height: 20px; left: 0px; top: 0px; position: absolute; background: #D9D9D9"></div>
+                    <div style="width: 12.50px; height: 16.67px; left: 3.33px; top: 1.66px; position: absolute; background: #071C2C"></div>
+                  </div>
+                  <div style="color: #071C2C; font-size: 20px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">Breakfast</div>
+                </div>
+                <div style="justify-content: flex-start; align-items: flex-start; gap: 8px; display: inline-flex">
+                  <div style="width: 24px; height: 24px; position: relative">
+                    <div style="width: 24px; height: 24px; left: 0px; top: 0px; position: absolute; background: #D9D9D9"></div>
+                    <div style="width: 22px; height: 16px; left: 1px; top: 4px; position: absolute; background: #071C2C"></div>
+                  </div>
+                  <div style="color: #071C2C; font-size: 20px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">2 Guests</div>
+                </div>
+                <div style="align-self: stretch; color: #071C2C; font-size: 12px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">TV, Telephone, Centre Table, Bathroom, Chair, Seating Area, Cupboards with Locks, Hot & Cold Water, Dining Table, Sofa, Blackout Curtains, Blanket, Electronic Safe, Living Area, Room Service, Western Toilet Seat, Bidet, Housekeeping, Dining Area, Shaving Mirror, Toiletries, Mineral Water, Wi-Fi, Bathroom Phone, Balcony, Hairdryer, Geyser/Water Heater, Shower Cap, Mini Fridge, Kettle, Air Conditioning, Dental Kit, Charging Points, Slippers, In-room Dining.</div>
+                <div style="flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 12px; display: flex">
+                  <div style="text-align: center; color: black; font-size: 20px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">INCLUSIONS</div>
+                  <div style="flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 12px; display: flex">
+                    <div style="justify-content: flex-start; align-items: center; gap: 21px; display: inline-flex">
+                      <div style="width: 472px; color: #071C2C; font-size: 12px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">All transfers on private basis to airport and sightseeing places.</div>
+                    </div>
+                    <div style="justify-content: flex-start; align-items: flex-start; gap: 21px; display: inline-flex">
+                      <div style="color: #071C2C; font-size: 12px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">Tickets to Miracle Garden</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+      
+            <!-- cancel refund policy start -->
+      
+            <div style="width: 100%; height: 100px; margin-top: 5px; background: white; box-shadow: 0px 2px 8px 2px rgba(0, 0, 0, 0.25); border-radius: 12px; overflow: hidden; flex-direction: column; justify-content: center; align-items: center; gap: 24px; display: inline-flex">
+              <div style="align-self: stretch; height: 20px; padding-left: 24px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 26px; display: flex">
+                <div style="flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 4px; display: flex">
+                  <div style="color: #071C2C;  font-size: 16px; font-family: Montserrat; font-weight: 700; word-wrap: break-word">Cancellation Refund Policy</div>
+                </div>
+              </div>
+              <div style="align-self: stretch; padding-left: 24px; color: #868686; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word"> Free Cancellation (100% refund) Before ${checkInDate()}.</div>
+             
+            </div>
+      
+            <!-- cancel refund policy end -->
+      
+            <!-- fare break-down start-->
+      
+            <div style="width: 100%; margin-top: 5px; height: 150px; padding-top: 20px; padding-bottom: 20px; border-radius: 12px; overflow: hidden; border: 1px #868686 solid; flex-direction: column; justify-content: center; align-items: center; gap: 24px; display: inline-flex">
+              <div style="align-self: stretch; padding-left: 20px; padding-right: 20px; justify-content: flex-start; align-items: flex-start; gap: 10px; display: inline-flex">
+                <div style="color: #071C2C; font-size: 24px; font-family: Montserrat; font-weight: 700; word-wrap: break-word">Booking Price Break-up</div>
+              </div>
+              <div style="flex-direction: column; width: 100%; justify-content: flex-start; align-items: flex-start; gap: 20px; display: flex">
+                <div style="align-self: stretch; padding-left: 20px; padding-right: 20px;  justify-content: flex-start; align-items: flex-start; gap: 64px; display: inline-flex">
+                  <div style="width: 100%; color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">Accommodation charges collected on behalf of hotel (incl. applicable hotel taxes)</div>
+                  <div style="color: #071C2C; font-size: 20px; font-family: Montserrat; font-weight: 700; word-wrap: break-word">INR ${to.amount}</div>
+                </div>
+                <!--
+                <div style="align-self: stretch; padding-left: 20px; padding-right: 20px; justify-content: space-between; align-items: flex-start; display: inline-flex">
+                  <div style="color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">Skytrails Service Fee</div>
+                  <div style="color: #071C2C; font-size: 20px; font-family: Montserrat; font-weight: 700; word-wrap: break-word">INR 254</div>
+                </div>
+                <div style="align-self: stretch; padding-left: 20px; padding-right: 20px; justify-content: space-between; align-items: flex-start; display: inline-flex">
+                  <div style="width: 80%; color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">HR-SGST @ 9%</div>
+                  <div style="color: #071C2C; font-size: 20px; font-family: Montserrat; font-weight: 700; word-wrap: break-word">INR 23</div>
+                </div> 
+                
+                <div style="align-self: stretch; padding-left: 20px; padding-right: 20px; justify-content: space-between; align-items: flex-start; display: inline-flex">
+                  <div style="width: 80%; color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">CGST @ 9%</div>
+                  <div style="color: #071C2C; font-size: 20px; font-family: Montserrat; font-weight: 700; word-wrap: break-word">INR 23</div>
+                </div>
+                -->
+                <div style="align-self: stretch; height: 0px; border: 1px #868686 solid"></div>
+                <div style="align-self: stretch; padding-left: 20px; padding-right: 20px; justify-content: space-between; align-items: flex-start; display: inline-flex">
+                  <div style="width: 80%; color: #E73C33; font-size: 20px; font-family: Montserrat; font-weight: 700; word-wrap: break-word">TOTAL</div>
+                  <div style="color: #E73C33; font-size: 20px; font-family: Montserrat; font-weight: 700; word-wrap: break-word">INR ${to.amount}</div>
+                </div>
+              </div>
+            </div>
+      
+      
+            <!-- fare break-down end -->
+      
+            <!-- hotel Amenities start-->
+      
+            <div style="width: 100%; margin-top: 5px; height: 250px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 24px; display: inline-flex">
+              <div style="color: #071C2C; font-size: 24px; font-family: Montserrat; font-weight: 700; word-wrap: break-word">Hotel Amenities</div>
+              <div style="align-self: stretch; height: 640px; padding: 24px; border-radius: 12px; border: 1px #868686 solid; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 20px; display: flex">
+                <div style="flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 4px; display: flex">
+                  <div style="color: #071C2C; font-size: 20px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">Common Area</div>
+                  <div style="color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">Lounge, Lawn, Reception, Library, Seating Area, Outdoor Furniture</div>
+                </div>
+                <div style="flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 4px; display: flex">
+                  <div style="color: #071C2C; font-size: 20px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">Outdoor Activities and Sports</div>
+                  <div style="color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">Water Sports, Outdoor Sports</div>
+                </div>
+                <div style="flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 4px; display: flex">
+                  <div style="color: #071C2C; font-size: 20px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">Business Center and Conferences</div>
+                  <div style="color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">Business Centre, Conference Room, Banquet</div>
+                </div>
+                
+              </div>
+            </div>
+      
+      
+            <!-- hotel amenities end -->
+      
+            <!-- hotel rule start -->
+      
+      
+            <div style="width: 100%; height: 300px; margin-top: 30px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 24px; display: inline-flex">
+              <div style="color: #071C2C; font-size: 24px; font-family: Montserrat; font-weight: 700; word-wrap: break-word">Rules & Policies</div>
+              <div style="align-self: stretch; height: 812px; padding: 24px; border-radius: 12px; border: 1px #868686 solid; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 20px; display: flex">
+                <div style="flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 4px; display: flex">
+                  <div style="color: #071C2C; font-size: 20px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">Food Arrangement</div>
+                  <div style="color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">Non veg food is allowed<br/>Food delivery service is not available at the property<br/>Outside food is not allowed</div>
+                </div>
+                <div style="flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 4px; display: flex">
+                  <div style="color: #071C2C; font-size: 20px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">Smoking/alcohol Consumption Rules</div>
+                  <div style="color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">There are no restrictions on alcohol consumption.<br/>Smoking within the premises is not allowed</div>
+                </div>
+              </div>
+            </div>
+      
+      
+      
+            <!-- hotel rule end -->
+      
+      
+            <div
+              style="
+                padding-left: 28px;
+                margin-top: 5px;
+                padding-right: 28px;
+                padding-top: 24px;
+                padding-bottom: 24px;
+                background: white;
+                box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+                border-radius: 12px;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 24px;
+                display: flex;
+              "
+            >
+              <div
+                style="
+                  color: #e73c33;
+                  font-size: 20px;
+                  font-family: Montserrat;
+                  font-weight: 700;
+                  word-wrap: break-word;
+                "
+              >
+                The Skytrails Support
+              </div>
+              <div
+                style="
+                  width: 456px;
+                  height: 48px;
+                  justify-content: flex-start;
+                  align-items: center;
+                  gap: 40px;
+                  display: inline-flex;
+                "
+              >
+                <div
+                  style="
+                    padding: 12px;
+                    background: #e73c33;
+                    border-radius: 12px;
+                    justify-content: center;
+                    align-items: center;
+                    gap: 10px;
+                    display: flex;
+                  "
+                >
+                  <div
+                    style="
+                      color: white;
+                      font-size: 20px;
+                      font-family: Montserrat;
+                      font-weight: 700;
+                      word-wrap: break-word;
+                    "
+                  >
+                    +91 8917972301
+                  </div>
+                </div>
+                <div
+                  style="
+                    justify-content: flex-start;
+                    align-items: flex-start;
+                    gap: 8px;
+                    display: flex;
+                  "
+                >
+                  <div style="width: 20px; height: 20px; position: relative">
+                    <div
+                      style="
+                        width: 20px;
+                        height: 20px;
+                        left: 0px;
+                        top: 0px;
+                        position: absolute;
+                        background: #21325d;
+                      "
+                    ></div>
+                    <div
+                      style="
+                        width: 16.67px;
+                        height: 13.33px;
+                        left: 1.67px;
+                        top: 3.33px;
+                        position: absolute;
+                        background: #e73c33;
+                      "
+                    ></div>
+                  </div>
+                  <div
+                    style="
+                      color: #e73c33;
+                      font-size: 16px;
+                      font-family: Montserrat;
+                      font-weight: 600;
+                      word-wrap: break-word;
+                    "
+                  >
+                    HB374-RE@Skytrails.com
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div style="float: left; width: 100%; margin:0px; padding:0px;">
+              <img src="https://travvolt.s3.amazonaws.com/app_banner.png" alt="SkyTrails_banner" style="width: 100%;
+                margin-top: 15px;
+                border-radius: 15px;">
+            </div>
+          </div>
+        </body>
+      </html>`;
+  
+       // Create a new PDF document
+       const browser = await puppeteer.launch({ headless: 'new',  timeout: 0});
+       const page = await browser.newPage();
+  
+       // Save the PDF to a temporary file
+       await page.setContent(htmlContent);
+   
+       const pdfFilePath = 'hotelBooking.pdf';
+       
+      const pdfBytes= await page.pdf({ path: pdfFilePath, format: 'A4', printBackground: true });
+       await browser.close();
+       // const pdfBytes= await pdf.saveAs(pdfFilePath);
+  
+       console.log("PDF generation complete.");
+         
+     fs.writeFileSync(pdfFilePath, pdfBytes);
+  
+  
+      var transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false,
+        auth: {
+          user: nodemailerConfig.options.auth.user,
+          pass: nodemailerConfig.options.auth.pass,
+        },
+        connectionTimeout: 60000,
+      });
+      const email = emailTicket;
+      var mailOptions = {
+        from: nodemailerConfig.options.auth.user,
+        to: email,
+        subject: "Hotel Booking Confirmation Mail",
+        html: hotelMail(to),
+        attachments: [{ filename: "hotel_booking.pdf", path: pdfFilePath }],
+      };
+      try {
+        // Verify the connection
+        transporter.verify(function (error, success) {
+          if (error) {
+            console.log("SMTP Connection Error: " + error);
+          } else {
+            console.log("SMTP Connection Success: " + success);
+          }
+        });
+  
+        // Send the email
+        const info = await transporter.sendMail(mailOptions);
+        console.log("Email sent: " + info.response);
+  
+        fs.unlinkSync(pdfFilePath);
+        
+        return info;
+      } catch (error) {
+        console.error("Email sending failed:", error);
+        throw error;
+      }
+    },
 
 
   //upload image on cloudinary***************************************
@@ -4596,87 +4781,7 @@ return await transporter.sendMail(mailOptions);
     }
   },
   sendAgent:async(to,pass)=> {
-    let html = `<!DOCTYPE html>
-    <html lang="en">
     
-    <head>
-        <title>Welcome to TheSkytrails!</title>
-        <style>
-            .card {
-                border-radius: 10px;
-                background-color: #fff;
-                box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-                width: 80%;
-                margin: auto;
-                min-height: 25em;
-                margin-top: 25px;
-                padding: 20px;
-            }
-    
-            .main {
-                background-image: url('path/to/your/image.jpg');
-                background-size: cover;
-                background-position: center;
-                opacity: 0.8;
-            }
-    
-            .main-container {
-                text-align: center;
-            }
-    
-            h1 {
-                font-family: 'Poppins', sans-serif;
-                font-weight: 600;
-                color: #333030;
-                font-size: 24px;
-                margin-top: 30px;
-            }
-    
-            img {
-                width: 30%;
-                margin-bottom: 20px;
-            }
-    
-            p {
-                font-family: 'Open Sans', sans-serif;
-                font-size: 16px;
-                line-height: 1.5;
-                color: #444;
-                margin-top: 0;
-            }
-    
-            button {
-                background-color: #4285F4;
-                color: #fff;
-                padding: 10px 20px;
-                border: none;
-                border-radius: 5px;
-                font-size: 16px;
-                cursor: pointer;
-                margin-top: 20px;
-            }
-    
-            button:hover {
-                background-color: #3D7AF1;
-            }
-        </style>
-    </head>
-    
-    <body>
-        <div class="card">
-            <div class="main-container">
-                <h1>Hello user!</h1>
-                <img src="https://travvolt.s3.amazonaws.com/ST-Main-LogoPdf.png" alt="logo">
-                <p>Welcome to TheSkytrails! Your journey with us begins now.</p>
-                <p>Your login credentials are:</p>
-                <p>Email: ${to}<br> Password: ${pass}</p>
-                <a href="http://localhost:3000/Registration">Unlock your Skytrails adventure now!</a>
-            </div>
-        </div>
-    </body>
-    
-    </html>
-    `;
 var transporter = nodemailer.createTransport({
   service: 'gmail',
  auth: {
@@ -4697,7 +4802,7 @@ var mailOptions = {
   from: nodemailerConfig.user,
   to: to,
   subject: "Congratulations,your are become member of theSkyTrais, ",
-  html: html,
+  html: welcomeAgentMail(to,pass),
 };
 return await transporter.sendMail(mailOptions);
   },

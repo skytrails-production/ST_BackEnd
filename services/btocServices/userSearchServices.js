@@ -24,7 +24,7 @@ const userSerachesServices = {
         return await userSerachesModel.findOneAndUpdate(query, updateObj, { new: true });
     },
 
-    paginateUserSearch: async (body) => {
+    paginateUserSearchHistory: async (body) => {
         // userType: { $ne: [userType.ADMIN,userType.SUBADMIN] }
         let query = { userType: { $nin: [userType.ADMIN, userType.SUBADMIN] } }
         const { page, limit, usersType1, search } = body;

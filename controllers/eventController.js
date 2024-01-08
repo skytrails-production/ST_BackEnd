@@ -219,3 +219,22 @@ exports.getTopEvents=async(req,res,next)=>{
     return next(error);
   }
 }
+
+exports.getAllEventsAggregate=async(req,res,next)=>{
+  try {
+    const {page,limit,search}=req.query;
+    const result=await getEvent(req.query);
+    if(!result){return res.status(statusCode.NotFound).send({
+      statusCode: statusCode.NotFound,
+      responseMessage: responseMessage.DATA_NOT_FOUND,
+    });}
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
+  } catch (error) {
+    console.log("Error while trying to get events",error);
+    return next(error)
+  }
+}

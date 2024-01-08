@@ -52,6 +52,20 @@ exports.getWebAdvertisement=async(req,res,next)=>{
     }
 }
 
+exports.getAggregateWebAdvertisement=async(req,res,next)=>{
+    try {
+        const {page,limit}=req.body;
+        const result=await getWebAdvertisment(req.body);
+        if(!result){
+            return res.status(statusCode.NotFound).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
+        }
+        return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.DATA_FOUND,result:result})
+    
+    } catch (error) {
+        console.log("error while trying get data",error);
+        return next(error)
+    }
+}
 // exports.updateWebAdvertisement=async(req,res,next)=>{
 //     try {
 //         const {}=

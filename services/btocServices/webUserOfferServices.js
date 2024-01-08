@@ -37,7 +37,7 @@ const webAdvertisementServices={
         let query={status:status.ACTIVE,endDate: { $gt: currentDate }}
         let options = {
             page: Number(page) || 1,
-            limit: Number(limit) || 8,
+            limit: Number(limit) || 10,
             sort: { createdAt: -1 },
         };
         return await webUserOfferModel.paginate(query, options);

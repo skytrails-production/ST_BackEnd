@@ -521,10 +521,11 @@ exports.easebussPayment = async (req, res, next) => {
 exports.refundApi = async (req, res, next) => {
   try {
     const {refund_amount,txnId} = req.body;
-    console.log(refund_amount,txnId,"body data")
+    console.log(refund_amount,txnId,"body data");
+    const merchantId="M" + Date.now();
     const hashComponents = [
       config.key,
-      "M1703663988309",
+      merchantId,
       txnId,
       refund_amount
     ];
@@ -541,7 +542,7 @@ exports.refundApi = async (req, res, next) => {
       },
       data: {
         key: config.key,
-        merchant_refund_id: "M1703663988309",
+        merchant_refund_id: merchantId,
         easebuzz_id: txnId,
         refund_amount: refund_amount,
         hash: sha512Hash,

@@ -100,7 +100,7 @@ exports.login = async (req, res, next) => {
       { "phone.mobile_number": mobileNumber, status: status.ACTIVE},
       obj
     );
-    // await sendSMS.sendSMSForOtp(mobileNumber, otp);
+    await sendSMS.sendSMSForOtp(mobileNumber, otp);
     const message = `Use this OTP ${otp} to login to your. theskytrails account`;
    await whatsappAPIUrl.sendWhatsAppMessage(mobileNumber, message);
     if (!updatedUser) {
@@ -288,7 +288,8 @@ exports.resendOtp = async (req, res, next) => {
           message: responseMessage.INTERNAL_ERROR,
         });
     }
-    await whatsappAPIUrl.sendWhatsAppMessage(mobileNumber, otp);
+    const message = `Use this OTP ${otp} to login to your. theskytrails account`;
+    await whatsappAPIUrl.sendWhatsAppMessage(mobileNumber, message);
     await sendSMS.sendSMSForOtp(mobileNumber, otp);
     const token = await commonFunction.getToken({
       _id: updateData._id,

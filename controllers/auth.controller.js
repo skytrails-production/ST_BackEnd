@@ -1121,6 +1121,7 @@ exports.createAgent = async (req, res, next) => {
         pan_number: panNumber.trim(),
       },
       approveStatus: 'APPROVED',
+      is_active:1
     };
 
     // Check if the user already exists based on email
@@ -1142,7 +1143,7 @@ exports.createAgent = async (req, res, next) => {
       password:password
     }
     await sendSMS.sendSMSAgents(mobile_number,message)
-    const msg = `Welcome to TheSkyTrails, Admin added you as an agent. Please use the following credentials to login and fill in the mandatory form:\nEmail: ${email}\nPassword: ${password}`;
+    const msg = `Welcome to TheSkyTrails, Admin added you as an agent. Please use the following credentials to login and fill in the mandatory form:\nEmail: ${email}, and Password: ${password} .click here: ${process.env.AGENT_URL}`; 
     await whatsappAPIUrl.sendWhatsAppMessage(mobile_number, msg);
     await commonFunction.sendAgent(email, password);
 

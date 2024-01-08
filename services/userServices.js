@@ -51,8 +51,6 @@ const userServices = {
         { status: searchRegex },
       ];
     }
-   
-
     let options = {
       page: Number(page) || 1,
       limit: Number(limit) || 8,

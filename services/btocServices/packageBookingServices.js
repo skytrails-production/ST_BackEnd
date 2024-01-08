@@ -26,6 +26,28 @@ const packageBookingModelServices = {
         return await packageBookingModel.findOneAndUpdate(query, updateObj, { new: true });
     },
 
+    getPackageEnquiry:async(query)=>{
+        // let query = { userType: { $nin: [userType.ADMIN, userType.SUBADMIN] } }
+        const { page, limit, usersType1, search } = body;
+        if (search) {
+            query.$or = [
+                // { username: { $regex: search, $options: 'i' } },
+                // { email: { $regex: search, $options: 'i' } },
+                { _id: { $regex: search, $options: 'i' } },
+                { status: { $regex: search, $options: 'i' } }
+            ]
+        }
+        if (usersType1) {
+            query.userType = usersType1
+        }
+
+        let options = {
+            page: Number(page) || 1,
+            limit: Number(limit) || 8,
+            sort: { createdAt: -1 },
+        };
+        return await packageBookingModel.paginate(query, options);
+    },
     countTotalPackage: async (body) => {
         return await packageBookingModel.countDocuments(body)
     }

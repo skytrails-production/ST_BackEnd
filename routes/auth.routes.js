@@ -2,23 +2,20 @@ const { verifySignUp } = require("../middleware");
 const controller = require("../controllers/auth.controller");
 const agentChangeReqController=require("../controllers/b2bauth.controller")
 const subAdminController=require("../controllers/subAdminController");
-const addWebBanner=require('../controllers/btocController/webAdvertisemnetController')
+const addWebBanner=require('../controllers/btocController/webAdvertisemnetController');
 const { authJwt } = require("../middleware");
 const SchemaValidator = require("../utilities/validations.utilities");
 const schemas = require('../utilities/schema.utilities');
-const upload=require('../utilities/uploadHandler')
+const upload=require('../utilities/uploadHandler');
+const eventController = require("../controllers/eventController");
+const userSearchesController=require("../controllers/btocController/userSearchesController")
 module.exports = function (app) {
   app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
     next();
   });
-
-  
-
-  app.post("/api/auth/signin", controller.signin);
-
+   app.post("/api/auth/signin", controller.signin);
   app.post("/api/auth/signout", controller.signout);
-
   app.post("/skytrails/api/admin/approveAgent",SchemaValidator(schemas.approveAgentSchema),controller.approveAgent)
   app.post("/skytrails/api/user/socialLogin", SchemaValidator(schemas.socialLoginSchema),controller.socialLogin);
   app.post("/skytrails/api/admin/createSubAdmin", SchemaValidator(schemas.subAdminSchema),[authJwt.verifcationToken],subAdminController.createSubAdmin);
@@ -55,5 +52,8 @@ module.exports = function (app) {
   app.post('/skyTrails/api/admin/createAgent',SchemaValidator(schemas.createAgentSchema),controller.createAgent);
   app.get('/skyTrails/api/admin/getAllUsers',controller.getAllUsers)
   app.put('/skyTrails/api/admin/updateSubAdminStatus',SchemaValidator(schemas.statusSchema),controller.statusChange);
-  app.post('/skyTrails/api/admin/createWebAdvertisment',upload.handleFileUpload,SchemaValidator(schemas.webAddSchema),addWebBanner.createWebAdvertisement)
+  app.post('/skyTrails/api/admin/createWebAdvertisment',upload.handleFileUpload,SchemaValidator(schemas.webAddSchema),addWebBanner.createWebAdvertisement);
+  app.get('/skyTrails/api/admin/getWebAdds',addWebBanner.getAggregateWebAdvertisement);
+  app.get('/skyTrails/api/admin/getAllEvents',eventController.getAllEventsAggregate);
+  app.get('/skyTrails/api/admin/userSearchHistory',userSearchesController.getUserSerchHistory)
 };

@@ -121,3 +121,12 @@ exports.getPackageBookigs = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.getAllPackageEnquiry=async(req,res,next)=>{
+  try {
+    
+  } catch (error) {
+    console.log("Error while trying to get all packages",error);
+    return next(error)
+  }
+}

@@ -207,7 +207,7 @@ module.exports = {
     }
   },
   sendSMSForHotelBooking:async(data)=>{
-    const urldata="https://www.google.com/"
+    const urldata="https://theskytrails.com/"
     const details=`Hello ${data.name} ,Thank you for booking your hotel stay with TheSkytrails. Your reservation is confirmed! Please click on url to see details:${urldata}. Or You Can login theskytrails.com/login`;
     const url = `http://sms.txly.in/vb/apikey.php?`;
     const params = {
@@ -304,7 +304,7 @@ module.exports = {
     }
   },
   sendSMSForHotelBookingAgent:async(data)=>{
-    const urldata="https://www.google.com/"
+    const urldata="https://b2b.theskytrails.com/Login"
     const details=`Hello ${data.name} ,Thank you for booking your hotel stay with TheSkytrails. Your reservation is confirmed! Please click on url to see details:${urldata}. Or You Can login theskytrails.com/login`;
     const url = `http://sms.txly.in/vb/apikey.php?`;
     const params = {

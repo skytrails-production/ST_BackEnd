@@ -34,15 +34,30 @@ const eventServices={
         return await eventModel.countDocuments(body)
     },
     getEvent:async(body)=>{
-        const {page,limit}=body;
+        const {page,limit,search}=body;
         const currentDate = new Date().toISOString();
-        let query={status:status.ACTIVE,endDate: { $gt: currentDate }}
+        // endDate: { $gt: currentDate }
+        query = {
+            status: status.ACTIVE,
+            venue: { $eq: search }
+        };
+        
+        if (search) {
+            query.$or = [
+                { title: { $regex: search, $options: 'i' } }, 
+                { content: { $regex: search, $options: 'i' } }, 
+                { venue: { $regex: search, $options: 'i' } },
+            ];
+        }
+        
         let options = {
             page: Number(page) || 1,
             limit: Number(limit) || 8,
             sort: { createdAt: -1 },
         };
-        return await eventModel.paginate(query, options);
+        const data= await eventModel.paginate(query, options);
+        console.log("data",data);
+        return data;
     }
 }
 module.exports ={eventServices}

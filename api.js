@@ -49,9 +49,9 @@ wsServer.on('request', (request) => {
   });
 });
 
-server.listen(7000, () => {
-  console.log('WebSocket server running on port 7000');
-});
+// server.listen(7000, () => {
+//   console.log('WebSocket server running on port 7000');
+// });
 
 
 /**

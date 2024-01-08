@@ -84,7 +84,7 @@ exports.emailTicket= async (req, res) => {
   // console.log(data,"id")
     try{
     const response = await hotelBookingModel.findById({_id:data.TicketId});
-    // await commonFunction.hotelBookingConfirmationMailWithNewEmail(response,data.emailTicket);
+     await commonFunction.hotelBookingConfirmationMailWithNewEmail(response,data.emailTicket);
     const msg="PDF sent successfully to your email. Please check your inbox."
 
     actionCompleteResponse(res, msg);

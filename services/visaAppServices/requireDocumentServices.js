@@ -24,6 +24,11 @@ const requireDocServices={
     requireDocList: async (query) => {
         return await requiredDocumentModel.find(query)
     },
+
+    requireDocListPopulate: async (query) => {
+        return await requiredDocumentModel.find(query).populate({path:'visaCountry',select:'countryName'}).populate({path:'visaCategory',select:'categoryName'})
+    },
+
     updateRequireDoc: async (query, updateObj) => {
         return await requiredDocumentModel.findOneAndUpdate(query, updateObj, { new: true });
     },

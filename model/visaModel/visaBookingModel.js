@@ -1,44 +1,53 @@
 const mongoose = require("mongoose");
-const status = require("../../enums/status");
+const bookingStatus = require("../../enums/bookingStatus");
 const mongoosePaginate = require("mongoose-paginate-v2");
-const aggregatePaginate = require("mongoose-aggregate-paginate-v2")
+const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 const issuedType = require("../../enums/issuedType");
 mongoose.pluralize(null);
 
 const visaApplicationSchema = new mongoose.Schema(
   {
-    applicantName: {
+    firstName: {
       type: String,
-      required: true,
+    },
+    lastName: {
+      type: String,
+    },
+    dateOfBirth:{
+      type:String
+    },
+    passportNumber:{
+      type:String
+    },
+    purposeOfVisit:{
+      type:String
+    },
+    travelDates:{
+      type:String
     },
     country: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'visa',  // Reference to the Visa model
-      required: true,
+      ref: "visa",
     },
     visaType: {
       type: String,
       required: true,
     },
     visaCategory: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'VisaCategory',  // Reference to the VisaCategory model
-      required: true,
+      type: String
     },
-    documents: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Document',  // Reference to the Document model
-        required: true,
-      },
-    ],
-    status: {
+    image:{
+      type:String
+    },
+    documents: [],
+    bookingStatus: {
       type: String,
-      default: "PENDING",
+      enum:[bookingStatus.BOOKED,bookingStatus.CANCEL,bookingStatus.PENDING],
+      default: bookingStatus.PENDING,
     },
     // Add other application-related fields as needed
   },
   { timestamps: true }
 );
-visaApplicationSchema.plugin(mongoosePaginate)
+visaApplicationSchema.plugin(mongoosePaginate);
 module.exports = mongoose.model("VisaApplication", visaApplicationSchema);

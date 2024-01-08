@@ -5,21 +5,21 @@ module.exports = function (app) {
     next();
   });
 
-  app.post("/api/Login/UserLogin", controller.userLogin);
-  app.post("/api/Admin/GetUserBalance", controller.getUserBalance);
-  app.post("/api/PromoCode/GetPromoServices", controller.getPromoService);
-  app.post("/api/PromoCode/GetPromoCode", controller.getPromoCode);
-  app.post("/api/Admin/OTP", controller.getOTP);
-  app.post("/api/Admin/VerifyOTP", controller.getVerifyOTP);
+  app.post("/skyTrails/api/Login/UserLogin", controller.userLogin);
+  app.post("/skyTrails/api/Admin/GetUserBalance", controller.getUserBalance);
+  app.post("/skyTrails/api/PromoCode/GetPromoServices", controller.getPromoService);
+  app.post("/skyTrails/api/PromoCode/GetPromoCode", controller.getPromoCode);
+  app.post("/skyTrails/api/Admin/OTP", controller.getOTP);
+  app.post("/skyTrails/api/Admin/VerifyOTP", controller.getVerifyOTP);
 
-  app.post("/api/Recharge/GetService", controller.getService);
+  app.post("/skyTrails/api/Recharge/GetService", controller.getService);
 
-  app.post("/api/Recharge/GetRechargePlan", controller.getRechargePlan);
+  app.post("/skyTrails/api/Recharge/GetRechargePlan", controller.getRechargePlan);
 
   app.post(
-    "/api/Recharge/GetRechargePlanDetail",
+    "/skyTrails/api/Recharge/GetRechargePlanDetail",
     controller.getRechargePlanDetails
   );
 
-  app.post("/api/Recharge/Recharge/", controller.rechageRequest);
+  app.post("/skyTrails/api/Recharge/Recharge/", controller.rechageRequest);
 };

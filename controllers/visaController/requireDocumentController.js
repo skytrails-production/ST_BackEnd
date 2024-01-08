@@ -7,7 +7,7 @@ const issuedType = require('../../enums/issuedType');
 const { userServices } = require("../../services/userServices");
 const {createUser,findUser,getUser,findUserData,updateUser,paginateUserSearch,countTotalUser,} = userServices;
 const {requireDocServices}=require("../../services/visaAppServices/requireDocumentServices");
-const{createRequireDoc,findRequireDocData,deleteRequireDoc,requireDocList,updateRequireDoc,countTotalRequireDoc,getRequireDoc}=requireDocServices;
+const{createRequireDoc,findRequireDocData,deleteRequireDoc,requireDocList,updateRequireDoc,countTotalRequireDoc,getRequireDoc,requireDocListPopulate}=requireDocServices;
 const { visaServices } = require('../../services/visaServices');
 const { createWeeklyVisa, findWeeklyVisa,findWeeklyVisaPopulate, deleteWeeklyVisa, weeklyVisaList, updateWeeklyVisa, weeklyVisaListPaginate, getNoVisaByPaginate, montholyVisaListPaginate, onarrivalVisaListPaginate } = visaServices;
 const {visaCategoryServices}=require("../../services/visaAppServices/visaCategoryServices");
@@ -76,7 +76,7 @@ exports.createRequireDocument = async (req, res, next) => {
 
 exports.getRequireDocument=async(req,res,next)=>{
     try {
-        const result=await requireDocList({});
+        const result=await requireDocListPopulate({});
         if(!result){
             return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND,result: result,});
         }
