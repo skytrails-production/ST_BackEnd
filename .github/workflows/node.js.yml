@@ -6,7 +6,9 @@ name: Node.js CI
 on:
   push:
     branches: [ "main" ]
-  
+  pull_request:
+    branches: [ "main" ]
+
 jobs:
   build:
 
@@ -26,5 +28,4 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run build --if-present
-    - run:  pm2 restart back 
-    
+    - run: pm2 restart back
