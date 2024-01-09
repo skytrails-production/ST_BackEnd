@@ -86,11 +86,13 @@ module.exports = {
 	PDF_SENT:"PDF sent successfully.",
 	SUBADMIN_NOT_EXIST:"SubAmdin not exist",
 	SUBADMIN_UPDATED:"SubAdmin status updated successfully",
-	PAYMENT_INTIATE:"Payment link generated successfully,Please make payment to book ticket",
+	PAYMENT_INTIATE:"Payment link generated successfully,Please make payment to book ticket.",
 	PAYMENT_FAILURE:"Payment failed due to some reason.",
 	EVENT_NOT_FOUND:"Event not found.",
 	SLOT_NOT_AVAILABLE:'Slot is not available.',
 	TRANSACTION_NOT_FOUND:"Transaction not found.",
 	SLOT_BOOKED:"Slot booked successfully.",
-	DOCUMENTTYPE_NOT_EXIST:"Document Type not exist."
+	DOCUMENTTYPE_NOT_EXIST:"Document Type not exist.",
+	PACKAGE_NOT_EXIST:"Package not exist.",
+	COUNTRY_NOT_FOUND:"Country not found."
 };

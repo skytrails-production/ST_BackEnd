@@ -13,25 +13,25 @@ const visaBookingServices={
         return await visaBookingModel.create(insertObj);
     },
 
-    findvisaBookingData: async (query) => {
+    findVisaBookingData: async (query) => {
         return await visaBookingModel.findOne(query)
     },
 
-    deletevisaBooking: async (query) => {
+    deleteVisaBooking: async (query) => {
         return await visaBookingModel.deleteOne(query);
     },
 
     visaBookingList: async (query) => {
         return await visaBookingModel.find(query)
     },
-    updatevisaBooking: async (query, updateObj) => {
+    updateVisaBooking: async (query, updateObj) => {
         return await visaBookingModel.findOneAndUpdate(query, updateObj, { new: true });
     },
 
-    countTotalvisaBooking: async (body) => {
+    countTotalVisaBooking: async (body) => {
         return await visaBookingModel.countDocuments(body)
     },
-    getvisaBooking:async(body)=>{
+    getVisaBooking:async(body)=>{
         const {page,limit}=body;
         const currentDate = new Date().toISOString();
         let query={status:status.ACTIVE,endDate: { $gt: currentDate }}

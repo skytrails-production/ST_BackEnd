@@ -34,6 +34,7 @@ const {
   deletePackage,
   updatePackage,
   countTotalPackage,
+  getPackageEnquiry
 } = packageBookingModelServices;
 
 exports.packageBooking = async (req, res, next) => {
@@ -124,7 +125,19 @@ exports.getPackageBookigs = async (req, res, next) => {
 
 exports.getAllPackageEnquiry=async(req,res,next)=>{
   try {
-    
+    const { page, limit, search } = req.query;
+    const result = await getPackageEnquiry(req.query);
+    if (!result) {
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
+      });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
   } catch (error) {
     console.log("Error while trying to get all packages",error);
     return next(error)

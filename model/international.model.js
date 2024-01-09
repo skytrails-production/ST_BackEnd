@@ -13,9 +13,13 @@ const internationl = mongoose.model(
         type: String,
         require: false,
       },
+      
       destination: {
         type: Array,
         require: true,
+      },
+      country:{
+        type:String
       },
       days: {
         type: Number,

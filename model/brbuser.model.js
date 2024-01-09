@@ -60,7 +60,7 @@ const Userb2bSchema =
       agency_details: {
         agency_name: {
           type: String,
-          
+          default:" "
         },
         pan_number: {
           type: String, 
@@ -80,17 +80,19 @@ const Userb2bSchema =
         },
         address: {
           type: String,
-          
+          default:" "
         },
         address_2: {
           type: String,
+          default:" "
         },
         fax: {
           type: String,
+          default:" "
         },
         pincode: {
           type: String,
-          
+          default:" "
         },
         country: {
           type: String,
@@ -98,110 +100,131 @@ const Userb2bSchema =
         },
         state: {
           type: String,
-          
+          default:" "
         },
         city: {
           type: String,
-          
+          default:" "
         },
         business_type: {
           type: String,
-          
+          default:" "
         },
         office_space: {
           type: String,
+          default:" "
         },
         IATA_registration_id: {
           type: String,
+          default:" "
         },
         IATA_code: {
           type: String,
+          default:" "
         },
         TDS: {
           type: String,
+          default:" "
         },
         TDS_percentage: {
           type: String,
+          default:" "
         },
         references: {
           type: String,
+          default:" "
         },
         consolidators: {
           type: String,
+          default:" "
         },
         remarks: {
           type: String,
+          default:" "
         },
         document_details: {
           pan_card_document: {
             type: String,
+            default:" "
           },
         },
       },
       agency_gst_details: {
         agency_name: {
           type: String,
-          
+          default:" "
         },
         agency_classification: {
           type: String,
-          
+          default:" "
         },
         agency_GSTIN: {
           type: String,
+          default:" "
         },
         state: {
           type: String,
-          
+          default:" "
         },
         state_code: {
           type: String,
-          
+          default:" "
         },
         provisional_GSTIN: {
           type: String,
+          default:" "
         },
         contact_person: {
           type: String,
+          default:" "
         },
         phone_number: {
           type: String,
+          default:" "
         },
         telephone_number: {
           type: String,
+          default:" "
         },
         email: {
           type: String,
+          default:" "
         },
         correspondance_mail_id: {
           type: String,
+          default:" "
         },
         GST_registration_status: {
           type: String,
+          default:" "
         },
         HSN_SAC_code: {
           type: String,
+          default:" "
         },
         composition_levy: {
           type: String,
+          default:" "
         },
         address_line1: {
           type: String,
-          
+          default:" "
         },
         address_line2: {
           type: String,
+          default:" "
         },
         pincode: {
           type: String,
-          
+          default:" "
         },
         agency_city: {
           type: String,
-          
+          default:" "
         },
         supply_type: {
           type: String,
+          default:" "
         },
       },
        markup:{

@@ -8,7 +8,8 @@ const SchemaValidator = require("../utilities/validations.utilities");
 const schemas = require('../utilities/schema.utilities');
 const upload=require('../utilities/uploadHandler');
 const eventController = require("../controllers/eventController");
-const userSearchesController=require("../controllers/btocController/userSearchesController")
+const userSearchesController=require("../controllers/btocController/userSearchesController");
+const packageControlelr=require("../controllers/btocController/packageBookingController")
 module.exports = function (app) {
   app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
@@ -55,5 +56,6 @@ module.exports = function (app) {
   app.post('/skyTrails/api/admin/createWebAdvertisment',upload.handleFileUpload,SchemaValidator(schemas.webAddSchema),addWebBanner.createWebAdvertisement);
   app.get('/skyTrails/api/admin/getWebAdds',addWebBanner.getAggregateWebAdvertisement);
   app.get('/skyTrails/api/admin/getAllEvents',eventController.getAllEventsAggregate);
-  app.get('/skyTrails/api/admin/userSearchHistory',userSearchesController.getUserSerchHistory)
+  app.get('/skyTrails/api/admin/userSearchHistory',userSearchesController.getUserSerchHistory);
+  app.get('/skyTrails/api/admin/getAllPackageEnquiry',packageControlelr.getAllPackageEnquiry)
 };

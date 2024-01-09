@@ -12,6 +12,17 @@ const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleString('en-US', options);
   };
+  const formatDateonlyDate = (dateString) => {
+    const options = {
+      weekday: 'short',
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    };
+  
+    const date = new Date(dateString);
+    return date.toLocaleString('en-US', options);
+  };
 
 function flightMail(to){
     // console.log(to)
@@ -979,7 +990,20 @@ function busMail(to){
 }
 
 function hotelMail(to){
-    console.log(to)
+    // console.log(to)
+
+    const checkInDate = new Date(to.CheckInDate);
+    const checkOutDate = new Date(to.CheckOutDate);
+
+    // Calculate the difference in milliseconds
+    const differenceInTime = checkOutDate.getTime() - checkInDate.getTime();
+
+    // Convert milliseconds to days
+    const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+
+    // Display the number of nights
+    const numberOfNights = Math.floor(differenceInDays);
+
     return`<!DOCTYPE html>
 
     <html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
@@ -1208,7 +1232,7 @@ function hotelMail(to){
     <td class="pad" style="padding-left:10px;">
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
-    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="font-size:18px;"><strong><span style="color:#ffffff;">1-Night Stay</span></strong></span></p>
+    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="font-size:18px;"><strong><span style="color:#ffffff;">${numberOfNights} -Night Stay</span></strong></span></p>
     </div>
     </div>
     </td>
@@ -1219,7 +1243,7 @@ function hotelMail(to){
     <td class="pad">
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
-    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="color:#ffffff;">2 Guests</span></p>
+    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="color:#ffffff;">${to.noOfPeople} Guests</span></p>
     </div>
     </div>
     </td>
@@ -1241,7 +1265,7 @@ function hotelMail(to){
     <td class="pad" style="padding-left:10px;padding-right:10px;padding-top:10px;">
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
-    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="color:#ffffff;">Qamar (Primary Guest)</span></p>
+    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="color:#ffffff;">${to.name} (Primary Guest)</span></p>
     </div>
     </div>
     </td>
@@ -1252,7 +1276,7 @@ function hotelMail(to){
     <td class="pad">
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
-    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="color:#ffffff;">qamarali205@gmail.com,</span></p>
+    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="color:#ffffff;">${to.email},</span></p>
     </div>
     </div>
     </td>
@@ -1263,7 +1287,7 @@ function hotelMail(to){
     <td class="pad" style="padding-bottom:10px;padding-left:10px;padding-right:10px;">
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
-    <p style="margin: 0; mso-line-height-alt: 14.399999999999999px;"><span style="color:#ffffff;">9627466902</span></p>
+    <p style="margin: 0; mso-line-height-alt: 14.399999999999999px;"><span style="color:#ffffff;">${to.phone}</span></p>
     </div>
     </div>
     </td>
@@ -1287,7 +1311,7 @@ function hotelMail(to){
     <td class="pad">
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
-    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="font-size:15px;color:#ffffff;">Sat, Dec 9, 2023</span></p>
+    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="font-size:15px;color:#ffffff;">${formatDateonlyDate(to.CheckInDate)}</span></p>
     </div>
     </div>
     </td>
@@ -1322,7 +1346,7 @@ function hotelMail(to){
     <td class="pad">
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
-    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="font-size:15px;color:#ffffff;">Sun, Dec 10, 2023</span></p>
+    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="font-size:15px;color:#ffffff;">${formatDateonlyDate(to.CheckInDate)}</span></p>
     </div>
     </div>
     </td>

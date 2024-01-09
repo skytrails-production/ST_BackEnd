@@ -34,30 +34,39 @@ const eventServices={
         return await eventModel.countDocuments(body)
     },
     getEvent:async(body)=>{
-        const {page,limit,search}=body;
+        const { page, limit, search } = body;
         const currentDate = new Date().toISOString();
-        // endDate: { $gt: currentDate }
-        query = {
+        
+        // Construct the initial query
+        let query = {
             status: status.ACTIVE,
-            venue: { $eq: search }
         };
         
+        // Check if the search parameter is provided
         if (search) {
             query.$or = [
-                { title: { $regex: search, $options: 'i' } }, 
-                { content: { $regex: search, $options: 'i' } }, 
+                { title: { $regex: search, $options: 'i' } },
+                { content: { $regex: search, $options: 'i' } },
                 { venue: { $regex: search, $options: 'i' } },
             ];
         }
         
+        // Add additional criteria for filtering events based on the current date
+        query.endDate = { $gt: currentDate };
+        
+        // Set up pagination options
         let options = {
             page: Number(page) || 1,
             limit: Number(limit) || 8,
             sort: { createdAt: -1 },
         };
-        const data= await eventModel.paginate(query, options);
-        console.log("data",data);
+        
+        // Now, retrieve the events using the constructed query and options
+        const data = await eventModel.paginate(query, options);
+        
+        console.log("data", data);
         return data;
+        
     }
 }
 module.exports ={eventServices}

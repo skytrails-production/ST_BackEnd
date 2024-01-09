@@ -13,7 +13,8 @@ const { object } = require("joi");
 const User = require("../model/user.model");
 const Role = require("../model/role.model");
 const { response } = require("express");
-
+const statusCode = require('../utilities/responceCode');
+const responseMessage = require('../utilities/responses');
 const s3 = new aws.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -37,6 +38,7 @@ exports.internationalCreate = async (req, res) => {
         pakage_title: reqData.pakage_title,
         pakage_img: data.Location,
         destination: reqData.destination,
+        country:reqData.country,
         days: reqData.days,
         schedule: {
           flexible: reqData.flexible,
@@ -85,6 +87,7 @@ exports.internationalupdate = async (req, res) => {
         pakage_title: reqData.pakage_title,
         pakage_img: data.Location,
         destination: reqData.destination,
+        country:reqData.country,
         days: reqData.days,
         schedule: {
           flexible: reqData.flexible,
@@ -347,3 +350,78 @@ exports.pakageBooking = async (req, res) => {
     sendActionFailedResponse(res, {}, err.message);
   }
 };
+
+exports.editPackage=async(req,res,next)=>{
+  try {
+    const {packageId,pakage_img,destination,flexible,fixed_departure,currency,amount,insclusions,hotel_details,insclusion_note,exclusion_note,detailed_ltinerary,overview,select_tags,term_Conditions,cancellation_Policy}=req.body; 
+    const pakage_title=req.file;
+    const isPackageExist=await internationl.finOne({_id:packageId});
+    if(!isPackageExist){
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.PACKAGE_NOT_EXIST,
+      });
+    }
+    if(pakage_img){
+      const s3Params = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: file.originalname,
+        Body: file.buffer,
+        ContentType: file.mimetype,
+        ACL: "public-read",
+      };
+
+      s3.upload(s3Params, async (err, data) => {
+        if (err) {
+          res.status(500).send(err);
+        } else {
+          // isPackageExist.set({
+          //   pakage_title: reqData.pakage_title,
+          //   pakage_img: data.Location,
+          //   destination: reqData.destination,
+          //   days: reqData.days,
+          //   schedule: {
+          //     flexible: reqData.flexible,
+          //     fixed_departure: reqData.fixed_departure,
+          //   },
+          //   pakage_amount: {
+          //     currency: reqData.pakage_amount.currency,
+          //     amount: reqData.pakage_amount.amount,
+          //   },
+          //   insclusions: reqData.insclusions,
+          //   hotel_details: reqData.hotel_details,
+          //   insclusion_note: reqData.insclusion_note,
+          //   exclusion_note: reqData.exclusion_note,
+          //   detailed_ltinerary: reqData.detailed_ltinerary,
+          //   overview: reqData.overview,
+          //   select_tags: reqData.select_tags,
+          //   term_Conditions: reqData.term_Conditions,
+          //   cancellation_Policy: reqData.cancellation_Policy,
+          // });
+          req.body.pakage_img=data.Location;
+          try {
+            const response = await internationl.findOneAndUpdate({_id:isPackageExist._id},req.body);
+            msg = "Pakage is updated successfull.";
+            actionCompleteResponse(res, response, msg);
+          } catch (err) {
+            sendActionFailedResponse(res, {}, err.message);
+          }
+        }
+      });
+    }
+    const obj={
+      pakage_title:pakage_title,
+
+    }
+    const result=await internationl.findOneAndUpdate({_id:isPackageExist._id},req.body);
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.CREATED_SUCCESS,
+        result: result,
+      });
+    
+  } catch (error) {
+    console.log("error while edit package.",error);
+    return next(error);
+  }
+}

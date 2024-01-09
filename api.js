@@ -32,13 +32,13 @@ const wsServer = new WebSocket({
 // WebSocket server request event handling
 wsServer.on('request', (request) => {
   const connection = request.accept(null, request.origin);
-  console.log('WebSocket connection accepted');
+  // console.log('WebSocket connection accepted');
 
   connection.on('message', (message) => {
     if (message.type === 'utf8') {
       const data = message.utf8Data;
       // Handle WebSocket messages here                               
-      console.log('Received message:', data);
+      // console.log('Received message:', data);
       connection.sendUTF('Message received: ' + data); // Example: Send a response
     }
   });
@@ -232,5 +232,4 @@ process.on("unhandledRejection", (err) => {
 
 // const uuid = uuidv4();
 
-// console.log(uuid);
 

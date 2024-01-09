@@ -48,7 +48,7 @@ function getHtmlContent(name) {
 
 module.exports = {
   getOTP() {
-    var otp = Math.floor(1000 + Math.random() * 900000);
+    var otp = Math.floor(100000 + Math.random() * 900000);
     return otp;
   },
 
@@ -4515,7 +4515,7 @@ var transporter = nodemailer.createTransport({
 var mailOptions = {
   from: nodemailerConfig.user,
   to: to,
-  subject: "Congratulations,your are become member of theSkyTrais, ",
+  subject: "Congratulations,you are become member of theSkyTrais, ",
   html: welcomeMail(to,userName,pass),
 };
 return await transporter.sendMail(mailOptions);
@@ -4801,10 +4801,11 @@ var transporter = nodemailer.createTransport({
 var mailOptions = {
   from: nodemailerConfig.user,
   to: to,
-  subject: "Congratulations,your are become member of theSkyTrais, ",
+  subject: "Congratulations,you are become member of theSkyTrais, ",
   html: welcomeAgentMail(to,pass),
 };
 return await transporter.sendMail(mailOptions);
   },
 
+  
 };

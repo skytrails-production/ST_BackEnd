@@ -32,6 +32,7 @@ module.exports = function (app) {
   app.get("/skytrails/user/getAllAgentBusBookingList", controller.getAllAgentBusBookingList);
   //get singleuserbyid
   app.get("/skyTrails/user/:userId", controller.UserById);
+  app.post('/skyTrails/b2b/updateProfile',  upload.single("file"), controller.updateProfile);
 
   //update password user by id
 

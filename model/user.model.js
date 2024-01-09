@@ -10,7 +10,7 @@ const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 const userSchema = new mongoose.Schema(
   {
     username: { type: String },
-    email: { type: String },
+    email: { type: String , unique: true},
     password: { type: String },
     roles: [
       {

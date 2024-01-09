@@ -362,7 +362,7 @@ exports.getAgents = async (req, res, next) => {
     if (result.docs.length == 0) {
       return res.status(statusCode.NotFound).send({ message: responseMessage.DATA_NOT_FOUND });
     }
-    console.log("result========", result);
+    // console.log("result========", result);
     return res.status(statusCode.OK).send({ message: responseMessage.DATA_FOUND, result: result });
   } catch (error) {
     console.log("error=======>>>>>>", error);
@@ -573,7 +573,7 @@ exports.getDataById = async (req, res, next) => {
       default:
         return res.status(400).json({ message: responseMessage.INVALID_MODEL });
     }
-    console.log();
+    // console.log();
     if (!result) {
       return res.status(404).json({ message: responseMessage.DATA_NOT_FOUND });
     }
@@ -953,22 +953,30 @@ exports.getAgentchangeBusRequest = async (req, res, next) => {
 exports.createMarkup=async(req,res,next)=>{
   try {
     const {hotelMarkup,flightMarkup,busMarkup,packageMarkup} = req.body;
-    //  const isAdmin = await findUser({ _id: req.userId, userType:[ userType.ADMIN ]});
-    // if (!isAdmin) {
-    //   return res.status(statusCode.NotFound).send({ message: responseMessage.ADMIN_NOT_FOUND });
-    // }
     const object={
       hotelMarkup:hotelMarkup,
       flightMarkup:flightMarkup,
       busMarkup:busMarkup,
       holidayPackageMarkup:packageMarkup
     }
-    const result=await createMarkup(object);
+    const data= await findMarkup({status:status.ACTIVE});
+    console.log("data",data)
+    if(data){
+      const resultData=await updateMarkup({_id:data._id},object);
+      if(!resultData){
+        return res.status(statusCode.NotFound).send({ statusCode:statusCode.NotFound,message: responseMessage.ADMIN_NOT_FOUND });
+      }
+      return res.status(statusCode.OK).send({ statusCode: statusCode.OK,responseMessage:responseMessage.CREATED_SUCCESS,result: resultData });  
+    }else{
+       const result=await createMarkup(object);
     if(!result){
       return res.status(statusCode.NotFound).send({ statusCode:statusCode.NotFound,message: responseMessage.ADMIN_NOT_FOUND });
     }
     return res.status(statusCode.OK).send({ statusCode: statusCode.OK,responseMessage:responseMessage.CREATED_SUCCESS,result: result });
-  } catch (error) {
+ 
+    }
+   
+    } catch (error) {
     console.log("Error creating markup",error);
     return next(error);
   }

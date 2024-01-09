@@ -26,20 +26,18 @@ const packageBookingModelServices = {
         return await packageBookingModel.findOneAndUpdate(query, updateObj, { new: true });
     },
 
-    getPackageEnquiry:async(query)=>{
-        // let query = { userType: { $nin: [userType.ADMIN, userType.SUBADMIN] } }
-        const { page, limit, usersType1, search } = body;
+    getPackageEnquiry:async(body)=>{
+        let query = { status:status.ACTIVE }
+        const { page, limit, search } = body;
         if (search) {
             query.$or = [
-                // { username: { $regex: search, $options: 'i' } },
-                // { email: { $regex: search, $options: 'i' } },
+                { fullName: { $regex: search, $options: 'i' } },
+                { email: { $regex: search, $options: 'i' } },
                 { _id: { $regex: search, $options: 'i' } },
                 { status: { $regex: search, $options: 'i' } }
             ]
         }
-        if (usersType1) {
-            query.userType = usersType1
-        }
+       
 
         let options = {
             page: Number(page) || 1,

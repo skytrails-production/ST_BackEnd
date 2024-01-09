@@ -7,6 +7,10 @@ mongoose.pluralize(null);
 
 const visaApplicationSchema = new mongoose.Schema(
   {
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "users",
+    },
     firstName: {
       type: String,
     },
@@ -39,7 +43,13 @@ const visaApplicationSchema = new mongoose.Schema(
     image:{
       type:String
     },
+    passportImage:{
+      type:String
+    },
     documents: [],
+    spouseName: [{
+      type: String
+    }],
     bookingStatus: {
       type: String,
       enum:[bookingStatus.BOOKED,bookingStatus.CANCEL,bookingStatus.PENDING],
