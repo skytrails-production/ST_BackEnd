@@ -184,7 +184,7 @@ exports.getPostOfUser = async (req, res, next) => {
       });
     }
     req.query.userId = isUserExist._id;
-    const result = await forumQueListLookUp1(req.query);
+    const result = await forumQueListLookUpOfUser(req.query);
     if (!result) {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,

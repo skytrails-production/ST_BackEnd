@@ -38,4 +38,9 @@ module.exports = function (app) {
     controller.getALLpakageBookingrequest
   );
   app.post("/skyTrails/international/pakageBooking", controller.pakageBooking);
+
+
+  //get latest packages
+
+  app.get("/skyTrails/latestPackages",controller.latestPackages)
 };

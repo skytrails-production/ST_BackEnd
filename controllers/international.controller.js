@@ -172,16 +172,16 @@ exports.internationalgetAll = async (req, res) => {
     let pakage = await apiSearch.query;
     // console.log(pakage.length,"package")
   if(pakage.length=== 0){
-    console.log(req.query)
+    // console.log(req.query)
     // pakage=await internationl.find({ 'destination.addMore': req.query.keyword }).exec();
-    pakage=await internationl.find({
-      'destination': {
+    pakage=await internationl.find({$or: [
+      {'destination': {
         $elemMatch: {
           'addMore': { $regex: new RegExp(req.query.keyword, 'i') } // 'i' flag for case-insensitive search
         }
-      }
-    }).exec();
-    console.log(pakage,"data")
+      }},{'country':{ $regex: new RegExp(req.query.keyword, 'i') }}
+    ]}).exec();
+    // console.log(pakage,"data")
   }
 
     for (let p = 0; p < pakage.length; p++) {
@@ -241,21 +241,60 @@ exports.internationalgetAll = async (req, res) => {
 function escapeRegex(text) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 }
+// exports.packageCityList = async (req, res) => {
+//   try {
+//     const regex = new RegExp(escapeRegex(req.query.keyword), "gi");
+    
+//     const response = await internationl.aggregate([
+//       { $match: { 'destination.addMore': regex } },
+//       { $unwind: '$destination' },
+//       { $match: { 'destination.addMore': regex } },
+//       { $group: { _id: null, addMoreList: { $addToSet: '$destination.addMore' } } }
+//     ]);
+    
+//     if (response.length > 0) {
+//       const addMoreList = response[0].addMoreList;
+//       const msg = "List of Package City List values retrieved successfully";
+//       actionCompleteResponse(res, addMoreList, msg);
+//     } else {
+//       const msg = "No matching Package City values found";
+//       actionCompleteResponse(res, [], msg);
+//     }
+//   } catch (error) {
+//     sendActionFailedResponse(res, {}, error.message);
+//   }
+// };
+
+
+
+
+
+// new list
+
+
 exports.packageCityList = async (req, res) => {
   try {
     const regex = new RegExp(escapeRegex(req.query.keyword), "gi");
-    
-    const response = await internationl.aggregate([
-      { $match: { 'destination.addMore': regex } },
-      { $unwind: '$destination' },
+
+    const cityResponse = await internationl.aggregate([
       { $match: { 'destination.addMore': regex } },
       { $group: { _id: null, addMoreList: { $addToSet: '$destination.addMore' } } }
     ]);
-    
-    if (response.length > 0) {
-      const addMoreList = response[0].addMoreList;
-      const msg = "List of Package City List values retrieved successfully";
-      actionCompleteResponse(res, addMoreList, msg);
+
+    const countryResponse = await internationl.aggregate([
+      { $match: { 'country': regex } },
+      { $group: { _id: null, countryList: { $addToSet: '$country' } } }
+    ]);
+
+    const combinedList = [
+      ...(cityResponse.length > 0 ? cityResponse[0].addMoreList : []),
+      ...(countryResponse.length > 0 ? countryResponse[0].countryList : [])
+    ];
+
+    if (combinedList.length > 0) {
+      const uniqueCombinedList = [...new Set(combinedList.flat())];
+      const msg = "List of Package City and Country values retrieved successfully";
+      actionCompleteResponse(res, uniqueCombinedList, msg);
     } else {
       const msg = "No matching Package City values found";
       actionCompleteResponse(res, [], msg);
@@ -264,6 +303,32 @@ exports.packageCityList = async (req, res) => {
     sendActionFailedResponse(res, {}, error.message);
   }
 };
+
+
+//get latest packages
+
+exports.latestPackages = async (req, res) => {
+  try {
+    const packages = await internationl
+    .find()
+    .sort({ "createdAt": -1, "pakage_amount.amount": -1 })
+    .limit(6); 
+
+    if (packages.length > 0) {
+      const msg = "Latest 6 packages search successfully";
+      actionCompleteResponse(res, packages, msg);
+    } else {
+      const msg = "No data found";
+      actionCompleteResponse(res, [], msg);
+    }
+  } catch (error) {
+    sendActionFailedResponse(res, {}, error.message);
+  }
+};
+
+
+
+
 
 
 

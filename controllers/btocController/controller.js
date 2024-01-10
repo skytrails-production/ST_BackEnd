@@ -121,7 +121,6 @@ exports.login = async (req, res, next) => {
       phone: updatedUser.phone,
       userType: updatedUser.userType,
       otpVerified: updatedUser.otpVerified,
-      otp: otp,
       status: updatedUser.status,
       token: token,
     };
@@ -191,14 +190,17 @@ exports.verifyUserOtp = async (req, res, next) => {
     }
     const updation = await updateUser(
       { _id: isUserExist._id, status: status.ACTIVE },
-      { otpVerified: true,otp:" " }
+      { otpVerified: true,}
     );
-    console.log("======================", updation);
     if (updation.firstTime === false) {
       const token = await commonFunction.getToken({
         _id: updation._id,
         mobile_number: updation.phone.mobile_number,
       });
+      const updation = await updateUser(
+        { _id: isUserExist._id, status: status.ACTIVE },
+        {otp:" "}
+      );
       const result = {
         firstTime: updation.firstTime,
         _id: updation._id,
