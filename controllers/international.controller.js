@@ -311,7 +311,7 @@ exports.latestPackages = async (req, res) => {
   try {
     const packages = await internationl
     .find()
-    .sort({ "createdAt": -1, "pakage_amount.amount": -1 })
+    .sort({"pakage_amount.amount": 1,"createdAt": -1 })
     .limit(6); 
 
     if (packages.length > 0) {
