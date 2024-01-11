@@ -282,7 +282,7 @@ const schemas = {
     mobileNumber: joi
       .string()
       .length(10)
-      .pattern(/^(?!.*(\d)(?:\1{3,})).*[1-9]\d*$/)
+      .pattern(/^(?!.*(\d)(?:\1{6,})).*[1-9]\d*$/)
       .required(),
   }),
   agetHotelBooking: joi.object().keys({
