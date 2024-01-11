@@ -32,6 +32,7 @@ exports.login = async (req, res, next) => {
       "phone.mobile_number": mobileNumber,userType:userType.USER,
       status: status.ACTIVE,
     });
+    console.log("isExist",isExist);
     const otp = commonFunction.getOTP();
     const otpExpireTime = new Date().getTime() + 300000;
     const obj = {
@@ -161,7 +162,6 @@ exports.verifyUserOtp = async (req, res, next) => {
         _id: updateStaticUser._id,
         mobile_number: updateStaticUser.phone.mobile_number,
       });
-      console.log("===========>>>>>>>.",updateStaticUser)
       const result = {
         firstTime: updateStaticUser.firstTime,
         _id: updateStaticUser._id,
@@ -197,7 +197,7 @@ exports.verifyUserOtp = async (req, res, next) => {
         _id: updation._id,
         mobile_number: updation.phone.mobile_number,
       });
-      const updation = await updateUser(
+      const updationData = await updateUser(
         { _id: isUserExist._id, status: status.ACTIVE },
         {otp:" "}
       );
