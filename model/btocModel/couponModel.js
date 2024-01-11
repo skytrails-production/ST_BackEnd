@@ -8,12 +8,11 @@ mongoose.pluralize(null);
 const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 const mongoosePaginate = require("mongoose-paginate-v2");
 
-const couponSchema = new mongoose.Schema(
+const couponSchema = new Schema(
   {
     image: {
       type: String,
     },
-    usedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'users' }],
     title: {
       type: String,
     },
@@ -25,18 +24,18 @@ const couponSchema = new mongoose.Schema(
     },
     couponCode: {
       type: String,
-      unique: true,
+      // unique: true,
     },
     discountPercentage: {
       type: Number,
     },
-    limitAmount:{
-        type: Number,
+    limitAmount: {
+      type: Number,
     },
     expirationDate: {
       type: Date,
     },
-    termsAndCond:[],
+    termsAndCond: [],
     status: {
       type: String,
       enum: [status.ACTIVE, status.BLOCK, status.DELETE],
@@ -51,7 +50,7 @@ const couponSchema = new mongoose.Schema(
       ],
       default: approvalStatus.APPROVED,
     },
-    addType: {
+    offerType: {
       type: String,
       enum: [
         offerType.BUS,
@@ -60,6 +59,7 @@ const couponSchema = new mongoose.Schema(
         offerType.HOLIDAYS,
         offerType.HOTELS,
       ],
+      userApplied: [{ type: mongoose.Schema.Types.ObjectId, ref: "users",default:[]}],
     },
   },
   { timestamps: true }
@@ -68,6 +68,6 @@ couponSchema.plugin(mongoosePaginate);
 
 couponSchema.plugin(aggregatePaginate);
 
-const Coupon = mongoose.model('Coupons', couponSchema);
+const Coupon = mongoose.model("Coupons", couponSchema);
 
 module.exports = Coupon;

@@ -4,6 +4,9 @@ const SchemaValidator = require('../../utilities/validations.utilities');
 const upload=require('../../utilities/uploadHandler')
 const { authJwt } = require("../../middleware");
 const { Schemas } = require('aws-sdk');
+const multer = require("multer");
+const storage = multer.memoryStorage();
+const upload1 = multer({ storage: storage });
 
 module.exports = function (app) {
     app.use(function (req, res, next) {

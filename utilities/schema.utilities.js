@@ -97,7 +97,6 @@ const schemas = {
     governmentFees: joi.number().optional(),
     validityPeriod: joi.string().optional(),
     lengthOfStay: joi.string().optional(),
-    gallery: joi.array().items(joi.string()).optional(),
     visaType: joi.valid(...Object.values(visaType)).optional(),
     platFormFees: joi.number().optional(),
     issuedType: joi
@@ -106,7 +105,7 @@ const schemas = {
       .required(),
     continent: joi.string().required(),
     daysToProcess: joi.number().optional(),
-    visaCategoryName: joi.string().required(),
+    visaCategoryName: joi.string().optional(),
   }),
   //static content validation via joi
   staticContentSchema: joi.object().keys({
@@ -282,7 +281,7 @@ const schemas = {
     mobileNumber: joi
       .string()
       .length(10)
-      .pattern(/^(?!.*(\d)(?:\1{6,})).*[1-9]\d*$/)
+      .pattern(/^(?!.*(\d)(?:\1{5,})).*[1-9]\d*$/)
       .required(),
   }),
   agetHotelBooking: joi.object().keys({
@@ -418,7 +417,7 @@ const schemas = {
     child: joi.number().required(),
     packageType: joi.string().required(),
     departureDate: joi.string().required(),
-    noOfPeople:joi.number().required()
+    noOfPeople: joi.number().required(),
   }),
   changeUserRequest: joi.object().keys({
     reason: joi.string().required(),
@@ -584,6 +583,29 @@ const schemas = {
     visaCategory: joi.string().required(),
     requiredDocCategory: joi.array().required(),
     visaType: joi.valid(...Object.values(visaType)).optional(),
+  }),
+
+  createCouponSchema: joi.object().keys({
+    title: joi.string().required(),
+    content: joi.string().required(),
+    remainingDays: joi.number().required(),
+    couponCode: joi.string().required(),
+    discountPercentage: joi.number().required(),
+    limitAmount: joi.number().required(),
+    expirationDate: joi.string().required(),
+    termsAndCond: joi.string().required(),
+    offerType: joi.valid(...Object.values(queryType)).required(),
+    uniqueId: joi.string().optional(),
+  }),
+
+  updateMarkupSchema:joi.object().keys({
+    hotelMarkup: joi.string().optional(),
+    flightMarkup: joi.string().optional(),
+    busMarkup: joi.string().optional(),
+    packageMarkup: joi.string().optional(),
+  }),
+  applyCouponSchema:joi.object().keys({
+    couponCode: joi.string().required(),
   }),
 };
 

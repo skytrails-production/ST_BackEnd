@@ -14,7 +14,7 @@ exports.createWebAdvertisement=async(req,res,next)=>{
             return res.status(400).send({ message: "No file uploaded." });
           }
         const {title, content, startDate, endDate, remainingDays,addType}=req.body;
-        const imageFiles = await commonFunction.getImageUrl(req.file);
+        const imageFiles = await commonFunction.getImageUrlAWS(req.file);
         if (!imageFiles) {
             return res.status(statusCode.InternalError).send({ statusCode: statusCode.OK, message: responseMessage.INTERNAL_ERROR });
         }

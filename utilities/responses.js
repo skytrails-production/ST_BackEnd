@@ -94,5 +94,9 @@ module.exports = {
 	SLOT_BOOKED:"Slot booked successfully.",
 	DOCUMENTTYPE_NOT_EXIST:"Document Type not exist.",
 	PACKAGE_NOT_EXIST:"Package not exist.",
-	COUNTRY_NOT_FOUND:"Country not found."
+	COUNTRY_NOT_FOUND:"Country not found.",
+	COUPON_EXPIRED:"Coupon has expired.",
+	ALREDY_COUPOUN_APPLIED:"User has already used this coupon.",
+	COUPON_NOT_FOUND:"Coupon not found.",
+	COUPON_APPLIED_SUCCESS:"Coupon applied successfully."
 };

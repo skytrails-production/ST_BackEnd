@@ -42,5 +42,7 @@ module.exports = function (app) {
 
   //get latest packages
 
-  app.get("/skyTrails/latestPackages",controller.latestPackages)
+  app.get("/skyTrails/latestPackages",controller.latestPackages);
+  app.get("/skyTrails/beachesPackages", controller.beachesPackages);
+  app.get("/skyTrails/domesticAndInternationalPackages", controller.domesticAndInternational);
 };

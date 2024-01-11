@@ -12,9 +12,14 @@ const userBookingFailed=require('../../controllers/btocController/userTransactio
 const webAdvertismentController=require('../../controllers/btocController/webAdvertisemnetController');
 const schemas = require('../../utilities/schema.utilities');
 const SchemaValidator = require('../../utilities/validations.utilities');
-const upload=require('../../utilities/uploadHandler')
+// const upload=require('../../utilities/uploadHandler')
 const { authJwt } = require("../../middleware");
 const { Schemas } = require('aws-sdk');
+const multer = require("multer");
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+
 module.exports = function (app) {
     app.use(function (req, res, next) {
         res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
@@ -34,17 +39,17 @@ module.exports = function (app) {
     // [authJwt.verifcationToken]
     app.get('/skyTrails/api/user/getUserHotelData',[authJwt.verifcationToken],hotelBookingController.getUserHotelData);
     app.get('/skyTrails/api/user/getUserBusData',[authJwt.verifcationToken],busBookingController.getUserBusData);
-    app.post('/skyTrails/api/admin/createadvertisment',upload.handleFileUpload,SchemaValidator(schemas.advertisementSchema), advertisementController.createadvertismentController);
-    app.put('/skyTrails/api/admin/updateadvertisement',upload.handleFileUpload,[authJwt.verifcationToken],SchemaValidator(schemas.updateadvertisementSchema), advertisementController.updateadvertisementController);
+    app.post('/skyTrails/api/admin/createadvertisment',upload.single("images"),SchemaValidator(schemas.advertisementSchema), advertisementController.createadvertismentController);
+    app.put('/skyTrails/api/admin/updateadvertisement',upload.single("images"),[authJwt.verifcationToken],SchemaValidator(schemas.updateadvertisementSchema), advertisementController.updateadvertisementController);
     app.get('/skyTrails/api/getadvertisement',advertisementController.getadvertisementController);
-    app.post('/skyTrails/api/admin/createflightadvertisment',upload.handleFileUpload,[authJwt.verifcationToken],SchemaValidator(schemas.advertisementSchema), advertisementController.createflightadvertismentController);
-    app.put('/skyTrails/api/admin/updateflightadvertisement',upload.handleFileUpload,[authJwt.verifcationToken],SchemaValidator(schemas.updateadvertisementSchema), advertisementController.updateadvertisementController);
+    app.post('/skyTrails/api/admin/createflightadvertisment',upload.single("images"),[authJwt.verifcationToken],SchemaValidator(schemas.advertisementSchema), advertisementController.createflightadvertismentController);
+    app.put('/skyTrails/api/admin/updateflightadvertisement',upload.single("images"),[authJwt.verifcationToken],SchemaValidator(schemas.updateadvertisementSchema), advertisementController.updateadvertisementController);
     app.get('/skyTrails/api/getflightadvertisement',advertisementController.getflightadvertisementController);
-    app.post('/skyTrails/api/admin/createbustadvertisment',upload.handleFileUpload,[authJwt.verifcationToken],SchemaValidator(schemas.advertisementSchema), advertisementController.createbustadvertismentController);
-    app.put('/skyTrails/api/admin/updatebusadvertisement',upload.handleFileUpload,[authJwt.verifcationToken],SchemaValidator(schemas.updateadvertisementSchema), advertisementController.updatebusadvertisementController);
+    app.post('/skyTrails/api/admin/createbustadvertisment',upload.single("images"),[authJwt.verifcationToken],SchemaValidator(schemas.advertisementSchema), advertisementController.createbustadvertismentController);
+    app.put('/skyTrails/api/admin/updatebusadvertisement',upload.single("images"),[authJwt.verifcationToken],SchemaValidator(schemas.updateadvertisementSchema), advertisementController.updatebusadvertisementController);
     app.get('/skyTrails/api/getbusadvertisement',advertisementController.getbusadvertisementController);
-    app.post('/skyTrails/api/admin/createhoteladvertisment',upload.handleFileUpload,[authJwt.verifcationToken],SchemaValidator(schemas.advertisementSchema), advertisementController.createhoteladvertismentController);
-    app.put('/skyTrails/api/admin/updatehoteladvertisement',upload.handleFileUpload,[authJwt.verifcationToken],SchemaValidator(schemas.updateadvertisementSchema), advertisementController.updatehoteladvertisementController);
+    app.post('/skyTrails/api/admin/createhoteladvertisment',upload.single("images"),[authJwt.verifcationToken],SchemaValidator(schemas.advertisementSchema), advertisementController.createhoteladvertismentController);
+    app.put('/skyTrails/api/admin/updatehoteladvertisement',upload.single("images"),[authJwt.verifcationToken],SchemaValidator(schemas.updateadvertisementSchema), advertisementController.updatehoteladvertisementController);
     app.get('/skyTrails/api/gethoteladvertisement',advertisementController.gethoteladvertisementController);
     app.post('/skyTrails/api/user/cancelUserHotelBooking',[authJwt.verifcationToken],SchemaValidator(schemas.cancelUserHotelBookingSchema),userCancelController.cancelUserHotelBooking);
     app.post('/skyTrails/api/user/cancelUserFlightBooking',[authJwt.verifcationToken],SchemaValidator(schemas.cancelUserFlightBookingSchema),userCancelController.cancelUserFlightBooking)

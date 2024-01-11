@@ -29,7 +29,7 @@ exports.createadvertismentController = async (req, res, next) => {
         // if (!isAdmin) {
         //   return res.status(statusCode.Unauthorized).send({ message: responseMessage.UNAUTHORIZED });
         // }
-        const imageFiles = await commonFunction.getImageUrl(req.file);
+        const imageFiles = await commonFunction.getImageUrlAWS(req.file);
         if (!imageFiles) {
             return res.status(statusCode.InternalError).send({ statusCode: statusCode.OK, message: responseMessage.INTERNAL_ERROR });
         }
@@ -62,7 +62,7 @@ exports.updateadvertisementController = async (req, res, next) => {
         if(!isExist){
             return res.status(statusCode.NotFound).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
         }
-        const imageFiles = await commonFunction.getImageUrl(req.file);
+        const imageFiles = await commonFunction.getImageUrlAWS(req.file);
         if (!imageFiles) {
             return res.status(statusCode.InternalError).send({ statusCode: statusCode.OK, message: responseMessage.INTERNAL_ERROR });
         }
@@ -112,7 +112,7 @@ exports.createflightadvertismentController = async (req, res, next) => {
         // if (!isAdmin) {
         //   return res.status(statusCode.Unauthorized).send({ message: responseMessage.UNAUTHORIZED });
         // }
-        const imageFiles = await commonFunction.getImageUrl(req.file);
+        const imageFiles = await commonFunction.getImageUrlAWS(req.file);
         if (!imageFiles) {
             return res.status(statusCode.InternalError).send({ statusCode: statusCode.OK, message: responseMessage.INTERNAL_ERROR });
         }
@@ -145,7 +145,7 @@ exports.updateflightadvertisementController = async (req, res, next) => {
         if(!isExist){
             return res.status(statusCode.NotFound).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
         }
-        const imageFiles = await commonFunction.getImageUrl(req.file);
+        const imageFiles = await commonFunction.getImageUrlAWS(req.file);
         if (!imageFiles) {
             return res.status(statusCode.InternalError).send({ statusCode: statusCode.OK, responseMessage: responseMessage.INTERNAL_ERROR });
         }
@@ -199,7 +199,7 @@ exports.createbustadvertismentController = async (req, res, next) => {
         // if (!isAdmin) {
         //   return res.status(statusCode.Unauthorized).send({ message: responseMessage.UNAUTHORIZED });
         // }
-        const imageFiles = await commonFunction.getImageUrl(req.file);
+        const imageFiles = await commonFunction.getImageUrlAWS(req.file);
         if (!imageFiles) {
             return res.status(statusCode.InternalError).send({ statusCode: statusCode.OK, message: responseMessage.INTERNAL_ERROR });
         }
@@ -232,7 +232,7 @@ exports.updatebusadvertisementController = async (req, res, next) => {
         if(!isExist){
             return res.status(statusCode.NotFound).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
         }
-        const imageFiles = await commonFunction.getImageUrl(req.file);
+        const imageFiles = await commonFunction.getImageUrlAWS(req.file);
         if (!imageFiles) {
             return res.status(statusCode.InternalError).send({ statusCode: statusCode.OK, responseMessage: responseMessage.INTERNAL_ERROR });
         }
@@ -284,7 +284,7 @@ exports.createhoteladvertismentController = async (req, res, next) => {
         // if (!isAdmin) {
         //   return res.status(statusCode.Unauthorized).send({ message: responseMessage.UNAUTHORIZED });
         // }
-        const imageFiles = await commonFunction.getImageUrl(req.file);
+        const imageFiles = await commonFunction.getImageUrlAWS(req.file);
         if (!imageFiles) {
             return res.status(statusCode.InternalError).send({ statusCode: statusCode.OK, message: responseMessage.INTERNAL_ERROR });
         }
@@ -317,7 +317,7 @@ exports.updatehoteladvertisementController = async (req, res, next) => {
         if(!isExist){
             return res.status(statusCode.NotFound).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
         }
-        const imageFiles = await commonFunction.getImageUrl(req.file);
+        const imageFiles = await commonFunction.getImageUrlAWS(req.file);
         if (!imageFiles) {
             return res.status(statusCode.InternalError).send({ statusCode: statusCode.OK, responseMessage: responseMessage.INTERNAL_ERROR });
         }

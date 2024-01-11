@@ -1,7 +1,9 @@
 const controller = require("../../controllers/offerController/offer.controller");
 const auth = require("../../middleware/authJwt");
 const { uploadOffer } = require("../../middleware/uploadFileS3");
-
+const multer = require("multer");
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 module.exports = function (app) {
   app.use(function (req, res, next) {

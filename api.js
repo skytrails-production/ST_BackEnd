@@ -155,6 +155,7 @@ require("./routes/visaRoutes/documentCategory")(app)
 require("./routes/visaRoutes/documentType")(app)
 require("./routes/visaRoutes/visaCategoryRoutes")(app)
 require("./routes/visaRoutes/createRequireDocumentRoutes")(app)
+require("./routes/createCouponRoutes")(app)
 mongoose
   .connect(configs.mongoUrl.DEVELOPMENT, {
     useNewUrlParser: true,

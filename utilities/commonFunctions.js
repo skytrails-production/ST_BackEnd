@@ -3,6 +3,7 @@ const { PDFDocument, rgb } = require('pdf-lib');
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
+const AWS = require('aws-sdk');
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const { Client } = require("whatsapp-web.js");
@@ -15,7 +16,11 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
-
+const s3 = new AWS.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION,
+});
 
 function getHtmlContent(name) {
   return `
@@ -4807,5 +4812,37 @@ var mailOptions = {
 return await transporter.sendMail(mailOptions);
   },
 
-  
+  getImageUrlAWS: async (file) => {
+  //   const s3Params = {
+  //     Bucket: process.env.AWS_BUCKET_NAME,
+  //     Key: file.originalname,
+  //     Body: file.buffer,
+  //     ContentType: file.mimetype,
+  //     ACL: "public-read",
+  //   };
+  //   var result = await s3.upload(s3Params);
+  //   console.log("result======",result)
+  //   return result;
+  // },
+ 
+//  console.log("file",file)
+  // if (!file || !file.originalname || !file.buffer) {
+  //   throw new Error('Invalid file object');
+  // }
+
+  const params = {
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key: `uploadedFile_${Date.now()}_${file.originalname.replace(/\s/g, '')}`,
+    Body: file.buffer,
+    ContentType: file.mimetype,
+    ACL: 'public-read',
+  };
+  try {
+    const result = await s3.upload(params).promise();
+    return result.Location; // Assuming Location contains the S3 URL
+  } catch (error) {
+    console.error('Error uploading to S3:', error);
+    throw error;
+  }
+}
 };

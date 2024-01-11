@@ -2,9 +2,11 @@ const { verifySignUp } = require("../middleware");
 const { authJwt } = require("../middleware");
 const SchemaValidator = require("../utilities/validations.utilities");
 const schemas = require("../utilities/schema.utilities");
-const controller = require("../controllers/userController");
 const userController = require("../controllers/btocController/controller");
 const { handleFileUpload } = require("../utilities/uploadHandler");
+const multer = require("multer");
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 module.exports = function (app) {
   app.use(function (req, res, next) {
@@ -18,21 +20,7 @@ module.exports = function (app) {
     userController.login
   );
   
-  app.post(
-    "/skytrails/api/user/verifyOtp",
-    SchemaValidator(schemas.userVerifySchema),
-    controller.verifyOtp
-  );
-  app.post(
-    "/skytrails/api/user/login",
-    SchemaValidator(schemas.userLoginSchema),
-    controller.login
-  );
-  app.post(
-    "/skytrails/api/user/forgetPassword",
-    SchemaValidator(schemas.userForgetSchema),
-    controller.forgetPassword
-  );
+ 
   app.put(
     "/skytrails/api/user/verifyUserOtp",
     SchemaValidator(schemas.userVerifySchema),
@@ -51,7 +39,7 @@ module.exports = function (app) {
   );
   app.put(
     "/skytrails/api/user/uploadImage",
-    handleFileUpload,
+    upload.single("images"),
     [authJwt.verifcationToken],
     userController.uploadImage
   );
@@ -73,16 +61,5 @@ module.exports = function (app) {
     [authJwt.verifcationToken],
     userController.editProfile
   );
-  app.put(
-    "/skyTrails/api/user/uploadProfilePicture",
-    handleFileUpload,
-    [authJwt.verifcationToken],
-    controller.uploadProfilePicture
-  );
-  app.put(
-    "/skytrails/api/user/userEditProfile",
-    handleFileUpload,
-    [authJwt.verifcationToken],
-    controller.editProfile
-  );
+
 };

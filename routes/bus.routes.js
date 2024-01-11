@@ -1,5 +1,7 @@
 const controller = require("../controllers/bus.controller");
-
+const upload=require('../utilities/uploadHandler');
+const SchemaValidator = require("../utilities/validations.utilities");
+const schemas = require('../utilities/schema.utilities');
 module.exports = function (app) {
   app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
@@ -29,4 +31,6 @@ module.exports = function (app) {
 
   //Bus Cancel
   app.post("/skyTrails/bus/cancel", controller.busCancellation);
+
+
 };

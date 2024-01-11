@@ -38,7 +38,7 @@ const {
   deletehotelBooking,
   updatehotelBooking,
   hotelBookingList,
-  countTotalBooking,
+  countAgentTotalBooking,
   aggregatePaginateHotelBookingList1,
   aggregatePaginateHotelBookings,
 } = hotelBookingServicess;

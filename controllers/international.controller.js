@@ -327,6 +327,74 @@ exports.latestPackages = async (req, res) => {
 };
 
 
+//Packages search by insclusions category
+
+exports.beachesPackages = async (req, res) => {
+  try {
+    const data = req.query;
+    let query = {};
+
+    for (var key in data) {
+      if (Object.hasOwnProperty.call(data, key)) {
+        var value = data[key];
+
+        query[`insclusions.${key}`] = value;
+      }
+    }
+
+    // console.log('Generated Query:', query);
+
+    const packages = await internationl.find(query);
+
+    if (packages.length > 0) {
+      const msg = "Successfully retrieved packages through the 'inclusions' category search.";
+      actionCompleteResponse(res, packages, msg);
+    } else {
+      const msg = "No data found";
+      actionCompleteResponse(res, [], msg);
+    }
+  } catch (error) {
+    sendActionFailedResponse(res, {}, error.message);
+  }
+}
+
+// package search via country
+
+exports.domesticAndInternational = async (req, res) => {
+  try {
+    const { country } = req.query;
+
+    if (!country) {
+      return res.status(400).json({ error: 'Country parameter is required.' });
+    }
+
+    let query;
+    
+    if (country === 'India') {
+      // Handle query for Indian packages
+      query = { 'country': 'India' };
+    } else {
+      // Handle query for other countries
+      query = { 'country': { $ne: 'India' } };
+    }
+
+    const packages = await internationl.find(query);
+
+    if (packages.length > 0) {
+      // const msg = `आपने किया है ${country === 'India' ? 'देशी' : 'विदेशी'} पैकेजं सर्च`;
+      const msg =`packages found for ${country === 'India' ? 'Indian' : 'others countries'}`;
+      actionCompleteResponse(res, packages, msg);
+    } else {
+      const msg = `No packages found for ${country === 'India' ? 'Indian' : 'other'} countries`;
+      actionCompleteResponse(res, [], msg);
+    }
+  } catch (error) {
+    sendActionFailedResponse(res, {}, error.message);
+  }
+};
+
+
+
 
 
 

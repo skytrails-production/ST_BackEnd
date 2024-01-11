@@ -338,7 +338,7 @@ exports.uploadImage = async (req, res, next) => {
           message: responseMessage.USERS_NOT_FOUND,
         });
     }
-    const imageFiles = await commonFunction.getImageUrl(req.file);
+    const imageFiles = await commonFunction.getImageUrlAWS(req.file);
     if (!imageFiles) {
       return res
         .status(statusCode.InternalError)
@@ -595,5 +595,6 @@ exports.editProfile = async (req, res, next) => {
       return next(error);
   }
 };
+
 
 

@@ -1,7 +1,7 @@
 const multer = require('multer');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
-const File = require('../model/user.model');
+const File = require('fs');
 const { badRequest } = require('./responceCode'); 
 
 // Set storage engine
@@ -42,6 +42,7 @@ const handleFileUpload = (req, res, next) => {
       });
 // console.log("--------=-------",fileData)
       const result = await fileData.save();
+      console.log("result======",result)
       req.fileData = result; 
       return next();
     });

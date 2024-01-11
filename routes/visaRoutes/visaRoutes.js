@@ -2,6 +2,9 @@ const controller = require("../../controllers/visaController/visaController");
 const auth = require("../../middleware/authJwt");
 const schemas = require("../../utilities/schema.utilities");
 const SchemaValidator = require("../../utilities/validations.utilities");
+const multer = require("multer");
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 module.exports = function (app) {
   app.use(function (req, res, next) {
@@ -9,7 +12,7 @@ module.exports = function (app) {
     next();
   });
   // app.post('/skyTrails/visa/createVisa', SchemaValidator(schemas.weeklyVisaSchema),controller.createVisa)
-  app.post("/skyTrails/api/visa/createVisa",SchemaValidator(schemas.weeklyVisaSchema),controller.createVisa);
+  app.post("/skyTrails/api/visa/createVisa",upload.any("images"),SchemaValidator(schemas.weeklyVisaSchema),controller.createVisa);
   app.get("/skyTrails/api/visa/getVisa", controller.getVisa);
   app.put("/skyTrails/api/visa/updateVisa", controller.updateVisa);
   app.delete("/skyTrails/api/visa/deleteVisa", controller.deleteVisa);

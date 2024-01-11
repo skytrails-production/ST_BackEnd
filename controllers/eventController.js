@@ -54,7 +54,7 @@ exports.createEvent = async (req, res, next) => {
     if (!req.file) {
       return res.status(400).send({ message: "No file uploaded." });
     }
-    const imageFiles = await commonFunction.getImageUrl(req.file);
+    const imageFiles = await commonFunction.getImageUrlAWS(req.file);
     if (!imageFiles) {
       return res.status(statusCode.InternalError).send({
         statusCode: statusCode.OK,

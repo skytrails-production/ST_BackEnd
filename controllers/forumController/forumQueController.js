@@ -60,23 +60,24 @@ const {
 
 exports.createPost = async (req, res, next) => {
   try {
-    console.log("req.files", req.file);
+    console.log("req.files", req.files.length);
     const { content } = req.body;
-    const isUser = await findUser({ _id: req.isUser._id, status: status.ACTIVE });
+    const isUser = await findUser({ _id: req.userId, status: status.ACTIVE });
     if (!isUser) {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.USERS_NOT_FOUND,
       });
     }
-    if (req.file) {
-      const secureurl = await commonFuction.getImageUrl(req.file);
-      req.file = secureurl;
+    if (req.files) {
+      const secureurl = await commonFuction.getImageUrlAWS(req.files);
+      // console.log("secureurl============",secureurl)
+      req.body.image = secureurl;
     }
     const obj = {
       userId: isUser._id,
       content: content,
-      image: req.file,
+      image: req.body.image,
     };
     const result = await createforumQue(obj);
     return res.status(statusCode.OK).send({

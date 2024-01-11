@@ -16,7 +16,7 @@ const couponServices = {
   },
 
   findCouponData: async (query) => {
-    return await Coupon.findOne(query).select('-createdAt -updatedAt ');
+    return await Coupon.find(query).select('-createdAt -updatedAt ');
   },
 
   deleteCoupon: async (query) => {
@@ -24,7 +24,7 @@ const couponServices = {
   },
 
   couponList: async (query) => {
-    return await Coupon.find(query).populate('usedBy').select('-createdAt -updatedAt');
+    return await Coupon.find(query).populate('userApplied').select('-createdAt -updatedAt');
   },
 
   updateCoupon: async (query, updateObj) => {

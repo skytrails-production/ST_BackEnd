@@ -18,20 +18,21 @@ const issuedType = require('../../enums/issuedType');
 const statusCode = require('../../utilities/responceCode');
 const responseMessage = require('../../utilities/responses');
 const { RecordingRulesList } = require("twilio/lib/rest/video/v1/room/roomRecordingRule");
+const commonFunctions = require("../../utilities/commonFunctions");
 
 exports.createVisa = async (req, res, next) => {
     try {
-        const { countryName, price, validityPeriod, lengthOfStay, gallery, visaType, governmentFees, platFormFees, issuedType, continent ,visaCategoryName} = req.body;
+        const { countryName, price, validityPeriod, lengthOfStay, visaType, governmentFees, platFormFees, issuedType, continent ,visaCategoryName} = req.body;
         const iscategoryIdExist=await findVisaCategoryData({visaCategoryName:visaCategoryName}); 
         if(!iscategoryIdExist){
             return res.status(statusCode.badRequest).send({ statusCode: statusCode.badRequest, responseMessage: responseMessage.CATEGORY_NOT_FOUND });
         }
-        if (gallery) {
+        if (req.files) {
             var galleryData = [];
-            for (var i = 0; i < gallery.length; i++) {
-                const imageData = gallery[i];
-                var data = await cloudinary.v2.uploader.upload(imageData, { resource_type: "auto" });
-                const imageUrl = data.secure_url;
+            for (var i = 0; i < req.files.length; i++) {
+                const imageData = req.files[i];
+                var data = await commonFunctions.getImageUrlAWS(imageData);
+                const imageUrl = data;
                 galleryData.push(imageUrl);
             }
             req.body.gallery = galleryData;
@@ -50,7 +51,7 @@ exports.createVisa = async (req, res, next) => {
             } else if (!governmentFees) {
                 return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: " platFormFees or required" })
             }
-            req.body.price = governmentFees + platFormFees;
+            req.body.price = Number(governmentFees) + Number(platFormFees);
             req.body.visaType=iscategoryIdExist.visaType;
             req.body.visaCategoryId=iscategoryIdExist._id;
 
@@ -123,7 +124,6 @@ exports.updateVisa = async (req, res, next) => {
     }
 }
 
-
 exports.deleteVisa = async (req, res, next) => {
     const weeklyVisaDataId = req.body.weeklyVisaDataId;
     try {
@@ -161,7 +161,6 @@ exports.getNoVisaList = async (req, res, next) => {
         return next(error)
     }
 }
-
 
 exports.getMonthlyList = async (req, res, next) => {
     try {
