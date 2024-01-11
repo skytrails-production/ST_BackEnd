@@ -10,7 +10,7 @@ const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 const userSchema = new mongoose.Schema(
   {
     username: { type: String },
-    email: { type: String ,default:null},
+    email:{type:String,default:""},
     password: { type: String },
     roles: [
       {
@@ -140,7 +140,7 @@ const userSchema = new mongoose.Schema(
 );
 userSchema.plugin(mongoosePaginate);
 userSchema.plugin(aggregatePaginate);
-const User = mongoose.model("users", userSchema);
+const User = mongoose.model("user", userSchema);
 module.exports = User;
 
 // Find admin user(s)

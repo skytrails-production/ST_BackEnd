@@ -196,7 +196,7 @@ exports.applyCoupon = async (req, res, next) => {
     }
     // Check if the coupon is already expired
     const currentDateTime = new Date();
-    console.log("isCouponExist.expirationDate========",isCouponExist.expirationDate.getTime());
+    console.log("currentDateTime.expirationDate========",currentDateTime);
     console.log(
       "currentDateTime > coupon.expirationDate=====================",
       currentDateTime > isCouponExist.expirationDate
@@ -207,6 +207,7 @@ exports.applyCoupon = async (req, res, next) => {
         responseMessage: responseMessage.COUPON_EXPIRED,
       });
     }
+    console.log("isCouponExist.userApplied.includes(isUserExist._id)===========",isCouponExist.userApplied.includes(isUserExist._id));
     // Check if the user has already applied the coupon
     if (isCouponExist.userApplied.includes(isUserExist._id)) {
       return res.status(statusCode.badRequest).json({
