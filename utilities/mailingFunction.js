@@ -1975,7 +1975,7 @@ function welcomeAgentMail(to,pass){
     <div style="font-family: Arial, sans-serif">
     <div class="" style="font-size: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
     <p style="margin: 0; font-size: 17px; text-align: center; mso-line-height-alt: 20.4px;"><span style="color:#0a0909;font-size:17px;"><strong>Explore here:</strong></span></p>
-    <p style="margin: 0; font-size: 17px; text-align: center; mso-line-height-alt: 20.4px;"><span style="font-size:17px;"><span style="color:#000000;"><strong><span style=""><a href="https://theskytrails.com/" rel="noopener" style="text-decoration: underline;" target="_blank"><span style="color:#000000;"><strong><span style="">TheSkyTrails PVT. LTD adventure now !</span></strong></span></a></span></strong></span></span></p>
+    <p style="margin: 0; font-size: 17px; text-align: center; mso-line-height-alt: 20.4px;"><span style="font-size:17px;"><span style="color:#000000;"><strong><span style=""><a href="https://theskytrails.com" rel="noopener" style="text-decoration: underline;" target="_blank"><span style="color:#000000;"><strong><span style="">TheSkyTrails PVT. LTD adventure now !</span></strong></span></a></span></strong></span></span></p>
     </div>
     </div>
     </td>

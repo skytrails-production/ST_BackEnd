@@ -4806,8 +4806,9 @@ var transporter = nodemailer.createTransport({
 var mailOptions = {
   from: nodemailerConfig.user,
   to: to,
-  subject: "Congratulations,you are become member of theSkyTrais, ",
   html: welcomeAgentMail(to,pass),
+  subject: "Congratulations,you are become member of theSkyTrais, ",
+  
 };
 return await transporter.sendMail(mailOptions);
   },

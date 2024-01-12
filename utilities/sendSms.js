@@ -342,7 +342,7 @@ module.exports = {
     }
   },
   sendSMSAgents: async (mobileNumber,message) => {
-    const messageContent = `Welcome to TheSkyTrails, and check your mail for login credential your mail is: ${message} to login to your account https://b2b.theskytrails.com/subAdminLogin`;
+    const messageContent = `Welcome to TheSkyTrails, and check your mail for login credential your mail is: ${message} to login to your account https://b2b.theskytrails.com`;
     const url = `http://sms.txly.in/vb/apikey.php?`;
     const params = {
       apikey: key,

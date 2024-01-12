@@ -18,7 +18,7 @@ module.exports = function (app) {
         next();
     });
     // [authJwt.verifcationToken],
-    app.post('/skyTrails/forumPost/createPost',upload.single("images"), [authJwt.verifcationToken], controller.createPost);
+    app.post('/skyTrails/forumPost/createPost',upload.single("images"),[authJwt.verifcationToken], controller.createPost);
     // app.post('/skyTrails/forumPost/uploadPost',handleFileUpload, [authJwt.verifcationToken], controller.createPost)
     app.post('/skyTrails/forumPost/addBookmark',controller.addBookmark)
     app.get('/skyTrails/forumPost/getPost', controller.getPost);

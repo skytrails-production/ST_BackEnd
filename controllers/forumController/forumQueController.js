@@ -60,7 +60,6 @@ const {
 
 exports.createPost = async (req, res, next) => {
   try {
-    console.log("req.files", req.files.length);
     const { content } = req.body;
     const isUser = await findUser({ _id: req.userId, status: status.ACTIVE });
     if (!isUser) {
@@ -69,9 +68,9 @@ exports.createPost = async (req, res, next) => {
         responseMessage: responseMessage.USERS_NOT_FOUND,
       });
     }
-    if (req.files) {
-      const secureurl = await commonFuction.getImageUrlAWS(req.files);
-      // console.log("secureurl============",secureurl)
+    if (req.file) {
+      const secureurl = await commonFuction.getImageUrlAWS(req.file);
+      
       req.body.image = secureurl;
     }
     const obj = {

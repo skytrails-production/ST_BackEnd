@@ -4,7 +4,7 @@ const status = require("../../enums/status");
 const userType = require("../../enums/userType");
 const sendSMS = require("../../utilities/sendSms");
 const commonFunction = require("../../utilities/commonFunctions");
-const couponModel = require("../../model/btocModel/couponModel");
+const adminModel=require("../../model/user.model")
 //*****************************************SERVICES************************************************/
 const { userServices } = require("../../services/userServices");
 const {
@@ -92,7 +92,7 @@ exports.createCoupons = async (req, res, next) => {
       offerType,
       uniqueId,
     } = req.body;
-    const isAdminExist = await findUser({ _id: uniqueId });
+    const isAdminExist = await adminModel.findOne({ _id: uniqueId });
     if (!isAdminExist) {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,
@@ -111,16 +111,29 @@ exports.createCoupons = async (req, res, next) => {
       couponCode: couponCode,
       status: status.ACTIVE,
     });
-
+    const obj={
+      title:title,
+      content:content,
+      remainingDays:remainingDays,
+      couponCode:couponCode,
+      discountPercentage:discountPercentage,
+      limitAmount:limitAmount,
+      expirationDate:expirationDate,
+      termsAndCond:termsAndCond,
+      offerType:offerType,
+      image:req.body.image,
+      userApplied:[],
+    }
     if (isCouponExist) {
-      const update = await createCoupon({ _id: isCouponExist._id }, req.body);
+      const update = await createCoupon({ _id: isCouponExist._id }, obj);
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.CREATED_SUCCESS,
         result: update,
       });
     }
-    const newCoupon = await createCoupon(req.body);
+   
+    const newCoupon = await createCoupon(obj);
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.CREATED_SUCCESS,
@@ -176,10 +189,7 @@ exports.applyCoupon = async (req, res, next) => {
   try {
     const { couponCode } = req.body;
     let couponUser = [];
-    const isUserExist = await findUserData({
-      _id: req.userId,
-      status: status.ACTIVE,
-    });
+    const isUserExist = await findUserData({_id: req.userId,status: status.ACTIVE });
     if (!isUserExist) {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,
@@ -187,7 +197,6 @@ exports.applyCoupon = async (req, res, next) => {
       });
     }
     const isCouponExist = await findCoupon({ couponCode: couponCode });
-    console.log("isCouponExist==========",isCouponExist);
     if (!isCouponExist) {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,
@@ -196,31 +205,20 @@ exports.applyCoupon = async (req, res, next) => {
     }
     // Check if the coupon is already expired
     const currentDateTime = new Date();
-    console.log("currentDateTime.expirationDate========",currentDateTime);
-    console.log(
-      "currentDateTime > coupon.expirationDate=====================",
-      currentDateTime > isCouponExist.expirationDate
-    );
     if (currentDateTime > isCouponExist.expirationDate.getTime()) {
       return res.status(statusCode.badRequest).send({
         statusCode: statusCode.badRequest,
         responseMessage: responseMessage.COUPON_EXPIRED,
       });
     }
-    console.log("isCouponExist.userApplied.includes(isUserExist._id)===========",isCouponExist.userApplied.includes(isUserExist._id));
-    // Check if the user has already applied the coupon
     if (isCouponExist.userApplied.includes(isUserExist._id)) {
       return res.status(statusCode.badRequest).json({
         statusCode: statusCode.badRequest,
         responseMessage: responseMessage.ALREDY_COUPOUN_APPLIED,
       });
     }
-    console.log("coupon=>>", couponUser);
-    console.log("coupon.userApplied============", couponUser.userApplied);
-    // Apply the coupon by updating the userApplied array
-    couponUser.push(userId);
-    // Update the coupon in the database
-    await findCouponByIdAndUpdate(coupon._id, {
+    couponUser.push(isUserExist._id);
+    await updateCoupon({_id:isCouponExist._id}, {
       userApplied: couponUser,
     });
     return res
@@ -234,3 +232,4 @@ exports.applyCoupon = async (req, res, next) => {
     return next(error);
   }
 };
+

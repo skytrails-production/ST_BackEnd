@@ -11,7 +11,7 @@ const bookmarSchema = new mongoose.Schema({
     }],
     userId: {
         type: mongoose.Types.ObjectId,
-        ref: 'users'
+        ref: 'userBtoC'
     },
     status:{
         type:String,

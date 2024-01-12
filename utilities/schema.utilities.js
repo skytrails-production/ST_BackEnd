@@ -262,7 +262,7 @@ const schemas = {
 
   userVerifySchema: joi.object().keys({
     otp: joi.string().required(),
-    email: joi.string().email().optional(),
+    email: joi.string().optional(),
     fullName: joi.string().optional(),
     dob: joi.string().optional(),
     socialId: joi.string().optional(),
@@ -461,6 +461,7 @@ const schemas = {
     email: joi.string().required(),
     panNumber: joi.string().required(),
     mobile_number: joi.string().required(),
+    agency_name: joi.string().required(),
     password: joi.string().required(),
   }),
   sendPDFSchema: joi.object().keys({
@@ -595,7 +596,7 @@ const schemas = {
     expirationDate: joi.string().required(),
     termsAndCond: joi.string().required(),
     offerType: joi.valid(...Object.values(queryType)).required(),
-    uniqueId: joi.string().optional(),
+    uniqueId: joi.string().optional()
   }),
 
   updateMarkupSchema:joi.object().keys({

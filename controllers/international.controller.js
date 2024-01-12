@@ -35,6 +35,7 @@ exports.internationalCreate = async (req, res) => {
       res.status(500).send(err);
     } else {
       const data1 = new internationl({
+        userId:reqData.userId,
         pakage_title: reqData.pakage_title,
         pakage_img: data.Location,
         destination: reqData.destination,

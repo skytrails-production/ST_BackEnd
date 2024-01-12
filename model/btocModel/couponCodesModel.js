@@ -24,7 +24,6 @@ const couponSchema = new Schema(
     },
     couponCode: {
       type: String,
-      // unique: true,
     },
     discountPercentage: {
       type: Number,
@@ -35,7 +34,10 @@ const couponSchema = new Schema(
     expirationDate: {
       type: Date,
     },
-    termsAndCond: [],
+    termsAndCond: {
+        type: [String],
+      },
+      
     status: {
       type: String,
       enum: [status.ACTIVE, status.BLOCK, status.DELETE],
@@ -59,14 +61,14 @@ const couponSchema = new Schema(
         offerType.HOLIDAYS,
         offerType.HOTELS,
       ],
-      userApplied: [{ type: mongoose.Schema.Types.ObjectId, ref: "users",default:[]}],
+      userApplied: [{ type: mongoose.Schema.Types.ObjectId, ref: "userBtoC" }],
     },
   },
   { timestamps: true }
 );
-couponSchema.plugin(mongoosePaginate);
+// couponSchema.plugin(mongoosePaginate);
 
-couponSchema.plugin(aggregatePaginate);
+// couponSchema.plugin(aggregatePaginate);
 
 const Coupon = mongoose.model("Coupons", couponSchema);
 

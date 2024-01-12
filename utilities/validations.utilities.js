@@ -6,7 +6,6 @@ const joi = require('joi');
 const SchemaValidator = (schema) => {
   return (req, res, next) => {
     const { error } = schema.validate(req.body);
-    console.log('Request Body:', req.body); // Log the request body
     const valid = error == null;
     if (valid) {
       next();

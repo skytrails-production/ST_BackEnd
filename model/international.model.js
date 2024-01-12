@@ -5,6 +5,12 @@ const internationl = mongoose.model(
   "internationls",
   mongoose.Schema(
     {
+
+      userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "userb2bs",
+      },
+
       pakage_title: {
         type: String,
         require: true,

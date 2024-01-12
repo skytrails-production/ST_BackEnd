@@ -1646,8 +1646,7 @@ exports.getSearchHistory = async (req, res, next) => {
 //**********************************************CREATE AGENTS********************************/
 exports.createAgent = async (req, res, next) => {
   try {
-    const { email, mobile_number, password, panNumber } = req.body;
-
+    const { email, mobile_number, password, panNumber,agency_name } = req.body;
     // Check if pan_number is provided and not an empty string
     if (!panNumber || panNumber.trim() === "") {
       return res.status(statusCode.badRequest).send({
@@ -1655,10 +1654,8 @@ exports.createAgent = async (req, res, next) => {
         responseMessage: "PAN Number is required and cannot be empty.",
       });
     }
-
     // Hash the password
     const hashPass = bcrypt.hashSync(password, 10);
-
     // Create the object with personal_details and agency_details including pan_number
     const object = {
       personal_details: {
@@ -1670,6 +1667,7 @@ exports.createAgent = async (req, res, next) => {
       },
       agency_details: {
         pan_number: panNumber.trim(),
+        agency_name:agency_name
       },
       approveStatus: "APPROVED",
       is_active: 1,
@@ -1681,7 +1679,6 @@ exports.createAgent = async (req, res, next) => {
       return res.status(statusCode.Conflict).send({
         statusCode: statusCode.Conflict,
         responseMessage: responseMessage.USER_ALREADY_EXIST,
-        result: result,
       });
     }
 
@@ -1693,6 +1690,7 @@ exports.createAgent = async (req, res, next) => {
       email: email,
       password: password,
     };
+    console.log("message========",message)
     await sendSMS.sendSMSAgents(mobile_number, message);
     const msg = `Welcome to TheSkyTrails, Admin added you as an agent. Please use the following credentials to login and fill in the mandatory form:\nEmail: ${email}, and Password: ${password} .click here: ${process.env.AGENT_URL}`;
     await whatsappAPIUrl.sendWhatsAppMessage(mobile_number, msg);

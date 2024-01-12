@@ -6,7 +6,7 @@ const nodemailerConfig = nodemailer.createTransport({
   service: 'gmail', 
   auth: {
     user: "theskytrails@gmail.com",
-    pass: "whewbkjroqyiirsw",
+    pass: "gczzrrtzpvrhtets",
   }
 });
 

@@ -9,7 +9,7 @@ const forumQueSchema = new mongoose.Schema({
     },
     userId: {
         type: mongoose.Types.ObjectId,
-        ref: 'users',
+        ref: 'userBtoC',
     },
     content: {
         type: String, // Content of the question
@@ -21,7 +21,7 @@ const forumQueSchema = new mongoose.Schema({
         {
             user: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'users',
+                ref: 'userBtoC',
             },
             date: {
                 type: Date,

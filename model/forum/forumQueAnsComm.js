@@ -8,7 +8,7 @@ const forumQueAnsSchema = new mongoose.Schema({
     
     userId: {
         type: mongoose.Types.ObjectId,
-        ref: 'users',
+        ref: 'userBtoC',
     },
     questionId: {
         type: mongoose.Types.ObjectId,

@@ -1,4 +1,6 @@
-const userModel = require("../model/user.model");
+// const userModel = require("../model/user.model");
+const userModel = require("../model/btocModel/userModel");
+
 const userType = require("../enums/userType");
 const status = require("../enums/status");
 //**************************************WORK BY */

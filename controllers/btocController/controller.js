@@ -140,7 +140,7 @@ exports.login = async (req, res, next) => {
 exports.verifyUserOtp = async (req, res, next) => {
   try {
     const { otp, fullName, dob ,email} = req.body;
-    const isUserExist = await findUserData({ _id: req.userId });
+    const isUserExist = await findUserData({ _id:req.userId });
     if (!isUserExist) {
       return res
         .status(statusCode.NotFound)

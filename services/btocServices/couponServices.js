@@ -1,4 +1,4 @@
-const Coupon = require('../../model/btocModel/couponModel');
+const Coupon = require('../../model/btocModel/couponCodeModel');
 const status = require('../../enums/status');
 const approvalStatus = require('../../enums/approveStatus');
 
