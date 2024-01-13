@@ -8,6 +8,7 @@ const { badRequest } = require('./responceCode');
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'uploads/'); // Define the destination folder for uploaded files
+    
   },
   filename: function (req, file, cb) {
     // Customize the file name to include a timestamp and remove spaces
