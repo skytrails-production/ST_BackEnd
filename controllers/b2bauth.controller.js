@@ -1530,7 +1530,7 @@ exports.paymentFailure = async (req, res, next) => {
 
 exports.updateProfile = async (req, res) => {
   try {
-    const { updatedDetails, agentId } = req.body;
+    const { updatedDetails, agentId,first_name,last_name,residential_address,address_2,telephone_number,pincode,country,state,city,agency_mobile,address,agencyaddress_2,agencyPincode,agencyCountry,agencyState,agencyCity,business_type,office_space,IATA_registration_id,IATA_code,TDS,TDS_percentage,references,consolidators,remarks } = req.body;
     const file = req.file;
 
     if (!file) {
@@ -1588,79 +1588,6 @@ exports.updateProfile = async (req, res) => {
   }
 };
 
-// exports.updateProfile = async (req, res) => {
-//   try {
-//     const agentId = req.body.userId; // Assuming you have authentication middleware
-//     const updatedDetails = req.body || {};
-//     updatedDetails.personal_details = updatedDetails.personal_details || {};
-//     updatedDetails.personal_details.mobile = updatedDetails.personal_details.mobile || {};
-//     updatedDetails.personal_details.address_details = updatedDetails.personal_details.address_details || {};
-//     updatedDetails.agency_details = updatedDetails.agency_details || {};
-//     updatedDetails.agency_details.agency_mobile = updatedDetails.agency_details.agency_mobile || {};
-//     console.log("Updated Details:", updatedDetails);
-
-//     const file = req.file;
-
-//     if (!file) {
-//       return res.status(400).json({ success: false, error: "file is required" });
-//     }
-
-//     const agent = await b2bUser.findById({_id:agentId});
-
-//     if (!agent) {
-//       return res.status(404).json({ success: false, error: "Agent not found" });
-//     }
-
-//     // Upload new profile image to S3
-//     if (file) {
-//       const s3Params = {
-//         Bucket: process.env.AWS_BUCKET_NAME,
-//         Key: file.originalname,
-//         Body: file.buffer,
-//         ContentType: file.mimetype,
-//         ACL: 'public-read',
-//       };
-
-//       s3.upload(s3Params, async (err, data) => {
-//         if (err) {
-//           return res.status(500).json({ success: false, error: err.message });
-//         }
-
-//         // Update agent's profile with additional details and new profile image
-//         agent.personal_details = {
-//           ...agent.personal_details,
-//         };
-
-//         agent.agency_details = {
-//           ...agent.agency_details,
-//           document_details: {
-//             pan_card_document: data.Location,
-//           },
-//         };
-
-//         // Save the updated agent
-//         const updatedAgent = await agent.save();
-
-//         res.json({ success: true, agent: updatedAgent });
-//       });
-//     } else {
-//       // If no new profile image, update agent's profile without uploading
-//       agent.set({
-//         ...updatedDetails,
-//         // Exclude file-related updates when no file is present
-//       });
-
-//       const updatedAgent = await agent.save();
-
-//       res.json({ success: true, agent: updatedAgent });
-//     }
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ success: false, error: err.message });
-//   }
-// };
-
-//hash geneerate function *************************************************
 function generateSHA512Hash(input) {
   const hash = crypto.createHash("sha512");
   hash.update(input);

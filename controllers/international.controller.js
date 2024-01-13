@@ -13,8 +13,8 @@ const { object } = require("joi");
 const User = require("../model/user.model");
 const Role = require("../model/role.model");
 const { response } = require("express");
-const statusCode = require('../utilities/responceCode');
-const responseMessage = require('../utilities/responses');
+const statusCode = require("../utilities/responceCode");
+const responseMessage = require("../utilities/responses");
 const s3 = new aws.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -39,7 +39,7 @@ exports.internationalCreate = async (req, res) => {
         pakage_title: reqData.pakage_title,
         pakage_img: data.Location,
         destination: reqData.destination,
-        country:reqData.country,
+        country: reqData.country,
         days: reqData.days,
         schedule: {
           flexible: reqData.flexible,
@@ -88,7 +88,7 @@ exports.internationalupdate = async (req, res) => {
         pakage_title: reqData.pakage_title,
         pakage_img: data.Location,
         destination: reqData.destination,
-        country:reqData.country,
+        country: reqData.country,
         days: reqData.days,
         schedule: {
           flexible: reqData.flexible,
@@ -168,22 +168,29 @@ exports.internationalgetAll = async (req, res) => {
       .search()
       .filter()
       .pagintion(pagintionData);
-      // console.log("data",apiSearch.length);
+    // console.log("data",apiSearch.length);
 
     let pakage = await apiSearch.query;
     // console.log(pakage.length,"package")
-  if(pakage.length=== 0){
-    // console.log(req.query)
-    // pakage=await internationl.find({ 'destination.addMore': req.query.keyword }).exec();
-    pakage=await internationl.find({$or: [
-      {'destination': {
-        $elemMatch: {
-          'addMore': { $regex: new RegExp(req.query.keyword, 'i') } // 'i' flag for case-insensitive search
-        }
-      }},{'country':{ $regex: new RegExp(req.query.keyword, 'i') }}
-    ]}).exec();
-    // console.log(pakage,"data")
-  }
+    if (pakage.length === 0) {
+      // console.log(req.query)
+      // pakage=await internationl.find({ 'destination.addMore': req.query.keyword }).exec();
+      pakage = await internationl
+        .find({
+          $or: [
+            {
+              destination: {
+                $elemMatch: {
+                  addMore: { $regex: new RegExp(req.query.keyword, "i") }, // 'i' flag for case-insensitive search
+                },
+              },
+            },
+            { country: { $regex: new RegExp(req.query.keyword, "i") } },
+          ],
+        })
+        .exec();
+      // console.log(pakage,"data")
+    }
 
     for (let p = 0; p < pakage.length; p++) {
       var arr = [];
@@ -245,14 +252,14 @@ function escapeRegex(text) {
 // exports.packageCityList = async (req, res) => {
 //   try {
 //     const regex = new RegExp(escapeRegex(req.query.keyword), "gi");
-    
+
 //     const response = await internationl.aggregate([
 //       { $match: { 'destination.addMore': regex } },
 //       { $unwind: '$destination' },
 //       { $match: { 'destination.addMore': regex } },
 //       { $group: { _id: null, addMoreList: { $addToSet: '$destination.addMore' } } }
 //     ]);
-    
+
 //     if (response.length > 0) {
 //       const addMoreList = response[0].addMoreList;
 //       const msg = "List of Package City List values retrieved successfully";
@@ -266,35 +273,36 @@ function escapeRegex(text) {
 //   }
 // };
 
-
-
-
-
 // new list
-
 
 exports.packageCityList = async (req, res) => {
   try {
     const regex = new RegExp(escapeRegex(req.query.keyword), "gi");
 
     const cityResponse = await internationl.aggregate([
-      { $match: { 'destination.addMore': regex } },
-      { $group: { _id: null, addMoreList: { $addToSet: '$destination.addMore' } } }
+      { $match: { "destination.addMore": regex } },
+      {
+        $group: {
+          _id: null,
+          addMoreList: { $addToSet: "$destination.addMore" },
+        },
+      },
     ]);
 
     const countryResponse = await internationl.aggregate([
-      { $match: { 'country': regex } },
-      { $group: { _id: null, countryList: { $addToSet: '$country' } } }
+      { $match: { country: regex } },
+      { $group: { _id: null, countryList: { $addToSet: "$country" } } },
     ]);
 
     const combinedList = [
       ...(cityResponse.length > 0 ? cityResponse[0].addMoreList : []),
-      ...(countryResponse.length > 0 ? countryResponse[0].countryList : [])
+      ...(countryResponse.length > 0 ? countryResponse[0].countryList : []),
     ];
 
     if (combinedList.length > 0) {
       const uniqueCombinedList = [...new Set(combinedList.flat())];
-      const msg = "List of Package City and Country values retrieved successfully";
+      const msg =
+        "List of Package City and Country values retrieved successfully";
       actionCompleteResponse(res, uniqueCombinedList, msg);
     } else {
       const msg = "No matching Package City values found";
@@ -305,15 +313,14 @@ exports.packageCityList = async (req, res) => {
   }
 };
 
-
 //get latest packages
 
 exports.latestPackages = async (req, res) => {
   try {
     const packages = await internationl
-    .find()
-    .sort({"pakage_amount.amount": 1,"createdAt": -1 })
-    .limit(6); 
+      .find()
+      .sort({ "pakage_amount.amount": 1, createdAt: -1 })
+      .limit(6);
 
     if (packages.length > 0) {
       const msg = "Latest 6 packages search successfully";
@@ -326,7 +333,6 @@ exports.latestPackages = async (req, res) => {
     sendActionFailedResponse(res, {}, error.message);
   }
 };
-
 
 //Packages search by insclusions category
 
@@ -348,7 +354,8 @@ exports.beachesPackages = async (req, res) => {
     const packages = await internationl.find(query);
 
     if (packages.length > 0) {
-      const msg = "Successfully retrieved packages through the 'inclusions' category search.";
+      const msg =
+        "Successfully retrieved packages through the 'inclusions' category search.";
       actionCompleteResponse(res, packages, msg);
     } else {
       const msg = "No data found";
@@ -357,7 +364,7 @@ exports.beachesPackages = async (req, res) => {
   } catch (error) {
     sendActionFailedResponse(res, {}, error.message);
   }
-}
+};
 
 // package search via country
 
@@ -366,27 +373,31 @@ exports.domesticAndInternational = async (req, res) => {
     const { country } = req.query;
 
     if (!country) {
-      return res.status(400).json({ error: 'Country parameter is required.' });
+      return res.status(400).json({ error: "Country parameter is required." });
     }
 
     let query;
-    
-    if (country === 'India') {
+
+    if (country === "India") {
       // Handle query for Indian packages
-      query = { 'country': 'India' };
+      query = { country: "India" };
     } else {
       // Handle query for other countries
-      query = { 'country': { $ne: 'India' } };
+      query = { country: { $ne: "India" } };
     }
 
     const packages = await internationl.find(query);
 
     if (packages.length > 0) {
       // const msg = `आपने किया है ${country === 'India' ? 'देशी' : 'विदेशी'} पैकेजं सर्च`;
-      const msg =`packages found for ${country === 'India' ? 'Indian' : 'others countries'}`;
+      const msg = `packages found for ${
+        country === "India" ? "Indian" : "others countries"
+      }`;
       actionCompleteResponse(res, packages, msg);
     } else {
-      const msg = `No packages found for ${country === 'India' ? 'Indian' : 'other'} countries`;
+      const msg = `No packages found for ${
+        country === "India" ? "Indian" : "other"
+      } countries`;
       actionCompleteResponse(res, [], msg);
     }
   } catch (error) {
@@ -395,8 +406,29 @@ exports.domesticAndInternational = async (req, res) => {
 };
 
 
+//package search by country
 
+exports.countryPackage = async (req, res) => {
+  try {
+    const { country } = req.query;
 
+    if (!country) {
+      return res.status(400).json({ error: 'Country parameter is required.' });
+    }
+
+    const packages = await internationl.find({'country':country});
+
+    if (packages.length > 0) {
+      const msg =`packages found for ${country}`;
+      actionCompleteResponse(res, packages, msg);
+    } else {
+      const msg = `No packages found for ${country}`;
+      actionCompleteResponse(res, [], msg);
+    }
+  } catch (error) {
+    sendActionFailedResponse(res, {}, error.message);
+  }
+};
 
 
 
@@ -485,18 +517,42 @@ exports.pakageBooking = async (req, res) => {
   }
 };
 
-exports.editPackage=async(req,res,next)=>{
+
+
+exports.editPackage = async (req, res, next) => {
   try {
-    const {packageId,pakage_img,destination,flexible,fixed_departure,currency,amount,insclusions,hotel_details,insclusion_note,exclusion_note,detailed_ltinerary,overview,select_tags,term_Conditions,cancellation_Policy}=req.body; 
-    const pakage_title=req.file;
-    const isPackageExist=await internationl.finOne({_id:packageId});
-    if(!isPackageExist){
+    const {
+      packageId,
+      pakage_title,
+      pakage_img,
+      destination,
+      country,
+      flexible,
+      fixed_departure,
+      currency,
+      amount,
+      insclusions,
+      hotel_details,
+      insclusion_note,
+      exclusion_note,
+      detailed_ltinerary,
+      overview,
+      select_tags,
+      term_Conditions,
+      cancellation_Policy,
+    } = req.body;
+
+    const file = req.file;
+    const isPackageExist = await internationl.findOne({ _id: packageId });
+
+    if (!isPackageExist) {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.PACKAGE_NOT_EXIST,
       });
     }
-    if(pakage_img){
+
+    if (file) {
       const s3Params = {
         Bucket: process.env.AWS_BUCKET_NAME,
         Key: file.originalname,
@@ -505,57 +561,61 @@ exports.editPackage=async(req,res,next)=>{
         ACL: "public-read",
       };
 
-      s3.upload(s3Params, async (err, data) => {
-        if (err) {
-          res.status(500).send(err);
-        } else {
-          // isPackageExist.set({
-          //   pakage_title: reqData.pakage_title,
-          //   pakage_img: data.Location,
-          //   destination: reqData.destination,
-          //   days: reqData.days,
-          //   schedule: {
-          //     flexible: reqData.flexible,
-          //     fixed_departure: reqData.fixed_departure,
-          //   },
-          //   pakage_amount: {
-          //     currency: reqData.pakage_amount.currency,
-          //     amount: reqData.pakage_amount.amount,
-          //   },
-          //   insclusions: reqData.insclusions,
-          //   hotel_details: reqData.hotel_details,
-          //   insclusion_note: reqData.insclusion_note,
-          //   exclusion_note: reqData.exclusion_note,
-          //   detailed_ltinerary: reqData.detailed_ltinerary,
-          //   overview: reqData.overview,
-          //   select_tags: reqData.select_tags,
-          //   term_Conditions: reqData.term_Conditions,
-          //   cancellation_Policy: reqData.cancellation_Policy,
-          // });
-          req.body.pakage_img=data.Location;
-          try {
-            const response = await internationl.findOneAndUpdate({_id:isPackageExist._id},req.body);
-            msg = "Pakage is updated successfull.";
-            actionCompleteResponse(res, response, msg);
-          } catch (err) {
-            sendActionFailedResponse(res, {}, err.message);
-          }
-        }
-      });
-    }
-    const obj={
-      pakage_title:pakage_title,
+      try {
+        const data = await new Promise((resolve, reject) => {
+          s3.upload(s3Params, (err, data) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(data);
+            }
+          });
+        });
 
+        req.body.pakage_img = data.Location;
+      } catch (error) {
+        console.error("Error during S3 upload:", error);
+        return res.status(500).send(error);
+      }
     }
-    const result=await internationl.findOneAndUpdate({_id:isPackageExist._id},req.body);
-      return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.CREATED_SUCCESS,
-        result: result,
-      });
-    
+
+    const object = {
+      pakage_title,
+      pakage_img,
+      destination,
+      country,
+      schedule: {
+        flexible,
+        fixed_departure,
+      },
+      pakage_amount: {
+        currency,
+        amount,
+      },
+      insclusions,
+      hotel_details,
+      insclusion_note,
+      exclusion_note,
+      detailed_ltinerary,
+      overview,
+      select_tags,
+      term_Conditions,
+      cancellation_Policy,
+    };
+
+    try {
+      const response = await internationl.findOneAndUpdate(
+        { _id: isPackageExist._id },
+        object,
+        { new: true }
+      );
+      const msg = "Package is updated successfully.";
+      actionCompleteResponse(res, response, msg);
+    } catch (err) {
+      sendActionFailedResponse(res, {}, err.message);
+    }
   } catch (error) {
-    console.log("error while edit package.",error);
+    console.log("Error while editing package.", error);
     return next(error);
   }
-}
+};

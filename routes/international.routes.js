@@ -1,5 +1,7 @@
 const controller = require("../controllers/international.controller");
 // const controller = require("../controller/international.controller");
+const handleFileUpload = require('../utilities/fileUpload');
+
 const multer = require("multer");
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -45,4 +47,10 @@ module.exports = function (app) {
   app.get("/skyTrails/latestPackages",controller.latestPackages);
   app.get("/skyTrails/beachesPackages", controller.beachesPackages);
   app.get("/skyTrails/domesticAndInternationalPackages", controller.domesticAndInternational);
+   app.get("/skyTrails/countryPackage",controller.countryPackage);
+
+  app.put('/skyTrails/international/editPackage',upload.single("images"),controller.editPackage)
+
+ 
+
 };

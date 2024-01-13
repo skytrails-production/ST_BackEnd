@@ -230,19 +230,19 @@ const Userb2bSchema =
        markup:{
         bus:{
           type: Number,
-          default: 0,
+          default: 50,
          },
          hotel:{
           type: Number,
-          default: 0,
+          default: 50,
          },
          flight:{
           type: Number,
-          default: 0,
+          default: 50,
          },
          holiday:{
           type: Number,
-          default: 0,
+          default: 50,
          },
        },
       walletid: {
