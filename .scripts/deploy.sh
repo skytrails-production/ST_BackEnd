@@ -11,6 +11,6 @@ echo "Installing Dependencies..."
 npm install --yes
 
 echo "Creating Production Build..."
-npm run build
+# npm run build
 
 echo "Deployment Finished!"
