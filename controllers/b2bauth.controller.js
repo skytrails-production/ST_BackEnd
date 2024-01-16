@@ -640,12 +640,10 @@ exports.getAllAgentHotelBookingList = async (req, res, next) => {
     const isAgent = await findbrbuser({ _id: userId });
     // console.log(isAgent,"agent found");
     if (!isAgent) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          message: responseMessage.USERS_NOT_FOUND,
-        });
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.USERS_NOT_FOUND,
+      });
     }
     if (search) {
       var filter = search;
@@ -695,20 +693,16 @@ exports.getAllAgentHotelBookingList = async (req, res, next) => {
       options
     );
     if (result.docs.length == 0) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          message: responseMessage.DATA_NOT_FOUND,
-        });
-    }
-    return res
-      .status(statusCode.OK)
-      .send({
-        statusCode: statusCode.OK,
-        message: responseMessage.DATA_FOUND,
-        result: result,
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.DATA_NOT_FOUND,
       });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      message: responseMessage.DATA_FOUND,
+      result: result,
+    });
   } catch (error) {
     console.log("error=======>>>>>>", error);
     return next(error);
@@ -888,12 +882,10 @@ exports.changeHotelDetailsRequest = async (req, res, next) => {
     } = req.body;
     const isAgentExists = await findbrbuser({ _id: agentId });
     if (!isAgentExists) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          message: responseMessage.AGENT_NOT_FOUND,
-        });
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.AGENT_NOT_FOUND,
+      });
     }
     const isBookingExist = await findhotelBooking({
       userId: isAgentExists._id,
@@ -901,12 +893,10 @@ exports.changeHotelDetailsRequest = async (req, res, next) => {
       status: status.ACTIVE,
     });
     if (!isBookingExist) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          message: responseMessage.BOOKING_NOT_FOUND,
-        });
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.BOOKING_NOT_FOUND,
+      });
     }
     const object = {
       reason: reason,
@@ -942,12 +932,10 @@ exports.changeFlightDetailsRequest = async (req, res, next) => {
     } = req.body;
     const isAgentExists = await findbrbuser({ _id: agentId });
     if (!isAgentExists) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          message: responseMessage.AGENT_NOT_FOUND,
-        });
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.AGENT_NOT_FOUND,
+      });
     }
     const isBookingExist = await flightModel.findOne({
       userId: isAgentExists._id,
@@ -955,12 +943,10 @@ exports.changeFlightDetailsRequest = async (req, res, next) => {
       status: status.ACTIVE,
     });
     if (!isBookingExist) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          message: responseMessage.BOOKING_NOT_FOUND,
-        });
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.BOOKING_NOT_FOUND,
+      });
     }
     const object = {
       reason: reason,
@@ -972,13 +958,11 @@ exports.changeFlightDetailsRequest = async (req, res, next) => {
       amount: amount,
     };
     const result = await createchangeRequest(object);
-    return res
-      .status(statusCode.OK)
-      .send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.CHANGE_REQUEST_SUCCESS,
-        result: result,
-      });
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.CHANGE_REQUEST_SUCCESS,
+      result: result,
+    });
   } catch (error) {
     console.log("error", error);
     return next(error);
@@ -999,12 +983,10 @@ exports.changeBusBookingDetailsRequest = async (req, res, next) => {
     } = req.body;
     const isUSerExists = await findbrbuser({ _id: agentId });
     if (!isUSerExists) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          message: responseMessage.AGENT_NOT_FOUND,
-        });
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.AGENT_NOT_FOUND,
+      });
     }
     const isBookingExist = await busBookingModel.findOne({
       userId: isUSerExists._id,
@@ -1012,12 +994,10 @@ exports.changeBusBookingDetailsRequest = async (req, res, next) => {
       status: status.ACTIVE,
     });
     if (!isBookingExist) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          message: responseMessage.BOOKING_NOT_FOUND,
-        });
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.BOOKING_NOT_FOUND,
+      });
     }
     const object = {
       reason: reason,
@@ -1044,12 +1024,10 @@ exports.getchangeFlightRequest = async (req, res, next) => {
     const { page, limit, search, fromDate, toDate } = req.query;
     const result = aggregatePaginatechangeRequestList(req.query);
     if (!result) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          message: responseMessage.BOOKING_NOT_FOUND,
-        });
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.BOOKING_NOT_FOUND,
+      });
     }
     return res
       .status(statusCode.OK)
@@ -1070,12 +1048,10 @@ exports.getchangeHotelRequest = async (req, res, next) => {
     const { page, limit, search, fromDate, toDate } = req.query;
     const result = aggregatePaginatechangeHotelRequestList(req.query);
     if (!result) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          message: responseMessage.BOOKING_NOT_FOUND,
-        });
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.BOOKING_NOT_FOUND,
+      });
     }
     return res
       .status(statusCode.OK)
@@ -1091,12 +1067,10 @@ exports.getchangeBusRequest = async (req, res, next) => {
     const { page, limit, search, fromDate, toDate } = req.query;
     const result = aggregatePaginatechangeBusRequestList(req.query);
     if (!result) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          message: responseMessage.BOOKING_NOT_FOUND,
-        });
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.BOOKING_NOT_FOUND,
+      });
     }
     return res
       .status(statusCode.OK)
@@ -1155,12 +1129,10 @@ exports.updateFixDepartureData = async (req, res) => {
 
     // Check if _id or AvailableSeats is missing in the request
     if (!_id || !noOfBooking) {
-      return res
-        .status(400)
-        .send({
-          status: "error",
-          message: "Missing _id or AvailableSeats in request body",
-        });
+      return res.status(400).send({
+        status: "error",
+        message: "Missing _id or AvailableSeats in request body",
+      });
     }
 
     // Assuming fixdepartures is the model for your database collection
@@ -1173,12 +1145,10 @@ exports.updateFixDepartureData = async (req, res) => {
     }
 
     if (departure.AvailableSeats < noOfBooking) {
-      return res
-        .status(400)
-        .send({
-          status: "error",
-          message: "Requested seats exceed available seats",
-        });
+      return res.status(400).send({
+        status: "error",
+        message: "Requested seats exceed available seats",
+      });
     }
 
     const updatedAvailableSeats = departure.AvailableSeats - noOfBooking;
@@ -1530,19 +1500,130 @@ exports.paymentFailure = async (req, res, next) => {
 
 exports.updateProfile = async (req, res) => {
   try {
-    const { updatedDetails, agentId,first_name,last_name,residential_address,address_2,telephone_number,pincode,country,state,city,agency_mobile,address,agencyaddress_2,agencyPincode,agencyCountry,agencyState,agencyCity,business_type,office_space,IATA_registration_id,IATA_code,TDS,TDS_percentage,references,consolidators,remarks } = req.body;
+    const {
+      agentId,
+      first_name,
+      last_name,
+      residential_address,
+      address_2,
+      telephone_number,
+      pincode,
+      country,
+      state,
+      city,
+      agency_mobile,
+      address,
+      agencyaddress_2,
+      agencyPincode,
+      agencyCountry,
+      agencyState,
+      agencyCity,
+      business_type,
+      office_space,
+      IATA_registration_id,
+      IATA_code,
+      TDS,
+      TDS_percentage,
+      references,
+      consolidators,
+      remarks,
+      agency_gstName,
+      agency_classification,
+      agency_GSTIN,
+      gst_state,
+      gst_state_code,
+      provisional_GSTIN,
+      phone_number,
+      contact_person,
+      gst_email,
+      correspondance_mail_id,
+      GST_registration_status,
+      HSN_SAC_code,
+      composition_levy,
+      address_line1,
+      address_line2,
+      gst_pincode,
+      agency_city,
+      supply_type
+    } = req.body;
     const file = req.file;
 
-    if (!file) {
-      return res
-        .status(400)
-        .json({ success: false, error: "file is required found" });
-    }
-    const agent = await b2bUser.findById({ _id: agentId});
-    console.log("agent===============", agent); 
+    // Fetch the existing agent
+    const agent = await b2bUser.findOne({ _id: agentId });
     if (!agent) {
       return res.status(404).json({ success: false, error: "Agent not found" });
     }
+    // console.log("agent==============",agent);
+    // Build update object with existing data
+    const updatedAgent = {
+      personal_details: {
+        first_name: first_name || agent.personal_details.first_name,
+        last_name: last_name || agent.personal_details.last_name,
+        email: agent.personal_details.email,
+        mobile: { mobile_number: agent.personal_details.mobile.mobile_number },
+        address_details: {
+          residential_address:
+            residential_address ||
+            agent.personal_details.address_details.residential_address,
+          address_2:
+            address_2 || agent.personal_details.address_details.address_2,
+          telephone_number:
+            telephone_number ||
+            agent.personal_details.address_details.telephone_number,
+          pincode: pincode || agent.personal_details.address_details.pincode,
+          country: country || agent.personal_details.address_details.country,
+          state: state || agent.personal_details.address_details.state,
+          city: city || agent.personal_details.address_details.city,
+        },
+        password: agent.personal_details.password,
+      },
+      agency_details: {
+        agency_name: agent.agency_details.agency_name,
+        agency_mobile: {
+          mobile_number:
+            agency_mobile || agent.agency_details.agency_mobile.mobile_number,
+        },
+        pan_number: agent.agency_details.pan_number,
+        address: address || agent.agency_details.address,
+        address_2: agencyaddress_2 || agent.agency_details.address_2,
+        pincode: agencyPincode || agent.agency_details.pincode,
+        country: agencyCountry || agent.agency_details.country,
+        state: agencyState || agent.agency_details.state,
+        city: agencyCity || agent.agency_details.city,
+        business_type: business_type || agent.agency_details.business_type,
+        office_space: office_space || agent.agency_details.office_space,
+        IATA_registration_id:
+          IATA_registration_id || agent.agency_details.IATA_registration_id,
+        IATA_code: IATA_code || agent.agency_details.IATA_code,
+        TDS: TDS || agent.agency_details.TDS,
+        TDS_percentage: TDS_percentage || agent.agency_details.TDS_percentage,
+        references: references || agent.agency_details.references,
+        consolidators: consolidators || agent.agency_details.consolidators,
+        remarks: remarks || agent.agency_details.remarks,
+      },
+      agency_gst_details: {
+        agency_name: req.body.agency_gstName,
+        agency_classification: req.body.agency_classification,
+        agency_GSTIN: req.body.agency_GSTIN,
+        state: req.body.gst_state,
+        state_code: req.body.gst_state_code,
+        provisional_GSTIN: req.body.provisional_GSTIN,
+        contact_person:req.body.contact_person,
+        phone_number: req.body.phone_number,
+        telephone_number: req.body.gst_telephone_number,
+        email: req.body.gst_email,
+        correspondance_mail_id: req.body.correspondance_mail_id,
+        GST_registration_status: req.body.GST_registration_status,
+        HSN_SAC_code: req.body.HSN_SAC_code,
+        composition_levy: req.body.composition_levy,
+        address_line1: req.body.address_line1,
+        address_line2: req.body.address_line2,
+        pincode: req.body.gst_pincode,
+        agency_city: req.body.agency_city,
+        supply_type: req.body.supply_type,
+      },
+    };
+
     // Upload new profile image to S3
     if (file) {
       const s3Params = {
@@ -1553,35 +1634,26 @@ exports.updateProfile = async (req, res) => {
         ACL: "public-read",
       };
 
-      s3.upload(s3Params, async (err, data) => {
-        if (err) {
-          return res.status(500).json({ success: false, error: err.message });
-        }
-        // Update agent's panCard Document with additional details and new panCard Document image
-        agent.set({
-          ...updatedDetails,
-          agency_details: {
-            document_details: {
-              pan_card_document: data.Location,
-            },
-          },
-        });
+      // Upload file to S3
+      const data = await s3.upload(s3Params).promise();
 
-        // Save the updated agent
-        const updatedAgent = await agent.save();
-        res.json({ success: true, agent: updatedAgent });
-      });
+      // Update agent's panCard Document with additional details and new panCard Document image
+      updatedAgent.agency_details.document_details = {
+        pan_card_document: data.Location,
+      };
     }
-    // else {
-    //   // If no new profile image, update agent's profile without uploading
-    //   const updatedAgent = await b2bUser.findByIdAndUpdate(
-    //     agentId,
-    //     { $set: updatedDetails },
-    //     { new: true }
-    //   );
 
-    //   res.json({ success: true, agent: updatedAgent });
-    // }
+    const updatedData=toString(updatedAgent);
+    console.log("updatedData=============",updatedAgent);
+
+    // Update the agent
+    const updatedAgentData = await b2bUser.findOneAndUpdate(
+      { _id: agentId },
+      updatedAgent,
+      { new: true }
+    );
+
+    res.json({ success: true, agent: updatedAgentData });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, error: err.message });

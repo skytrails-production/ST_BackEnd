@@ -154,13 +154,26 @@ exports.deletePost = async (req, res, next) => {
   try {
     const isUser = await findUser({ _id: req.userId });
     if (!isUser) {
-      return sendActionFailedResponse(res, {}, "User not found");
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+    const isPostExist=await findforumQue({_id:req.body.postId,status:status.ACTIVE});
+    if(!isPostExist){
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.POST_NOT_FOUND,
+      });
     }
     const result = await updateforumQue(
-      { userID: isUser._id },
+      {_id:isPostExist._id,userID: isUser._id },
       { status: status.DELETE }
     );
-    return actionCompleteResponse(res, result, "Post deleted successfully.");
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.POST_DELETED,
+    });
   } catch (error) {
     console.log("error========>>>>>>", error);
     // sendActionFailedResponse(res,{},error.message);

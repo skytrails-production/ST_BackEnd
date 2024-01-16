@@ -98,5 +98,6 @@ module.exports = {
 	COUPON_EXPIRED:"Coupon has expired.",
 	ALREDY_COUPOUN_APPLIED:"User has already used this coupon.",
 	COUPON_NOT_FOUND:"Coupon not found.",
-	COUPON_APPLIED_SUCCESS:"Coupon applied successfully."
+	COUPON_APPLIED_SUCCESS:"Coupon applied successfully.",
+	POST_DELETED:"Post deleted successfull."
 };

@@ -4,6 +4,11 @@ const commonFunction = require('../../utilities/commonFunctions');
 const status=require('../../enums/status')
 const responseMessage = require('../../utilities/responses');
 const statusCode = require('../../utilities/responceCode');
+const admin = require("firebase-admin");
+// const FCM=require('fcm-node')
+// const fcmKey="Kvo8qhR8xvB0Wd1fElU0-sUhMSg6akkCRZVhWiwEZVs";
+// const serviceAccount="AIzaSyAsGxfAYsGpKBN86JzGI38Wd9JjbrK4dxU"
+// const fcm=new FCM(fcmKey)
 //Essential Services***************************************************
 const {webAdvertisementServices}=require("../../services/btocServices/webUserOfferServices");
 const {createWebadvertisement,findWebadvertisementData,deletWebeadvertisement,webAdvertisementList,updateWebadvertisement,countTotalWebadvertisement,getWebAdvertisment}=webAdvertisementServices;
@@ -80,6 +85,38 @@ exports.getAggregateWebAdvertisement=async(req,res,next)=>{
         
 //     } catch (error) {
 //         console.log("error during deeletion",error);
+//         return next(error)
+//     }
+// }
+
+// admin.initializeApp({
+//     credential: admin.credential.cert(serviceAccount),
+//   });
+
+// exports.sendNotification=async(req,res,next)=>{
+//     try {
+//         var message={
+//             to:"",
+//             notification:{
+//                 title:"Notification",
+//                 body:"Hello this is test notification"
+//             },
+//             data:{
+//                 title:"ok vhsjkihgfs",
+//                 body:'{"name":"charu","product_id":"123","final_price":"0.90"}'
+//             }
+//         };
+
+//         fcm.send(message,function(err,response){
+//             if(err){
+//                 console.log("something went wrong",+err);
+//                 console.log("responses==============",+response);
+//             }else{
+//                 console.log("successfully sent with respose:==>>",response);
+//             }
+//         })
+//     } catch (error) {
+//         console.log("error while trying get data",error);
 //         return next(error)
 //     }
 // }
