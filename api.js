@@ -129,6 +129,11 @@ require("./routes/hotelBookingData.routes")(app);
 // app.use('/faqs', faqRoutes);
 require("./routes/faqRoutes")(app);
 
+
+//Amadeus Api
+
+require("./routes/amadeus.routes")(app);
+
 //Require forum Routes*************
 const forumQueRoutes = require("./routes/forumRoutes/forumQueRoutes");
 forumQueRoutes(app);

@@ -524,7 +524,6 @@ exports.editPackage = async (req, res, next) => {
     const {
       packageId,
       pakage_title,
-      pakage_img,
       destination,
       country,
       schedule,
@@ -570,17 +569,15 @@ exports.editPackage = async (req, res, next) => {
             }
           });
         });
-
         req.body.pakage_img = data.Location;
       } catch (error) {
         console.error("Error during S3 upload:", error);
         return res.status(500).send(error);
       }
     }
-
     const object = {
       pakage_title:pakage_title,
-      pakage_img:pakage_img,
+      pakage_img:req.body.pakage_img,
       destination:destination,
       country:country,
       schedule: schedule,
@@ -596,7 +593,6 @@ exports.editPackage = async (req, res, next) => {
       term_Conditions:term_Conditions,
       cancellation_Policy:cancellation_Policy,
     };
-
     try {
       const response = await internationl.findOneAndUpdate(
         { _id: isPackageExist._id },
