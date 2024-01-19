@@ -55,6 +55,17 @@ exports.visaBooking = async (req, res, next) => {
         message: responseMessage.USERS_NOT_FOUND,
       });
     }
+   
+      if (req.file.passportImage) {
+        const secureurl = await commonFuction.getImageUrlAWS(req.file);
+        
+        req.body.passportImage = secureurl;
+      }
+      if (req.file.image) {
+        const secureurl = await commonFuction.getImageUrlAWS(req.file);
+        
+        req.body.image = secureurl;
+      }
     const isCountryExist=await findWeeklyVisa({_id:countryID._id})
     if (!isCountryExist) {
         return res.status(statusCode.OK).send({
@@ -66,6 +77,8 @@ exports.visaBooking = async (req, res, next) => {
       firstName: firstName,
       lastName: lastName,
       dateOfBirth: dateOfBirth,
+      image:req.body.image,
+      passportImage:req.body.passportImage,
       passportNumber: passportNumber,
       purposeOfVisit: purposeOfVisit,
       travelDates: travelDates,
@@ -75,6 +88,7 @@ exports.visaBooking = async (req, res, next) => {
       documents: documents,
       spouseName: spouseName,
     };
+    console.log("obj==========",obj);
     const result = await createvisaBooking(obj);
     // if (passportImage || image) {
     //   const s3Params = {

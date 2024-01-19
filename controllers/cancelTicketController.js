@@ -43,13 +43,13 @@ exports.cancelFlightBooking = async (req, res, next) => {
             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.AGENT_NOT_FOUND });
         }
         const currentDate = new Date().toISOString();
-        console.log("currentDate:", currentDate);
+        // console.log("currentDate:", currentDate);
         const isBookingExist = await flightModel.findOne({
             userId: isAgentExists._id,
             bookingId: bookingId,
             dateOfJourney: { $gt: currentDate }
         });
-        console.log("bookingDate=====", isBookingExist)
+        // console.log("bookingDate=====", isBookingExist)
         if (!isBookingExist) {
             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.BOOKING_NOT_FOUND });
         }
@@ -72,7 +72,7 @@ exports.getCancelFlightBooking = async (req, res, next) => {
     try {
         const { page, limit, search, fromDate } = req.query;
         const result =await aggregatePaginatecancelFlightBookingsList(req.query);
-        console.log("===========",result)
+        // console.log("===========",result)
         if (!result) {
             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.DATA_NOT_FOUND });
         }

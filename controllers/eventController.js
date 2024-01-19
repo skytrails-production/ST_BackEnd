@@ -82,7 +82,7 @@ exports.createEvent = async (req, res, next) => {
     const startingDate = Moment(startDate, "YYYY-MM-DD");
     const endingDate = Moment(endDate, "YYYY-MM-DD");
     const storeStartDate=startingDate.format("YYYY-MM-DD");
-    console.log("startingDate:", startingDate, "endingDate:,", endingDate);
+    // console.log("startingDate:", startingDate, "endingDate:,", endingDate);
     while (startingDate <= endingDate) {
       const startingTime = Moment(startTime, "HH:mm");
       const endingTime = Moment(endTime, "HH:mm");

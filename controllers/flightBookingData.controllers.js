@@ -40,7 +40,7 @@ exports.addFlightBookingData = async (req, res) => {
 
 exports.EmailTicket= async (req, res) => {
   const data=req.body;
-  console.log(data,"id")
+  // console.log(data,"id")
     try{
     const response = await flightBookingData.findById({_id:data.TicketId});
     await commonFunction.FlightBookingConfirmationMailWithNewEmail(response,data.emailTicket);
@@ -107,7 +107,7 @@ exports.getoneFlightsBooking = async (req, res) => {
     response = await flightBookingData.find({
       userId: { $in: [req.params.id] },
     });
-    console.log(response,"response");
+    // console.log(response,"response");
     const msg = "user booking data get successfully";
     actionCompleteResponse(res, response, msg);
   } catch (error) {
@@ -121,7 +121,7 @@ exports.getoneFlightsBookingById = async (req, res) => {
     response = await flightBookingData.find({
       _id: { $in: [req.params.id] },
     });
-    console.log(response,"response");
+    // console.log(response,"response");
     const msg = "user booking data get successfully";
     actionCompleteResponse(res, response, msg);
   } catch (error) {

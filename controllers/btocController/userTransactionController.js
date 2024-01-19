@@ -7,8 +7,10 @@ const merchant_id = process.env.PHONE_PAY_MERCHANT_ID;
 const salt_key = process.env.PHONE_PAY_SALT_KEY;
 const paymentStatus=require("../../enums/paymentStatus")
 const { URLSearchParams } = require("url");
-
 const Razorpay = require("razorpay");
+const { v4: uuidv4 } = require('uuid');
+const uuid = uuidv4();
+
 const {
   actionCompleteResponse,
   sendActionFailedResponse,
@@ -67,6 +69,10 @@ var config = {
   env: process.env.EASEBUZZ_ENV,
   enable_iframe: process.env.EASEBUZZ_IFRAME,
 };
+const currentDate = new Date();
+const newDate = new Date(currentDate.getTime() + 16 * 60000); // Adding 16 minutes in milliseconds (1 minute = 60,000 milliseconds)
+
+// console.log(newDate.toISOString());
 
 exports.transaction = async (req, res, next) => {
   try {
@@ -790,3 +796,149 @@ function generateSHA512Hash(input) {
 //   }
 //   res.send('false, check the hash value ');
 // };
+
+// const sdk = require('api')('@cashfreedocs-new/v3#lwcaw2xlrg6kt82');
+
+// sdk.auth('TEST1009338104d5e3d4f1f2d46ae39a18339001');
+// sdk.auth('cfsk_ma_test_2465e393bc943188fa8ce919d8f6f9d0_a3f68c24');
+// sdk.pGCreateOrder({
+//   customer_details: {
+//     customer_id: '9437ed98-b2',
+//     customer_email: 'lcharu071@gmail.com',
+//     customer_phone: '8115199076'
+//   },
+//   order_id: 'cfsk_ma_test_2465e393bc943188fa8ce919d8f6f9d0',
+//   order_amount: 10,
+//   order_currency: 'INR'
+// }, {'x-api-version': '2022-09-01'})
+//   .then(({ data }) => console.log(data))
+//   .catch(err => console.error(err));
+
+
+
+// const object= {
+//   customer_details: {
+//     customer_id: '9437e098-b2',
+//     customer_email: 'lcharu071@gmail.com',
+//     customer_phone: '8115199076'
+//   },
+//   order_id: 'cfsk_mb_test_2465e393bc943188fa8ce919d8f6f9d0',
+//   order_amount: 10,
+//   order_currency: 'INR'
+// }
+// const options = {
+//   method: 'POST',
+//   url: 'https://sandbox.cashfree.com/pg/orders',
+//   headers: {
+//     accept: 'application/json',
+//     'x-api-version': '2022-09-01',
+//     'content-type': 'application/json',
+//     'x-client-id': 'TEST1009338104d5e3d4f1f2d46ae39a18339001',
+//     'x-client-secret': 'cfsk_ma_test_2465e393bc943188fa8ce919d8f6f9d0_a3f68c24'
+//   },
+//   data:object
+// };
+
+// axios
+//   .request(options)
+//   .then(function (response) {
+//     console.log(response.data);
+//   })
+//   .catch(function (error) {
+//     console.error(error);
+//   });
+
+
+  //handle transaction details into db using cashfree ****************************************
+exports.makeCashfreePayment = async (req, res, next) => {
+  try {
+    const { firstname, phone, amount, redirectUrl, bookingType } = req.body;
+    // const isUserExist = await findUser({
+    //   _id: req.userId,
+    //   status: status.ACTIVE,
+    // });
+    // if (!isUserExist) {
+    //   return res.status(statusCode.NotFound).send({
+    //     statusCode: statusCode.NotFound,
+    //     message: responseMessage.USERS_NOT_FOUND,
+    //   });
+    // }
+    const currentDate = new Date();
+const newDate = new Date(currentDate.getTime() + 16 * 60000); // Adding 16 minutes in milliseconds (1 minute = 60,000 milliseconds)
+
+const uuid = uuidv4();
+console.log("uuid==============",uuid);
+    const client_secret=process.env.CASHFREE_API_KEY
+    const clientId=process.env.CASHFREE_API_ID
+    const payUrl=process.env.CASHFREE_URL
+    const merchantTransactionId = "12e89f0029ea" + Date.now();
+    console.log("merchantTransactionId============",merchantTransactionId);
+    const object= {
+      customer_details: {
+        customer_id: merchantTransactionId,
+        customer_email: 'lcharu071@gmail.com',
+        customer_phone: '8115199076'
+      },
+      order_id: "ORDIDTST"+ Date.now(),
+      order_meta: {
+        notify_url: "https://webhook.site/0578a7fd-a0c0-4d47-956c-d02a061e36d3",
+    },
+    order_expiry_time:newDate,
+      order_amount: 10,
+      order_currency: 'INR'
+    }
+    console.log("object==>>>>>",object)
+    const options = {
+      method: "post",
+      url: `https://sandbox.cashfree.com/pg/orders `,
+      headers: {
+        accept: 'application/json',
+        'x-api-version': '2022-01-01',
+        'content-type': 'application/json',
+        'x-client-id': clientId,
+        'x-client-secret': client_secret
+      },
+      data: object,
+    };
+    try {
+      const { data } = await axios.request(options);
+
+      console.log("data==>>>>>>>>>>>>>>>>>>>", data);
+      const objectData = {
+        // userId: isUserExist._id,
+        amount: object.order_amount,
+        paymentId: data.cf_order_id,
+        orderId:data.order_id,
+        signature:data.customer_details.customer_id,
+        bookingType: object.order_currency,
+      };
+      // const createData = await createUsertransaction(object);
+      console.log("objectData=======>>>>>>>>>>>========",objectData)
+      return res
+        .status(statusCode.OK)
+        .send({
+          statusCode: statusCode.OK,
+          responseMessage: responseMessage.PAYMENT_INTIATE,
+          result: data,
+        });
+    } catch (error) {
+      console.error("error axios:===========>>>>>>>>>>", error);
+      console.log("error===================",error.message);
+    }
+  } catch (error) {
+    console.log("error while make payment", error);
+    return next(error)
+  }
+};
+
+
+exports.checkout=async(req,res,next)=>{
+  try {
+    const option={
+
+    }
+  } catch (error) {
+    console.log("error while make payment", error);
+    return next(error)
+  }
+}

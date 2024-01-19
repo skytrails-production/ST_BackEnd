@@ -58,7 +58,7 @@ exports.addHotelBookingData = async (req, res) => {
     actionCompleteResponse(res, response, msg);
 
   } catch (error) {
-    console.log("heelelele")
+    
     sendActionFailedResponse(res, {}, error.message);
   }
 };
@@ -70,7 +70,7 @@ exports.getoneHotelBookingById=async (req, res) => {
     response = await hotelBookingModel.find({
       _id: { $in: [req.params.id] },
     });
-    console.log(response,"response");
+    // console.log(response,"response");
     const msg = "user booking data get successfully";
     actionCompleteResponse(res, response, msg);
   } catch (error) {

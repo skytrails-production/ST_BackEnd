@@ -1,4 +1,5 @@
 const controller = require("../../controllers/visaController/visaController");
+const visaBooking=require("../../controllers/visaController/visaBookingController")
 const auth = require("../../middleware/authJwt");
 const schemas = require("../../utilities/schema.utilities");
 const SchemaValidator = require("../../utilities/validations.utilities");
@@ -21,5 +22,11 @@ module.exports = function (app) {
   app.get("/skyTrails/api/visa/getonArrivalList", controller.getonArrivalList);
   app.get("/skyTrails/api/visa/getWeeklyVisa",controller.getWeeklyVisa);
   app.get("/skyTrails/api/visa/getVisaById",controller.getVisaById);
-  app.get("/skyTrails/api/visa/getAllVisaCountry",controller.getAllVisaCountry)
+  app.get("/skyTrails/api/visa/getAllVisaCountry",controller.getAllVisaCountry);
+  app.post(
+    '/skyTrails/api/visa/visaBooking',
+    upload.fields([{ name: 'passportImage', maxCount: 1 }, { name: 'image', maxCount: 1 }]),
+    // SchemaValidator(weeklyVisaSchema),
+    visaBooking.visaBooking
+  );
 };

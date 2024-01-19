@@ -31,6 +31,10 @@ module.exports = function (app) {
     "/skyTrails/international/setactive",
     controller.internationalSetActive
   );
+
+  //inactive pacakge
+  app.get("/skyTrails/packages/inactive",controller.inactivePackages);
+  
   app.post(
     "/skyTrails/international/pakageBookingrequest",
     controller.pakageBookingrequest

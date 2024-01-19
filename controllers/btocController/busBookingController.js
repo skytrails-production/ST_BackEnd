@@ -97,7 +97,7 @@ exports.getBusBookingList = async (req, res, next) => {
       userId: isUserExist._id,
     };
     const result = await paginateUserBusBookingSearch(body);
-    console.log("result=========", result);
+    // console.log("result=========", result);
     if (result.docs.length == 0) {
       return res
         .status(statusCode.OK)

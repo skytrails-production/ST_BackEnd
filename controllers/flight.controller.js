@@ -743,7 +743,7 @@ exports.combinedApi = async (req, res) => {
       ...(response2?.Journeys[0]?.Segments || []),
     ];
 
-    console.log("hello");
+   
 
     // sort data according to BaseFare or Basic Fare
 
@@ -896,7 +896,7 @@ exports.sortedData = async (req, res) => {
       return copiedObject;
     });
     const TraceId = response?.data?.Response?.TraceId;
-    console.log(TraceId);
+    // console.log(TraceId);
     const Origin = response?.data?.Response?.Origin;
     const Destination = response?.data?.Response?.Destination;
 
@@ -927,10 +927,10 @@ exports.returnFlightSort = async (req, res) => {
     const sortlist = response.data.Response.Results;
     const combinedResults = sortlist.reduce((acc, result) => {
       if (result[0].Segments[0].length === 1) {
-        console.log(result[0].Segments[0].length, 'one')
+        // console.log(result[0].Segments[0].length, 'one')
         acc[0].push(result);
       } else if (result[0].Segments[0].length === 2) {
-        console.log(result[0].Segments[0].length, "two")
+        // console.log(result[0].Segments[0].length, "two")
         acc[1].push(result);
       }
       return acc;
@@ -965,21 +965,21 @@ exports.returnFlightSort = async (req, res) => {
 
 const addImageToResults = (results) => {
   const imagesPath = '../utilities/FlightImages/';
-console.log("====================>>>>>>>>>>>>>>>>>>>>>>>>>>>>REsults",results);
+// console.log("====================>>>>>>>>>>>>>>>>>>>>>>>>>>>>REsults",results);
   results.forEach(result => {
     result.Segments.forEach(segment => {
       segment.forEach(subSegment => {
         const airlineCode = subSegment.Airline.AirlineCode;
-console.log("-========================22222222222222222",subSegment)
+// console.log("-========================22222222222222222",subSegment)
         // Check if the image for the airline code exists
         const imagePath = imagesPath + airlineCode + '.png';
-        console.log("imagePath-----------",imagePath)
-console.log("=-==============================>??????",imagesPath.includes(imagePath))
+        // console.log("imagePath-----------",imagePath)
+// console.log("=-==============================>??????",imagesPath.includes(imagePath))
         // If the image exists, add it to the response
         if (imagesPath.includes(imagePath)) {
-          console.log("imagePath: "+imagePath);
+          // console.log("imagePath: "+imagePath);
           subSegment.Airline.image = imagePath;
-          console.log("subSegment.Airline.image:::::::::::::",subSegment.Airline.image)
+          // console.log("subSegment.Airline.image:::::::::::::",subSegment.Airline.image)
         } else {
           // If the image doesn't exist, provide a default image path
           subSegment.Airline.image = '../utilities/FlightImages/0B.png';

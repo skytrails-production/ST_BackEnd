@@ -8,7 +8,7 @@ mongoose.pluralize(null);
 const visaApplicationSchema = new mongoose.Schema(
   {
     userId: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Types.ObjectId,
       ref: "users",
     },
     firstName: {
@@ -30,7 +30,7 @@ const visaApplicationSchema = new mongoose.Schema(
       type:String
     },
     country: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: mongoose.Types.ObjectId,
       ref: "visa",
     },
     visaType: {

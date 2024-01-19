@@ -7,7 +7,7 @@ const issuedType = require('../../enums/issuedType');
 const { userServices } = require("../../services/userServices");
 const {createUser,findUser,getUser,findUserData,updateUser,paginateUserSearch,countTotalUser,} = userServices;
 const {requireDocServices}=require("../../services/visaAppServices/requireDocumentServices");
-const{createRequireDoc,findRequireDocData,deleteRequireDoc,requireDocList,updateRequireDoc,countTotalRequireDoc,getRequireDoc,requireDocListPopulate}=requireDocServices;
+const{createRequireDoc,findRequireDocData,findRequireDocData1,deleteRequireDoc,requireDocList,updateRequireDoc,countTotalRequireDoc,getRequireDoc,requireDocListPopulate}=requireDocServices;
 const { visaServices } = require('../../services/visaServices');
 const { createWeeklyVisa, findWeeklyVisa,findWeeklyVisaPopulate, deleteWeeklyVisa, weeklyVisaList, updateWeeklyVisa, weeklyVisaListPaginate, getNoVisaByPaginate, montholyVisaListPaginate, onarrivalVisaListPaginate } = visaServices;
 const {visaCategoryServices}=require("../../services/visaAppServices/visaCategoryServices");
@@ -60,7 +60,7 @@ exports.createRequireDocument = async (req, res, next) => {
         }
 
         const result = await createRequireDoc(obj);
-        await updateWeeklyVisa({ _id: isCountryExist._id }, { requireDocumentId: result._id });
+        await updateWeeklyVisa({ _id: isCountryExist._id }, { requireDocumentId: result._id ,documents:result.requiredDocCategory});
         await updateVisaCategory({ _id: isvisaCategoryExist._id }, { requiredDocuments: result.requiredDocCategory });
 
         return res.status(statusCode.OK).send({
@@ -98,6 +98,22 @@ exports.getRequireDocumentById=async(req,res,next)=>{
         return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result: result,});
     } catch (error) {
         console.log("error while get data",error);
+        return next(error)
+    }
+}
+
+exports.getRequireDocumentPerCountry=async(req,res,next)=>{
+    try {
+        const {countryId}=req.query;
+        const result=await findRequireDocData1({visaCountry:countryId});
+        
+        console.log("result==================",result);
+        if(!result){
+            return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND,result: result,});
+        }
+        return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result: result,});
+    } catch (error) {
+        console.log("error while trying to get country docs",error);
         return next(error)
     }
 }

@@ -52,7 +52,7 @@ exports.update_amount = async (req, res) => {
       var size = Object.keys(data).length;
       if (size > 0) {
         const resData = await b2bUser.findOne({ walletid: id });
-        console.log(resData.walletid);
+        // console.log(resData.walletid);
         const user = await b2bUser.findOneAndUpdate(
           { walletid: id },
           { $set: { balance: balance } },
@@ -67,7 +67,7 @@ exports.update_amount = async (req, res) => {
       actionCompleteResponse(res, {}, msg);
     }
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     sendActionFailedResponse(res, {}, error.message);
   }
 };
@@ -143,12 +143,12 @@ exports.rechargeWallet = (req, res) => {
       currency: "INR",
       receipt: "order_rcptid_11",
     };
-    console.log(amount);
+    // console.log(amount);
     instance.orders.create(options, function (err, order) {
       if (err) {
         return res.send({ code: 500, message: "Server Error" });
       }
-      console.log(order);
+      // console.log(order);
       return res.send({
         code: 200,
         message: "order Created Successfully",

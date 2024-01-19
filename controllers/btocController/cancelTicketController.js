@@ -80,13 +80,13 @@ exports.getCancelUserFlightBooking = async (req, res, next) => {
     try {
         const { page, limit, search, fromDate, toDate,userId } = req.query;
         const isUserExist = await findUser({ _id: req.userId,status:status.ACTIVE,otpVerified:true });
-        console.log("isAgentExists", isUserExist);
+        // console.log("isAgentExists", isUserExist);
         if (!isUserExist) {
             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
         }
         req.query.userId=isUserExist._id;
         const result =await aggregatePaginatecancelFlightBookingsList(req.query);
-        console.log("result========",result);
+        // console.log("result========",result);
         if (!result) {
             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.DATA_NOT_FOUND });
         }
@@ -134,7 +134,7 @@ exports.getCancelUserHotelBooking = async (req, res, next) => {
         }
         req.query.userId=isUserExist._id;
         const result =await getHotelCancelRequesrByAggregate1(req.query);
-        console.log("result========",result);
+        // console.log("result========",result);
         if (!result) {
             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.DATA_NOT_FOUND });
         }

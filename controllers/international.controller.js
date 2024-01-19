@@ -111,7 +111,7 @@ exports.internationalupdate = async (req, res) => {
       };
       try {
         const user = await User.findById(reqData.isAdmin);
-        console.log(user);
+        // console.log(user);
         const role = await Role.findById(user.roles[0].toString());
         if (role.name === "admin" || role.name === "user") {
           const response = await internationl.findByIdAndUpdate(
@@ -135,7 +135,7 @@ exports.internationalFind = async (req, res) => {
   try {
     const pakage = await internationl.findById(req.params.id);
     msg = "Pakage successfully found";
-    console.log(pakage.pakage_img);
+    // console.log(pakage.pakage_img);
     actionCompleteResponse(res, pakage, msg);
   } catch (err) {
     sendActionFailedResponse(res, {}, err.message);
@@ -145,7 +145,7 @@ exports.internationalFind = async (req, res) => {
 exports.internationalDelete = async (req, res) => {
   try {
     const user = await User.findById(req.body.isAdmin);
-    console.log(user);
+    // console.log(user);
     const role = await Role.findById(user.roles[0].toString());
     if (role.name === "admin") {
       const pakage = await internationl.findByIdAndRemove(req.params.id);
@@ -164,7 +164,7 @@ exports.internationalgetAll = async (req, res) => {
   try {
     let pagintionData = 10;
 
-    const apiSearch = new Internationalapi(internationl.find(), req.query)
+    const apiSearch = new Internationalapi(internationl.find({is_active:1}).find(), req.query)
       .search()
       .filter()
       .pagintion(pagintionData);
@@ -175,7 +175,7 @@ exports.internationalgetAll = async (req, res) => {
     if (pakage.length === 0) {
       // console.log(req.query)
       // pakage=await internationl.find({ 'destination.addMore': req.query.keyword }).exec();
-      pakage = await internationl
+      pakage = await internationl.find({is_active:1})
         .find({
           $or: [
             {
@@ -245,6 +245,21 @@ exports.internationalgetAll = async (req, res) => {
     sendActionFailedResponse(res, {}, err.message);
   }
 };
+
+// inactive packages
+
+exports.inactivePackages = async (req, res) =>{
+  try {
+
+    const data=await internationl.find({is_active:0});
+
+    msg = "Search inActive packages successfully";
+    actionCompleteResponse(res, data, msg);
+  } catch (err) {
+    sendActionFailedResponse(res, {}, err.message);
+  }
+
+}
 
 function escapeRegex(text) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
@@ -318,7 +333,7 @@ exports.packageCityList = async (req, res) => {
 exports.latestPackages = async (req, res) => {
   try {
     const packages = await internationl
-      .find()
+      .find({is_active:1})
       .sort({ "pakage_amount.amount": 1, createdAt: -1 })
       .limit(6);
 
@@ -351,7 +366,7 @@ exports.beachesPackages = async (req, res) => {
 
     // console.log('Generated Query:', query);
 
-    const packages = await internationl.find(query);
+    const packages = await internationl.find({ $and: [{ is_active: 1 }, query] });
 
     if (packages.length > 0) {
       const msg =
@@ -386,7 +401,7 @@ exports.domesticAndInternational = async (req, res) => {
       query = { country: { $ne: "India" } };
     }
 
-    const packages = await internationl.find(query);
+    const packages = await internationl.find({ $and: [{ is_active: 1 }, query] });
 
     if (packages.length > 0) {
       // const msg = `आपने किया है ${country === 'India' ? 'देशी' : 'विदेशी'} पैकेजं सर्च`;
@@ -416,7 +431,7 @@ exports.countryPackage = async (req, res) => {
       return res.status(400).json({ error: 'Country parameter is required.' });
     }
 
-    const packages = await internationl.find({'country':country});
+    const packages = await internationl.find({ $and: [{ is_active: 1 }, {'country':country}] });
 
     if (packages.length > 0) {
       const msg =`packages found for ${country}`;
@@ -437,7 +452,7 @@ exports.internationalSetActive = async (req, res) => {
   const { pakageId, isAdmin, activeStatus } = req.body;
   try {
     const user = await User.findById(isAdmin);
-    console.log(user);
+    // console.log(user);
     const role = await Role.findById(user.roles[0].toString());
     //  console.log(r.name);
     if (role.name === "admin") {

@@ -42,12 +42,12 @@ const hashedPassword = nodeCrypto
 exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
   const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
 
-  console.log("messageId", messageId);
-  console.log("uniqueId", uniqueId);
-  console.log("NONCE", NONCE);
-  console.log("TIMESTAMP", TIMESTAMP);
-  console.log("hashedPassword", hashedPassword);
-  console.log("url", url);
+//   console.log("messageId", messageId);
+//   console.log("uniqueId", uniqueId);
+//   console.log("NONCE", NONCE);
+//   console.log("TIMESTAMP", TIMESTAMP);
+//   console.log("hashedPassword", hashedPassword);
+//   console.log("url", url);
 
   try {
     // console.log(req.body,"body")
@@ -128,13 +128,13 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
       SOAPAction: "http://webservices.amadeus.com/FMPTBQ_23_4_1A",
     };
 
-    // console.log("data", typeof data);
+    // console.log("data", data);
 
     // const response = await axios.post(url,data,{headers} );
     msg = "Flight Searched Successfully!";
     actionCompleteResponse(res, response, msg);
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };

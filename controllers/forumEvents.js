@@ -8,7 +8,7 @@ function handleNewForumPost(post) {
     // Save the new forum post to the database
     Forum.create(post)
         .then((createdPost) => {
-            console.log("createdPost-=-", createdPost);
+            // console.log("createdPost-=-", createdPost);
             // Broadcast the new post to all connected clients
             const message = JSON.stringify({ type: 'new-post', data: createdPost });
             wsServer.broadcast(message);

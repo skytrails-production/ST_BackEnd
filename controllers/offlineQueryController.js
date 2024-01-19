@@ -46,7 +46,7 @@ exports.createofflineQuery = async (req, res, next) => {
       queryType,
     } = req.body;
     const result = await createOffline(req.body);
-    console.log("result=====", result);
+    // console.log("result=====", result);
     if (!result) {
       return res.status(statusCode.InternalError).send({
         statusCode: statusCode.InternalError,

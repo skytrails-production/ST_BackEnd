@@ -81,7 +81,7 @@ exports.login = async (req, res, next) => {
           phone: isExist.phone,
           userType: isExist.userType,
           otpVerified: isExist.otpVerified,
-          otp: isExist.otp,
+          otp: "123456",
           status: isExist.status,
           token: token,
         };

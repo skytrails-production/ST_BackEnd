@@ -11,5 +11,6 @@ module.exports = function (app) {
     app.post("/skyTrails/api/visa/document/createRequireDocument",SchemaValidator(schemas.docRequireSchema),controller.createRequireDocument);
     app.get("/skyTrails/api/visa/document/getRequireDocument", controller.getRequireDocument);
   
-    app.get("/skyTrails/api/visa/document/getRequireDocumentById",controller.getRequireDocumentById)
+    app.get("/skyTrails/api/visa/document/getRequireDocumentById",controller.getRequireDocumentById);
+    app.get("/skyTrails/api/visa/document/getRequireDocumentPerCountry",controller.getRequireDocumentPerCountry)
   };

@@ -126,7 +126,7 @@ exports.RegisterUser = async (req, res) => {
   const reqData = JSON.parse(req.body.data);
   const file = req?.file;
   var salt = bcrypt.genSaltSync(10);
-  console.log(reqData.personal_details.password);
+  // console.log(reqData.personal_details.password);
   const s3Params = {
     Bucket: process.env.AWS_BUCKET_NAME,
     Key: file.originalname,
@@ -283,7 +283,7 @@ exports.SetMarkup = async (req, res) => {
     const { userId } = req.body; //destructure userId and amount from request body
     //check if userId is valid in table
     const resData = await b2bUser.findById(userId);
-    console.log(resData);
+    // console.log(resData);
     const user = await b2bUser.findOneAndUpdate(
       { _id: userId },
       {
@@ -389,7 +389,7 @@ exports.GetMarkup = async (req, res) => {
 
 exports.payVerify = (req, res) => {
   try {
-    console.log(req.body);
+    // console.log(req.body);
     body = req.body.razorpay_order_id + "|" + req.body.razorpay_payment_id;
     var crypto = require("crypto");
     var expectedSignature = crypto

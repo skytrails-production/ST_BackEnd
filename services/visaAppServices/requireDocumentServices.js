@@ -16,7 +16,13 @@ const requireDocServices={
     findRequireDocData: async (query) => {
         return await requiredDocumentModel.findOne(query)
     },
-
+    findRequireDocData1: async (query) => {
+        return await requiredDocumentModel.findOne(query)
+            .populate('visaCountry','-requireDocumentId')  // Assuming 'visaCountry' has a 'name' field
+            .populate('visaCategory','categoryName visaType -_id') // Assuming 'visaCategory' has a 'name' field
+            .select('-requiredDocumentCategories -createdAt -updatedAt');
+    },
+    
     deleteRequireDoc: async (query) => {
         return await requiredDocumentModel.deleteOne(query);
     },
