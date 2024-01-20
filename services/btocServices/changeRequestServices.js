@@ -25,7 +25,7 @@ const changeUserBookingServices = {
             },
             {
                 $lookup: {
-                    from: "users",
+                    from: "userBtoC",
                     localField: 'userId',
                     foreignField: '_id',
                     as: "userDetails",
@@ -74,7 +74,7 @@ const changeUserBookingServices = {
             },
             {
                 $lookup: {
-                    from: "users",
+                    from: "userBtoC",
                     localField: 'userId',
                     foreignField: '_id',
                     as: "userDetails",
@@ -111,7 +111,7 @@ const changeUserBookingServices = {
             },
             {
                 $lookup: {
-                    from: "users",
+                    from: "userBtoC",
                     localField: 'userId',
                     foreignField: '_id',
                     as: "userDetails",
@@ -188,7 +188,7 @@ const changeUserBookingServices = {
             },
             {
                 $lookup: {
-                    from: "users",
+                    from: "userBtoC",
                     localField: 'userId',
                     foreignField: '_id',
                     as: "userDetails",

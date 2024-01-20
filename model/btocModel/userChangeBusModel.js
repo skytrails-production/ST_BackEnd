@@ -9,7 +9,7 @@ const changeBookingDataSchema =
     new mongoose.Schema({
         userId: {
             type: Schema.Types.ObjectId,
-            ref: "users",
+            ref: "userBtoC",
         },
         reason: {
             type: String

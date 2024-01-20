@@ -1,54 +1,57 @@
 const multer = require('multer');
 const path = require('path');
-const { v4: uuidv4 } = require('uuid');
-const File = require('fs');
-const { badRequest } = require('./responceCode'); 
+const fs = require('fs');
 
-// Set storage engine
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/'); // Define the destination folder for uploaded files
-  },
-  filename: function (req, file, cb) {
-    // Customize the file name to include a timestamp and remove spaces
-    cb(null, `uploadedFile_${Date.now()}_${file.originalname.replace(/\s/g, '')}`);
-  }
-});
+class UploadHandler {
+    constructor(fileSize) {
+        this.fileSize = fileSize;
+        this.max_image_size = 204800;
+        this.max_video_size = 2048000;
+        this.storage = multer.diskStorage({
+            destination(req, file, cb) {
+                const root = path.normalize(`${__dirname}/../..`);
+                cb(null, `${root}/uploads/`);
+            },
+            filename(req, file, cb) {
+                cb(null, `${Date.now()}_${file.originalname.replace(/\s/g, '')}`);
+            },
+        });
+        this.uploadFile = this.uploadFile.bind(this);
+        const root = path.normalize(`${__dirname}/../..`);
+        console.log("root" );
+    }
 
-// Initialize multer
-const upload = multer({
-  storage: storage,
-  limits: { fileSize: 100000000000 } // Set file size limit (optional)
-}).single('images');
+    handleUploadError(req, res, next, upload) {
+        upload(req, res, function (err) {
+            if (err) {
+                if (err.code === 'LIMIT_FILE_SIZE') {
+                    return next(badRequest(err, 'File size limit exceeds'));
+                }
+                return next(badRequest(err, 'Error in file upload'));
+            }
+            return next();
+        });
+    }
 
-// Middleware to handle file uploads
-const handleFileUpload = (req, res, next) => {
-  try {
-    upload(req, res, async (err) => {
-      if (!req.file) {
-        return res.status(400).json({ success: false, message: "No file uploaded" });
-      }
+    uploadFile(req, res, next) {
+        const upload = multer({
+            storage: this.storage,
+            fileFilter: function (req, file, cb) {
+                var ext = path.extname(file.originalname).toLowerCase();
+                // console.log("file============",file);
+                // console.log("sssssssss", ext);
+                if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg' && ext !== '.svg') {
+                    return cb(Boom.badRequest('Only images are allowed'), false);
+                }
+                cb(null, true);
+            },
+            limits: {
+                fileSize: 1000000 * 90,
+                //fileSize: this.fileSize * 500000,  // 5MB
+            },
+        }).any();
+        this.handleUploadError(req, res, next, upload);
+    }
+}
 
-      if (err) {
-        return res.status(400).json({ success: false, message: "There is an error uploading the file" });
-      }
-
-      // Save data into the database
-      const fileData = new File({
-        fileName: req.file.filename,
-        uuid: uuidv4(),
-        path: req.file.path,
-        size: req.file.size
-      });
-// console.log("--------=-------",fileData)
-      const result = await fileData.save();
-      console.log("result======",result)
-      req.fileData = result; 
-      return next();
-    });
-  } catch (error) {
-    return res.status(500).json({ success: false, message: "Internal server error!", error });
-  }
-};
-
-module.exports = { handleFileUpload };
+module.exports = new UploadHandler(10);

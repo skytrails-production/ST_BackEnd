@@ -89,6 +89,7 @@ const internationl = mongoose.model(
         type: Number,
         default: activeStatus.IN_ACTIVE,
       },
+      
     },
     {
       timestamps: true,

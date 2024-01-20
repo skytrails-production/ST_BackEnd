@@ -100,7 +100,6 @@ exports.createCoupons = async (req, res, next) => {
       });
     }
     const imageUrl = await commonFunction.getImageUrlAWS(req.file);
-    req.body.image = imageUrl;
     if (!imageUrl) {
       return res.status(statusCode.InternalError).send({
         statusCode: statusCode.OK,
@@ -111,6 +110,7 @@ exports.createCoupons = async (req, res, next) => {
       couponCode: couponCode,
       status: status.ACTIVE,
     });
+
     const obj={
       title:title,
       content:content,
@@ -121,7 +121,7 @@ exports.createCoupons = async (req, res, next) => {
       expirationDate:expirationDate,
       termsAndCond:termsAndCond,
       offerType:offerType,
-      image:req.body.image,
+      image:imageUrl,
       userApplied:[],
     }
     if (isCouponExist) {

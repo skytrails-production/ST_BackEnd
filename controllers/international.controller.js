@@ -334,7 +334,7 @@ exports.latestPackages = async (req, res) => {
   try {
     const packages = await internationl
       .find({is_active:1})
-      .sort({ "pakage_amount.amount": 1, createdAt: -1 })
+      .sort({createdAt: -1 })
       .limit(6);
 
     if (packages.length > 0) {
@@ -445,6 +445,26 @@ exports.countryPackage = async (req, res) => {
   }
 };
 
+//agent Packages
+
+exports.agentPackages = async (req, res) => {
+  try {
+    let packages=[];
+    const { userId, isActive } = req.query;
+    
+    
+    if (userId) {
+      const query = isActive ? { is_active: isActive, userId: userId } : { userId: userId };
+       packages = await internationl.find(query);
+    //  console.log("Vpackages",packages.length);
+    }
+    
+    const msg = packages.length > 0 ? 'Packages found' : 'No packages found';
+    actionCompleteResponse(res, packages, msg);
+  } catch (error) {
+    sendActionFailedResponse(res, {}, error.message);
+  }
+}   
 
 
 

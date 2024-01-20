@@ -3,7 +3,8 @@ const status = require("../../enums/status");
 const mongoosePaginate = require("mongoose-paginate-v2");
 const issuedType = require("../../enums/issuedType");
 const userType=require("../../enums/userType");
-const authType=require("../../enums/authType")
+const authType=require("../../enums/authType");
+const { object } = require("joi");
 mongoose.pluralize(null);
 const subAdminSchema = new mongoose.Schema(
   {
@@ -40,7 +41,8 @@ const subAdminSchema = new mongoose.Schema(
     authType:{
         type: String,
         // enum:[authType.ADS_HANDLER,authType.PACKAGE_HANDLER,authType.REQUEST_HANDLER],
-    }
+    },
+    task:[],
   },
   { timestamps: true }
 );

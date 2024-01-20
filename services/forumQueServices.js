@@ -36,7 +36,7 @@ const forumQueServices={
         {$match:{status:status.ACTIVE}},
         {
           $lookup: {
-            from: "users",
+            from: "userBtoC",
             localField: 'userId',
             foreignField: '_id',
             as: "userDetail",
@@ -76,7 +76,7 @@ const forumQueServices={
         {$match:{userId:userId,status:status.ACTIVE}},
         {
           $lookup: {
-            from: "users",
+            from: "userBtoC",
             localField: 'userId',
             foreignField: '_id',
             as: "userDetail",
@@ -121,7 +121,7 @@ const forumQueServices={
         },
         {
           $lookup: {
-            from: "users",
+            from: "userBtoC",
             localField: "userId",
             foreignField: "_id",
             as: "userDetail",
@@ -180,7 +180,7 @@ const forumQueServices={
           },
           {
             $lookup: {
-              from: "users",
+              from: "userBtoC",
               localField: 'userId',
               foreignField: '_id',
               as: "userDetail",

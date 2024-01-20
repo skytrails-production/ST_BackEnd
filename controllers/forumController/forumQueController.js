@@ -70,7 +70,6 @@ exports.createPost = async (req, res, next) => {
     }
     if (req.file) {
       const secureurl = await commonFuction.getImageUrlAWS(req.file);
-      
       req.body.image = secureurl;
     }
     const obj = {

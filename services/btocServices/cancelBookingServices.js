@@ -32,7 +32,7 @@ const cancelUserBookingServices = {
             },
             {
                 $lookup: {
-                    from: "users",
+                    from: "userBtoC",
                     localField: 'userId',
                     foreignField: '_id',
                     as: "userDetails",
@@ -102,7 +102,7 @@ const cancelUserBookingServices = {
             },
             {
                 $lookup: {
-                    from: "users",
+                    from: "userBtoC",
                     localField: 'userId',
                     foreignField: '_id',
                     as: "userDetails",
@@ -182,7 +182,7 @@ const cancelUserBookingServices = {
             },
             {
                 $lookup: {
-                    from: "users",
+                    from: "userBtoC",
                     localField: 'userId',
                     foreignField: '_id',
                     as: "userDetails",
@@ -247,7 +247,7 @@ const cancelUserBookingServices = {
             },
             {
                 $lookup: {
-                    from: "users",
+                    from: "userBtoC",
                     localField: 'userId',
                     foreignField: '_id',
                     as: "userDetails",
@@ -326,7 +326,7 @@ return await cancelBusModel.find(data);
             },
             {
                 $lookup: {
-                    from: "users",
+                    from: "userBtoC",
                     localField: 'userId',
                     foreignField: '_id',
                     as: "userDetails",
@@ -402,7 +402,7 @@ return await cancelBusModel.find(data);
             },
             {
                 $lookup: {
-                    from: "users",
+                    from: "userBtoC",
                     localField: 'userId',
                     foreignField: '_id',
                     as: "userDetails",

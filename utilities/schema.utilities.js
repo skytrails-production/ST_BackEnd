@@ -589,13 +589,13 @@ const schemas = {
   createCouponSchema: joi.object().keys({
     title: joi.string().required(),
     content: joi.string().required(),
-    remainingDays: joi.number().required(),
+    // images: joi.object().optional(),
     couponCode: joi.string().required(),
     discountPercentage: joi.number().required(),
     limitAmount: joi.number().required(),
     expirationDate: joi.string().required(),
     termsAndCond: joi.string().required(),
-    offerType: joi.valid(...Object.values(queryType)).required(),
+    offerType: joi.any().optional(),
     uniqueId: joi.string().optional()
   }),
 

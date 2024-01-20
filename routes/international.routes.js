@@ -53,7 +53,14 @@ module.exports = function (app) {
   app.get("/skyTrails/domesticAndInternationalPackages", controller.domesticAndInternational);
    app.get("/skyTrails/countryPackage",controller.countryPackage);
 
-  app.put('/skyTrails/international/editPackage',upload.single("images"),controller.editPackage)
+  app.put('/skyTrails/international/editPackage',upload.single("images"),controller.editPackage);
+
+
+  //Agent Packages list active or inactive
+
+  app.get('/skyTrails/agent/packages',controller.agentPackages);
+
+
 
  
 

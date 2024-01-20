@@ -1,7 +1,7 @@
 const couponController = require("../controllers/btocController/couponCodeController");
 const schemas = require("../utilities/schema.utilities");
 const SchemaValidator = require("../utilities/validations.utilities");
-const uploadHandle=require("../utilities/uploadImages");
+// const uploadHandle=require("../utilities/uploadImages");
 const { authJwt } = require("../middleware");
 const multer = require("multer");
 const storage = multer.memoryStorage();

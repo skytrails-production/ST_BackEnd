@@ -6,8 +6,10 @@ const addWebBanner=require('../controllers/btocController/webAdvertisemnetContro
 const { authJwt } = require("../middleware");
 const SchemaValidator = require("../utilities/validations.utilities");
 const schemas = require('../utilities/schema.utilities');
-const upload= require("../utilities/uploadErrorHandler");
-
+// const upload= require("../utilities/uploadErrorHandler");
+const multer = require("multer");
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 const eventController = require("../controllers/eventController");
 const userSearchesController=require("../controllers/btocController/userSearchesController");
 const packageControlelr=require("../controllers/btocController/packageBookingController")
@@ -21,12 +23,12 @@ module.exports = function (app) {
   app.post("/skytrails/api/admin/approveAgent",SchemaValidator(schemas.approveAgentSchema),controller.approveAgent)
   app.post("/skytrails/api/user/socialLogin", SchemaValidator(schemas.socialLoginSchema),controller.socialLogin);
   app.post("/skytrails/api/admin/createSubAdmin", SchemaValidator(schemas.subAdminSchema),[authJwt.verifcationToken],subAdminController.createSubAdmin);
-  app.put("/skytrails/api/admin/updateSubAdmin",upload.handleSingleFileUpload, SchemaValidator(schemas.updateSubAdmin),[authJwt.verifcationToken],subAdminController.updateSubAdmin);
+  app.put("/skytrails/api/admin/updateSubAdmin",upload.single('images'), SchemaValidator(schemas.updateSubAdmin),[authJwt.verifcationToken],subAdminController.updateSubAdmin);
   app.delete("/skytrails/api/admin/deleteSubAdmin", SchemaValidator(schemas.updateSubAdmin),[authJwt.verifcationToken],subAdminController.deleteSubAdmin);
   app.get("/skytrails/api/admin/getSubAdmin", subAdminController.getSubAdminByAggregate);
   app.post("/skytrails/api/admin/adminLogin",SchemaValidator(schemas.adminLoginSchema),controller.adminLogin);
   app.post("/skytrails/api/admin/subAdminLogin",SchemaValidator(schemas.subAdminLogin),subAdminController.subAdminLogin);
-  app.put("/skytrails/api/admin/editprofile",upload.handleSingleFileUpload,[authJwt.verifcationToken],controller.editProfile)
+  app.put("/skytrails/api/admin/editprofile",upload.single('images'),[authJwt.verifcationToken],controller.editProfile)
   app.get("/skytrails/api/admin/getAgents", controller.getAgents);
   app.get("/skytrails/api/admin/getAllHotelBookingList",controller.getAllHotelBookingList);
   app.get("/skytrails/api/admin/getAllFlightBookingList",controller.getAllFlightBookingList);
@@ -54,7 +56,7 @@ module.exports = function (app) {
   app.post('/skyTrails/api/admin/createAgent',SchemaValidator(schemas.createAgentSchema),controller.createAgent);
   app.get('/skyTrails/api/admin/getAllUsers',controller.getAllUsers)
   app.put('/skyTrails/api/admin/updateSubAdminStatus',SchemaValidator(schemas.statusSchema),controller.statusChange);
-  app.post('/skyTrails/api/admin/createWebAdvertisment',upload.handleSingleFileUpload,SchemaValidator(schemas.webAddSchema),addWebBanner.createWebAdvertisement);
+  app.post('/skyTrails/api/admin/createWebAdvertisment',upload.single('images'),SchemaValidator(schemas.webAddSchema),addWebBanner.createWebAdvertisement);
   app.get('/skyTrails/api/admin/getWebAdds',addWebBanner.getAggregateWebAdvertisement);
   app.get('/skyTrails/api/admin/getAllEvents',eventController.getAllEventsAggregate);
   app.get('/skyTrails/api/admin/userSearchHistory',userSearchesController.getUserSerchHistory);
