@@ -59,7 +59,7 @@ exports.searchCityBusData = async (req, res) => {
 exports.hotelCitySearch = async (req, res) => {
   try {
     var regex = new RegExp(escapeRegex(req.query.keyword), "gi");
-    const response = await newhotelCityCode.find({ Destination: regex });
+    const response = await newhotelCityCode.find({ $and: [{ country: "India" },{ Destination: regex }]});
     const msg = "data searched successfully";
     actionCompleteResponse(res, response, msg);
   } catch (error) {
