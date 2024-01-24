@@ -84,10 +84,10 @@ exports.flighBooking = async (req, res, next) => {
 
     const result = await createUserflightBooking(data);
     const userName = `${data?.passengerDetails[0]?.firstName} ${data?.passengerDetails[0]?.lastName}`;
-    const url1 = "google";
+    const url1 = `contactus`;
     const phone = data?.passengerDetails[0]?.ContactNo;
     const message = `Hello,${userName}.We appreciate your flight booking with The Skytrails. Your booking has been verified! Click the following link to view details: https://theskytrails.com/${url1}`;
-    await whatsApi.sendWhatsAppMessage(phone, message);
+    // await whatsApi.sendWhatsAppMessage(phone, message);
     await sendSMSUtils.sendSMSForFlightBooking(data);
     await commonFunction.FlightBookingConfirmationMail(result);
     return res.status(statusCode.OK).send({

@@ -151,7 +151,7 @@ exports.updatePost = async (req, res, next) => {
 
 exports.deletePost = async (req, res, next) => {
   try {
-    const isUser = await findUser({ _id: req.userId });
+    const isUser = await findUser({ _id: req.userId, status: status.ACTIVE });
     if (!isUser) {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,
@@ -188,7 +188,6 @@ exports.getPostOfUser = async (req, res, next) => {
       status: status.ACTIVE,
       otpVerified: true,
     });
-    console.log("isAgentExists", isUserExist);
     if (!isUserExist) {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,
@@ -197,6 +196,9 @@ exports.getPostOfUser = async (req, res, next) => {
     }
     req.query.userId = isUserExist._id;
     const result = await forumQueListLookUpOfUser(req.query);
+    console.log("result============",result);
+    // const likeLength=await findPostlikes({postId:result})
+
     if (!result) {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,
@@ -208,17 +210,6 @@ exports.getPostOfUser = async (req, res, next) => {
       responseMessage: responseMessage.DATA_FOUND,
       result: result,
     });
-    // const unanswered = await forumQueListLookUp(req.query);
-    // const answered = await forumListLookUp(req.query);
-    // const result = {
-    //   unanswered,
-    //   answered,
-    // };
-    // if (!unanswered) {
-    //   return actionCompleteResponse(res, result, "All posts successfully.");
-    // } else if (!answered) {
-    //   return sendActionFailedResponse(res, [], "No posts found.");
-    // }
   } catch (error) {
     console.log("error========>>>>>>", error);
     return next(error);
@@ -356,7 +347,6 @@ exports.likePost = async (req, res, next) => {
       _id: req.userId,
       status: status.ACTIVE,
     });
-
     if (!isUser) {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,
@@ -374,21 +364,31 @@ exports.likePost = async (req, res, next) => {
       });
     }
     const isAlreadyLiked = await findPostlikes({
-      postId: postId,
-      status: status.ACTIVE,
+      postId: isPostExist._id,
     });
-console.log("isAlreadyLiked.likes.includes(userId)",isAlreadyLiked.likes.includes(isUser._id))
+    if (!isAlreadyLiked) {
+      const newLike = {
+        postId: postId,
+        likes: [isUser._id],
+        status: "ACTIVE",
+      };
+      const savedLike = await createPostlikes(newLike);
+      await updateforumQue({_id: isPostExist._id}, { $inc: { likesCount: 1 }});
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.POST_LIKED,
+        result: savedLike,
+      });
+    }
     if (isAlreadyLiked.likes.includes(isUser._id)) {
-      console.log("isAlreadyLiked========",isAlreadyLiked.likes.includes(isUser._id));
       const updateResult = await updatePostlikes(
         { postId: isPostExist._id, status: status.ACTIVE },
         { $pull: { likes: isUser._id } }
       );
-      console.log("updateResult=======",updateResult)
-      updateResult.ikeslength = updateResult.likes.length;
-      console.log("updateResult==updateResult=====",updateResult)
-      return res.status(statusCode.NotFound).send({
-        statusCode: statusCode.NotFound,
+      await updateforumQue({_id: isPostExist._id}, { $inc: { likesCount: -1 }});
+    
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
         responseMessage: responseMessage.REMOVE_POST_LIKE,
         result: updateResult,
       });
@@ -397,31 +397,12 @@ console.log("isAlreadyLiked.likes.includes(userId)",isAlreadyLiked.likes.include
         { postId: isPostExist._id, status: status.ACTIVE },
         { $push: { likes: isUser._id } }
       );
-      console.log("updateResult===========", updateResult);
-      updateResult.likeslength = updateResult.likes.length;
-
+      await updateforumQue({_id: isPostExist._id}, { $inc: { likesCount: 1 }});
       res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.POST_LIKED,
         result: updateResult,
       }); 
-    }
-    if (!isAlreadyLiked) {
-      // Only create a new like if it doesn't already exist
-      const newLike = {
-        postId: postId,
-        likes: [isUser._id],
-        status: "ACTIVE",
-      };
-      const savedLike = await createPostlikes(newLike);
-      savedLike.likeslength = savedLike.likes.length;
-      console.log("=================", savedLike);
-
-      return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.POST_LIKED,
-        result: savedLike,
-      });
     }
   } catch (error) {
     console.log("error========>>>>>>", error);

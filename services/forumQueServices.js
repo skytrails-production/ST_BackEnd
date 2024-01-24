@@ -105,7 +105,7 @@ const forumQueServices={
       let aggregate = forumQueModel.aggregate(searchData)
       let options = {
         page: parseInt(page, 10) || 1,
-        limit: parseInt(limit, 10) || 10,
+        limit: parseInt(limit, 1000) || 1000,
         sort: { createdAt: -1 },
       };
       const info = await forumQueModel.aggregatePaginate(aggregate, options);

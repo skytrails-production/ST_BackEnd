@@ -23,7 +23,7 @@ module.exports = function (app) {
     app.post('/skyTrails/forumPost/addBookmark',controller.addBookmark)
     app.get('/skyTrails/forumPost/getPost', controller.getPost);
     app.put('/skyTrails/forumPost/updatePost', controller.updatePost);
-    app.delete('/skyTrails/forumPost/deletePost', controller.deletePost);
+    app.delete('/skyTrails/forumPost/deletePost',[authJwt.verifcationToken], controller.deletePost);
     app.get('/skyTrails/forumPost/getTopStories',controller.getTopStories);
     app.get('/skyTrails/forumPost/getPostOfUser',[authJwt.verifcationToken],controller.getPostOfUser);
     app.get('/skyTrails/forumPost/getComments',controller.getComments);

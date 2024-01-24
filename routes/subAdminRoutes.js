@@ -143,4 +143,5 @@ module.exports = function (app) {
     [authJwt.verifcationSubAdminToken],
     subAdminController.subAdminDashboard
   );
+  app.put("/skyTrails/api/admin/updateSubAdminTask",subAdminController.updateTaskOfSubAdmin)
 };

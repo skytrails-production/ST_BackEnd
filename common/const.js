@@ -304,4 +304,5 @@ exports.responseMessages = {
 exports.activeStatus = {
   IN_ACTIVE: 0,
   ACTIVE: 1,
+  REJECT:-1,
 };

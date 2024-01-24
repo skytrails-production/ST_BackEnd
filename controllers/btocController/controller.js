@@ -46,7 +46,7 @@ exports.login = async (req, res, next) => {
       const result1 = await createUser(obj);
       const data=await sendSMS.sendSMSForOtp(mobileNumber, otp);
       const message = `Use this OTP ${otp} to login to your. theskytrails account`;
-      await whatsappAPIUrl.sendWhatsAppMessage(mobileNumber, message);
+      // await whatsappAPIUrl.sendWhatsAppMessage(mobileNumber, message);
       token = await commonFunction.getToken({
         _id: result1._id,
         mobile_number: result1.mobile_number,
@@ -87,7 +87,7 @@ exports.login = async (req, res, next) => {
         };
         await sendSMS.sendSMSForOtp(mobileNumber, result.otp);
         const message = `Use this OTP ${result.otp} to login to your. theskytrails account`;
-        await whatsappAPIUrl.sendWhatsAppMessage(mobileNumber, message);
+        // await whatsappAPIUrl.sendWhatsAppMessage(mobileNumber, message);
         return res
           .status(statusCode.OK)
           .send({
@@ -103,7 +103,7 @@ exports.login = async (req, res, next) => {
     );
     await sendSMS.sendSMSForOtp(mobileNumber, otp);
     const message = `Use this OTP ${otp} to login to your. theskytrails account`;
-   await whatsappAPIUrl.sendWhatsAppMessage(mobileNumber, message);
+  //  await whatsappAPIUrl.sendWhatsAppMessage(mobileNumber, message);
     if (!updatedUser) {
       return res
         .status(statusCode.InternalError)
@@ -290,7 +290,7 @@ exports.resendOtp = async (req, res, next) => {
         });
     }
     const message = `Use this OTP ${otp} to login to your. theskytrails account`;
-    await whatsappAPIUrl.sendWhatsAppMessage(mobileNumber, message);
+    // await whatsappAPIUrl.sendWhatsAppMessage(mobileNumber, message);
     await sendSMS.sendSMSForOtp(mobileNumber, otp);
     const token = await commonFunction.getToken({
       _id: updateData._id,
@@ -449,7 +449,7 @@ exports.forgetPassword = async (req, res, next) => {
     );
     await sendSMS.sendSMSForOtp(mobileNumber, otp);
     const message = `Use this OTP ${otp} to login to your. theskytrails account`;
-    await whatsappAPIUrl.sendWhatsAppMessage(mobileNumber, message);
+    // await whatsappAPIUrl.sendWhatsAppMessage(mobileNumber, message);
     await commonFunction.sendEmailOtp(userResult.email, otp);
     return res
       .status(statusCode.OK)
@@ -561,7 +561,7 @@ exports.verifyUserOtpWithSocialId = async (req, res, next) => {
 }; 
 exports.editProfile = async (req, res, next) => {
   try {
-      const { username, email, mobile_number,gender,Nationality,City,State,pincode,dob,address } = req.body;
+      const { username, email, mobile_number,gender,Nationality,City,State,pincode,dob,address,bio,coverPic } = req.body;
       console.log("req.body==============",req.body)
       const isUSer = await findUser({ _id: req.userId, status: status.ACTIVE });
       console.log("isUser=======",isUSer)
@@ -569,31 +569,23 @@ exports.editProfile = async (req, res, next) => {
           return res.status(statusCode.Unauthorized).send({ message: responseMessage.UNAUTHORIZED });
       }
       if (mobile_number) {
-        const isExistMobile = await findUser({ 'phone.mobile_number': mobile_number, _id: { $ne: isUSer._id } });
-        console.log("isExistMobile", isExistMobile)
-        
+        const isExistMobile = await findUser({ 'phone.mobile_number': mobile_number, _id: { $ne: isUSer._id } });        
         if (isExistMobile) {
           return res.status(statusCode.Conflict).send({ message: responseMessage.USER_ALREADY_EXIST });
         }
       } else if (email) {
         const isExistEmail = await findUser({ email: email, _id: { $ne: isUSer._id } });
-        console.log("isExistEmail=================", isExistEmail)
         
         if (isExistEmail) {
           return res.status(statusCode.Conflict).send({ message: responseMessage.USER_ALREADY_EXIST });
         }
       }
-  
-      console.log("req.body", req.body);
-      console.log("req.body",req.body);
       const result = await updateUser({ _id: isUSer._id }, req.body);
-
       return res.status(statusCode.OK).send({ message: responseMessage.UPDATE_SUCCESS, result: result });
   } catch (error) {
       console.log("error=======>>>>>>", error);
       return next(error);
   }
 };
-
 
 

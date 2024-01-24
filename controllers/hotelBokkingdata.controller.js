@@ -49,7 +49,7 @@ exports.addHotelBookingData = async (req, res) => {
       // await commonFunction.sendHotelBookingConfirmation(data);
       const message = `Hello ${data.name} ,Thank you for booking your hotel stay with TheSkytrails. Your reservation is confirmed! Please click on url to see details:. Or You Can login theskytrails.com/login`
       await sendSMS.sendSMSForHotelBookingAgent(response);
-      await whatsAppMsg.sendWhatsAppMessage(data.phone, message);
+      // await whatsAppMsg.sendWhatsAppMessage(data.phone, message);
       await commonFunction.HotelBookingConfirmationMail(response);
 
     }

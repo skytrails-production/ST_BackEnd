@@ -49,7 +49,7 @@ exports.hotelBooking = async (req, res, next) => {
       const message = `Hello ${name}, Thank you for booking your hotel stay with TheSkytrails. Your reservation is confirmed! Please click on url to see details:. Or You Can login theskytrails.com/login`;
 
       await sendSMS.sendSMSForHotelBooking(result);
-      await whatsApi.sendWhatsAppMessage(result.phone, message);
+      // await whatsApi.sendWhatsAppMessage(result.phone, message);
       await commonFunction.HotelBookingConfirmationMail(result);
 
       return res.status(statusCode.OK).send({ statusCode: statusCode.OK, message: responseMessage.BOOKING_SUCCESS, result });

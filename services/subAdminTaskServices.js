@@ -11,7 +11,6 @@ const subAdminTaskServices = {
     },
 
     findSubAdminTask: async (query) => {
-        console.log("query=======",query)
         return await subAmdinTaskModel.findOne(query);
     },
 

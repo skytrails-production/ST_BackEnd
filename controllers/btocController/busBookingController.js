@@ -55,7 +55,7 @@ exports.busBooking = async (req, res, next) => {
     const userName =`${result.passenger[0].firstName} ${result.passenger[0].lastName}`
     const message = `Hello ${userName} ,Thank you for booking your hotel stay with TheSkytrails. Your reservation is confirmed! Please click on url to see details:. Or You Can login theskytrails.com/login`;
     await sendSMS.sendSMSBusBooking(result.passenger[0].Phone, userName);
-    await whatsApi.sendWhatsAppMessage(result.passenger[0].Phone, message);
+    // await whatsApi.sendWhatsAppMessage(result.passenger[0].Phone, message);
     await commonFunction.BusBookingConfirmationMail(result);
 
     if (result) {

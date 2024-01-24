@@ -238,4 +238,10 @@ process.on("unhandledRejection", (err) => {
 
 // const uuid = uuidv4();
 
+// console.log("uuid===",uuid);
+const { v4: uuidv4 } = require('uuid');
 
+// Generate a random UUID v4
+const messageId = uuidv4();
+
+console.log('Message ID:', messageId);

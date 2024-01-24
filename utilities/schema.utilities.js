@@ -226,6 +226,7 @@ const schemas = {
       .string()
       .valid(...Object.values(authType))
       .required(),
+    dynamicProperties: joi.object().optional(),
   }),
   updateSubAdmin: joi.object().keys({
     subAdminId: joi.string().required(),
@@ -596,16 +597,16 @@ const schemas = {
     expirationDate: joi.string().required(),
     termsAndCond: joi.string().required(),
     offerType: joi.any().optional(),
-    uniqueId: joi.string().optional()
+    uniqueId: joi.string().optional(),
   }),
 
-  updateMarkupSchema:joi.object().keys({
+  updateMarkupSchema: joi.object().keys({
     hotelMarkup: joi.string().optional(),
     flightMarkup: joi.string().optional(),
     busMarkup: joi.string().optional(),
     packageMarkup: joi.string().optional(),
   }),
-  applyCouponSchema:joi.object().keys({
+  applyCouponSchema: joi.object().keys({
     couponCode: joi.string().required(),
   }),
 };

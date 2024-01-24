@@ -4,12 +4,12 @@ const mongoosePaginate = require("mongoose-paginate-v2");
 const issuedType = require("../../enums/issuedType");
 const userType = require("../../enums/userType");
 const authType = require("../../enums/authType");
-const { object } = require("joi");
+// const { object } = require("joi");
 mongoose.pluralize(null);
 const subAdminTaskSchema = new mongoose.Schema(
   {
     authType: {
-      type: String,
+      type: Object,
       enum: [
         authType.ADS_HANDLER,
         authType.PACKAGE_HANDLER,

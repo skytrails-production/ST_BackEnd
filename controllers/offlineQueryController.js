@@ -56,7 +56,7 @@ exports.createofflineQuery = async (req, res, next) => {
     const otp="hello"
     // await sendSMS.sendSMSForSubAdmin(contactNumber,otp)
     const msg = `Dear user, thank you for reaching out to The SkyTrails support team. Your query has been submitted, and we will get back to you as soon as possible.`;
-    await whatsappAPIUrl.sendWhatsAppMessage(contactNumber, msg);
+    // await whatsappAPIUrl.sendWhatsAppMessage(contactNumber, msg);
     await commonFunction.senConfirmationQuery(email, contactNumber);
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,

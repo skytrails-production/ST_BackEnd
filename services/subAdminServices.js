@@ -11,7 +11,6 @@ const subAdminServices = {
     },
 
     findSubAdmin: async (query) => {
-        console.log("query=======",query)
         return await subAdminModel.findOne(query);
     },
 
@@ -34,7 +33,7 @@ const subAdminServices = {
 
     paginateSubAdminSearch: async (body) => {
         // userType: { $ne: [userType.ADMIN,userType.SUBADMIN] }
-        let query = { userType:userType.SUBADMIN,status:status.ACTIVE }
+        let query = { userType:userType.SUBADMIN}
         const { page, limit, search } = body;
         if (search) {
             query.$or = [

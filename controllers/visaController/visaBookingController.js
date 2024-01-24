@@ -2,7 +2,9 @@ const statusCode = require("../../utilities/responceCode");
 const responseMessage = require("../../utilities/responses");
 const status = require("../../enums/status");
 const issuedType = require("../../enums/issuedType");
-
+const commonFunctions = require("../../utilities/commonFunctions");
+const sendSMS = require("../../utilities/sendSms");
+const whatsApi=require("../../utilities/whatsApi")
 //********************************************SERVICES*******************************************/
 const { userServices } = require("../../services/userServices");
 const {
@@ -26,25 +28,25 @@ const {
   countTotalVisaBooking,
   getVisaBooking,
 } = visaBookingServices;
-const { visaServices } = require('../../services/visaServices');
-const { createWeeklyVisa, findWeeklyVisa,populatedVisaList, deleteWeeklyVisa, weeklyVisaList, updateWeeklyVisa, weeklyVisaListPaginate, getNoVisaByPaginate, montholyVisaListPaginate, onarrivalVisaListPaginate } = visaServices;
+const { visaServices } = require("../../services/visaServices");
+const {
+  createWeeklyVisa,
+  findWeeklyVisaPopulate,
+  findWeeklyVisa,
+  populatedVisaList,
+  deleteWeeklyVisa,
+  weeklyVisaList,
+  updateWeeklyVisa,
+  weeklyVisaListPaginate,
+  getNoVisaByPaginate,
+  montholyVisaListPaginate,
+  onarrivalVisaListPaginate,
+} = visaServices;
+
 
 exports.visaBooking = async (req, res, next) => {
   try {
-    const {
-      firstName,
-      lastName,
-      dateOfBirth,
-      passportNumber,
-      purposeOfVisit,
-      travelDates,
-      countryID,
-      visaType,
-      visaCategory,
-      documents,
-      spouseName,
-    } = req.body;
-    const { passportImage, image } = req.file;
+    const {firstName,lastName,phoneNumber,email,dateOfBirth,passportNumber,purposeOfVisit,travelDates,countryID,documents,spouseName,} = req.body;
     const isUserExist = await findUserData({
       _id: req.userId,
       status: status.ACTIVE,
@@ -55,74 +57,54 @@ exports.visaBooking = async (req, res, next) => {
         message: responseMessage.USERS_NOT_FOUND,
       });
     }
-   
-      if (req.file.passportImage) {
-        const secureurl = await commonFuction.getImageUrlAWS(req.file);
-        
-        req.body.passportImage = secureurl;
-      }
-      if (req.file.image) {
-        const secureurl = await commonFuction.getImageUrlAWS(req.file);
-        
-        req.body.image = secureurl;
-      }
-    const isCountryExist=await findWeeklyVisa({_id:countryID._id})
+    if (req.files.passportImage) {
+      req.files.passportImage= await commonFunctions.getSecureUrlAWS(req.files.passportImage);
+    }
+    if (req.files.image) {
+      req.files.image = await commonFunctions.getSecureUrlAWS(req.files.image);
+    }
+    const isCountryExist = await findWeeklyVisaPopulate({ _id: countryID, status:status.ACTIVE });
     if (!isCountryExist) {
-        return res.status(statusCode.OK).send({
-          statusCode: statusCode.OK,
-          message: responseMessage.COUNTRY_NOT_FOUND,
-        });
-      }
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        message: responseMessage.COUNTRY_NOT_FOUND,
+      });
+    }
     const obj = {
+      userId:isUserExist._id,
       firstName: firstName,
       lastName: lastName,
+      phoneNumber:phoneNumber,
+      email:email,
       dateOfBirth: dateOfBirth,
-      image:req.body.image,
-      passportImage:req.body.passportImage,
+      image: req.files.image,
+      passportImage: req.files.passportImage,
       passportNumber: passportNumber,
       purposeOfVisit: purposeOfVisit,
       travelDates: travelDates,
       countryID: isCountryExist._id,
-      visaType: visaType,
-      visaCategory: visaCategory,
+      visaType: isCountryExist.visaType,
+      visaCategory: isCountryExist.visaCategoryId.categoryName,
       documents: documents,
       spouseName: spouseName,
     };
-    console.log("obj==========",obj);
     const result = await createvisaBooking(obj);
-    // if (passportImage || image) {
-    //   const s3Params = {
-    //     Bucket: process.env.AWS_BUCKET_NAME,
-    //     Key: file.originalname,
-    //     Body: file.buffer,
-    //     ContentType: file.mimetype,
-    //     ACL: "public-read",
-    //   };
-
-    //   s3.upload(s3Params, async (err, data) => {
-    //     if (err) {
-    //       res.status(500).send(err);
-    //     } else {
-    //       const data1 = new internationl({
-    //         ...req.body,
-    //         passportImage: passportImage,
-    //       });
-    //       try {
-    //         const response = await data1.save();
-    //         msg = "Package is created";
-    //         actionCompleteResponse(res, response, msg);
-    //       } catch (err) {
-    //         sendActionFailedResponse(res, {}, err.message);
-    //       }
-    //     }
-    //   });
-    // }
     if (!result) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         message: responseMessage.INTERNAL_ERROR,
       });
     }
+    const msg=`Dear ${firstName + lastName},
+    Thank you for booking your visa with us. We have received your request and partial payment.Further processing is required, and we will keep you informed about the progress.
+    Please make sure to keep all required documents ready for the visa application process.
+    If you have any questions, please feel free to reach out to our customer support team.
+    Best regards,
+    TheSkyTrails pvt ltd 
+    `;
+    // await sendSMS.sendSMSForHotelBooking(result);
+      // await whatsApi.sendWhatsAppMessage(phoneNumber,msg);
+      await commonFunctions.VisaApplyConfirmationMail(result)
     return res
       .status(statusCode.OK)
       .send({ message: responseMessage.CREATED_SUCCESS, result: result });

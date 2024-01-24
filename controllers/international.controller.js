@@ -12,6 +12,9 @@ const Internationalapi = require("../utilities/Internationalapi");
 const { object } = require("joi");
 const User = require("../model/user.model");
 const Role = require("../model/role.model");
+
+const UserBooking = require("../model/btocModel/packageBookingModel");
+
 const { response } = require("express");
 const statusCode = require("../utilities/responceCode");
 const responseMessage = require("../utilities/responses");
@@ -466,6 +469,31 @@ exports.agentPackages = async (req, res) => {
   }
 }   
 
+
+//agent Leads
+
+exports.agentLeads = async (req, res) =>{
+
+  try {
+    const agent=req.query;
+    console.log("agent", agent)
+    const agentPackagesData=await internationl.find(agent);
+    const filterData = agentPackagesData.map((item) => item._id);
+
+    const userBookings = await UserBooking.find({ packageId: { $in: filterData } });
+    const agentBookings = await packagebookingSchema.find({ pakageid: { $in: filterData } })
+
+    const response = {
+      agentPackages: agentPackagesData,
+      userBookings: userBookings,
+      agentBookings: agentBookings
+    };
+
+    actionCompleteResponse(res, response, "Search");
+  } catch (error) {
+    sendActionFailedResponse(res, {}, error.message);    
+  }
+}
 
 
 exports.internationalSetActive = async (req, res) => {

@@ -12,7 +12,7 @@ const commonFunction = require("../utilities/commonFunctions");
 const whatsappAPIUrl = require("../utilities/whatsApi");
 const approvalStatus = require("../enums/approveStatus");
 //***********************************SERVICES********************************************** */
-
+const adminModel=require("../model/user.model")
 const { userServices } = require("../services/userServices");
 const userType = require("../enums/userType");
 const status = require("../enums/status");
@@ -61,8 +61,8 @@ const {
 
 exports.createSubAdmin = async (req, res, next) => {
   try {
-    const { username, email, password, mobile_number, authType } = req.body;
-    const isAdmin = await findUser({
+    const { username, email, password, mobile_number, authType,dynamicProperties } = req.body;
+    const isAdmin = await adminModel.findOne({
       _id: req.userId,
       userType: userType.ADMIN,
     });
@@ -87,6 +87,7 @@ exports.createSubAdmin = async (req, res, next) => {
       password: pass,
       contactNumber: mobile_number,
       authType: authType,
+      dynamicProperties:dynamicProperties
     };
     const result = await createSubAdmin(data);
     // const result = {
@@ -98,7 +99,7 @@ exports.createSubAdmin = async (req, res, next) => {
     // }
     await sendSMS.sendSMSForSubAdmin(mobile_number, result.email);
     const message = `Welcome To TheSkyTrails, now you are subAdmin.`;
-    await whatsappAPIUrl.sendWhatsAppMessage(mobile_number, message);
+    // await whatsappAPIUrl.sendWhatsAppMessage(mobile_number, message);
     await commonFunction.sendSubAdmin(result.email, result.userName, password);
     return res.status(statusCode.OK).send({
       status: statusCode.OK,
@@ -114,15 +115,15 @@ exports.createSubAdmin = async (req, res, next) => {
 exports.updateSubAdmin = async (req, res, next) => {
   try {
     const { subAdminId, username, email, mobile_number, profilePic } = req.body;
-    const isAdmin = await findUser({
+    const isAdmin = await adminModel.findOne({
       _id: req.userId,
-      userType: [userType.ADMIN, userType.SUBADMIN],
+      userType: userType.ADMIN,
     });
-    if (!isAdmin) {
-      return res
-        .status(statusCode.Unauthorized)
-        .send({ message: responseMessage.UNAUTHORIZED });
-    }
+    // if (!isAdmin) {
+    //   return res
+    //     .status(statusCode.Unauthorized)
+    //     .send({ message: responseMessage.UNAUTHORIZED });
+    // }
     if (email || mobile_number) {
       const isSubAdminAlreadyExist = await findSubAdmin({
         $or: [{ email: email }, { mobile_number: mobile_number }],
@@ -149,10 +150,10 @@ exports.updateSubAdmin = async (req, res, next) => {
 
 exports.deleteSubAdmin = async (req, res, next) => {
   try {
-    const { subAdminID } = req.body;
-    const isAdmin = await findUser({
-      _id: req.userId,
-      userType: [userType.ADMIN],
+    const { adminId,subAdminID } = req.body;
+    const isAdmin = await adminModel.findOne({
+      _id: adminId,
+      userType: userType.ADMIN,
     });
     if (!isAdmin) {
       return res
@@ -292,3 +293,29 @@ exports.subAdminDashboard = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.updateTaskOfSubAdmin=async(req,res,next)=>{
+  try {
+    const {agentId,subAdminID,dynamicProperties,authType}=req.body;
+    const isAdminExist=await adminModel.findOne({_id:agentId,userType:userType.ADMIN,status:status.ACTIVE});
+    if (!isAdminExist) {
+      return res
+        .status(statusCode.Unauthorized)
+        .send({ responseMessage: responseMessage.UNAUTHORIZED });
+    }
+    const isSubAdminExist =await findSubAdmin({_id:subAdminID,status:status.ACTIVE});
+    if(!isSubAdminExist){
+      return res.status(statusCode.NotFound).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.SUBADMIN_NOT_EXIST})
+    }
+    const object={
+      dynamicProperties:dynamicProperties,
+      authType:authType
+    }
+    const updatedSubAdmin=await updateSubAdmin({_id:isSubAdminExist._id},object);
+    return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.UPDATE_SUCCESS,result:updatedSubAdmin});
+    
+  } catch (error) {
+    console.log("error while update task",error);
+    return next(error)
+  }
+}

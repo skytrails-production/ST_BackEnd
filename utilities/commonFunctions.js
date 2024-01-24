@@ -306,7 +306,7 @@ module.exports = {
         
                         <div style="width: 90%;margin: auto; text-align: left;">
                             <br><br>
-                            <p style="color: #333030;font-size: 18px;margin-top: 0px;"> Dear ${to.name},
+                            <p style="color: #333030;font-size: 18px;margin-top: 0px;"> Dear ${to.firstName+to.lastName},
                                 Your Visa Application successfully from skyTrails.
                         </div>
                     </div>
@@ -3467,8 +3467,7 @@ module.exports = {
      console.log("PDF generation complete.");
        
    fs.writeFileSync(pdfFilePath, pdfBytes);
-
-
+   
     var transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 587,
@@ -4845,5 +4844,27 @@ return await transporter.sendMail(mailOptions);
     console.error('Error uploading to S3:', error);
     throw error;
   }
+},
+getSecureUrlAWS: async (file) => {
+  if (!file || !file[0].originalname || !file[0].buffer) {
+    throw new Error('Invalid file object');
+  }
+  
+  const params = {
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key: `uploadedFile_${Date.now()}_${file[0].originalname.replace(/\s/g, '')}`,
+    Body: file[0].buffer,
+    ContentType: file[0].mimetype,
+    ACL: 'public-read',
+  };
+
+  try {
+    const result = await s3.upload(params).promise();
+    return result.Location; // Assuming Location contains the S3 URL
+  } catch (error) {
+    console.error('Error uploading to S3:', error);
+    throw error;
+  }
 }
+
 };

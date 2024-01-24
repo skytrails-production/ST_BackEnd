@@ -6,7 +6,7 @@ const SchemaValidator = require("../../utilities/validations.utilities");
 const multer = require("multer");
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-
+const { authJwt } = require("../../middleware");
 module.exports = function (app) {
   app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
@@ -24,7 +24,7 @@ module.exports = function (app) {
   app.get("/skyTrails/api/visa/getVisaById",controller.getVisaById);
   app.get("/skyTrails/api/visa/getAllVisaCountry",controller.getAllVisaCountry);
   app.post(
-    '/skyTrails/api/visa/visaBooking',
+    '/skyTrails/api/visa/visaBooking',[authJwt.verifcationToken],
     upload.fields([{ name: 'passportImage', maxCount: 1 }, { name: 'image', maxCount: 1 }]),
     // SchemaValidator(weeklyVisaSchema),
     visaBooking.visaBooking

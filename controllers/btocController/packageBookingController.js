@@ -78,7 +78,7 @@ exports.packageBooking = async (req, res, next) => {
     const result = await createPackage(object);
     const message = `Hello ${fullName} ,Thank you for enquiry of your package stay with TheSkytrails. Please click on url to see details:. Or You Can login theskytrails.com/login`;
     // await sendSMS.sendSMSBusBooking(result.contactNumber.phone, userName);
-    await whatsApi.sendWhatsAppMessage(result.contactNumber.phone, message);
+    // await whatsApi.sendWhatsAppMessage(result.contactNumber.phone, message);
     // await commonFunction.packageBookingConfirmationMail(result);
 
     if (result) {

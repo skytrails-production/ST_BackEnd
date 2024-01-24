@@ -59,6 +59,7 @@ module.exports = function (app) {
   //Agent Packages list active or inactive
 
   app.get('/skyTrails/agent/packages',controller.agentPackages);
+  app.get('/skyTrails/agent/leads',controller.agentLeads);
 
 
 

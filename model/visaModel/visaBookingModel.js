@@ -17,6 +17,12 @@ const visaApplicationSchema = new mongoose.Schema(
     lastName: {
       type: String,
     },
+    phoneNumber:{
+      type: String,
+    },
+    email:{
+      type: String,
+    },
     dateOfBirth:{
       type:String
     },
@@ -35,7 +41,7 @@ const visaApplicationSchema = new mongoose.Schema(
     },
     visaType: {
       type: String,
-      required: true,
+      // required: true,
     },
     visaCategory: {
       type: String

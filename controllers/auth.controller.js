@@ -1693,7 +1693,7 @@ exports.createAgent = async (req, res, next) => {
     console.log("message========",message)
     await sendSMS.sendSMSAgents(mobile_number, message);
     const msg = `Welcome to TheSkyTrails, Admin added you as an agent. Please use the following credentials to login and fill in the mandatory form:\nEmail: ${email}, and Password: ${password} .click here: ${process.env.AGENT_URL}`;
-    await whatsappAPIUrl.sendWhatsAppMessage(mobile_number, msg);
+    // await whatsappAPIUrl.sendWhatsAppMessage(mobile_number, msg);
     await commonFunction.sendAgent(email, password);
 
     // Respond with success
@@ -1738,10 +1738,9 @@ exports.getAllUsers = async (req, res, next) => {
 
 exports.statusChange = async (req, res, next) => {
   try {
-    const { userId, actionStatus } = req.body;
+    const { userId, approveStatus } = req.body;
     const iSubAdminExist = await findSubAdmin({
       _id: userId,
-      status: status.ACTIVE,
     });
     if (!iSubAdminExist) {
       return res
@@ -1753,9 +1752,8 @@ exports.statusChange = async (req, res, next) => {
     }
     const updateData = await updateSubAdmin(
       { _id: iSubAdminExist._id },
-      { status: actionStatus }
+      { status: approveStatus }
     );
-    if (actionStatus === status.ACTIVE) {
       return res
         .status(statusCode.OK)
         .send({
@@ -1763,15 +1761,7 @@ exports.statusChange = async (req, res, next) => {
           responseMessage: responseMessage.SUBADMIN_UPDATED,
           result: updateData,
         });
-    } else {
-      return res
-        .status(statusCode.OK)
-        .send({
-          statusCode: statusCode.OK,
-          responseMessage: responseMessage.SUBADMIN_UPDATED,
-          result: updateData,
-        });
-    }
+    
   } catch (error) {
     console.log("error in changeing subadmin status", error);
     return next(error);
