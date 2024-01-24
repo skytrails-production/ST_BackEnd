@@ -1,15 +1,22 @@
 const nodemailerConfig = require("../config/nodeConfig");
-const { PDFDocument, rgb } = require('pdf-lib');
-const puppeteer = require('puppeteer');
-const fs = require('fs');
-const path = require('path');
-const AWS = require('aws-sdk');
+const { PDFDocument, rgb } = require("pdf-lib");
+const puppeteer = require("puppeteer");
+const fs = require("fs");
+const path = require("path");
+const AWS = require("aws-sdk");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const { Client } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
 const config = require("../config/auth.config.js");
-const {flightMail, busMail, hotelMail, otpMail, welcomeMail,welcomeAgentMail}=require("./mailingFunction.js")
+const {
+  flightMail,
+  busMail,
+  hotelMail,
+  otpMail,
+  welcomeMail,
+  welcomeAgentMail,
+} = require("./mailingFunction.js");
 let cloudinary = require("cloudinary");
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -50,7 +57,6 @@ function getHtmlContent(name) {
     </html>`;
 }
 
-
 module.exports = {
   getOTP() {
     var otp = Math.floor(100000 + Math.random() * 900000);
@@ -58,7 +64,7 @@ module.exports = {
   },
 
   getToken: async (payload) => {
-    var token = await jwt.sign(payload, config.secret, { expiresIn: '1y' });
+    var token = await jwt.sign(payload, config.secret, { expiresIn: "1y" });
     return token;
   },
 
@@ -160,7 +166,7 @@ module.exports = {
   // sendHotelBookingConfirmation: async (to) => {
   //   let html = `<!DOCTYPE html>
   //       <html lang="en">
-        
+
   //       <head>
   //           <title></title>
   //       </head>
@@ -173,17 +179,17 @@ module.exports = {
   //                       <!-- <h1 style="padding-top: 30px;"> <strong> GFMI </strong></h1> -->
   //                       <img src="https://res.cloudinary.com/nandkishor/image/upload/v1676882752/Group_1171275777_gge2f0.png"
   //                           style="width: 30%;" alt="logo">
-        
+
   //                       <div style="width: 90%;margin: auto; text-align: left;">
   //                           <br><br>
   //                           <p style="color: #333030;font-size: 18px;margin-top: 0px;"> Dear ${to.name},
   //                               you are booked hotel successfully from skyTrails.<br>Yor details is:=== <br>hotelName:${to.hotelName}<br>CheckInDate:${to.CheckInDate}<br>CheckOutDate:${to.CheckOutDate}<br>noOfPeople: ${to.noOfPeople}<br>night: ${to.night}<br>room:${to.room}<br>
   //                       </div>
   //                   </div>
-        
+
   //               </div>
   //           </div>
-        
+
   //       </body>
   //       </html>`;
   //   var transporter = nodemailer.createTransport({
@@ -306,7 +312,9 @@ module.exports = {
         
                         <div style="width: 90%;margin: auto; text-align: left;">
                             <br><br>
-                            <p style="color: #333030;font-size: 18px;margin-top: 0px;"> Dear ${to.firstName+to.lastName},
+                            <p style="color: #333030;font-size: 18px;margin-top: 0px;"> Dear ${
+                              to.firstName + to.lastName
+                            },
                                 Your Visa Application successfully from skyTrails.
                         </div>
                     </div>
@@ -355,33 +363,35 @@ module.exports = {
   //========== Send Email Flight Booking Confirmation Mail with pdf=======
   //==========================================================
 
-
   FlightBookingConfirmationMail: async (to) => {
-
     const currentDate = new Date(to.createdAt);
-    const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
-    const formattedDate = currentDate.toLocaleDateString('en-US', options);
-    
+    const options = {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    };
+    const formattedDate = currentDate.toLocaleDateString("en-US", options);
 
     const formatDate = (dateString) => {
       const options = {
-        hour: 'numeric',
-        minute: 'numeric',
+        hour: "numeric",
+        minute: "numeric",
         hour12: true,
-        weekday: 'short',
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
+        weekday: "short",
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
       };
-    
+
       const date = new Date(dateString);
-      return date.toLocaleString('en-US', options);
+      return date.toLocaleString("en-US", options);
     };
 
-  // console.log("to================>>>>>>>",to)
-      const name = `${to?.passengerDetails[0]?.firstName} ${to?.passengerDetails[0]?.lastName}`;
-      // Define your HTML content with nested elements
-      const htmlContent = `<!DOCTYPE html>
+    // console.log("to================>>>>>>>",to)
+    const name = `${to?.passengerDetails[0]?.firstName} ${to?.passengerDetails[0]?.lastName}`;
+    // Define your HTML content with nested elements
+    const htmlContent = `<!DOCTYPE html>
       <html lang="en">
       
       <head>
@@ -502,7 +512,9 @@ module.exports = {
               </div>
       
 
-              ${to.passengerDetails.map(item =>`
+              ${to.passengerDetails
+                .map(
+                  (item) => `
               <div style="width:100%; float: left; padding: 5px;">
       
                 <div style="width:100%; float: left; padding-bottom:5px;">
@@ -530,7 +542,9 @@ module.exports = {
                   </div>
                 </div>                  
               </div>
-                `).join('')}
+                `
+                )
+                .join("")}
             </div>      
       
             <div style="width: 100%; float: left; margin-top: 15px; border: 1px solid #D6D8E7;">
@@ -546,7 +560,9 @@ module.exports = {
                 <div style="width: 20%; float: right; margin-right: 10px;">
                   Status</div>
               </div>
-              ${to.airlineDetails.map(item =>`      
+              ${to.airlineDetails
+                .map(
+                  (item) => `      
               <div style="width: 100%; float: left; padding: 5px;">
                 <div style="width: 23%; float: left; margin-right: 0;">
                   <span style="margin-top: 5px; width: 18%; height: 75px; float: left;">
@@ -597,7 +613,9 @@ module.exports = {
                   <span style="margin-top: 5px; width: 100%; float: left;">
                     Confirmed</span>
             
-                  <span> <span style="float: left;">Baggage: ${item.Baggage}</span></span>
+                  <span> <span style="float: left;">Baggage: ${
+                    item.Baggage
+                  }</span></span>
                  
                     <span style="margin-top: 5px; width: 100%; float: left;">
                     </span>      
@@ -605,7 +623,9 @@ module.exports = {
                   </span>
                 </div>
               </div>
-              `).join('')}      
+              `
+                )
+                .join("")}      
             </div>
       
             <div
@@ -750,32 +770,28 @@ module.exports = {
       </html>
       `;
 
-      // Create a new PDF document
-      const browser = await puppeteer.launch({ headless: 'new',  timeout: 0});
-      const page = await browser.newPage();
+    // Create a new PDF document
+    const browser = await puppeteer.launch({ headless: "new", timeout: 0 });
+    const page = await browser.newPage();
 
-      // Save the PDF to a temporary file
-      await page.setContent(htmlContent);
-  
-      const pdfFilePath = 'flightbooking.pdf';
-      
-     const pdfBytes= await page.pdf({ path: pdfFilePath, format: 'A4' });
-      await browser.close();
-      // const pdfBytes= await pdf.saveAs(pdfFilePath);
+    // Save the PDF to a temporary file
+    await page.setContent(htmlContent);
 
-      console.log("PDF generation complete.");
-        
+    const pdfFilePath = "flightbooking.pdf";
+
+    const pdfBytes = await page.pdf({ path: pdfFilePath, format: "A4" });
+    await browser.close();
+    // const pdfBytes= await pdf.saveAs(pdfFilePath);
+
+    console.log("PDF generation complete.");
+
     fs.writeFileSync(pdfFilePath, pdfBytes);
 
-      // Use pdfFilePath in the email sending part of your code
-      // ...
+    // Use pdfFilePath in the email sending part of your code
+    // ...
 
-    
- 
-
-  
     const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
+      host: "smtp.gmail.com",
       port: 587,
       secure: false,
       auth: {
@@ -784,65 +800,65 @@ module.exports = {
       },
       connectionTimeout: 60000,
     });
-  
+
     const passengerEmail = to.passengerDetails[0].email;
     const mailOptions = {
       from: nodemailerConfig.options.auth.user,
       to: passengerEmail,
-      subject: 'Flight Booking Confirmation Mail',
+      subject: "Flight Booking Confirmation Mail",
       html: flightMail(to),
-      attachments: [{ filename: 'flightBooking.pdf', path: pdfFilePath }],
+      attachments: [{ filename: "flightBooking.pdf", path: pdfFilePath }],
     };
-  
+
     try {
       // Verify the connection
       await transporter.verify();
-  
+
       // Send the email
-      const info = await transporter.sendMail(mailOptions);  
+      const info = await transporter.sendMail(mailOptions);
       // Clean up the temporary PDF file
       fs.unlinkSync(pdfFilePath);
-  
+
       return info;
     } catch (error) {
-      console.error('Email sending failed:', error);
+      console.error("Email sending failed:", error);
       throw error;
     }
-  
-    
   },
 
   //==========================================================
   //========== Send Email Flight Booking Confirmation Mail pdf with New Email=======
   //==========================================================
 
-
-  FlightBookingConfirmationMailWithNewEmail:async (to,email) => {
-
+  FlightBookingConfirmationMailWithNewEmail: async (to, email) => {
     const currentDate = new Date(to.createdAt);
-    const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
-    const formattedDate = currentDate.toLocaleDateString('en-US', options);
-    
+    const options = {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    };
+    const formattedDate = currentDate.toLocaleDateString("en-US", options);
 
     const formatDate = (dateString) => {
       const options = {
-        hour: 'numeric',
-        minute: 'numeric',
+        hour: "numeric",
+        minute: "numeric",
         hour12: true,
-        weekday: 'short',
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
+        weekday: "short",
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
       };
-    
+
       const date = new Date(dateString);
-      return date.toLocaleString('en-US', options);
+      return date.toLocaleString("en-US", options);
     };
 
-  // console.log("to================>>>>>>>",to)
-      const name = `${to?.passengerDetails[0]?.firstName} ${to?.passengerDetails[0]?.lastName}`;
-      // Define your HTML content with nested elements
-      const htmlContent = `<!DOCTYPE html>
+    // console.log("to================>>>>>>>",to)
+    const name = `${to?.passengerDetails[0]?.firstName} ${to?.passengerDetails[0]?.lastName}`;
+    // Define your HTML content with nested elements
+    const htmlContent = `<!DOCTYPE html>
       <html lang="en">
       
       <head>
@@ -963,7 +979,9 @@ module.exports = {
               </div>
       
 
-              ${to.passengerDetails.map(item =>`
+              ${to.passengerDetails
+                .map(
+                  (item) => `
               <div style="width:100%; float: left; padding: 5px;">
       
                 <div style="width:100%; float: left; padding-bottom:5px;">
@@ -991,7 +1009,9 @@ module.exports = {
                   </div>
                 </div>                  
               </div>
-                `).join('')}
+                `
+                )
+                .join("")}
             </div>      
       
             <div style="width: 100%; float: left; margin-top: 15px; border: 1px solid #D6D8E7;">
@@ -1007,7 +1027,9 @@ module.exports = {
                 <div style="width: 20%; float: right; margin-right: 10px;">
                   Status</div>
               </div>
-              ${to.airlineDetails.map(item =>`      
+              ${to.airlineDetails
+                .map(
+                  (item) => `      
               <div style="width: 100%; float: left; padding: 5px;">
                 <div style="width: 23%; float: left; margin-right: 0;">
                   <span style="margin-top: 5px; width: 18%; height: 75px; float: left;">
@@ -1058,7 +1080,9 @@ module.exports = {
                   <span style="margin-top: 5px; width: 100%; float: left;">
                     Confirmed</span>
             
-                  <span> <span style="float: left;">Baggage: ${item.Baggage}</span></span>
+                  <span> <span style="float: left;">Baggage: ${
+                    item.Baggage
+                  }</span></span>
                  
                     <span style="margin-top: 5px; width: 100%; float: left;">
                     </span>      
@@ -1066,7 +1090,9 @@ module.exports = {
                   </span>
                 </div>
               </div>
-              `).join('')}      
+              `
+                )
+                .join("")}      
             </div>
       
             <div
@@ -1211,32 +1237,28 @@ module.exports = {
       </html>
       `;
 
-      // Create a new PDF document
-      const browser = await puppeteer.launch({ headless: 'new',  timeout: 0});
-      const page = await browser.newPage();
+    // Create a new PDF document
+    const browser = await puppeteer.launch({ headless: "new", timeout: 0 });
+    const page = await browser.newPage();
 
-      // Save the PDF to a temporary file
-      await page.setContent(htmlContent);
-  
-      const pdfFilePath = 'flightbooking.pdf';
-      
-     const pdfBytes= await page.pdf({ path: pdfFilePath, format: 'A4' });
-      await browser.close();
-      // const pdfBytes= await pdf.saveAs(pdfFilePath);
+    // Save the PDF to a temporary file
+    await page.setContent(htmlContent);
 
-      console.log("PDF generation complete.");
-        
+    const pdfFilePath = "flightbooking.pdf";
+
+    const pdfBytes = await page.pdf({ path: pdfFilePath, format: "A4" });
+    await browser.close();
+    // const pdfBytes= await pdf.saveAs(pdfFilePath);
+
+    console.log("PDF generation complete.");
+
     fs.writeFileSync(pdfFilePath, pdfBytes);
 
-      // Use pdfFilePath in the email sending part of your code
-      // ...
+    // Use pdfFilePath in the email sending part of your code
+    // ...
 
-    
- 
-
-  
     const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
+      host: "smtp.gmail.com",
       port: 587,
       secure: false,
       auth: {
@@ -1245,67 +1267,68 @@ module.exports = {
       },
       connectionTimeout: 120000,
     });
-  
+
     const passengerEmail = email;
     const mailOptions = {
       from: nodemailerConfig.options.auth.user,
       to: email,
-      subject: 'Flight Booking Confirmation Mail',
+      subject: "Flight Booking Confirmation Mail",
       html: flightMail(to),
-      attachments: [{ filename: 'flightBooking.pdf', path: pdfFilePath }],
+      attachments: [{ filename: "flightBooking.pdf", path: pdfFilePath }],
     };
-  
+
     try {
       // Verify the connection
       await transporter.verify();
-  
+
       // Send the email
-      const info = await transporter.sendMail(mailOptions); 
+      const info = await transporter.sendMail(mailOptions);
       // Clean up the temporary PDF file
       fs.unlinkSync(pdfFilePath);
-  
+
       return info;
     } catch (error) {
-      console.error('Email sending failed:', error);
+      console.error("Email sending failed:", error);
       throw error;
     }
-  
-    
   },
 
-//==========================================================
+  //==========================================================
   //========== Send Email Flight Booking Confirmation Mail pdf with agent Markup=======
   //==========================================================
 
-
-  FlightBookingConfirmationMailwithAgentMarkup:async (to,markup) => {
+  FlightBookingConfirmationMailwithAgentMarkup: async (to, markup) => {
     // console.log(to,"data",markup);
     // return;
 
     const currentDate = new Date(to.createdAt);
-    const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
-    const formattedDate = currentDate.toLocaleDateString('en-US', options);
-    
+    const options = {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    };
+    const formattedDate = currentDate.toLocaleDateString("en-US", options);
 
     const formatDate = (dateString) => {
       const options = {
-        hour: 'numeric',
-        minute: 'numeric',
+        hour: "numeric",
+        minute: "numeric",
         hour12: true,
-        weekday: 'short',
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
+        weekday: "short",
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
       };
-    
+
       const date = new Date(dateString);
-      return date.toLocaleString('en-US', options);
+      return date.toLocaleString("en-US", options);
     };
 
-  // console.log("to================>>>>>>>",to)
-      const name = `${to?.passengerDetails[0]?.firstName} ${to?.passengerDetails[0]?.lastName}`;
-      // Define your HTML content with nested elements
-      const htmlContent = `<!DOCTYPE html>
+    // console.log("to================>>>>>>>",to)
+    const name = `${to?.passengerDetails[0]?.firstName} ${to?.passengerDetails[0]?.lastName}`;
+    // Define your HTML content with nested elements
+    const htmlContent = `<!DOCTYPE html>
       <html lang="en">
       
       <head>
@@ -1426,7 +1449,9 @@ module.exports = {
               </div>
       
 
-              ${to.passengerDetails.map(item =>`
+              ${to.passengerDetails
+                .map(
+                  (item) => `
               <div style="width:100%; float: left; padding: 5px;">
       
                 <div style="width:100%; float: left; padding-bottom:5px;">
@@ -1454,7 +1479,9 @@ module.exports = {
                   </div>
                 </div>                  
               </div>
-                `).join('')}
+                `
+                )
+                .join("")}
             </div>      
       
             <div style="width: 100%; float: left; margin-top: 15px; border: 1px solid #D6D8E7;">
@@ -1470,7 +1497,9 @@ module.exports = {
                 <div style="width: 20%; float: right; margin-right: 10px;">
                   Status</div>
               </div>
-              ${to.airlineDetails.map(item =>`      
+              ${to.airlineDetails
+                .map(
+                  (item) => `      
               <div style="width: 100%; float: left; padding: 5px;">
                 <div style="width: 23%; float: left; margin-right: 0;">
                   <span style="margin-top: 5px; width: 18%; height: 75px; float: left;">
@@ -1521,7 +1550,9 @@ module.exports = {
                   <span style="margin-top: 5px; width: 100%; float: left;">
                     Confirmed</span>
             
-                  <span> <span style="float: left;">Baggage: ${item.Baggage}</span></span>
+                  <span> <span style="float: left;">Baggage: ${
+                    item.Baggage
+                  }</span></span>
                  
                     <span style="margin-top: 5px; width: 100%; float: left;">
                     </span>      
@@ -1529,7 +1560,9 @@ module.exports = {
                   </span>
                 </div>
               </div>
-              `).join('')}      
+              `
+                )
+                .join("")}      
             </div>
       
             <div
@@ -1555,7 +1588,7 @@ module.exports = {
                     Total Amount:
                   </div>
                   <div style="width:85px; float:right; text-align:right;">
-                    ₹ ${Number(to.totalAmount)+Number(markup.price)}.00
+                    ₹ ${Number(to.totalAmount) + Number(markup.price)}.00
                   </div>
                 </div> 
               </div>
@@ -1675,32 +1708,28 @@ module.exports = {
       </html>
       `;
 
-      // Create a new PDF document
-      const browser = await puppeteer.launch({ headless: 'new',  timeout: 0});
-      const page = await browser.newPage();
+    // Create a new PDF document
+    const browser = await puppeteer.launch({ headless: "new", timeout: 0 });
+    const page = await browser.newPage();
 
-      // Save the PDF to a temporary file
-      await page.setContent(htmlContent);
-  
-      const pdfFilePath = 'flightbooking.pdf';
-      
-     const pdfBytes= await page.pdf({ path: pdfFilePath, format: 'A4' });
-      await browser.close();
-      // const pdfBytes= await pdf.saveAs(pdfFilePath);
+    // Save the PDF to a temporary file
+    await page.setContent(htmlContent);
 
-      console.log("PDF generation complete.");
-        
+    const pdfFilePath = "flightbooking.pdf";
+
+    const pdfBytes = await page.pdf({ path: pdfFilePath, format: "A4" });
+    await browser.close();
+    // const pdfBytes= await pdf.saveAs(pdfFilePath);
+
+    console.log("PDF generation complete.");
+
     fs.writeFileSync(pdfFilePath, pdfBytes);
 
-      // Use pdfFilePath in the email sending part of your code
-      // ...
+    // Use pdfFilePath in the email sending part of your code
+    // ...
 
-    
- 
-
-  
     const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
+      host: "smtp.gmail.com",
       port: 587,
       secure: false,
       auth: {
@@ -1709,78 +1738,77 @@ module.exports = {
       },
       connectionTimeout: 60000,
     });
-  
+
     const passengerEmail = markup.email;
     const mailOptions = {
       from: nodemailerConfig.options.auth.user,
       to: passengerEmail,
-      subject: 'Flight Booking Confirmation Mail',
+      subject: "Flight Booking Confirmation Mail",
       html: flightMail(to),
-      attachments: [{ filename: 'flightBooking.pdf', path: pdfFilePath }],
+      attachments: [{ filename: "flightBooking.pdf", path: pdfFilePath }],
     };
-  
+
     try {
       // Verify the connection
       await transporter.verify();
-  
+
       // Send the email
-      const info = await transporter.sendMail(mailOptions);  
+      const info = await transporter.sendMail(mailOptions);
       // Clean up the temporary PDF file
       fs.unlinkSync(pdfFilePath);
-  
+
       return info;
     } catch (error) {
-      console.error('Email sending failed:', error);
+      console.error("Email sending failed:", error);
       throw error;
     }
-  
-    
   },
-
-
-    
-  
-  
-  
-  
 
   //==========================================================
   //========== Send Email Bus Booking Confirmation Mail with pdf=======
   //==========================================================
 
-
-
-
   BusBookingConfirmationMail: async (to) => {
     // console.log(to,"data");
 
     const currentDate = new Date(to.createdAt);
-    const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
-    const formattedDate = currentDate.toLocaleDateString('en-US', options);
+    const options = {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    };
+    const formattedDate = currentDate.toLocaleDateString("en-US", options);
 
     // dateFormate
 
     function formatDate(dateString, format) {
       const date = new Date(dateString);
       const options = {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        hour12: true
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
       };
-      return date.toLocaleString('en-US', options);
+      return date.toLocaleString("en-US", options);
     }
 
-    const boardingTimeFormatted = formatDate(to.departureTime, 'DD MMMM YYYY hh:mm A');
-    const journeyDateFormatted = formatDate(to.departureTime, 'ddd, DD MMM YYYY');
-    const depTimeFormatted = formatDate(to.departureTime, 'hh:mm A');
-    
-  // console.log("to================>>>>>>>",to)
-      const name = `${to.passenger[0]?.title} ${to.passenger[0]?.firstName} ${to.passenger[0]?.lastName}`;
-      // Define your HTML content with nested elements
-      const htmlContent = `<!DOCTYPE html>
+    const boardingTimeFormatted = formatDate(
+      to.departureTime,
+      "DD MMMM YYYY hh:mm A"
+    );
+    const journeyDateFormatted = formatDate(
+      to.departureTime,
+      "ddd, DD MMM YYYY"
+    );
+    const depTimeFormatted = formatDate(to.departureTime, "hh:mm A");
+
+    // console.log("to================>>>>>>>",to)
+    const name = `${to.passenger[0]?.title} ${to.passenger[0]?.firstName} ${to.passenger[0]?.lastName}`;
+    // Define your HTML content with nested elements
+    const htmlContent = `<!DOCTYPE html>
       <html lang="en">
       
       <head>
@@ -1860,7 +1888,9 @@ module.exports = {
                 </p>
               </div>
       
-              ${to.passenger.map(item =>`
+              ${to.passenger
+                .map(
+                  (item) => `
               <div style="width:100%; display: flex; padding: 5px 0 0 5px; overflow: hidden;">
                 <p style="width: 40%">
                 ${item?.title} ${item?.firstName} ${item?.lastName}
@@ -1875,7 +1905,9 @@ module.exports = {
                   Rs. ${item.Price}
                 </p>
               </div>
-              `).join('')}
+              `
+                )
+                .join("")}
       
       
       
@@ -2121,12 +2153,17 @@ module.exports = {
               <div style="width: 100%; display: flex; justify-content: flex-start; gap: 35%; padding: 5px 0 0px 5px;">
                 <div style="text-align: center;">
                   <p><strong>Cancellation time</strong></p>
-                  ${to.CancelPolicy.map(policy => `
-                  <p>${policy.PolicyString}</p>`).join('')}
+                  ${to.CancelPolicy.map(
+                    (policy) => `
+                  <p>${policy.PolicyString}</p>`
+                  ).join("")}
                 </div>
                 <div>
                   <p><strong>Cancellation charges</strong></p>
-                  ${to.CancelPolicy.map(policy => `<p>${policy.CancellationCharge.toFixed(2)}%</p>`).join('')}
+                  ${to.CancelPolicy.map(
+                    (policy) =>
+                      `<p>${policy.CancellationCharge.toFixed(2)}%</p>`
+                  ).join("")}
                 </div>
               </div>
             
@@ -2234,31 +2271,25 @@ module.exports = {
       
       </html>`;
 
-      // Create a new PDF document
-      const browser = await puppeteer.launch({ headless: 'new',  timeout: 0});
-      const page = await browser.newPage();
+    // Create a new PDF document
+    const browser = await puppeteer.launch({ headless: "new", timeout: 0 });
+    const page = await browser.newPage();
 
-      // Save the PDF to a temporary file
-      await page.setContent(htmlContent);
-  
-      const pdfFilePath = 'Bus_Booking.pdf';
-      
-     const pdfBytes= await page.pdf({ path: pdfFilePath, format: 'A4' });
-      await browser.close();
-      // const pdfBytes= await pdf.saveAs(pdfFilePath);
+    // Save the PDF to a temporary file
+    await page.setContent(htmlContent);
 
-      console.log("PDF generation complete.");
-        
+    const pdfFilePath = "Bus_Booking.pdf";
+
+    const pdfBytes = await page.pdf({ path: pdfFilePath, format: "A4" });
+    await browser.close();
+    // const pdfBytes= await pdf.saveAs(pdfFilePath);
+
+    console.log("PDF generation complete.");
+
     fs.writeFileSync(pdfFilePath, pdfBytes);
 
-      
-
-    
- 
-
-  
     const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
+      host: "smtp.gmail.com",
       port: 587,
       secure: false,
       auth: {
@@ -2267,67 +2298,76 @@ module.exports = {
       },
       connectionTimeout: 60000,
     });
-  
+
     const passengerEmail = to.passenger[0]?.Email;
-  // console.log("=================",passengerEmail,name)
+    // console.log("=================",passengerEmail,name)
     const mailOptions = {
       from: nodemailerConfig.options.auth.user,
       to: passengerEmail,
-      subject: 'Bus Booking Confirmation Mail',
-      html:busMail(to),
-      attachments: [{ filename: 'Bus_Booking.pdf', path: pdfFilePath }],
+      subject: "Bus Booking Confirmation Mail",
+      html: busMail(to),
+      attachments: [{ filename: "Bus_Booking.pdf", path: pdfFilePath }],
     };
-  
+
     try {
       // Verify the connection
       await transporter.verify();
-  
+
       // Send the email
       const info = await transporter.sendMail(mailOptions);
-      console.log('Email sent: ' + info.response);
-  
+      console.log("Email sent: " + info.response);
+
       // Clean up the temporary PDF file
       fs.unlinkSync(pdfFilePath);
-  
+
       return info;
     } catch (error) {
-      console.error('Email sending failed:', error);
+      console.error("Email sending failed:", error);
       throw error;
     }
-   
   },
 
-
-  busBookingConfirmationMailWithNewEmail:async (to,email) => {
+  busBookingConfirmationMailWithNewEmail: async (to, email) => {
     // console.log(to,"data");
 
     const currentDate = new Date(to.createdAt);
-    const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
-    const formattedDate = currentDate.toLocaleDateString('en-US', options);
+    const options = {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    };
+    const formattedDate = currentDate.toLocaleDateString("en-US", options);
 
     // dateFormate
 
     function formatDate(dateString, format) {
       const date = new Date(dateString);
       const options = {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        hour12: true
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
       };
-      return date.toLocaleString('en-US', options);
+      return date.toLocaleString("en-US", options);
     }
 
-    const boardingTimeFormatted = formatDate(to.departureTime, 'DD MMMM YYYY hh:mm A');
-    const journeyDateFormatted = formatDate(to.departureTime, 'ddd, DD MMM YYYY');
-    const depTimeFormatted = formatDate(to.departureTime, 'hh:mm A');
-    
-  // console.log("to================>>>>>>>",to)
-      const name = `${to.passenger[0]?.title} ${to.passenger[0]?.firstName} ${to.passenger[0]?.lastName}`;
-      // Define your HTML content with nested elements
-      const htmlContent = `<!DOCTYPE html>
+    const boardingTimeFormatted = formatDate(
+      to.departureTime,
+      "DD MMMM YYYY hh:mm A"
+    );
+    const journeyDateFormatted = formatDate(
+      to.departureTime,
+      "ddd, DD MMM YYYY"
+    );
+    const depTimeFormatted = formatDate(to.departureTime, "hh:mm A");
+
+    // console.log("to================>>>>>>>",to)
+    const name = `${to.passenger[0]?.title} ${to.passenger[0]?.firstName} ${to.passenger[0]?.lastName}`;
+    // Define your HTML content with nested elements
+    const htmlContent = `<!DOCTYPE html>
       <html lang="en">
       
       <head>
@@ -2407,7 +2447,9 @@ module.exports = {
                 </p>
               </div>
       
-              ${to.passenger.map(item =>`
+              ${to.passenger
+                .map(
+                  (item) => `
               <div style="width:100%; display: flex; padding: 5px 0 0 5px; overflow: hidden;">
                 <p style="width: 40%">
                 ${item?.title} ${item?.firstName} ${item?.lastName}
@@ -2422,7 +2464,9 @@ module.exports = {
                   Rs. ${item.Price}
                 </p>
               </div>
-              `).join('')}
+              `
+                )
+                .join("")}
       
       
       
@@ -2668,12 +2712,17 @@ module.exports = {
               <div style="width: 100%; display: flex; justify-content: flex-start; gap: 35%; padding: 5px 0 0px 5px;">
                 <div style="text-align: center;">
                   <p><strong>Cancellation time</strong></p>
-                  ${to.CancelPolicy.map(policy => `
-                  <p>${policy.PolicyString}</p>`).join('')}
+                  ${to.CancelPolicy.map(
+                    (policy) => `
+                  <p>${policy.PolicyString}</p>`
+                  ).join("")}
                 </div>
                 <div>
                   <p><strong>Cancellation charges</strong></p>
-                  ${to.CancelPolicy.map(policy => `<p>${policy.CancellationCharge.toFixed(2)}%</p>`).join('')}
+                  ${to.CancelPolicy.map(
+                    (policy) =>
+                      `<p>${policy.CancellationCharge.toFixed(2)}%</p>`
+                  ).join("")}
                 </div>
               </div>
             
@@ -2781,31 +2830,25 @@ module.exports = {
       
       </html>`;
 
-      // Create a new PDF document
-      const browser = await puppeteer.launch({ headless: 'new',  timeout: 0});
-      const page = await browser.newPage();
+    // Create a new PDF document
+    const browser = await puppeteer.launch({ headless: "new", timeout: 0 });
+    const page = await browser.newPage();
 
-      // Save the PDF to a temporary file
-      await page.setContent(htmlContent);
-  
-      const pdfFilePath = 'Bus_Booking.pdf';
-      
-     const pdfBytes= await page.pdf({ path: pdfFilePath, format: 'A4' });
-      await browser.close();
-      // const pdfBytes= await pdf.saveAs(pdfFilePath);
+    // Save the PDF to a temporary file
+    await page.setContent(htmlContent);
 
-      console.log("PDF generation complete.");
-        
+    const pdfFilePath = "Bus_Booking.pdf";
+
+    const pdfBytes = await page.pdf({ path: pdfFilePath, format: "A4" });
+    await browser.close();
+    // const pdfBytes= await pdf.saveAs(pdfFilePath);
+
+    console.log("PDF generation complete.");
+
     fs.writeFileSync(pdfFilePath, pdfBytes);
 
-      
-
-    
- 
-
-  
     const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
+      host: "smtp.gmail.com",
       port: 587,
       secure: false,
       auth: {
@@ -2814,72 +2857,82 @@ module.exports = {
       },
       connectionTimeout: 60000,
     });
-  
+
     const passengerEmail = email;
-  // console.log("=================",passengerEmail,name)
+    // console.log("=================",passengerEmail,name)
     const mailOptions = {
       from: nodemailerConfig.options.auth.user,
       to: passengerEmail,
-      subject: 'Bus Booking Confirmation Mail',
+      subject: "Bus Booking Confirmation Mail",
       html: busMail(to),
-      attachments: [{ filename: 'Bus_Booking.pdf', path: pdfFilePath }],
+      attachments: [{ filename: "Bus_Booking.pdf", path: pdfFilePath }],
     };
-  
+
     try {
       // Verify the connection
       await transporter.verify();
-  
+
       // Send the email
       const info = await transporter.sendMail(mailOptions);
-      console.log('Email sent: ' + info.response);
-  
+      console.log("Email sent: " + info.response);
+
       // Clean up the temporary PDF file
       fs.unlinkSync(pdfFilePath);
-  
+
       return info;
     } catch (error) {
-      console.error('Email sending failed:', error);
+      console.error("Email sending failed:", error);
       throw error;
     }
-   
   },
 
-  
   //==========================================================
   //========== Send Email Hotel Booking Confirmation Mail with pdf=======
   //==========================================================
 
+  HotelBookingConfirmationMail: async (to) => {
+    const currentDate = new Date(to.createdAt);
+    const options = {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    };
+    const formattedDate = currentDate.toLocaleDateString("en-US", options);
 
- HotelBookingConfirmationMail: async (to) => {
+    const noOfNights = () => {
+      const checkInDateOld = new Date(to.CheckInDate);
+      const checkOutDateOld = new Date(to.CheckOutDate);
+      const timeDifference =
+        checkOutDateOld.getTime() - checkInDateOld.getTime();
+      return timeDifference / (1000 * 60 * 60 * 24);
+    };
 
-  const currentDate = new Date(to.createdAt);
-  const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
-  const formattedDate = currentDate.toLocaleDateString('en-US', options);
+    const checkInDate = () => {
+      const date = new Date(to.CheckInDate);
+      const options = {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      };
+      const formattedDate = date.toLocaleDateString("en-US", options);
+      return formattedDate;
+    };
+    //Check Out Date formate
+    const checkOutDate = () => {
+      const date = new Date(to.CheckOutDate);
+      const options = {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      };
+      const formattedDate = date.toLocaleDateString("en-US", options);
+      return formattedDate;
+    };
 
-  
-  const noOfNights = () => { 
-    const checkInDateOld = new Date(to.CheckInDate);
-    const checkOutDateOld = new Date(to.CheckOutDate);
-    const timeDifference = checkOutDateOld.getTime() - checkInDateOld.getTime();
-    return timeDifference / (1000 * 60 * 60 * 24);
-  }
-
-  const checkInDate=()=>{
-    const date = new Date(to.CheckInDate);
-    const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
-    const formattedDate = date.toLocaleDateString('en-US', options);
-    return formattedDate;
-  }
- //Check Out Date formate
-  const checkOutDate=()=>{
-    const date = new Date(to.CheckOutDate);
-    const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
-    const formattedDate = date.toLocaleDateString('en-US', options);
-    return formattedDate;
-  }
-  
-
-     let htmlContent = `<!DOCTYPE html>
+    let htmlContent = `<!DOCTYPE html>
     <html lang="en">
       <head>
         <meta charset="UTF-8" />
@@ -3049,7 +3102,9 @@ module.exports = {
             <!--  -->
             <div style="width: 100%; height: 53px; justify-content: space-between; align-items: flex-start; display: inline-flex">
               <div style="flex-direction: column; justify-content: center; align-items: flex-start; gap: 4px; display: inline-flex">
-                <div style="color: black; font-size: 20px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">${to.hotelName}</div>
+                <div style="color: black; font-size: 20px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">${
+                  to.hotelName
+                }</div>
                 <div style="height: 24px; justify-content: flex-start; align-items: flex-start; display: inline-flex">
                   <div style="width: 24px; height: 24px; position: relative">
                     <div style="width: 24px; height: 24px; left: 0px; top: 0px; position: absolute; background: #071C2C"></div>
@@ -3081,7 +3136,9 @@ module.exports = {
     
     
             <div style="width: 100%; height: 84px; flex-direction: column; justify-content: center; align-items: flex-start; gap: 12px; display: inline-flex">
-              <div style="color: #868686; font-size: 16px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">${to.address}</div>
+              <div style="color: #868686; font-size: 16px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">${
+                to.address
+              }</div>
               <div style="justify-content: flex-start; align-items: flex-start; gap: 8px; display: inline-flex">
                 <div style="width: 20px; height: 20px; position: relative">
                   <div style="width: 20px; height: 20px; left: 0px; top: 0px; position: absolute; background: #D9D9D9"></div>
@@ -3129,11 +3186,19 @@ module.exports = {
                     <div style="width: 20px; height: 20px; left: 0px; top: 0px; position: absolute; background: #D9D9D9"></div>
                     <div style="width: 18.33px; height: 13.33px; left: 0.83px; top: 3.33px; position: absolute; background: #E73C33"></div>
                   </div>
-                  <div><span style="color: #E73C33; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">${to.noOfPeople} Guests<br/></span><span style="color: #868686; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">(${to.noOfPeople} Adults)</span></div>
+                  <div><span style="color: #E73C33; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">${
+                    to.noOfPeople
+                  } Guests<br/></span><span style="color: #868686; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">(${
+      to.noOfPeople
+    } Adults)</span></div>
                 </div>
                 <div style="align-self: stretch; flex-direction: column; justify-content: center; align-items: flex-start; gap: 20px; display: inline-flex">
-                  <div style="text-align: center"><span style="color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">${to.name} </span><span style="color: #868686; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">(Primary Guest)</span></div>
-                  <div style="text-align: center; color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">${to.email}, ${to.phone}</div>
+                  <div style="text-align: center"><span style="color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">${
+                    to.name
+                  } </span><span style="color: #868686; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">(Primary Guest)</span></div>
+                  <div style="text-align: center; color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">${
+                    to.email
+                  }, ${to.phone}</div>
                 </div>
               </div>
               <div style="align-self: stretch; height: 0px; border: 1px black solid"></div>
@@ -3143,7 +3208,9 @@ module.exports = {
                     <div style="width: 20px; height: 20px; left: 0px; top: 0px; position: absolute; background: #071C2C"></div>
                     <div style="width: 16.67px; height: 11.67px; left: 1.67px; top: 4.17px; position: absolute; background: #E73C33"></div>
                   </div>
-                  <div style="text-align: center; color: #E73C33; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">${to.room} Room</div>
+                  <div style="text-align: center; color: #E73C33; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">${
+                    to.room
+                  } Room</div>
                 </div>
                 <div style="flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 8px; display: inline-flex">
                   <div style="text-align: center; color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">Standard Room With 2 Single Beds</div>
@@ -3160,7 +3227,9 @@ module.exports = {
                       <div style="width: 20px; height: 20px; left: 0px; top: 0px; position: absolute; background: #D9D9D9"></div>
                       <div style="width: 18.33px; height: 13.33px; left: 0.83px; top: 3.33px; position: absolute; background: #071C2C"></div>
                     </div>
-                    <div style="color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">${to.noOfPeople} Adults</div>
+                    <div style="color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">${
+                      to.noOfPeople
+                    } Adults</div>
                   </div>
                 </div>
               </div>
@@ -3171,7 +3240,9 @@ module.exports = {
           <div style="width: 100%; margin-top: 5px; height: 200px; padding-top: 24px; padding-bottom: 24px; background: white; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border-radius: 12px; flex-direction: column; justify-content: flex-start; align-items: center; gap: 20px; display: inline-flex">
             <div style="align-self: stretch; justify-content: space-between; align-items: flex-start; display: inline-flex">
               <div style="flex-direction: column; justify-content: flex-start;  padding-left: 28px; padding-right: 28px; align-items: flex-start; gap: 12px; display: inline-flex">
-                <div style="color: #071C2C; font-size: 24px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">${to.hotelName}</div>
+                <div style="color: #071C2C; font-size: 24px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">${
+                  to.hotelName
+                }</div>
                 <div style="justify-content: center; align-items: center; gap: 24px; display: inline-flex">
                   <div style="width: 120px; justify-content: flex-start; align-items: flex-start; display: flex">
                     <div style="width: 24px; height: 24px; position: relative">
@@ -3203,7 +3274,9 @@ module.exports = {
               <img style="width: 247px; height: 117px; background: linear-gradient(0deg, #D9D9D9 0%, #D9D9D9 100%); border-radius: 8px" src="https://r2imghtlak.mmtcdn.com/r2-mmt-htl-image/room-imgs/201610072207462380-180447-1ba3a1c68aaf11e898ae0a9df65c8753.jpg" />
             </div>
             <div style="align-self: stretch; padding-left: 28px; padding-right: 28px; justify-content: flex-start; align-items: center; gap: 10px; display: inline-flex">
-              <div style="flex: 1 1 0; color: #BBBBBB; font-size: 12px; font-family: Montserrat; font-weight: 700; letter-spacing: 0.48px; word-wrap: break-word">${checkInDate()} - ${checkOutDate()} | ${to.room} Room | ${to.noOfPeople} Adults (${to.name} + ${to.noOfPeople-1})</div>
+              <div style="flex: 1 1 0; color: #BBBBBB; font-size: 12px; font-family: Montserrat; font-weight: 700; letter-spacing: 0.48px; word-wrap: break-word">${checkInDate()} - ${checkOutDate()} | ${
+      to.room
+    } Room | ${to.noOfPeople} Adults (${to.name} + ${to.noOfPeople - 1})</div>
             </div>
           </div>
     
@@ -3263,7 +3336,9 @@ module.exports = {
             <div style="flex-direction: column; width: 100%; justify-content: flex-start; align-items: flex-start; gap: 20px; display: flex">
               <div style="align-self: stretch; padding-left: 20px; padding-right: 20px;  justify-content: flex-start; align-items: flex-start; gap: 64px; display: inline-flex">
                 <div style="width: 100%; color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">Accommodation charges collected on behalf of hotel (incl. applicable hotel taxes)</div>
-                <div style="color: #071C2C; font-size: 20px; font-family: Montserrat; font-weight: 700; word-wrap: break-word">INR ${to.amount}</div>
+                <div style="color: #071C2C; font-size: 20px; font-family: Montserrat; font-weight: 700; word-wrap: break-word">INR ${
+                  to.amount
+                }</div>
               </div>
               <!--
               <div style="align-self: stretch; padding-left: 20px; padding-right: 20px; justify-content: space-between; align-items: flex-start; display: inline-flex">
@@ -3283,7 +3358,9 @@ module.exports = {
               <div style="align-self: stretch; height: 0px; border: 1px #868686 solid"></div>
               <div style="align-self: stretch; padding-left: 20px; padding-right: 20px; justify-content: space-between; align-items: flex-start; display: inline-flex">
                 <div style="width: 80%; color: #E73C33; font-size: 20px; font-family: Montserrat; font-weight: 700; word-wrap: break-word">TOTAL</div>
-                <div style="color: #E73C33; font-size: 20px; font-family: Montserrat; font-weight: 700; word-wrap: break-word">INR ${to.amount}</div>
+                <div style="color: #E73C33; font-size: 20px; font-family: Montserrat; font-weight: 700; word-wrap: break-word">INR ${
+                  to.amount
+                }</div>
               </div>
             </div>
           </div>
@@ -3451,23 +3528,27 @@ module.exports = {
       </body>
     </html>`;
 
-     // Create a new PDF document
-     const browser = await puppeteer.launch({ headless: 'new',  timeout: 0});
-     const page = await browser.newPage();
+    // Create a new PDF document
+    const browser = await puppeteer.launch({ headless: "new", timeout: 0 });
+    const page = await browser.newPage();
 
-     // Save the PDF to a temporary file
-     await page.setContent(htmlContent);
- 
-     const pdfFilePath = 'hotelBooking.pdf';
-     
-    const pdfBytes= await page.pdf({ path: pdfFilePath, format: 'A4', printBackground: true });
-     await browser.close();
-     // const pdfBytes= await pdf.saveAs(pdfFilePath);
+    // Save the PDF to a temporary file
+    await page.setContent(htmlContent);
 
-     console.log("PDF generation complete.");
-       
-   fs.writeFileSync(pdfFilePath, pdfBytes);
-   
+    const pdfFilePath = "hotelBooking.pdf";
+
+    const pdfBytes = await page.pdf({
+      path: pdfFilePath,
+      format: "A4",
+      printBackground: true,
+    });
+    await browser.close();
+    // const pdfBytes= await pdf.saveAs(pdfFilePath);
+
+    console.log("PDF generation complete.");
+
+    fs.writeFileSync(pdfFilePath, pdfBytes);
+
     var transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 587,
@@ -3501,7 +3582,7 @@ module.exports = {
       console.log("Email sent: " + info.response);
 
       fs.unlinkSync(pdfFilePath);
-      
+
       return info;
     } catch (error) {
       console.error("Email sending failed:", error);
@@ -3509,37 +3590,49 @@ module.exports = {
     }
   },
 
-
-  hotelBookingConfirmationMailWithNewEmail:async (to,emailTicket) => {
-
+  hotelBookingConfirmationMailWithNewEmail: async (to, emailTicket) => {
     const currentDate = new Date(to.createdAt);
-    const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
-    const formattedDate = currentDate.toLocaleDateString('en-US', options);
-  
-    
-    const noOfNights = () => { 
+    const options = {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    };
+    const formattedDate = currentDate.toLocaleDateString("en-US", options);
+
+    const noOfNights = () => {
       const checkInDateOld = new Date(to.CheckInDate);
       const checkOutDateOld = new Date(to.CheckOutDate);
-      const timeDifference = checkOutDateOld.getTime() - checkInDateOld.getTime();
+      const timeDifference =
+        checkOutDateOld.getTime() - checkInDateOld.getTime();
       return timeDifference / (1000 * 60 * 60 * 24);
-    }
-  
-    const checkInDate=()=>{
+    };
+
+    const checkInDate = () => {
       const date = new Date(to.CheckInDate);
-      const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
-      const formattedDate = date.toLocaleDateString('en-US', options);
+      const options = {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      };
+      const formattedDate = date.toLocaleDateString("en-US", options);
       return formattedDate;
-    }
-   //Check Out Date formate
-    const checkOutDate=()=>{
+    };
+    //Check Out Date formate
+    const checkOutDate = () => {
       const date = new Date(to.CheckOutDate);
-      const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
-      const formattedDate = date.toLocaleDateString('en-US', options);
+      const options = {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      };
+      const formattedDate = date.toLocaleDateString("en-US", options);
       return formattedDate;
-    }
-    
-  
-       let htmlContent = `<!DOCTYPE html>
+    };
+
+    let htmlContent = `<!DOCTYPE html>
       <html lang="en">
         <head>
           <meta charset="UTF-8" />
@@ -3709,7 +3802,9 @@ module.exports = {
               <!--  -->
               <div style="width: 100%; height: 53px; justify-content: space-between; align-items: flex-start; display: inline-flex">
                 <div style="flex-direction: column; justify-content: center; align-items: flex-start; gap: 4px; display: inline-flex">
-                  <div style="color: black; font-size: 20px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">${to.hotelName}</div>
+                  <div style="color: black; font-size: 20px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">${
+                    to.hotelName
+                  }</div>
                   <div style="height: 24px; justify-content: flex-start; align-items: flex-start; display: inline-flex">
                     <div style="width: 24px; height: 24px; position: relative">
                       <div style="width: 24px; height: 24px; left: 0px; top: 0px; position: absolute; background: #071C2C"></div>
@@ -3741,7 +3836,9 @@ module.exports = {
       
       
               <div style="width: 100%; height: 84px; flex-direction: column; justify-content: center; align-items: flex-start; gap: 12px; display: inline-flex">
-                <div style="color: #868686; font-size: 16px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">${to.address}</div>
+                <div style="color: #868686; font-size: 16px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">${
+                  to.address
+                }</div>
                 <div style="justify-content: flex-start; align-items: flex-start; gap: 8px; display: inline-flex">
                   <div style="width: 20px; height: 20px; position: relative">
                     <div style="width: 20px; height: 20px; left: 0px; top: 0px; position: absolute; background: #D9D9D9"></div>
@@ -3789,11 +3886,19 @@ module.exports = {
                       <div style="width: 20px; height: 20px; left: 0px; top: 0px; position: absolute; background: #D9D9D9"></div>
                       <div style="width: 18.33px; height: 13.33px; left: 0.83px; top: 3.33px; position: absolute; background: #E73C33"></div>
                     </div>
-                    <div><span style="color: #E73C33; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">${to.noOfPeople} Guests<br/></span><span style="color: #868686; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">(${to.noOfPeople} Adults)</span></div>
+                    <div><span style="color: #E73C33; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">${
+                      to.noOfPeople
+                    } Guests<br/></span><span style="color: #868686; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">(${
+      to.noOfPeople
+    } Adults)</span></div>
                   </div>
                   <div style="align-self: stretch; flex-direction: column; justify-content: center; align-items: flex-start; gap: 20px; display: inline-flex">
-                    <div style="text-align: center"><span style="color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">${to.name} </span><span style="color: #868686; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">(Primary Guest)</span></div>
-                    <div style="text-align: center; color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">${to.email}, ${to.phone}</div>
+                    <div style="text-align: center"><span style="color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">${
+                      to.name
+                    } </span><span style="color: #868686; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">(Primary Guest)</span></div>
+                    <div style="text-align: center; color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">${
+                      to.email
+                    }, ${to.phone}</div>
                   </div>
                 </div>
                 <div style="align-self: stretch; height: 0px; border: 1px black solid"></div>
@@ -3803,7 +3908,9 @@ module.exports = {
                       <div style="width: 20px; height: 20px; left: 0px; top: 0px; position: absolute; background: #071C2C"></div>
                       <div style="width: 16.67px; height: 11.67px; left: 1.67px; top: 4.17px; position: absolute; background: #E73C33"></div>
                     </div>
-                    <div style="text-align: center; color: #E73C33; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">${to.room} Room</div>
+                    <div style="text-align: center; color: #E73C33; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">${
+                      to.room
+                    } Room</div>
                   </div>
                   <div style="flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 8px; display: inline-flex">
                     <div style="text-align: center; color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">Standard Room With 2 Single Beds</div>
@@ -3820,7 +3927,9 @@ module.exports = {
                         <div style="width: 20px; height: 20px; left: 0px; top: 0px; position: absolute; background: #D9D9D9"></div>
                         <div style="width: 18.33px; height: 13.33px; left: 0.83px; top: 3.33px; position: absolute; background: #071C2C"></div>
                       </div>
-                      <div style="color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">${to.noOfPeople} Adults</div>
+                      <div style="color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">${
+                        to.noOfPeople
+                      } Adults</div>
                     </div>
                   </div>
                 </div>
@@ -3831,7 +3940,9 @@ module.exports = {
             <div style="width: 100%; margin-top: 5px; height: 200px; padding-top: 24px; padding-bottom: 24px; background: white; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border-radius: 12px; flex-direction: column; justify-content: flex-start; align-items: center; gap: 20px; display: inline-flex">
               <div style="align-self: stretch; justify-content: space-between; align-items: flex-start; display: inline-flex">
                 <div style="flex-direction: column; justify-content: flex-start;  padding-left: 28px; padding-right: 28px; align-items: flex-start; gap: 12px; display: inline-flex">
-                  <div style="color: #071C2C; font-size: 24px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">${to.hotelName}</div>
+                  <div style="color: #071C2C; font-size: 24px; font-family: Montserrat; font-weight: 600; word-wrap: break-word">${
+                    to.hotelName
+                  }</div>
                   <div style="justify-content: center; align-items: center; gap: 24px; display: inline-flex">
                     <div style="width: 120px; justify-content: flex-start; align-items: flex-start; display: flex">
                       <div style="width: 24px; height: 24px; position: relative">
@@ -3863,7 +3974,9 @@ module.exports = {
                 <img style="width: 247px; height: 117px; background: linear-gradient(0deg, #D9D9D9 0%, #D9D9D9 100%); border-radius: 8px" src="https://r2imghtlak.mmtcdn.com/r2-mmt-htl-image/room-imgs/201610072207462380-180447-1ba3a1c68aaf11e898ae0a9df65c8753.jpg" />
               </div>
               <div style="align-self: stretch; padding-left: 28px; padding-right: 28px; justify-content: flex-start; align-items: center; gap: 10px; display: inline-flex">
-                <div style="flex: 1 1 0; color: #BBBBBB; font-size: 12px; font-family: Montserrat; font-weight: 700; letter-spacing: 0.48px; word-wrap: break-word">${checkInDate()} - ${checkOutDate()} | ${to.room} Room | ${to.noOfPeople} Adults (${to.name} + ${to.noOfPeople-1})</div>
+                <div style="flex: 1 1 0; color: #BBBBBB; font-size: 12px; font-family: Montserrat; font-weight: 700; letter-spacing: 0.48px; word-wrap: break-word">${checkInDate()} - ${checkOutDate()} | ${
+      to.room
+    } Room | ${to.noOfPeople} Adults (${to.name} + ${to.noOfPeople - 1})</div>
               </div>
             </div>
       
@@ -3923,7 +4036,9 @@ module.exports = {
               <div style="flex-direction: column; width: 100%; justify-content: flex-start; align-items: flex-start; gap: 20px; display: flex">
                 <div style="align-self: stretch; padding-left: 20px; padding-right: 20px;  justify-content: flex-start; align-items: flex-start; gap: 64px; display: inline-flex">
                   <div style="width: 100%; color: #071C2C; font-size: 16px; font-family: Montserrat; font-weight: 500; word-wrap: break-word">Accommodation charges collected on behalf of hotel (incl. applicable hotel taxes)</div>
-                  <div style="color: #071C2C; font-size: 20px; font-family: Montserrat; font-weight: 700; word-wrap: break-word">INR ${to.amount}</div>
+                  <div style="color: #071C2C; font-size: 20px; font-family: Montserrat; font-weight: 700; word-wrap: break-word">INR ${
+                    to.amount
+                  }</div>
                 </div>
                 <!--
                 <div style="align-self: stretch; padding-left: 20px; padding-right: 20px; justify-content: space-between; align-items: flex-start; display: inline-flex">
@@ -3943,7 +4058,9 @@ module.exports = {
                 <div style="align-self: stretch; height: 0px; border: 1px #868686 solid"></div>
                 <div style="align-self: stretch; padding-left: 20px; padding-right: 20px; justify-content: space-between; align-items: flex-start; display: inline-flex">
                   <div style="width: 80%; color: #E73C33; font-size: 20px; font-family: Montserrat; font-weight: 700; word-wrap: break-word">TOTAL</div>
-                  <div style="color: #E73C33; font-size: 20px; font-family: Montserrat; font-weight: 700; word-wrap: break-word">INR ${to.amount}</div>
+                  <div style="color: #E73C33; font-size: 20px; font-family: Montserrat; font-weight: 700; word-wrap: break-word">INR ${
+                    to.amount
+                  }</div>
                 </div>
               </div>
             </div>
@@ -4110,76 +4227,80 @@ module.exports = {
           </div>
         </body>
       </html>`;
-  
-       // Create a new PDF document
-       const browser = await puppeteer.launch({ headless: 'new',  timeout: 0});
-       const page = await browser.newPage();
-  
-       // Save the PDF to a temporary file
-       await page.setContent(htmlContent);
-   
-       const pdfFilePath = 'hotelBooking.pdf';
-       
-      const pdfBytes= await page.pdf({ path: pdfFilePath, format: 'A4', printBackground: true });
-       await browser.close();
-       // const pdfBytes= await pdf.saveAs(pdfFilePath);
-  
-       console.log("PDF generation complete.");
-         
-     fs.writeFileSync(pdfFilePath, pdfBytes);
-  
-  
-      var transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com",
-        port: 587,
-        secure: false,
-        auth: {
-          user: nodemailerConfig.options.auth.user,
-          pass: nodemailerConfig.options.auth.pass,
-        },
-        connectionTimeout: 60000,
-      });
-      const email = emailTicket;
-      var mailOptions = {
-        from: nodemailerConfig.options.auth.user,
-        to: email,
-        subject: "Hotel Booking Confirmation Mail",
-        html: hotelMail(to),
-        attachments: [{ filename: "hotel_booking.pdf", path: pdfFilePath }],
-      };
-      try {
-        // Verify the connection
-        transporter.verify(function (error, success) {
-          if (error) {
-            console.log("SMTP Connection Error: " + error);
-          } else {
-            console.log("SMTP Connection Success: " + success);
-          }
-        });
-  
-        // Send the email
-        const info = await transporter.sendMail(mailOptions);
-        console.log("Email sent: " + info.response);
-  
-        fs.unlinkSync(pdfFilePath);
-        
-        return info;
-      } catch (error) {
-        console.error("Email sending failed:", error);
-        throw error;
-      }
-    },
 
+    // Create a new PDF document
+    const browser = await puppeteer.launch({ headless: "new", timeout: 0 });
+    const page = await browser.newPage();
+
+    // Save the PDF to a temporary file
+    await page.setContent(htmlContent);
+
+    const pdfFilePath = "hotelBooking.pdf";
+
+    const pdfBytes = await page.pdf({
+      path: pdfFilePath,
+      format: "A4",
+      printBackground: true,
+    });
+    await browser.close();
+    // const pdfBytes= await pdf.saveAs(pdfFilePath);
+
+    console.log("PDF generation complete.");
+
+    fs.writeFileSync(pdfFilePath, pdfBytes);
+
+    var transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false,
+      auth: {
+        user: nodemailerConfig.options.auth.user,
+        pass: nodemailerConfig.options.auth.pass,
+      },
+      connectionTimeout: 60000,
+    });
+    const email = emailTicket;
+    var mailOptions = {
+      from: nodemailerConfig.options.auth.user,
+      to: email,
+      subject: "Hotel Booking Confirmation Mail",
+      html: hotelMail(to),
+      attachments: [{ filename: "hotel_booking.pdf", path: pdfFilePath }],
+    };
+    try {
+      // Verify the connection
+      transporter.verify(function (error, success) {
+        if (error) {
+          console.log("SMTP Connection Error: " + error);
+        } else {
+          console.log("SMTP Connection Success: " + success);
+        }
+      });
+
+      // Send the email
+      const info = await transporter.sendMail(mailOptions);
+      console.log("Email sent: " + info.response);
+
+      fs.unlinkSync(pdfFilePath);
+
+      return info;
+    } catch (error) {
+      console.error("Email sending failed:", error);
+      throw error;
+    }
+  },
 
   //upload image on cloudinary***************************************
   getSecureUrl: async (base64) => {
     var result = await cloudinary.v2.uploader.upload(base64);
-    console.log("result=============",result)
+    console.log("result=============", result);
     return result.secure_url;
   },
 
   getImageUrl: async (files) => {
-    var result = await cloudinary.v2.uploader.upload(files.path, { resource_type: "auto" })
+    var result = await cloudinary.v2.uploader.upload(files.path, {
+      resource_type: "auto",
+    });
     return result.secure_url;
   },
   //===============================================================================================
@@ -4251,17 +4372,15 @@ module.exports = {
           console.log("SMTP Connection Success: " + success);
         }
       });
-       // Send the email
-       const info = await transporter.sendMail(mailOptions);
-       console.log("Email sent: " + info.response);
-       return info;
-     } catch (error) {
-       console.error("Email sending failed:", error);
-       throw error;
-     }
-   },
-
-
+      // Send the email
+      const info = await transporter.sendMail(mailOptions);
+      console.log("Email sent: " + info.response);
+      return info;
+    } catch (error) {
+      console.error("Email sending failed:", error);
+      throw error;
+    }
+  },
 
   sendHotelBookingCancelation: async (to, hotelName) => {
     let html = `<!DOCTYPE html>
@@ -4317,7 +4436,6 @@ module.exports = {
         }
       });
 
-
       // Send the email
       const info = await transporter.sendMail(mailOptions);
       console.log("Email sent: " + info.response);
@@ -4326,13 +4444,12 @@ module.exports = {
       console.error("Email sending failed:", error);
       throw error;
     }
-
   },
 
-  sendVerificationMail:async(to,otp)=> {
+  sendVerificationMail: async (to, otp) => {
     // let html = `<!DOCTYPE html>
     // <html lang="en">
-    
+
     // <head>
     //     <title>Reset Password</title>
     // </head>
@@ -4350,182 +4467,64 @@ module.exports = {
     //                         ${otp} is your OTP for verify and reset your password.
     //                 </div>
     //             </div>
-    
+
     //         </div>
     //     </div>
-    
+
     // </body>
     // </html>`;
-var transporter = nodemailerConfig.createTransport({
-  service: nodemailerConfig.service,
-  auth: {
-    user: nodemailerConfig.user,
-    pass: nodemailerConfig.pass,
-  },
-});
-var mailOptions = {
-  from: nodemailerConfig.user,
-  to: to,
-  subject: "Reset Password",
-  html: otpMail(otp),
-};
-return await transporter.sendMail(mailOptions);
+    var transporter = nodemailerConfig.createTransport({
+      service: nodemailerConfig.service,
+      auth: {
+        user: nodemailerConfig.user,
+        pass: nodemailerConfig.pass,
+      },
+    });
+    var mailOptions = {
+      from: nodemailerConfig.user,
+      to: to,
+      subject: "Reset Password",
+      html: otpMail(otp),
+    };
+    return await transporter.sendMail(mailOptions);
   },
 
   sendEmailOtp: async (email, otp) => {
-    // let html = `<!DOCTYPE html>
-    // <html lang="en">
-    
-    // <head>
-    //     <title></title>
-    // </head>
-    // <body>
-    //     <div class="card" style=" box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    //         transition: 0.3s;
-    //         width: 100%; margin: auto; min-height:15em;margin-top: 25px;">
-    //         <div class="main" style="background-image: url('');">
-    //             <div class="main-container" style="text-align: center;">
-    //                 <!-- <h1 style="padding-top: 30px;"> <strong> GFMI </strong></h1> -->
-    //                 <img src="https://res.cloudinary.com/nandkishor/image/upload/v1676882752/Group_1171275777_gge2f0.png"
-    //                     style="width: 30%;" alt="logo">
-    
-    //                 <div style="width: 90%;margin: auto; text-align: left;">
-    //                     <br><br>
-    //                     <p style="color: #333030;font-size: 18px;margin-top: 0px;"> Dear User,
-    //                     Use the One Time Password(OTP) ${otp} to verify your accoount.
-    //                 </div>
-    //             </div>
-    
-    //         </div>
-    //     </div>
-    
-    // </body>
-    // </html>`;
     let transporter = nodemailer.createTransport({
-      service: 'gmail',
+      service: "gmail",
       auth: {
-        "user": config.get('nodemailer.email'),
-        "pass": config.get('nodemailer.password')
-
-      }
+        user: config.get("nodemailer.email"),
+        pass: config.get("nodemailer.password"),
+      },
     });
     var mailOptions = {
-      from: config.get('nodemailer.email'),
+      from: config.get("nodemailer.email"),
       to: email,
-      subject: 'Otp for verication',
+      subject: "Otp for verication",
       html: otpMail(otp),
     };
-    return await transporter.sendMail(mailOptions)
+    return await transporter.sendMail(mailOptions);
   },
 
-  sendSubAdmin:async(to,userName,pass)=> {
-    // let html = `<!DOCTYPE html>
-    // <html lang="en">
+  sendSubAdmin: async (to, userName, pass) => {
+    var transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: nodemailerConfig.options.auth.user,
+        pass: nodemailerConfig.options.auth.pass,
+      },
+    });
     
-    // <head>
-    //     <title>Welcome to TheSkytrails!</title>
-    //     <style>
-    //         .card {
-    //             border-radius: 10px;
-    //             background-color: #fff;
-    //             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    //             width: 80%;
-    //             margin: auto;
-    //             min-height: 25em;
-    //             margin-top: 25px;
-    //             padding: 20px;
-    //         }
-    
-    //         .main {
-    //             background-image: url('path/to/your/image.jpg');
-    //             background-size: cover;
-    //             background-position: center;
-    //             opacity: 0.8;
-    //         }
-    
-    //         .main-container {
-    //             text-align: center;
-    //         }
-    
-    //         h1 {
-    //             font-family: 'Poppins', sans-serif;
-    //             font-weight: 600;
-    //             color: #333030;
-    //             font-size: 24px;
-    //             margin-top: 30px;
-    //         }
-    
-    //         img {
-    //             width: 30%;
-    //             margin-bottom: 20px;
-    //         }
-    
-    //         p {
-    //             font-family: 'Open Sans', sans-serif;
-    //             font-size: 16px;
-    //             line-height: 1.5;
-    //             color: #444;
-    //             margin-top: 0;
-    //         }
-    
-    //         button {
-    //             background-color: #4285F4;
-    //             color: #fff;
-    //             padding: 10px 20px;
-    //             border: none;
-    //             border-radius: 5px;
-    //             font-size: 16px;
-    //             cursor: pointer;
-    //             margin-top: 20px;
-    //         }
-    
-    //         button:hover {
-    //             background-color: #3D7AF1;
-    //         }
-    //     </style>
-    // </head>
-    
-    // <body>
-    //     <div class="card">
-    //         <div class="main-container">
-    //             <h1>Hi, ${userName}!</h1>
-    //             <img src="https://travvolt.s3.amazonaws.com/ST-Main-LogoPdf.png" alt="logo">
-    //             <p>Welcome to TheSkytrails! Your journey begins now.</p>
-    //             <p>Your login credentials are:</p>
-    //             <p>Username: ${userName}<br> Password: ${pass}</p>
-    //             <button>Unlock your Skytrails adventure now!</button>
-    //         </div>
-    //     </div>
-    // </body>
-    
-    // </html>
-    // `;
-var transporter = nodemailer.createTransport({
-  service: 'gmail',
- auth: {
-  user: nodemailerConfig.options.auth.user,
-  pass: nodemailerConfig.options.auth.pass,
-},
-});
-// const transporter = nodemailer.createTransport({
-//   host: 'smtp.gmail.com',
-//   port: 587,
-//   secure: false,
-//   auth: {
-//     user: nodemailerConfig.options.auth.user,
-//     pass: nodemailerConfig.options.auth.pass,
-//   },
-// });
-var mailOptions = {
-  from: nodemailerConfig.user,
-  to: to,
-  subject: "Congratulations,you are become member of theSkyTrais, ",
-  html: welcomeMail(to,userName,pass),
-};
-return await transporter.sendMail(mailOptions);
+    var mailOptions = {
+      from: nodemailerConfig.user,
+      to: to,
+      subject: "Congratulations,you are become member of theSkyTrais, ",
+      html: welcomeMail(to, userName, pass),
+    };
+    return await transporter.sendMail(mailOptions);
   },
 
-  senConfirmationQuery:async(to)=>{
+  senConfirmationQuery: async (to) => {
     let html = `<!DOCTYPE html>
     <html lang="en">
     
@@ -4609,12 +4608,12 @@ return await transporter.sendMail(mailOptions);
     </html>
     `;
     var transporter = nodemailer.createTransport({
-      service: 'gmail',
-     auth: {
-      user: nodemailerConfig.options.auth.user,
-      pass: nodemailerConfig.options.auth.pass,
-    },
-  });
+      service: "gmail",
+      auth: {
+        user: nodemailerConfig.options.auth.user,
+        pass: nodemailerConfig.options.auth.pass,
+      },
+    });
     var mailOptions = {
       from: nodemailerConfig.user,
       to: to,
@@ -4622,33 +4621,42 @@ return await transporter.sendMail(mailOptions);
       html: html,
     };
     return await transporter.sendMail(mailOptions);
-    
-
   },
 
-  packageBookingConfirmationMail:async (to) => {
+  packageBookingConfirmationMail: async (to) => {
     try {
       const currentDate = new Date(to.createdAt);
-      const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
-      const formattedDate = currentDate.toLocaleDateString('en-US', options);
-  
+      const options = {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      };
+      const formattedDate = currentDate.toLocaleDateString("en-US", options);
+
       function formatDate(dateString, format) {
         const date = new Date(dateString);
         const options = {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: 'numeric',
-          minute: 'numeric',
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "numeric",
+          minute: "numeric",
           hour12: true,
         };
-        return date.toLocaleString('en-US', options);
+        return date.toLocaleString("en-US", options);
       }
-  
-      const boardingTimeFormatted = formatDate(to.departureTime, 'DD MMMM YYYY hh:mm A');
-      const journeyDateFormatted = formatDate(to.departureTime, 'ddd, DD MMM YYYY');
-      const depTimeFormatted = formatDate(to.departureTime, 'hh:mm A');
-  
+
+      const boardingTimeFormatted = formatDate(
+        to.departureTime,
+        "DD MMMM YYYY hh:mm A"
+      );
+      const journeyDateFormatted = formatDate(
+        to.departureTime,
+        "ddd, DD MMM YYYY"
+      );
+      const depTimeFormatted = formatDate(to.departureTime, "hh:mm A");
+
       const name = `${to.fullName}`;
       const htmlContent = `<!DOCTYPE html>
       <html lang="en">
@@ -4736,24 +4744,24 @@ return await transporter.sendMail(mailOptions);
       
       </html>
       `;
-      const browser = await puppeteer.launch({ headless: 'new', timeout: 0 });
+      const browser = await puppeteer.launch({ headless: "new", timeout: 0 });
       // const browser = await puppeteer.launch({ headless: true, timeout: 0 });
       const page = await browser.newPage();
-  
+
       // Set a longer timeout if needed
       // await page.setDefaultNavigationTimeout(60000);
-  
+
       // Wait for some time to let dynamic content load (adjust the time as needed)
       await page.waitForTimeout(2000);
-  
+
       await page.setContent(htmlContent);
-      const pdfFilePath = 'Package_Booking.pdf';
-      const pdfBytes = await page.pdf({ path: pdfFilePath, format: 'A4' });
+      const pdfFilePath = "Package_Booking.pdf";
+      const pdfBytes = await page.pdf({ path: pdfFilePath, format: "A4" });
       await browser.close();
       fs.writeFileSync(pdfFilePath, pdfBytes);
-  
+
       const transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
+        host: "smtp.gmail.com",
         port: 587,
         secure: false,
         auth: {
@@ -4762,109 +4770,109 @@ return await transporter.sendMail(mailOptions);
         },
         connectionTimeout: 60000,
       });
-  
+
       const passengerEmail = to.email;
       const mailOptions = {
         from: nodemailerConfig.options.auth.user,
         to: passengerEmail,
-        subject: 'Package Booking Confirmation Mail',
+        subject: "Package Booking Confirmation Mail",
         html: getHtmlContent(name),
-        attachments: [{ filename: 'Package_Booking.pdf', path: pdfFilePath }],
+        attachments: [{ filename: "Package_Booking.pdf", path: pdfFilePath }],
       };
-  
+
       await transporter.verify();
       const info = await transporter.sendMail(mailOptions);
-      console.log('Email sent: ' + info.response);
-  
+      console.log("Email sent: " + info.response);
+
       fs.unlinkSync(pdfFilePath);
-  
+
       return info;
     } catch (error) {
-      console.error('Email sending failed:', error);
+      console.error("Email sending failed:", error);
       throw error;
     }
   },
-  sendAgent:async(to,pass)=> {
-    
-var transporter = nodemailer.createTransport({
-  service: 'gmail',
- auth: {
-  user: nodemailerConfig.options.auth.user,
-  pass: nodemailerConfig.options.auth.pass,
-},
-});
-// const transporter = nodemailer.createTransport({
-//   host: 'smtp.gmail.com',
-//   port: 587,
-//   secure: false,
-//   auth: {
-//     user: nodemailerConfig.options.auth.user,
-//     pass: nodemailerConfig.options.auth.pass,
-//   },
-// });
-var mailOptions = {
-  from: nodemailerConfig.user,
-  to: to,
-  html: welcomeAgentMail(to,pass),
-  subject: "Congratulations,you are become member of theSkyTrais, ",
-  
-};
-return await transporter.sendMail(mailOptions);
+  sendAgent: async (to, pass) => {
+    var transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: nodemailerConfig.options.auth.user,
+        pass: nodemailerConfig.options.auth.pass,
+      },
+    });
+    // const transporter = nodemailer.createTransport({
+    //   host: 'smtp.gmail.com',
+    //   port: 587,
+    //   secure: false,
+    //   auth: {
+    //     user: nodemailerConfig.options.auth.user,
+    //     pass: nodemailerConfig.options.auth.pass,
+    //   },
+    // });
+    var mailOptions = {
+      from: nodemailerConfig.user,
+      to: to,
+      html: welcomeAgentMail(to, pass),
+      subject: "Congratulations,you are become member of theSkyTrais, ",
+    };
+    return await transporter.sendMail(mailOptions);
   },
 
   getImageUrlAWS: async (file) => {
-  //   const s3Params = {
-  //     Bucket: process.env.AWS_BUCKET_NAME,
-  //     Key: file.originalname,
-  //     Body: file.buffer,
-  //     ContentType: file.mimetype,
-  //     ACL: "public-read",
-  //   };
-  //   var result = await s3.upload(s3Params);
-  //   console.log("result======",result)
-  //   return result;
-  // },
- 
-//  console.log("file",file)
-  // if (!file || !file.originalname || !file.buffer) {
-  //   throw new Error('Invalid file object');
-  // }
+    //   const s3Params = {
+    //     Bucket: process.env.AWS_BUCKET_NAME,
+    //     Key: file.originalname,
+    //     Body: file.buffer,
+    //     ContentType: file.mimetype,
+    //     ACL: "public-read",
+    //   };
+    //   var result = await s3.upload(s3Params);
+    //   console.log("result======",result)
+    //   return result;
+    // },
 
-  const params = {
-    Bucket: process.env.AWS_BUCKET_NAME,
-    Key: `uploadedFile_${Date.now()}_${file.originalname.replace(/\s/g, '')}`,
-    Body: file.buffer,
-    ContentType: file.mimetype,
-    ACL: 'public-read',
-  };
-  try {
-    const result = await s3.upload(params).promise();
-    return result.Location; // Assuming Location contains the S3 URL
-  } catch (error) {
-    console.error('Error uploading to S3:', error);
-    throw error;
-  }
-},
-getSecureUrlAWS: async (file) => {
-  if (!file || !file[0].originalname || !file[0].buffer) {
-    throw new Error('Invalid file object');
-  }
-  
-  const params = {
-    Bucket: process.env.AWS_BUCKET_NAME,
-    Key: `uploadedFile_${Date.now()}_${file[0].originalname.replace(/\s/g, '')}`,
-    Body: file[0].buffer,
-    ContentType: file[0].mimetype,
-    ACL: 'public-read',
-  };
+    //  console.log("file",file)
+    // if (!file || !file.originalname || !file.buffer) {
+    //   throw new Error('Invalid file object');
+    // }
 
-  try {
-    const result = await s3.upload(params).promise();
-    return result.Location; // Assuming Location contains the S3 URL
-  } catch (error) {
-    console.error('Error uploading to S3:', error);
-    throw error;
-  }
-}
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: `uploadedFile_${Date.now()}_${file.originalname.replace(/\s/g, "")}`,
+      Body: file.buffer,
+      ContentType: file.mimetype,
+      ACL: "public-read",
+    };
+    try {
+      const result = await s3.upload(params).promise();
+      return result.Location; // Assuming Location contains the S3 URL
+    } catch (error) {
+      console.error("Error uploading to S3:", error);
+      throw error;
+    }
+  },
+  getSecureUrlAWS: async (file) => {
+    if (!file || !file[0].originalname || !file[0].buffer) {
+      throw new Error("Invalid file object");
+    }
 
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: `uploadedFile_${Date.now()}_${file[0].originalname.replace(
+        /\s/g,
+        ""
+      )}`,
+      Body: file[0].buffer,
+      ContentType: file[0].mimetype,
+      ACL: "public-read",
+    };
+
+    try {
+      const result = await s3.upload(params).promise();
+      return result.Location; // Assuming Location contains the S3 URL
+    } catch (error) {
+      console.error("Error uploading to S3:", error);
+      throw error;
+    }
+  },
 };

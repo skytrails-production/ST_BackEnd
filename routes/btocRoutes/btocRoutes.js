@@ -70,4 +70,5 @@ module.exports = function (app) {
     app.post('/skyTrails/api/user/sendTicketPDF',[authJwt.verifcationToken],SchemaValidator(schemas.sendPDFSchema),flightBookingController.sendPDF);
     app.post('/skyTrails/api/user/userBookingFailed',[authJwt.verifcationToken],SchemaValidator(schemas.bookingFailed),userBookingFailed.bookingFailedUser)
     app.get('/skyTrails/api/user/getWebBanner',webAdvertismentController.getWebAdvertisement);
+    app.get('/skyTrails/flight/bookings/:bookingId',flightBookingController.getFlightBookingById)
 }

@@ -601,10 +601,11 @@ const schemas = {
   }),
 
   updateMarkupSchema: joi.object().keys({
-    hotelMarkup: joi.string().optional(),
-    flightMarkup: joi.string().optional(),
-    busMarkup: joi.string().optional(),
-    packageMarkup: joi.string().optional(),
+    hotelMarkup: joi.number().optional(),
+    flightMarkup: joi.number().optional(),
+    busMarkup: joi.number().optional(),
+    holidayPackageMarkup: joi.number().optional(),
+    markupId:joi.string().required()
   }),
   applyCouponSchema: joi.object().keys({
     couponCode: joi.string().required(),

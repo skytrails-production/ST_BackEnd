@@ -116,3 +116,12 @@ exports.hotelBooking = async (req, res, next) => {
       return next(error);
     }
   };
+
+  exports.getUserHotelBookingById=async(req,res,next)=>{
+    try {
+      
+    } catch (error) {
+      console.log("Error======================",error);
+      return next(error)
+    }
+  }

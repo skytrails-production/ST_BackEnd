@@ -19,15 +19,9 @@ const forumQueSchema = new mongoose.Schema({
     },
     likes: [
         {
-            user: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'userBtoC',
-            },
-            date: {
-                type: Date,
-                default: Date.now,
-            },
-        },
+            type: mongoose.Types.ObjectId,
+            ref: "users",
+          },
     ],
     views: {
         type: Number,

@@ -194,3 +194,21 @@ exports.sendPDF=async(req,res,next)=>{
     return next(error)
   }
 }
+
+exports.getFlightBookingById=async(req,res,next)=>{
+  try{
+const response=await findUserflightBooking({_id:req.params.bookingId});
+if(!response){
+  return res.status(statusCode.OK).send({
+    statusCode: statusCode.OK,
+    message: responseMessage.DATA_NOT_FOUND,
+  });
+}
+return res
+.status(statusCode.OK)
+.send({ statusCode:statusCode.OK,responseMessage: responseMessage.DATA_FOUND, result: response });
+  }catch(error){
+console.log("error while get data",error);
+return next(error);
+  }
+}

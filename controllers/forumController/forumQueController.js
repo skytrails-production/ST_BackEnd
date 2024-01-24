@@ -373,7 +373,7 @@ exports.likePost = async (req, res, next) => {
         status: "ACTIVE",
       };
       const savedLike = await createPostlikes(newLike);
-      await updateforumQue({_id: isPostExist._id}, { $inc: { likesCount: 1 }});
+      await updateforumQue({_id: isPostExist._id}, { $inc: { likesCount: 1 }, $push: { likes: isUser._id }});
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.POST_LIKED,
@@ -385,8 +385,7 @@ exports.likePost = async (req, res, next) => {
         { postId: isPostExist._id, status: status.ACTIVE },
         { $pull: { likes: isUser._id } }
       );
-      await updateforumQue({_id: isPostExist._id}, { $inc: { likesCount: -1 }});
-    
+      await updateforumQue({_id: isPostExist._id}, { $inc: { likesCount: -1 },$pull: { likes: isUser._id }});
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.REMOVE_POST_LIKE,
@@ -397,7 +396,7 @@ exports.likePost = async (req, res, next) => {
         { postId: isPostExist._id, status: status.ACTIVE },
         { $push: { likes: isUser._id } }
       );
-      await updateforumQue({_id: isPostExist._id}, { $inc: { likesCount: 1 }});
+      await updateforumQue({_id: isPostExist._id}, { $inc: { likesCount: 1 }, $push: { likes: isUser._id }});
       res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.POST_LIKED,

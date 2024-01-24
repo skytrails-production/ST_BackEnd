@@ -1783,7 +1783,7 @@ function welcomeMail(to,userName,pass){
     <div style="font-family: Arial, sans-serif">
     <div class="" style="font-size: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
     <p style="margin: 0; font-size: 20px; text-align: center; mso-line-height-alt: 24px;"><span style="color:#0a0909;"><strong>Explore here:</strong></span></p>
-    <p style="margin: 0; font-size: 20px; text-align: center; mso-line-height-alt: 24px;"><u><span style="color:#000000;"><strong><span style="font-size:20px;"><a href="https://theskytrails.com/" rel="noopener" style="text-decoration: underline;" target="_blank"><u><span style="color:#000000;"><strong><span style="font-size:20px;">TheSkyTrails PVT. LTD adventure now !</span></strong></span></u></a></span></strong></span></u></p>
+    <p style="margin: 0; font-size: 20px; text-align: center; mso-line-height-alt: 24px;"><u><span style="color:#000000;"><strong><span style="font-size:20px;"><a href="https://b2b.theskytrails.com/subAdminLogin" rel="noopener" style="text-decoration: underline;" target="_blank"><u><span style="color:#000000;"><strong><span style="font-size:20px;">TheSkyTrails PVT. LTD adventure now !</span></strong></span></u></a></span></strong></span></u></p>
     </div>
     </div>
     </td>
@@ -1831,7 +1831,6 @@ function welcomeMail(to,userName,pass){
 
 function welcomeAgentMail(to,pass){
     return `<!DOCTYPE html>
-
     <html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
     <head>
     <title></title>
@@ -1873,7 +1872,15 @@ function welcomeAgentMail(to,pass){
                 display: none;
             }
     
-            @media (max-width:520px) {
+            @media (max-width:715px) {
+                .social_block.desktop_hide .social-table {
+                    display: inline-block !important;
+                }
+    
+                .image_block div.fullWidth {
+                    max-width: 100% !important;
+                }
+    
                 .mobile_hide {
                     display: none;
                 }
@@ -1900,35 +1907,27 @@ function welcomeAgentMail(to,pass){
                     display: table !important;
                     max-height: none !important;
                 }
-    
-                .row-1 .column-1 .block-1.image_block .alignment div {
-                    margin: 0 auto !important;
-                }
-    
-                .row-2 .column-1 {
-                    padding: 5px 0 !important;
-                }
             }
         </style>
     </head>
-    <body style="background-color: #FFFFFF; margin: 0; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
-    <table border="0" cellpadding="0" cellspacing="0" class="nl-container" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #FFFFFF;" width="100%">
+    <body style="margin: 0; background-color: #ffffff; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
+    <table border="0" cellpadding="0" cellspacing="0" class="nl-container" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff;" width="100%">
     <tbody>
     <tr>
     <td>
-    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-size: auto;" width="100%">
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff;" width="100%">
     <tbody>
     <tr>
     <td>
-    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-size: auto; background-color: #c6e6ed; background-image: url('https://raw.githubusercontent.com/The-SkyTrails/Images/main/mailingImages/welcome_mail_body.jpeg'); background-position: top center; background-repeat: no-repeat; color: #000000; width: 500px; margin: 0 auto;" width="500">
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-image: url('https://github.com/Radhika57/CRM-EMAIL-IMAGES/blob/main/nils-nedel-ONpGBpns3cs-unsplash.jpg?raw=true'); background-repeat: no-repeat; background-size: cover; border-radius: 3px; border-top: 30px solid transparent; color: #000000; width: 695px; margin: 0 auto;" width="695">
     <tbody>
     <tr>
-    <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+    <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
     <table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
     <tr>
     <td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
     <div align="center" class="alignment" style="line-height:10px">
-    <div style="max-width: 200px;"><img src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/mailingImages/logo.png" style="display: block; height: auto; border: 0; width: 100%;" width="200"/></div>
+    <div style="max-width: 174px;"><img alt="I'm an image" src="https://github.com/Radhika57/CRM-EMAIL-IMAGES/blob/main/logo_component-01_1.png?raw=true" style="display: block; height: auto; border: 0; width: 100%;" title="I'm an image" width="174"/></div>
     </div>
     </td>
     </tr>
@@ -1936,11 +1935,9 @@ function welcomeAgentMail(to,pass){
     <table border="0" cellpadding="10" cellspacing="0" class="text_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
     <tr>
     <td class="pad">
-    <div style="font-family: Arial, sans-serif">
-    <div class="" style="font-size: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; mso-line-height-alt: 21.6px; color: #555555; line-height: 1.8;">
-    <p style="margin: 0; font-size: 20px; text-align: center; mso-line-height-alt: 39.6px;"><span style="font-size:22px;color:#170202;"><strong>Hello user!</strong></span></p>
-    <p style="margin: 0; font-size: 20px; text-align: center; mso-line-height-alt: 36px;"><span style="font-size:20px;color:#000000;">Welcome to <span style="font-size:18px;">TheSkytrails PVT. LTD.</span></span></p>
-    <p style="margin: 0; font-size: 20px; text-align: center; mso-line-height-alt: 36px;"><span style="font-size:20px;color:#000000;">Your journey with us begins now.</span></p>
+    <div style="font-family: sans-serif">
+    <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"> </p>
     </div>
     </div>
     </td>
@@ -1949,33 +1946,10 @@ function welcomeAgentMail(to,pass){
     <table border="0" cellpadding="10" cellspacing="0" class="text_block block-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
     <tr>
     <td class="pad">
-    <div style="font-family: Arial, sans-serif">
-    <div class="" style="font-size: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
-    <p style="margin: 0; font-size: 22px; text-align: left; mso-line-height-alt: 26.4px;"><span style="color:#170202;font-size:20px;">Your login credentials are:</span></p>
-    </div>
-    </div>
-    </td>
-    </tr>
-    </table>
-    <table border="0" cellpadding="10" cellspacing="0" class="text_block block-4" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-    <tr>
-    <td class="pad">
-    <div style="font-family: Arial, sans-serif">
-    <div class="" style="font-size: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
-    <p style="margin: 0; font-size: 20px; mso-line-height-alt: 24px;"><span style="font-size:20px;color:#000000;"> Email: ${to}</span></p>
-    <p style="margin: 0; font-size: 20px; mso-line-height-alt: 24px;"><span style="font-size:20px;color:#000000;"> Password: ${pass}</span></p>
-    </div>
-    </div>
-    </td>
-    </tr>
-    </table>
-    <table border="0" cellpadding="10" cellspacing="0" class="text_block block-5" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-    <tr>
-    <td class="pad">
-    <div style="font-family: Arial, sans-serif">
-    <div class="" style="font-size: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
-    <p style="margin: 0; font-size: 17px; text-align: center; mso-line-height-alt: 20.4px;"><span style="color:#0a0909;font-size:17px;"><strong>Explore here:</strong></span></p>
-    <p style="margin: 0; font-size: 17px; text-align: center; mso-line-height-alt: 20.4px;"><span style="font-size:17px;"><span style="color:#000000;"><strong><span style=""><a href="https://theskytrails.com" rel="noopener" style="text-decoration: underline;" target="_blank"><span style="color:#000000;"><strong><span style="">TheSkyTrails PVT. LTD adventure now !</span></strong></span></a></span></strong></span></span></p>
+    <div style="font-family: sans-serif">
+    <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+    <p style="margin: 0; font-size: 38px; text-align: center; mso-line-height-alt: 45.6px;"><span style="font-size:38px;color:#ffffff;"><strong>Welcome to Sky Trails!</strong></span></p>
+    <p style="margin: 0; font-size: 38px; text-align: center; mso-line-height-alt: 45.6px;"><span style="font-size:38px;color:#ffffff;"><strong>Congratulations</strong></span></p>
     </div>
     </div>
     </td>
@@ -1989,18 +1963,334 @@ function welcomeAgentMail(to,pass){
     </tr>
     </tbody>
     </table>
-    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; background-size: auto;" width="100%">
     <tbody>
     <tr>
     <td>
-    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 500px; margin: 0 auto;" width="500">
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f1f0ef; background-size: auto; color: #000000; width: 695px; margin: 0 auto;" width="695">
+    <tbody>
+    <tr>
+    <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="41.666666666666664%">
+    <table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tr>
+    <td class="pad" style="padding-bottom:30px;padding-top:35px;width:100%;padding-right:0px;padding-left:0px;">
+    <div align="center" class="alignment" style="line-height:10px">
+    <div style="max-width: 289.58333333333337px;"><img alt="I'm an image" src="https://github.com/Radhika57/CRM-EMAIL-IMAGES/blob/main/register.jpg?raw=true" style="display: block; height: auto; border: 0; width: 100%;" title="I'm an image" width="289.58333333333337"/></div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    </td>
+    <td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="58.333333333333336%">
+    <table border="0" cellpadding="0" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+    <tr>
+    <td class="pad" style="padding-bottom:10px;padding-left:10px;padding-right:10px;padding-top:35px;">
+    <div style="font-family: sans-serif">
+    <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+    <p style="margin: 0; font-size: 26px; text-align: left; mso-line-height-alt: 31.2px;"><span style="color:#000000;font-size:22px;"><strong>Your Account has been successfully created as an Agent,Please update your profile.</strong></span></p>
+    </div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    <table border="0" cellpadding="10" cellspacing="0" class="text_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+    <tr>
+    <td class="pad">
+    <div style="font-family: sans-serif">
+    <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 18px; color: #555555; line-height: 1.5;">
+    <p style="margin: 0; font-size: 20px; mso-line-height-alt: 30px;"><strong><span style="font-size:28px;color:#000000;">*Your Account Details:*</span></strong></p>
+    <p style="margin: 0; font-size: 20px; mso-line-height-alt: 30px;"><span style="font-size:20px;color:#000000;">Email ID: ${to}</span></p>
+    <p style="margin: 0; font-size: 20px; mso-line-height-alt: 30px;"><span style="font-size:20px;color:#000000;">Password: ${pass}</span></p>
+    </div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tbody>
+    <tr>
+    <td>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #0d0d32; color: #000000; width: 695px; margin: 0 auto;" width="695">
     <tbody>
     <tr>
     <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
-    <table border="0" cellpadding="0" cellspacing="0" class="empty_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <table border="0" cellpadding="10" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
     <tr>
     <td class="pad">
-    <div></div>
+    <div style="font-family: sans-serif">
+    <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+    <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 21.599999999999998px;"><span style="font-size:18px;color:#ffffff;">Login Link:*</span></p>
+    <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 21.599999999999998px;"><span style="font-size:18px;color:#ffffff;"><a href="https://b2b.theskytrails.com/" rel="noopener" style="text-decoration: underline;" target="_blank"><span style="font-size:18px;color:#ffffff;">(https://b2b.theskytrails.com/)</span></a></span></p>
+    </div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-4" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tbody>
+    <tr>
+    <td>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f1f0ef; background-image: url('https://github.com/Radhika57/CRM-EMAIL-IMAGES/blob/main/dot_path-02.png?raw=true'); background-repeat: no-repeat; border-radius: 0; color: #000000; width: 695px; margin: 0 auto;" width="695">
+    <tbody>
+    <tr>
+    <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 50px; padding-top: 30px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+    <table border="0" cellpadding="10" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+    <tr>
+    <td class="pad">
+    <div style="font-family: sans-serif">
+    <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+    <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 21.599999999999998px;"><span style="font-size:18px;color:#000000;">We're thrilled to have you on board and look forward </span></p>
+    <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 21.599999999999998px;"><span style="font-size:18px;color:#000000;">to supporting you in your journey with Sky Trails. Our platform </span></p>
+    <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 21.599999999999998px;"><span style="font-size:18px;color:#000000;">offers a range of features to enhance your experience, </span></p>
+    <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 21.599999999999998px;"><span style="font-size:22px;color:#000000;"><span style="font-size:18px;">making it easier for you to manage and optimize your tasks</span>.</span></p>
+    </div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-5" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tbody>
+    <tr>
+    <td>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f1f0ef; color: #000000; width: 695px; margin: 0 auto;" width="695">
+    <tbody>
+    <tr>
+    <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+    <table border="0" cellpadding="10" cellspacing="0" class="heading_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tr>
+    <td class="pad">
+    <h1 style="margin: 0; color: #7747FF; direction: ltr; font-family: Arial, Helvetica, sans-serif; font-size: 38px; font-weight: 700; letter-spacing: normal; line-height: 120%; text-align: center; margin-top: 0; margin-bottom: 0; mso-line-height-alt: 45.6px;"><span class="tinyMce-placeholder"><span style="color: #000000;">Our Specialized Services:</span></span></h1>
+    </td>
+    </tr>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-6" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tbody>
+    <tr>
+    <td>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f1f0ef; color: #000000; width: 695px; margin: 0 auto;" width="695">
+    <tbody>
+    <tr>
+    <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="33.333333333333336%">
+    <table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tr>
+    <td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
+    <div align="center" class="alignment" style="line-height:10px">
+    <div style="max-width: 196.91666666666666px;"><img alt="I'm an image" src="https://github.com/Radhika57/CRM-EMAIL-IMAGES/blob/main/work_permit_asistance-01.png?raw=true" style="display: block; height: auto; border: 0; width: 100%;" title="I'm an image" width="196.91666666666666"/></div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    </td>
+    <td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="33.333333333333336%">
+    <table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tr>
+    <td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
+    <div align="center" class="alignment" style="line-height:10px">
+    <div style="max-width: 196.91666666666666px;"><img alt="I'm an image" src="https://github.com/Radhika57/CRM-EMAIL-IMAGES/blob/main/migration_support-01-01.png?raw=true" style="display: block; height: auto; border: 0; width: 100%;" title="I'm an image" width="196.91666666666666"/></div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    </td>
+    <td class="column column-3" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="33.333333333333336%">
+    <table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tr>
+    <td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
+    <div align="center" class="alignment" style="line-height:10px">
+    <div style="max-width: 197px;"><img alt="I'm an image" src="https://github.com/Radhika57/CRM-EMAIL-IMAGES/blob/main/skill_training-01-01.png?raw=true" style="display: block; height: auto; border: 0; width: 100%;" title="I'm an image" width="197"/></div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-7" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tbody>
+    <tr>
+    <td>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #eae9e8; color: #000000; width: 695px; margin: 0 auto;" width="695">
+    <tbody>
+    <tr>
+    <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+    <table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tr>
+    <td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
+    <div align="center" class="alignment" style="line-height:10px">
+    <div class="fullWidth" style="max-width: 556px;"><img alt="I'm an image" src="https://github.com/Radhika57/CRM-EMAIL-IMAGES/blob/main/web_1-01_1.png?raw=true" style="display: block; height: auto; border: 0; width: 100%;" title="I'm an image" width="556"/></div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    <table border="0" cellpadding="25" cellspacing="0" class="text_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+    <tr>
+    <td class="pad">
+    <div style="font-family: sans-serif">
+    <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+    <p style="margin: 0; font-size: 12px; text-align: center; mso-line-height-alt: 14.399999999999999px;"><span style="color:#000000;"><strong><span style="font-size:20px;">Explore Our Travel Services at The Sky Trails Travel:*</span></strong></span></p>
+    </div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-8" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tbody>
+    <tr>
+    <td>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-image: url('https://github.com/Radhika57/CRM-EMAIL-IMAGES/blob/main/d425631e-b258-440f-9b5a-78bb4348ec85.png?raw=true'); background-repeat: no-repeat; color: #000000; width: 695px; margin: 0 auto;" width="695">
+    <tbody>
+    <tr>
+    <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+    <table border="0" cellpadding="0" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+    <tr>
+    <td class="pad" style="padding-bottom:60px;padding-left:10px;padding-right:10px;padding-top:60px;">
+    <div style="font-family: sans-serif">
+    <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+    <p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;"><span style="font-size:22px;color:#ffffff;">Website: www.theskytrails.com</span></p>
+    <p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;"><span style="font-size:22px;color:#ffffff;">B2B and B2C travel services</span></p>
+    <p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;"><span style="font-size:22px;color:#ffffff;">Unbeatable deals on flights, hotels, </span></p>
+    <p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;"><span style="font-size:22px;color:#ffffff;">buses, and tours</span></p>
+    </div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-9" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tbody>
+    <tr>
+    <td>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #eae9e8; color: #000000; border-radius: 0; width: 695px; margin: 0 auto;" width="695">
+    <tbody>
+    <tr>
+    <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="75%">
+    <table border="0" cellpadding="0" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+    <tr>
+    <td class="pad" style="padding-bottom:10px;padding-left:10px;padding-right:10px;padding-top:60px;">
+    <div style="font-family: sans-serif">
+    <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 18px; color: #555555; line-height: 1.5;">
+    <p style="margin: 0; font-size: 16px; mso-line-height-alt: 24px;"><strong><span style="font-size:24px;color:#e81414;">THANK YOU FOR CHOOSING SKY TRAILS.</span></strong></p>
+    <p style="margin: 0; font-size: 16px; text-align: left; mso-line-height-alt: 24px;"><span style="color:#000000;font-size:16px;">IF YOU HAVE ANY QUESTIONS OR NEED ASSISTANCE, </span></p>
+    <p style="margin: 0; font-size: 16px; text-align: left; mso-line-height-alt: 24px;"><span style="color:#000000;font-size:16px;">DON'T HEASITATE TO REACH OUT, WE'RE HERE TO HELP!</span></p>
+    </div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    </td>
+    <td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="25%">
+    <table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tr>
+    <td class="pad" style="width:100%;">
+    <div align="center" class="alignment" style="line-height:10px">
+    <div style="max-width: 173.75px;"><img alt="I'm an image" src="https://github.com/Radhika57/CRM-EMAIL-IMAGES/blob/main/thank-you-card-collage-concept.jpg?raw=true" style="display: block; height: auto; border: 0; width: 100%;" title="I'm an image" width="173.75"/></div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-10" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tbody>
+    <tr>
+    <td>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #090933; color: #000000; width: 695px; margin: 0 auto;" width="695">
+    <tbody>
+    <tr>
+    <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="33.333333333333336%">
+    <table border="0" cellpadding="20" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tr>
+    <td class="pad">
+    <div align="center" class="alignment" style="line-height:10px">
+    <div style="max-width: 116px;"><img alt="I'm an image" src="https://github.com/Radhika57/CRM-EMAIL-IMAGES/blob/main/WhatsApp_Image_2023-12-26_at_10.53.08.jpeg.jpg?raw=true" style="display: block; height: auto; border: 0; width: 100%;" title="I'm an image" width="116"/></div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    </td>
+    <td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="66.66666666666667%">
+    <table border="0" cellpadding="25" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+    <tr>
+    <td class="pad">
+    <div style="font-family: sans-serif">
+    <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+    <p style="margin: 0; font-size: 20px; text-align: center; mso-line-height-alt: 24px;"><span style="font-size:20px;color:#ffffff;">Stay connected with us on</span></p>
+    <p style="margin: 0; font-size: 20px; text-align: center; mso-line-height-alt: 24px;"><span style="font-size:20px;color:#ffffff;">social media for updates, tips, and more</span></p>
+    </div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    <table border="0" cellpadding="0" cellspacing="0" class="social_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tr>
+    <td class="pad" style="padding-top:10px;text-align:center;padding-right:0px;padding-left:0px;">
+    <div align="center" class="alignment">
+    <table border="0" cellpadding="0" cellspacing="0" class="social-table" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; display: inline-block;" width="156px">
+    <tr>
+    <td style="padding:0 10px 0 10px;"><a href="https://www.facebook.com/theskytrailsofficials" target="_blank"><img alt="Facebook" height="32" src="https://github.com/Radhika57/CRM-EMAIL-IMAGES/blob/main/facebook2x.png?raw=true" style="display: block; height: auto; border: 0;" title="facebook" width="32"/></a></td>
+    <td style="padding:0 10px 0 10px;"><a href="https://twitter.com/TheSkytrails" target="_blank"><img alt="Twitter" height="32" src="https://github.com/Radhika57/CRM-EMAIL-IMAGES/blob/main/twitter2x.png?raw=true" style="display: block; height: auto; border: 0;" title="twitter" width="32"/></a></td>
+    <td style="padding:0 10px 0 10px;"><a href="https://www.instagram.com/theskytrails" target="_blank"><img alt="Instagram" height="32" src="https://github.com/Radhika57/CRM-EMAIL-IMAGES/blob/main/instagram2x.png?raw=true" style="display: block; height: auto; border: 0;" title="instagram" width="32"/></a></td>
+    </tr>
+    </table>
+    </div>
     </td>
     </tr>
     </table>
@@ -2020,5 +2310,7 @@ function welcomeAgentMail(to,pass){
     </html>`
 
 }
+
+
 
 module.exports = {flightMail, busMail, hotelMail, otpMail, welcomeMail,welcomeAgentMail};

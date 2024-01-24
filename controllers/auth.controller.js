@@ -1774,7 +1774,7 @@ exports.updateMarkup = async (req, res, next) => {
       hotelMarkup,
       flightMarkup,
       busMarkup,
-      packageMarkup,
+      holidayPackageMarkup,
       markupId,
     } = req.body;
     // const object = {
