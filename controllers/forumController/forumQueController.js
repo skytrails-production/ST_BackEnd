@@ -381,16 +381,18 @@ exports.likePost = async (req, res, next) => {
       });
     }
     if (isAlreadyLiked.likes.includes(isUser._id)) {
-      const updateResult = await updatePostlikes(
-        { postId: isPostExist._id, status: status.ACTIVE },
-        { $pull: { likes: isUser._id } }
-      );
-      await updateforumQue({_id: isPostExist._id}, { $inc: { likesCount: -1 },$pull: { likes: isUser._id }});
-      return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.REMOVE_POST_LIKE,
-        result: updateResult,
-      });
+      if(isPostExist.likesCount > 0){
+        const updateResult = await updatePostlikes(
+          { postId: isPostExist._id, status: status.ACTIVE },
+          { $pull: { likes: isUser._id } }
+        );
+        await updateforumQue({_id: isPostExist._id}, { $inc: { likesCount: -1 },$pull: { likes: isUser._id }});
+        return res.status(statusCode.OK).send({
+          statusCode: statusCode.OK,
+          responseMessage: responseMessage.REMOVE_POST_LIKE,
+          result: updateResult,
+        });
+      }
     } else {
       const updateResult = await updatePostlikes(
         { postId: isPostExist._id, status: status.ACTIVE },

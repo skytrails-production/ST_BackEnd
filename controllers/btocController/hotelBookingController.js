@@ -119,7 +119,16 @@ exports.hotelBooking = async (req, res, next) => {
 
   exports.getUserHotelBookingById=async(req,res,next)=>{
     try {
-      
+      const response=await findUserhotelBookingModel({_id:req.params.bookingId});
+      if(!response){
+        return res.status(statusCode.OK).send({
+          statusCode: statusCode.OK,
+          message: responseMessage.DATA_NOT_FOUND,
+        });
+      }
+      return res
+      .status(statusCode.OK)
+      .send({ statusCode:statusCode.OK,responseMessage: responseMessage.DATA_FOUND, result: response });
     } catch (error) {
       console.log("Error======================",error);
       return next(error)

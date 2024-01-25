@@ -97,7 +97,7 @@ app.use((req, res, next) => {
 
 app.get("/", (req, res) => {
   res.status(200).json({
-    message: "Hello Production DB Updated",
+    message: "Hellooo Production DB Updated",
     url: `${req.protocol}://${req.get("host")}`,
   });
 });
@@ -243,6 +243,5 @@ const { v4: uuidv4 } = require('uuid');
 
 // Generate a random UUID v4
 const messageId = uuidv4();
-// console.log("Hello World!");
 
-// console.log('Message ID:', messageId);
+console.log('Message ID:', messageId);
