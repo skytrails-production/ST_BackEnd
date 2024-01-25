@@ -8,7 +8,7 @@ const cookieParser = require("cookie-parser");
 const cookieSession = require("cookie-session");
 const app = express();
 const configs = require("./common/common");
-const PORT = process.env.PORT || 8001;
+const PORT = process.env.PORT || 8000;
 const db = require("./model");
 const Role = db.role;
 app.use(cors());
@@ -17,7 +17,7 @@ const WebSocket = require('websocket').server;
 const http = require('http'); 
 
 const server = http.createServer(app);
-// console.log("hi")
+
 // Create a WebSocket server and attach it to the HTTP server
 const wsServer = new WebSocket({
   httpServer: server,
