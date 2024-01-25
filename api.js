@@ -245,4 +245,4 @@ const { v4: uuidv4 } = require('uuid');
 const messageId = uuidv4();
 console.log("Hello World!");
 
-// console.log('Message ID:', messageId);
+console.log('Message ID:', messageId);
