@@ -672,3 +672,89 @@ exports.editPackage = async (req, res, next) => {
     return next(error);
   }
 };
+
+
+exports.internationalgetAdminAll = async (req, res) => {
+  try {
+    let pagintionData = 10;
+
+    const apiSearch = new Internationalapi(internationl.find({is_active:1}).find(), req.query)
+      .search()
+      .filter()
+      .pagintion(pagintionData);
+
+    let pakage = await apiSearch.query;
+    // console.log(pakage.length,"package")
+    if (pakage.length === 0) {
+      // console.log(req.query)
+      // pakage=await internationl.find({ 'destination.addMore': req.query.keyword }).exec();
+      pakage = await internationl.find()
+        .find({
+          $or: [
+            {
+              destination: {
+                $elemMatch: {
+                  addMore: { $regex: new RegExp(req.query.keyword, "i") }, // 'i' flag for case-insensitive search
+                },
+              },
+            },
+            { country: { $regex: new RegExp(req.query.keyword, "i") } },
+          ],
+        })
+        .exec();
+      // console.log(pakage,"data")
+    }
+
+    for (let p = 0; p < pakage.length; p++) {
+      var arr = [];
+      var arr1 = [];
+      var tags = 0;
+      var insclusion = 0;
+
+      for (let i = 0; i < pakage[p].select_tags.length; i++) {
+        const key = Object.values(pakage[p].select_tags[i]);
+        if (key[0] === true) arr[tags++] = pakage[p].select_tags[i];
+      }
+      pakage[p].select_tags = arr.slice(0);
+
+      for (let j = 0; j < pakage[p].insclusions.length; j++) {
+        const key = Object.values(pakage[p].insclusions[j]);
+        if (key[0] === "true") arr1[insclusion++] = pakage[p].insclusions[j];
+      }
+      pakage[p].insclusions = arr1.slice(0);
+    }
+    // =================================================================> <======================================//
+    const countData = pakage.length;
+    let page = Number(req.query.page) || 1;
+    let totalPages =
+      countData - Math.floor(countData / pagintionData) * pagintionData > 0
+        ? Math.floor(countData / pagintionData) + 1
+        : Math.floor(countData / pagintionData);
+    let skip = pagintionData * (page - 1) || 0;
+    let currentPage = page - 1 < 1 ? 1 : page - 1;
+    let endingLink =
+      currentPage + 3 <= totalPages
+        ? currentPage + 3
+        : page + (totalPages - page);
+    if (endingLink < page) {
+      currentPage -= page - totalPages;
+    }
+    let pages = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pages.push(i);
+    }
+    let data = {
+      startIndex: skip,
+      endingLink: endingLink,
+      currentPage: currentPage,
+      totalPages: totalPages,
+      pages: pages,
+      pakage: pakage,
+    };
+    // const pakage = await international.find();
+    msg = "successfully";
+    actionCompleteResponse(res, data, msg);
+  } catch (err) {
+    sendActionFailedResponse(res, {}, err.message);
+  }
+};

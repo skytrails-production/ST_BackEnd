@@ -942,3 +942,54 @@ exports.checkout=async(req,res,next)=>{
     return next(error)
   }
 }
+
+exports.easebussPayment = async (req, res, next) => {
+  try {
+    const {
+      firstname,
+      phone,
+      email,
+      amount,
+      productinfo,
+      bookingType,
+      surl,
+      furl
+    } = req.body;
+
+    const isUserExist = await findUser({
+      _id: req.userId,
+      status: status.ACTIVE,
+    });
+    // if (!isUserExist) {
+    //   return res.status(statusCode.NotFound).send({
+    //     statusCode: statusCode.NotFound,
+    //     message: responseMessage.USERS_NOT_FOUND,
+    //   });
+    // }
+    const txnId = "T" + Date.now();
+    try {
+     
+      const redirectURL = `${env}/v2/pay/${data.data}`;
+      console.log("redirectURL=========",redirectURL)
+      const object = {
+        userId: isUserExist._id,
+        amount: amount,
+        paymentId: txnId,
+        bookingType: bookingType,
+      };
+      const createData = await createUsertransaction(object);
+      res
+        .status(statusCode.OK)
+        .send({
+          statusCode: statusCode.OK,
+          responseMessage: responseMessage.PAYMENT_INTIATE,
+          result: result,
+        });
+    } catch (error) {
+      console.error("error axios:===========>>>>>>>>>>", error);
+    }
+  } catch (error) {
+    console.log("error into easebuzz ", error);
+    return next(error);
+  }
+};

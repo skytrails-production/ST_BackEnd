@@ -10,6 +10,7 @@ const {
   getUser,
   findUserData,
   updateUser,
+  deleteUser,
   paginateUserSearch,
   countTotalUser,
 } = userServices;
@@ -258,8 +259,10 @@ exports.verifyUserOtp = async (req, res, next) => {
   } catch (error) {
     console.log("Error==============>", error);
     return next(error);
-  }
+  }
 };
+
+
 exports.resendOtp = async (req, res, next) => {
   try {
     const { mobileNumber } = req.body;
@@ -562,9 +565,10 @@ exports.verifyUserOtpWithSocialId = async (req, res, next) => {
 exports.editProfile = async (req, res, next) => {
   try {
       const { username, email, mobile_number,gender,Nationality,City,State,pincode,dob,address,bio,coverPic } = req.body;
-      console.log("req.body==============",req.body)
+      if (req.body.email) {
+        req.body.email = (req.body.email).toLowerCase();
+    }
       const isUSer = await findUser({ _id: req.userId, status: status.ACTIVE });
-      console.log("isUser=======",isUSer)
       if (!isUSer) {
           return res.status(statusCode.Unauthorized).send({ message: responseMessage.UNAUTHORIZED });
       }
@@ -588,4 +592,44 @@ exports.editProfile = async (req, res, next) => {
   }
 };
 
+//******************************************DELETE Account of User**********************************************************/
 
+// exports.deleteUserAccount=async(req,res,next)=>{
+// try {
+//   const isUserExist = await findUserData({_id:req.userId,status: status.ACTIVE,});
+//   if (!isUserExist) {
+//     return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,message: responseMessage.USERS_NOT_FOUND});
+//   }
+//   const deleteUser=await updateUser({_id:isUserExist._id},{status:status.DELETE});
+//   console.log("dekechjdjodopdodpodojfufbkdk=======",deleteUser)
+//   const result={
+//     status:deleteUser.status
+//   }
+//   if(deleteUser){
+//     return res.status(statusCode.OK).send({statusCode: statusCode.OK,message: responseMessage.DELETE_SUCCESS,result:result});
+//   }
+// } catch (error) {
+//   console.log("Error while delete account..!",error);
+//   return next(error)
+// }
+// }
+
+
+exports.deleteUserAccount=async(req,res,next)=>{
+  try {
+    const isUserExist = await findUser({_id:req.userId,status: status.ACTIVE,});
+    if (!isUserExist) {
+      return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,message: responseMessage.USERS_NOT_FOUND});
+    }
+    const deletedUser=await deleteUser({_id:isUserExist._id});
+    const result={
+      status:deletedUser.status
+    }
+    if(deletedUser){
+      return res.status(statusCode.OK).send({statusCode: statusCode.OK,message: responseMessage.DELETE_SUCCESS,result:result});
+    }
+  } catch (error) {
+    console.log("Error while delete account..!",error);
+    return next(error)
+  }
+  }

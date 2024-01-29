@@ -62,4 +62,6 @@ module.exports = function (app) {
     userController.editProfile
   );
 
+  app.delete("/skyTrails/api/user/deleteProfile", [authJwt.verifcationToken],userController.deleteUserAccount)
+
 };
