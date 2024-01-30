@@ -14,7 +14,9 @@ const BookingDetailSchema = new mongoose.Schema(
             type: Schema.Types.ObjectId,
             ref: "users",
         },
-
+        ticketType:{
+          type:String,
+        },
         oneWay:{
           type:Boolean,
         },
