@@ -401,7 +401,7 @@ exports.domesticAndInternational = async (req, res) => {
       query = { country: "India" };
     } else {
       // Handle query for other countries
-      query = { country: { $ne: "India" } };
+      query = {};
     }
 
     const packages = await internationl.find({ $and: [{ is_active: 1 }, query] });
