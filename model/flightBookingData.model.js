@@ -11,9 +11,7 @@ const flightBookingData = new mongoose.Schema(
         type: Schema.Types.ObjectId,
         ref: "userb2bs",
       },
-      ticketType:{
-        type:String,
-      },
+
       oneWay:{
         type:Boolean,
       },
