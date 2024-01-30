@@ -872,6 +872,7 @@ console.log("uuid==============",uuid);
     const clientId=process.env.CASHFREE_API_ID
     const payUrl=process.env.CASHFREE_URL
     const merchantTransactionId = "12e89f0029ea" + Date.now();
+    const OrderId="ORDIDTST"+ Date.now();
     console.log("merchantTransactionId============",merchantTransactionId);
     const object= {
       customer_details: {
@@ -879,9 +880,11 @@ console.log("uuid==============",uuid);
         customer_email: 'lcharu071@gmail.com',
         customer_phone: '8115199076'
       },
-      order_id: "ORDIDTST"+ Date.now(),
+      order_id: OrderId,
       order_meta: {
         notify_url: "https://webhook.site/0578a7fd-a0c0-4d47-956c-d02a061e36d3",
+        redirect_url:`http://localhost:8000//skyTrails/api/transaction/paymentSuccessPhonePe?merchantTransactionId=${OrderId}`,
+        return_url:`http://localhost:8000/skyTrails/api/transaction/paymentFailurePhonePe?merchantTransactionId=${OrderId}`
     },
     order_expiry_time:newDate,
       order_amount: 10,
@@ -907,10 +910,11 @@ console.log("uuid==============",uuid);
       const objectData = {
         // userId: isUserExist._id,
         amount: object.order_amount,
-        paymentId: data.cf_order_id,
-        orderId:data.order_id,
+        paymentId: data.order_id,
+        orderId:data.cf_order_id,
         signature:data.customer_details.customer_id,
-        bookingType: object.order_currency,
+        bookingType: bookingType,
+        // object.order_currency,
       };
       // const createData = await createUsertransaction(object);
       console.log("objectData=======>>>>>>>>>>>========",objectData)
@@ -943,7 +947,7 @@ exports.checkout=async(req,res,next)=>{
   }
 }
 
-exports.easebussPayment = async (req, res, next) => {
+exports.CCEVENUEPayment = async (req, res, next) => {
   try {
     const {
       firstname,
