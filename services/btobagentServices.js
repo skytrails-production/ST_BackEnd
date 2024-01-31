@@ -36,7 +36,7 @@ const brbuserServices = {
 
     paginatebrbuserSearch: async (body) => {
         // brbuserType: { $ne: [brbuserType.ADMIN,brbuserType.SUBADMIN] }
-        let query = { approveStatus:approveStatus.PENDING }
+        let query = { approveStatus:approveStatus.PENDING,is_active:0 }
         const { page, limit, search } = body;
         if (search) {
             query.$or = [

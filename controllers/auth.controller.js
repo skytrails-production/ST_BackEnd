@@ -423,7 +423,7 @@ exports.approveAgent = async (req, res, next) => {
     }
     let updateResult = await updatebrbuser(
       { _id: iUserExist._id },
-      { approveStatus: approveStatus, isApproved: true, reason: reason }
+      { approveStatus: approveStatus, isApproved: true,is_active:1, reason: reason }
     );
     if (approveStatus === approvestatus.APPROVED) {
       return res
@@ -1670,6 +1670,7 @@ exports.createAgent = async (req, res, next) => {
         agency_name:agency_name
       },
       approveStatus: "APPROVED",
+      isApproved:true,
       is_active: 1,
     };
 
@@ -1684,14 +1685,12 @@ exports.createAgent = async (req, res, next) => {
 
     // Create the agent and handle the unique index constraint
     const result = await b2bUser.create(object);
-
     // Send welcome message
     const message = {
       email: email,
       password: password,
     };
-    console.log("message========",message)
-    await sendSMS.sendSMSAgents(mobile_number, message);
+    await sendSMS.sendSMSAgents(mobile_number, email);
     const msg = `Welcome to TheSkyTrails, Admin added you as an agent. Please use the following credentials to login and fill in the mandatory form:\nEmail: ${email}, and Password: ${password} .click here: ${process.env.AGENT_URL}`;
     // await whatsappAPIUrl.sendWhatsAppMessage(mobile_number, msg);
     await commonFunction.sendAgent(email, password);

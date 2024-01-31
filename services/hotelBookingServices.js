@@ -171,7 +171,6 @@ const hotelBookingServicess = {
             sort: { createdAt: -1 },
         };
         const result= await userHotelBookingModel.aggregatePaginate(aggregate, options);
-        console.log("result===========",result);
         return result;
 
     },

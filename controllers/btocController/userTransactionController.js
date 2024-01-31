@@ -5,10 +5,10 @@ const crypto = require("crypto");
 const axios = require("axios");
 const merchant_id = process.env.PHONE_PAY_MERCHANT_ID;
 const salt_key = process.env.PHONE_PAY_SALT_KEY;
-const paymentStatus=require("../../enums/paymentStatus")
+const paymentStatus = require("../../enums/paymentStatus");
 const { URLSearchParams } = require("url");
 const Razorpay = require("razorpay");
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 const uuid = uuidv4();
 
 const {
@@ -408,13 +408,11 @@ exports.makePhonePayPayment1 = async (req, res, next) => {
     try {
       const { data } = await axios.request(options);
       console.log(data);
-      res
-        .status(statusCode.OK)
-        .send({
-          statusCode: statusCode.OK,
-          responseMessage: responseMessage.PAYMENT_INTIATE,
-          result: data,
-        });
+      res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.PAYMENT_INTIATE,
+        result: data,
+      });
     } catch (error) {
       console.error("error axios:===========>>>>>>>>>>", error);
     }
@@ -437,7 +435,7 @@ exports.easebussPayment = async (req, res, next) => {
       productinfo,
       bookingType,
       surl,
-      furl
+      furl,
     } = req.body;
 
     const isUserExist = await findUser({
@@ -485,15 +483,15 @@ exports.easebussPayment = async (req, res, next) => {
     try {
       const { data } = await axios.request(options);
       console.log(data);
-      const result={
-        access:data.data,
+      const result = {
+        access: data.data,
         key: process.env.EASEBUZZ_KEY,
-        env:process.env.EASEBUZZ_ENV
-      }
+        env: process.env.EASEBUZZ_ENV,
+      };
       const env = config.env;
       // https://pay.easebuzz.in/
       const redirectURL = `${env}/v2/pay/${data.data}`;
-      console.log("redirectURL=========",redirectURL)
+      console.log("redirectURL=========", redirectURL);
       const object = {
         userId: isUserExist._id,
         amount: amount,
@@ -501,13 +499,11 @@ exports.easebussPayment = async (req, res, next) => {
         bookingType: bookingType,
       };
       const createData = await createUsertransaction(object);
-      res
-        .status(statusCode.OK)
-        .send({
-          statusCode: statusCode.OK,
-          responseMessage: responseMessage.PAYMENT_INTIATE,
-          result: result,
-        });
+      res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.PAYMENT_INTIATE,
+        result: result,
+      });
     } catch (error) {
       console.error("error axios:===========>>>>>>>>>>", error);
     }
@@ -526,19 +522,14 @@ exports.easebussPayment = async (req, res, next) => {
 // }
 exports.refundApi = async (req, res, next) => {
   try {
-    const {refund_amount,txnId} = req.body;
-    console.log(refund_amount,txnId,"body data");
-    const merchantId="M" + Date.now();
-    const hashComponents = [
-      config.key,
-      merchantId,
-      txnId,
-      refund_amount
-    ];
+    const { refund_amount, txnId } = req.body;
+    console.log(refund_amount, txnId, "body data");
+    const merchantId = "M" + Date.now();
+    const hashComponents = [config.key, merchantId, txnId, refund_amount];
     const hashString = hashComponents.join("|");
     const inputString = `${hashString}|${config.salt}`;
     const sha512Hash = generateSHA512Hash(inputString);
-    console.log(sha512Hash,"hash")
+    console.log(sha512Hash, "hash");
     const options = {
       method: "POST",
       url: "https://dashboard.easebuzz.in/transaction/v2/refund",
@@ -603,7 +594,7 @@ exports.makePhonePayPayment = async (req, res, next) => {
     const string = payloadMain + "/pg/v1/pay" + process.env.PHONE_PAY_SALT_KEY;
     const sha256 = crypto.createHash("sha256").update(string).digest("hex");
     const checksum = sha256 + "###" + process.env.PHONE_PAY_INDEX;
-    console.log("checksum==",checksum)
+    console.log("checksum==", checksum);
     const options = {
       method: "post",
       url: "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay",
@@ -626,14 +617,12 @@ exports.makePhonePayPayment = async (req, res, next) => {
         bookingType: bookingType,
       };
       const createData = await createUsertransaction(object);
-      console.log("createData========",createData)
-      return res
-        .status(statusCode.OK)
-        .send({
-          statusCode: statusCode.OK,
-          responseMessage: responseMessage.PAYMENT_INTIATE,
-          result: data.data.instrumentResponse.redirectInfo.url,
-        });
+      console.log("createData========", createData);
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.PAYMENT_INTIATE,
+        result: data.data.instrumentResponse.redirectInfo.url,
+      });
     } catch (error) {
       console.error("error axios:===========>>>>>>>>>>", error);
     }
@@ -642,30 +631,33 @@ exports.makePhonePayPayment = async (req, res, next) => {
   }
 };
 
-exports.checkPaymentStatus=async(req,res,next)=>{
+exports.checkPaymentStatus = async (req, res, next) => {
   try {
-    const {merchanttransactionId}=req.query
+    const { merchanttransactionId } = req.query;
     // SHA256(“/pg/v1/status/{merchantId}/{merchantTransactionId}” + saltKey) + “###” + saltIndex
-    const string ="/pg/v1/status/"+process.env.PHONE_PAY_MERCHANT_ID+"/"+merchanttransactionId+process.env.PHONE_PAY_SALT_KEY;
+    const string =
+      "/pg/v1/status/" +
+      process.env.PHONE_PAY_MERCHANT_ID +
+      "/" +
+      merchanttransactionId +
+      process.env.PHONE_PAY_SALT_KEY;
     const sha256 = crypto.createHash("sha256").update(string).digest("hex");
     const checksum = sha256 + "###" + process.env.PHONE_PAY_INDEX;
     const options = {
-      method: 'get',
+      method: "get",
       url: `https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/status/${process.env.PHONE_PAY_MERCHANT_ID}/${merchanttransactionId}`,
       headers: {
-            accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-VERIFY': checksum,
-            'X-MERCHANT-ID': process.env.PHONE_PAY_MERCHANT_ID,
-            },
+        accept: "application/json",
+        "Content-Type": "application/json",
+        "X-VERIFY": checksum,
+        "X-MERCHANT-ID": process.env.PHONE_PAY_MERCHANT_ID,
+      },
     };
     axios
       .request(options)
-          .then(function (response) {
-          console.log(response.data);
-          return res
-        .status(statusCode.OK)
-        .send({
+      .then(function (response) {
+        console.log(response.data);
+        return res.status(statusCode.OK).send({
           statusCode: statusCode.OK,
           responseMessage: responseMessage.OK,
           result: checksum,
@@ -673,30 +665,33 @@ exports.checkPaymentStatus=async(req,res,next)=>{
       })
       .catch(function (error) {
         console.error(error);
-      })
+      });
   } catch (error) {
-    console.log("error while trying to status",error);
+    console.log("error while trying to status", error);
     return next(error);
   }
-}
+};
 
 //success response********************************************************
 exports.paymentSuccess = async (req, res, next) => {
   try {
     // console.log("successVerifyApi==",successVerifyApi)
-    const {merchantTransactionId,transactionId}=req.query;
-    const isTransactionExist=await findUsertransaction({paymentId:merchantTransactionId});
-     console.log("isTransactionExist==",isTransactionExist)
-      if(isTransactionExist){
-      console.log("isTransactionExist=========",isTransactionExist);
-      const result=await updateUsertransaction({_id:isTransactionExist._id},{transactionStatus:paymentStatus.SUCCESS})
-      return res
-        .status(statusCode.OK)
-        .send({
-          statusCode: statusCode.OK,
-          responseMessage: responseMessage.PAYMENT_SUCCESS,
-          result:result
-        });
+    const { merchantTransactionId, transactionId } = req.query;
+    const isTransactionExist = await findUsertransaction({
+      paymentId: merchantTransactionId,
+    });
+    console.log("isTransactionExist==", isTransactionExist);
+    if (isTransactionExist) {
+      console.log("isTransactionExist=========", isTransactionExist);
+      const result = await updateUsertransaction(
+        { _id: isTransactionExist._id },
+        { transactionStatus: paymentStatus.SUCCESS }
+      );
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.PAYMENT_SUCCESS,
+        result: result,
+      });
     }
   } catch (error) {
     console.log("error ==========", error);
@@ -705,46 +700,51 @@ exports.paymentSuccess = async (req, res, next) => {
 };
 
 //success response********************************************************
-exports.paymentFailure=async(req,res,next)=>{
+exports.paymentFailure = async (req, res, next) => {
   try {
-    const {merchantTransactionId,transactionId}=req.query;
-    const isTransactionExist=await findUsertransaction({paymentId:merchantTransactionId});
-     console.log("successVerifyApi==",merchantTransactionId)
-     console.log("isTransactionExist==",isTransactionExist)
-    if(isTransactionExist){
-      const result=await updateUsertransaction({_id:isTransactionExist._id},{transactionStatus:paymentStatus.FAILED})
-      return res
-        .status(statusCode.OK)
-        .send({
-          statusCode: statusCode.OK,
-          responseMessage: responseMessage.PAYMENT_FAILURE,
-        });
+    const { merchantTransactionId, transactionId } = req.query;
+    const isTransactionExist = await findUsertransaction({
+      paymentId: merchantTransactionId,
+    });
+    console.log("successVerifyApi==", merchantTransactionId);
+    console.log("isTransactionExist==", isTransactionExist);
+    if (isTransactionExist) {
+      const result = await updateUsertransaction(
+        { _id: isTransactionExist._id },
+        { transactionStatus: paymentStatus.FAILED }
+      );
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.PAYMENT_FAILURE,
+      });
     }
   } catch (error) {
-    console.log("error on failure operation",error);
-    return next(error)
+    console.log("error on failure operation", error);
+    return next(error);
   }
-}
-
+};
 
 //PHone pay payemnet status ****************************************************
 //success response********************************************************
 exports.paymentSuccessPhonePe = async (req, res, next) => {
   try {
     // console.log("successVerifyApi==",successVerifyApi)
-    const {merchantTransactionId,transactionId}=req.query;
-    const isTransactionExist=await findUsertransaction({paymentId:merchantTransactionId});
-     console.log("isTransactionExist==",isTransactionExist)
-      if(isTransactionExist){
-      console.log("isTransactionExist=========",isTransactionExist);
-      const result=await updateUsertransaction({_id:isTransactionExist._id},{transactionStatus:paymentStatus.SUCCESS})
+    const { merchantTransactionId, transactionId } = req.query;
+    const isTransactionExist = await findUsertransaction({
+      paymentId: merchantTransactionId,
+    });
+    console.log("isTransactionExist==", isTransactionExist);
+    if (isTransactionExist) {
+      console.log("isTransactionExist=========", isTransactionExist);
+      const result = await updateUsertransaction(
+        { _id: isTransactionExist._id },
+        { transactionStatus: paymentStatus.SUCCESS }
+      );
 
-      return res
-        .status(statusCode.OK)
-        .send({
-          statusCode: statusCode.OK,
-          responseMessage: responseMessage.PAYMENT_SUCCESS,
-        });
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.PAYMENT_SUCCESS,
+      });
     }
   } catch (error) {
     console.log("error ==========", error);
@@ -753,26 +753,29 @@ exports.paymentSuccessPhonePe = async (req, res, next) => {
 };
 
 //success response********************************************************
-exports.paymentFailurePhonePe =async(req,res,next)=>{
+exports.paymentFailurePhonePe = async (req, res, next) => {
   try {
-    const {merchantTransactionId,transactionId}=req.query;
-    const isTransactionExist=await findUsertransaction({paymentId:merchantTransactionId});
-     console.log("successVerifyApi==",merchantTransactionId)
-     console.log("isTransactionExist==",isTransactionExist)
-    if(isTransactionExist){
-      const result=await updateUsertransaction({_id:isTransactionExist._id},{transactionStatus:paymentStatus.FAILED})
-      return res
-        .status(statusCode.OK)
-        .send({
-          statusCode: statusCode.OK,
-          responseMessage: responseMessage.PAYMENT_FAILURE,
-        });
+    const { merchantTransactionId, transactionId } = req.query;
+    const isTransactionExist = await findUsertransaction({
+      paymentId: merchantTransactionId,
+    });
+    console.log("successVerifyApi==", merchantTransactionId);
+    console.log("isTransactionExist==", isTransactionExist);
+    if (isTransactionExist) {
+      const result = await updateUsertransaction(
+        { _id: isTransactionExist._id },
+        { transactionStatus: paymentStatus.FAILED }
+      );
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.PAYMENT_FAILURE,
+      });
     }
   } catch (error) {
-    console.log("error on failure operation",error);
-    return next(error)
+    console.log("error on failure operation", error);
+    return next(error);
   }
-}
+};
 //hash geneerate function *************************************************
 function generateSHA512Hash(input) {
   const hash = crypto.createHash("sha512");
@@ -814,8 +817,6 @@ function generateSHA512Hash(input) {
 //   .then(({ data }) => console.log(data))
 //   .catch(err => console.error(err));
 
-
-
 // const object= {
 //   customer_details: {
 //     customer_id: '9437e098-b2',
@@ -848,15 +849,14 @@ function generateSHA512Hash(input) {
 //     console.error(error);
 //   });
 
-
-  //handle transaction details into db using cashfree ****************************************
+//handle transaction details into db using cashfree ****************************************
 exports.makeCashfreePayment = async (req, res, next) => {
   try {
     const { firstname, phone, amount, redirectUrl, bookingType } = req.body;
-    // const isUserExist = await findUser({
-    //   _id: req.userId,
-    //   status: status.ACTIVE,
-    // });
+    const isUserExist = await findUser({
+      _id: req.userId,
+      status: status.ACTIVE,
+    });
     // if (!isUserExist) {
     //   return res.status(statusCode.NotFound).send({
     //     statusCode: statusCode.NotFound,
@@ -864,42 +864,40 @@ exports.makeCashfreePayment = async (req, res, next) => {
     //   });
     // }
     const currentDate = new Date();
-const newDate = new Date(currentDate.getTime() + 16 * 60000); // Adding 16 minutes in milliseconds (1 minute = 60,000 milliseconds)
+    const newDate = new Date(currentDate.getTime() + 16 * 60000); // Adding 16 minutes in milliseconds (1 minute = 60,000 milliseconds)
 
-const uuid = uuidv4();
-console.log("uuid==============",uuid);
-    const client_secret=process.env.CASHFREE_API_KEY
-    const clientId=process.env.CASHFREE_API_ID
-    const payUrl=process.env.CASHFREE_URL
+    const uuid = uuidv4();
+    const client_secret = process.env.CASHFREE_API_KEY;
+    const clientId = process.env.CASHFREE_API_ID;
+    const payUrl = process.env.CASHFREE_URL;
     const merchantTransactionId = "12e89f0029ea" + Date.now();
-    const OrderId="ORDIDTST"+ Date.now();
-    console.log("merchantTransactionId============",merchantTransactionId);
-    const object= {
+    const OrderId = "ORDIDTST" + Date.now();
+    const object = {
       customer_details: {
         customer_id: merchantTransactionId,
-        customer_email: 'lcharu071@gmail.com',
-        customer_phone: '8115199076'
+        customer_email: "lcharu071@gmail.com",
+        customer_phone: "8115199076",
       },
       order_id: OrderId,
       order_meta: {
         notify_url: "https://webhook.site/0578a7fd-a0c0-4d47-956c-d02a061e36d3",
-        redirect_url:`http://localhost:8000//skyTrails/api/transaction/paymentSuccessPhonePe?merchantTransactionId=${OrderId}`,
-        return_url:`http://localhost:8000/skyTrails/api/transaction/paymentFailurePhonePe?merchantTransactionId=${OrderId}`
-    },
-    order_expiry_time:newDate,
+        // return_url: `http://localhost:8000/skyTrails/api/transaction/checkCashfreePaymentStatus?${OrderId}`,
+        // return_url: `http://localhost:8000/skyTrails/api/transaction/paymentSuccessPhonePe?merchantTransactionId=${OrderId}`,
+      },
+      order_expiry_time: newDate,
       order_amount: 10,
-      order_currency: 'INR'
-    }
-    console.log("object==>>>>>",object)
+      order_currency: "INR",
+    };
+    console.log("object==>>>>>", object);
     const options = {
       method: "post",
       url: `https://sandbox.cashfree.com/pg/orders `,
       headers: {
-        accept: 'application/json',
-        'x-api-version': '2022-01-01',
-        'content-type': 'application/json',
-        'x-client-id': clientId,
-        'x-client-secret': client_secret
+        accept: "application/json",
+        "x-api-version": "2022-09-01",
+        "content-type": "application/json",
+        "x-client-id": clientId,
+        "x-client-secret": client_secret,
       },
       data: object,
     };
@@ -911,41 +909,81 @@ console.log("uuid==============",uuid);
         // userId: isUserExist._id,
         amount: object.order_amount,
         paymentId: data.order_id,
-        orderId:data.cf_order_id,
-        signature:data.customer_details.customer_id,
+        orderId: data.cf_order_id,
+        signature: data.customer_details.customer_id,
         bookingType: bookingType,
         // object.order_currency,
       };
-      // const createData = await createUsertransaction(object);
-      console.log("objectData=======>>>>>>>>>>>========",objectData)
-      return res
-        .status(statusCode.OK)
-        .send({
-          statusCode: statusCode.OK,
-          responseMessage: responseMessage.PAYMENT_INTIATE,
-          result: data,
-        });
+      const createData = await createUsertransaction(objectData);
+      console.log("objectData=======>>>>>>>>>>>========", objectData);
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.PAYMENT_INTIATE,
+        result: data,
+      });
     } catch (error) {
       console.error("error axios:===========>>>>>>>>>>", error);
-      console.log("error===================",error.message);
+      console.log("error===================", error.message);
     }
   } catch (error) {
     console.log("error while make payment", error);
-    return next(error)
+    return next(error);
   }
 };
 
-
-exports.checkout=async(req,res,next)=>{
+exports.checkCashfreePaymentStatus=async(req,res,next)=>{
+  
   try {
-    const option={
+    const client_secret = process.env.CASHFREE_API_KEY;
+    const clientId = process.env.CASHFREE_API_ID;
+    const orderId=req.params.orderid;
+    console.log("req-==============",req.params.orderid)
+    // const isTransactionExist = await findUsertransaction({
+    //   paymentId: merchantTransactionId,
+    // });
+    // console.log("isTransactionExist==", isTransactionExist);
+    // if (isTransactionExist) {
+    //   console.log("isTransactionExist=========", isTransactionExist);
+    //   const result = await updateUsertransaction(
+    //     { _id: isTransactionExist._id },
+    //     { transactionStatus: paymentStatus.SUCCESS }
+    //   );
 
-    }
+    //   return res.status(statusCode.OK).send({
+    //     statusCode: statusCode.OK,
+    //     responseMessage: responseMessage.PAYMENT_SUCCESS,
+    //   });
+    // }
+    const options = {
+      method: "get",
+      url: `https://sandbox.cashfree.com/pg/orders/${req.params.orderid}`,
+      headers: {
+        accept: "application/json",
+        "x-api-version": "2022-09-01",
+        "content-type": "application/json",
+        "x-client-id": clientId,
+        "x-client-secret": client_secret,
+      },
+    };
+    console.log("options=====",options);
+    const { data } = await axios.request(options);
+
+    console.log("data==>>>>>>>>>>>>>>>>>>>", data.data.message);
+    console.log("=======================",data.data.codey);
   } catch (error) {
-    console.log("error while make payment", error);
-    return next(error)
+    console.log("error while trying to get status",error);
+    return next(error);
   }
 }
+
+exports.checkout = async (req, res, next) => {
+  try {
+    const option = {};
+  } catch (error) {
+    console.log("error while make payment", error);
+    return next(error);
+  }
+};
 
 exports.CCEVENUEPayment = async (req, res, next) => {
   try {
@@ -957,7 +995,7 @@ exports.CCEVENUEPayment = async (req, res, next) => {
       productinfo,
       bookingType,
       surl,
-      furl
+      furl,
     } = req.body;
 
     const isUserExist = await findUser({
@@ -972,9 +1010,8 @@ exports.CCEVENUEPayment = async (req, res, next) => {
     // }
     const txnId = "T" + Date.now();
     try {
-     
       const redirectURL = `${env}/v2/pay/${data.data}`;
-      console.log("redirectURL=========",redirectURL)
+      console.log("redirectURL=========", redirectURL);
       const object = {
         userId: isUserExist._id,
         amount: amount,
@@ -982,13 +1019,11 @@ exports.CCEVENUEPayment = async (req, res, next) => {
         bookingType: bookingType,
       };
       const createData = await createUsertransaction(object);
-      res
-        .status(statusCode.OK)
-        .send({
-          statusCode: statusCode.OK,
-          responseMessage: responseMessage.PAYMENT_INTIATE,
-          result: result,
-        });
+      res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.PAYMENT_INTIATE,
+        result: result,
+      });
     } catch (error) {
       console.error("error axios:===========>>>>>>>>>>", error);
     }

@@ -226,7 +226,7 @@ const schemas = {
       .string()
       .valid(...Object.values(authType))
       .required(),
-    dynamicProperties: joi.object().optional(),
+    dynamicProperties: joi.string().allow("").optional(),
   }),
   updateSubAdmin: joi.object().keys({
     subAdminId: joi.string().required(),

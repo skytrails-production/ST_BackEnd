@@ -56,6 +56,7 @@ exports.packageBooking = async (req, res, next) => {
       _id: req.userId,
       status: status.ACTIVE,
     });
+    console.log("isUserExist============",isUserExist);
     if (!isUserExist) {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,
@@ -77,9 +78,9 @@ exports.packageBooking = async (req, res, next) => {
     };
     const result = await createPackage(object);
     const message = `Hello ${fullName} ,Thank you for enquiry of your package stay with TheSkytrails. Please click on url to see details:. Or You Can login theskytrails.com/login`;
-    // await sendSMS.sendSMSBusBooking(result.contactNumber.phone, userName);
+    await sendSMS.sendSMSPackageEnquiry(result.contactNumber.phone,isUserExist.username);
     // await whatsApi.sendWhatsAppMessage(result.contactNumber.phone, message);
-    // await commonFunction.packageBookingConfirmationMail(result);
+    await commonFunction.packageBookingConfirmationMail(result);
 
     if (result) {
       return res.status(statusCode.OK).send({

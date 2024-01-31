@@ -123,6 +123,10 @@ const usersSchema = new Schema({
       _id: false,
       default: [],
     },
+    deviceToken:{
+      type: String,
+      default: "",
+    },
     balance: {
       type: Number,
     },
