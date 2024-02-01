@@ -33,8 +33,8 @@ exports.searchCityData = async (req, res) => {
       const bCountryCode = b.CountryCode.trim().toUpperCase();
       const userCountryCode = userLocation.country.trim().toUpperCase();
 
-      const aIsMatch = aCountryCode === userCountryCode||"IN";
-      const bIsMatch = bCountryCode === userCountryCode||"IN";
+      const aIsMatch = aCountryCode === userCountryCode;
+      const bIsMatch = bCountryCode === userCountryCode;
 
       // Sort by matching country code first, then by other criteria
       if (aIsMatch && !bIsMatch) return -1;
