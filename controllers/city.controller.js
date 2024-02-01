@@ -9,15 +9,43 @@ const {
   cityBusProductionData
 } = require("../model/city.model");
 
+const requestIp = require('request-ip');
+const geoip = require('geoip-lite');
+
 function escapeRegex(text) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 }
 exports.searchCityData = async (req, res) => {
   try {
+
+    const userIP = requestIp.getClientIp(req);
+
+    const userLocation = geoip.lookup(userIP);
+    // console.log("location", userLocation)
+
     var regex = new RegExp(escapeRegex(req.query.keyword), "gi");
     const response = await cityData.find({ name: regex });
+
+     // Sort the search results based on matching country code
+     const sortedResponse = response.sort((a, b) => {
+      // Replace 'CountryCode' with the actual property in your cityData model representing country code
+      const aCountryCode = a.CountryCode.trim().toUpperCase();
+      const bCountryCode = b.CountryCode.trim().toUpperCase();
+      const userCountryCode = userLocation.country.trim().toUpperCase();
+
+      const aIsMatch = aCountryCode === userCountryCode||"IN";
+      const bIsMatch = bCountryCode === userCountryCode||"IN";
+
+      // Sort by matching country code first, then by other criteria
+      if (aIsMatch && !bIsMatch) return -1;
+      if (!aIsMatch && bIsMatch) return 1;
+      return 0;
+    });
+
+    
+
     const msg = "data searched successfully";
-    actionCompleteResponse(res, response, msg);
+    actionCompleteResponse(res, sortedResponse, msg);
   } catch (error) {
     sendActionFailedResponse(res, {}, error.message);
   }

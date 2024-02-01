@@ -133,6 +133,7 @@ require("./routes/faqRoutes")(app);
 //Amadeus Api
 
 require("./routes/amadeus.routes")(app);
+require("./routes/ssdc.routes")(app);
 
 //Require forum Routes*************
 const forumQueRoutes = require("./routes/forumRoutes/forumQueRoutes");

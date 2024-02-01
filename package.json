@@ -29,6 +29,7 @@
     "fcm-node": "^1.6.1",
     "firebase-admin": "^11.11.1",
     "fs": "^0.0.1-security",
+    "geoip-lite": "^1.4.9",
     "helmet": "^6.0.1",
     "joi": "^17.7.0",
     "joi-objectid": "^4.0.2",
@@ -46,6 +47,7 @@
     "puppeteer": "^21.5.2",
     "qrcode-terminal": "^0.12.0",
     "razorpay": "^2.9.2",
+    "request-ip": "^3.3.0",
     "twilio": "^3.84.1",
     "websocket": "^1.0.34",
     "whatsapp-web.js": "^1.22.1"
