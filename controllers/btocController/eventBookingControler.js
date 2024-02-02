@@ -2,7 +2,11 @@ const responseMessage = require("../../utilities/responses");
 const statusCode = require("../../utilities/responceCode");
 const status = require("../../enums/status");
 const crypto = require("crypto");
-const paymentStatus=require("../../enums/paymentStatus")
+const paymentStatus=require("../../enums/paymentStatus");
+const userType = require("../../enums/userType");
+const sendSMS = require("../../utilities/sendSms");
+const commonFunction = require("../../utilities/commonFunctions");
+const whatsappAPIUrl = require("../../utilities/whatsApi");
 //*****************************************SERVICES************************************************/
 const { eventServices } = require("../../services/eventServices");
 const {
@@ -118,6 +122,8 @@ exports.eventBooking = async (req, res, next) => {
       }
       const object = {
         userId: isUserExist._id,
+        email:isUserExist.email,
+        contactNo:{mobile_number:isUserExist.phone.mobile_number},
         noOfMember: noOfMember,
         adults: adults,
         child: child,
@@ -132,7 +138,13 @@ exports.eventBooking = async (req, res, next) => {
         const ticketNumber = await generateUniqueRandomString(15);
         object.tickets.push(ticketNumber)
       }
+      const mobileNo=isUserExist.phone.country_code+isUserExist.phone.mobile_number
       const makeBooking = await createBookingEvent(object);
+      const message = `Hello ${fullName} ,Thank you for enquiry of your package stay with TheSkytrails. Please click on url to see details:. Or You Can login theskytrails.com/login`;
+      await sendSMS.sendSMSPackageEnquiry(mobileNo,isUserExist.username);
+      // await whatsApi.sendWhatsAppMessage(result.contactNumber.phone, message);
+      // await commonFunction.packageBookingConfirmationMail(populatedResult);
+  
       await updateEvent({_id:eventId},{$inc:{saleCount:+noOfMember}});
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
@@ -162,6 +174,11 @@ exports.eventBooking = async (req, res, next) => {
       tickets: [],
     };
     const makeBooking = await createBookingEvent(object);
+    const mobileNo=isUserExist.phone.country_code+isUserExist.phone.mobile_number
+      const message = `Hello ${fullName} ,Thank you for enquiry of your package stay with TheSkytrails. Please click on url to see details:. Or You Can login theskytrails.com/login`;
+      await sendSMS.sendSMSPackageEnquiry(mobileNo,isUserExist.username);
+      // await whatsApi.sendWhatsAppMessage(result.contactNumber.phone, message);
+      // await commonFunction.packageBookingConfirmationMail(populatedResult);
     await updateEvent({_id:eventId},{$inc:{saleCount:+noOfMember}})
     for(var i=0;i<noOfMember;i++){
       const ticketNumber = await generateUniqueRandomString(15);

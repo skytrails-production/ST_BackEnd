@@ -30,6 +30,7 @@ const {
 const {
   createPackage,
   findPackage,
+  findPackagePopulate,
   getUserPackage,
   deletePackage,
   updatePackage,
@@ -77,10 +78,13 @@ exports.packageBooking = async (req, res, next) => {
       noOfPeople:noOfPeople
     };
     const result = await createPackage(object);
+    console.log("result============",result);
+    const populatedResult=await findPackagePopulate({_id:result._id});
+    console.log("populatedResult==============",populatedResult);
     const message = `Hello ${fullName} ,Thank you for enquiry of your package stay with TheSkytrails. Please click on url to see details:. Or You Can login theskytrails.com/login`;
     await sendSMS.sendSMSPackageEnquiry(result.contactNumber.phone,isUserExist.username);
     // await whatsApi.sendWhatsAppMessage(result.contactNumber.phone, message);
-    await commonFunction.packageBookingConfirmationMail(result);
+    await commonFunction.packageBookingConfirmationMail(populatedResult);
 
     if (result) {
       return res.status(statusCode.OK).send({
@@ -142,5 +146,13 @@ exports.getAllPackageEnquiry=async(req,res,next)=>{
   } catch (error) {
     console.log("Error while trying to get all packages",error);
     return next(error)
+  }
+}
+
+exports.getPackageEnquiry=async(req,res,next)=>{
+  try {
+    
+  } catch (error) {
+    
   }
 }

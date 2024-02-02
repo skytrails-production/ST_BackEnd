@@ -70,7 +70,8 @@ module.exports = function (app) {
     app.post('/skyTrails/api/user/sendTicketPDF',[authJwt.verifcationToken],SchemaValidator(schemas.sendPDFSchema),flightBookingController.sendPDF);
     app.post('/skyTrails/api/user/userBookingFailed',[authJwt.verifcationToken],SchemaValidator(schemas.bookingFailed),userBookingFailed.bookingFailedUser)
     app.get('/skyTrails/api/user/getWebBanner',webAdvertismentController.getWebAdvertisement);
-    app.get('/skyTrails/flight/bookings/:bookingId',flightBookingController.getFlightBookingById)
-    app.get('/skyTrails/hotel/bookings/:bookingId',hotelBookingController.getUserHotelBookingById)
-    app.get('/skyTrails/bus/bookings/:bookingId',busBookingController.getUserBusBookingById)
+    app.get('/skyTrails/flight/bookings/:bookingId',flightBookingController.getFlightBookingById);
+    app.get('/skyTrails/hotel/bookings/:bookingId',hotelBookingController.getUserHotelBookingById);
+    app.get('/skyTrails/bus/bookings/:bookingId',busBookingController.getUserBusBookingById);
+    app.post('/skyTrails/api/notification/sendNotification',webAdvertismentController.sendNotification)
 }

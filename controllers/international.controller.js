@@ -684,7 +684,7 @@ exports.internationalgetAdminAll = async (req, res) => {
       .pagintion(pagintionData);
 
     let pakage = await apiSearch.query;
-    // console.log(pakage.length,"package")
+    console.log(pakage.length,"package")
     if (pakage.length === 0) {
       // console.log(req.query)
       // pakage=await internationl.find({ 'destination.addMore': req.query.keyword }).exec();
@@ -751,6 +751,7 @@ exports.internationalgetAdminAll = async (req, res) => {
       pages: pages,
       pakage: pakage,
     };
+    // console.log("pakage============",pakage.length);
     // const pakage = await international.find();
     msg = "successfully";
     actionCompleteResponse(res, data, msg);

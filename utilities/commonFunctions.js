@@ -9,6 +9,7 @@ const nodemailer = require("nodemailer");
 const { Client } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
 const config = require("../config/auth.config.js");
+const moment=require('moment')
 const {
   flightMail,
   busMail,
@@ -4625,6 +4626,7 @@ module.exports = {
 
   packageBookingConfirmationMail: async (to) => {
     try {
+      console.log("to==================",to)
       const currentDate = new Date(to.createdAt);
       const options = {
         weekday: "short",
@@ -4633,7 +4635,7 @@ module.exports = {
         year: "numeric",
       };
       const formattedDate = currentDate.toLocaleDateString("en-US", options);
-
+console.log("formattedDate==========>>>>",formattedDate)
       function formatDate(dateString, format) {
         const date = new Date(dateString);
         const options = {
@@ -4646,104 +4648,310 @@ module.exports = {
         };
         return date.toLocaleString("en-US", options);
       }
-
+      const  getDepartureTime=moment(`${to.departureDate}`);
+      console.log("getDepartureTime=========",getDepartureTime);
       const boardingTimeFormatted = formatDate(
         to.departureTime,
         "DD MMMM YYYY hh:mm A"
       );
+      console.log("boardingTimeFormatted===============>>>>",boardingTimeFormatted);
       const journeyDateFormatted = formatDate(
         to.departureTime,
         "ddd, DD MMM YYYY"
       );
+      console.log("journeyDateFormatted==================>>>",journeyDateFormatted);
       const depTimeFormatted = formatDate(to.departureTime, "hh:mm A");
-
+console.log("depTimeFormatted==============",depTimeFormatted);
       const name = `${to.fullName}`;
-      const htmlContent = `<!DOCTYPE html>
-      <html lang="en">
+      const htmlContent = `
+      <!DOCTYPE html>
       
+      <html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
       <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700;900&family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
-        <style>
+      <title></title>
+      <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+      <meta content="width=device-width, initial-scale=1.0" name="viewport"/><!--[if mso]><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch><o:AllowPNG/></o:OfficeDocumentSettings></xml><![endif]--><!--[if !mso]><!-->
+      <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900" rel="stylesheet" type="text/css"/><!--<![endif]-->
+      <style>
+          * {
+            box-sizing: border-box;
+          }
+      
+          body {
+            margin: 0;
+            padding: 0;
+          }
+      
+          a[x-apple-data-detectors] {
+            color: inherit !important;
+            text-decoration: inherit !important;
+          }
+      
+          #MessageViewBody a {
+            color: inherit;
+            text-decoration: none;
+          }
+      
           p {
-            margin: 0 4px 0 0;
+            line-height: inherit
+          }
+      
+          .desktop_hide,
+          .desktop_hide table {
+            mso-hide: all;
+            display: none;
+            max-height: 0px;
+            overflow: hidden;
+          }
+      
+          .image_block img+div {
+            display: none;
+          }
+      
+          @media (max-width:620px) {
+            .social_block.desktop_hide .social-table {
+              display: inline-block !important;
+            }
+      
+            .mobile_hide {
+              display: none;
+            }
+      
+            .row-content {
+              width: 100% !important;
+            }
+      
+            .stack .column {
+              width: 100%;
+              display: block;
+            }
+      
+            .mobile_hide {
+              min-height: 0;
+              max-height: 0;
+              max-width: 0;
+              overflow: hidden;
+              font-size: 0px;
+            }
+      
+            .desktop_hide,
+            .desktop_hide table {
+              display: table !important;
+              max-height: none !important;
+            }
           }
         </style>
-        <title>Package Booking Confirmation</title>
       </head>
-      
-      <body style="margin: 0; padding: 0; font-size: 16px; font-family: Montserrat, sans-serif; line-height: 1.6;">
-      
-        <div style="background: #fff; overflow: hidden; padding: 10px; max-width: 800px; border: 2px solid #000; font-size: 12px; font-family: Montserrat, sans-serif; margin: 10px auto;">
-          <div>
-            <div style="justify-content: space-between; align-items: flex-start; display: flex; margin-top: 24px;">
-              <img src="https://travvolt.s3.amazonaws.com/ST-Main-LogoPdf.png" alt="logo" style="width: 25%; margin-top: -10px;" />
-              <div style="color: black; font-size: 24px; font-family: Montserrat; font-weight: 600; word-wrap: break-word;">
-                Package - Booking
-              </div>
-              <!-- Additional content if needed -->
-            </div>
-            <div style="margin-top: 15px;">
-              <b>Package Reservation</b> Please take a note of your reservation details. If you have any questions, feel free to contact us.
-            </div>
-            <!-- Additional content if needed -->
-      
-            <!-- Package Details -->
-            <div style="width: 100%; margin-top: 20px; border: 1px solid #D6D8E7;">
-              <!-- Add package details here -->
-              <p><strong>Package Name:to:{}</strong> Your Package Name</p>
-              <p><strong>Departure City:</strong> ${to.departureCity}</p>
-              <p><strong>Number of Adults:</strong> ${to.adults}</p>
-              <p><strong>Number of Children:</strong> ${to.child}</p>
-              <!-- Additional package details -->
-            </div>
-            <!-- End Package Details -->
-      
-            <!-- Journey Details -->
-            <div style="width: 100%; float: left; margin-top: 15px; border: 1px solid #D6D8E7;">
-              <div style="width: 100%; background: #004684; float: left; font-weight: bold; padding: 5px; padding-right: 0px; border-bottom: 1px solid #D6D8E7; color: #fff;">
-                <div style="width: 100%; float: left; margin-right: 0;">
-                  Journey Details
-                </div>
-              </div>
-              <div style="width: 100%; display: flex; justify-content: flex-start; gap: 35%; padding: 5px 0 1px 5px;">
-                <div style="display: flex; gap: 10px;">
-                  <div>
-                    <p>
-                      <strong>Departure Date:</strong>
-                    </p>
-                    <p>
-                      <strong>Departure Time:</strong>
-                    </p>
-                  </div>
-                  <div>
-                    <p>
-                      ${journeyDateFormatted}
-                    </p>
-                    <p>
-                      ${depTimeFormatted}
-                    </p>
-                  </div>
-                </div>
-                <!-- Additional journey details -->
-              </div>
-            </div>
-            <!-- End Journey Details -->
-      
-            <!-- Boarding Details -->
-            <!-- Add boarding details if needed -->
-            <!-- End Boarding Details -->
-      
-            <!-- Additional sections as needed -->
-      
-          </div>
-        </div>
-      
+      <body style="background-color: #ffffff; margin: 0; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
+      <table border="0" cellpadding="0" cellspacing="0" class="nl-container" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff;" width="100%">
+      <tbody>
+      <tr>
+      <td>
+      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #efeded;" width="100%">
+      <tbody>
+      <tr>
+      <td>
+      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #000000; color: #000000; width: 600px; margin: 0 auto;" width="600">
+      <tbody>
+      <tr>
+      <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="33.333333333333336%">
+      <table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+      <tr>
+      <td class="pad" style="padding-top:10px;width:100%;">
+      <div align="center" class="alignment" style="line-height:10px">
+      <div style="max-width: 200px;"><img src="images/64bdbeb7-5f8d-4682-8b46-2c34e9c02103.png" style="display: block; height: auto; border: 0; width: 100%;" width="200"/></div>
+      </div>
+      </td>
+      </tr>
+      </table>
+      </td>
+      <td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="66.66666666666667%">
+      <table border="0" cellpadding="10" cellspacing="0" class="social_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+      <tr>
+      <td class="pad">
+      <div align="right" class="alignment">
+      <table border="0" cellpadding="0" cellspacing="0" class="social-table" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; display: inline-block;" width="108px">
+      <tr>
+      <td style="padding:0 0 0 4px;"><a href="https://www.instagram.com/theskytrails" target="_blank"><img alt="Instagram" height="32" src="images/instagram2x.png" style="display: block; height: auto; border: 0;" title="instagram" width="32"/></a></td>
+      <td style="padding:0 0 0 4px;"><a href="https://www.facebook.com/theskytrailsofficials" target="_blank"><img alt="Facebook" height="32" src="images/facebook2x.png" style="display: block; height: auto; border: 0;" title="facebook" width="32"/></a></td>
+      <td style="padding:0 0 0 4px;"><a href="https://twitter.com/TheSkytrails" target="_blank"><img alt="Twitter" height="32" src="images/twitter2x.png" style="display: block; height: auto; border: 0;" title="twitter" width="32"/></a></td>
+      </tr>
+      </table>
+      </div>
+      </td>
+      </tr>
+      </table>
+      </td>
+      </tr>
+      </tbody>
+      </table>
+      </td>
+      </tr>
+      </tbody>
+      </table>
+      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #efeded;" width="100%">
+      <tbody>
+      <tr>
+      <td>
+      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 600px; margin: 0 auto;" width="600">
+      <tbody>
+      <tr>
+      <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+      <table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+      <tr>
+      <td class="pad" style="width:100%;">
+      <div align="center" class="alignment" style="line-height:10px">
+      <div style="max-width: 600px;"><img src="images/6fc76a40-1ed8-4ce6-9ee2-d99a3e9bbc2f.jpg" style="display: block; height: auto; border: 0; width: 100%;" width="600"/></div>
+      </div>
+      </td>
+      </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0" class="image_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+      <tr>
+      <td class="pad" style="width:100%;">
+      <div align="center" class="alignment" style="line-height:10px">
+      <div style="max-width: 600px;"><img src="images/3ccc79d6-9d4a-4287-a4a1-23536556db6c.jpg" style="display: block; height: auto; border: 0; width: 100%;" width="600"/></div>
+      </div>
+      </td>
+      </tr>
+      </table>
+      </td>
+      </tr>
+      </tbody>
+      </table>
+      </td>
+      </tr>
+      </tbody>
+      </table>
+      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+      <tbody>
+      <tr>
+      <td>
+      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #000000; color: #000000; width: 600px; margin: 0 auto;" width="600">
+      <tbody>
+      <tr>
+      <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+      <table border="0" cellpadding="10" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+      <tr>
+      <td class="pad">
+      <div style="font-family: sans-serif">
+      <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+      <p style="margin: 0; font-size: 12px; text-align: center; mso-line-height-alt: 14.399999999999999px;"><span style="color:#ffffff;">Package Reservation Please Take a note of your reservation details.</span></p>
+      <p style="margin: 0; font-size: 12px; text-align: center; mso-line-height-alt: 14.399999999999999px;"><span style="color:#ffffff;">If you have any questions, feel free to contact us.</span></p>
+      </div>
+      </div>
+      </td>
+      </tr>
+      </table>
+      </td>
+      </tr>
+      </tbody>
+      </table>
+      </td>
+      </tr>
+      </tbody>
+      </table>
+      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-4" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+      <tbody>
+      <tr>
+      <td>
+      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 600px; margin: 0 auto;" width="600">
+      <tbody>
+      <tr>
+      <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="50%">
+      <table border="0" cellpadding="10" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+      <tr>
+      <td class="pad">
+      <div style="font-family: sans-serif">
+      <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+      <p style="margin: 0; font-size: 18px; mso-line-height-alt: 21.599999999999998px;"><strong><span style="font-size:18px;">Package Name:</span>{to.packageId.pakage_title}</strong></p>
+      </div>
+      </div>
+      </td>
+      </tr>
+      </table>
+      <table border="0" cellpadding="10" cellspacing="0" class="text_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+      <tr>
+      <td class="pad">
+      <div style="font-family: sans-serif">
+      <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+      <p style="margin: 0; font-size: 18px; mso-line-height-alt: 21.599999999999998px;"><strong><span style="font-size:18px;">Departure City: </span>{to.departureCity}</strong></p>
+      </div>
+      </div>
+      </td>
+      </tr>
+      </table>
+      <table border="0" cellpadding="10" cellspacing="0" class="text_block block-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+      <tr>
+      <td class="pad">
+      <div style="font-family: sans-serif">
+      <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+      <p style="margin: 0; font-size: 18px; mso-line-height-alt: 21.599999999999998px;"><strong><span style="font-size:18px;">Number of Adults:</span>{to.adults}</strong></p>
+      </div>
+      </div>
+      </td>
+      </tr>
+      </table>
+      <table border="0" cellpadding="10" cellspacing="0" class="text_block block-4" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+      <tr>
+      <td class="pad">
+      <div style="font-family: sans-serif">
+      <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+      <p style="margin: 0; font-size: 18px; mso-line-height-alt: 21.599999999999998px;"><strong><span style="font-size:18px;">Number of Children:</span>{to.child}</strong></p>
+      </div>
+      </div>
+      </td>
+      </tr>
+      </table>
+      </td>
+      <td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="50%">
+      <table border="0" cellpadding="10" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+      <tr>
+      <td class="pad">
+      <div style="font-family: sans-serif">
+      <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+      <p style="margin: 0; font-size: 18px; mso-line-height-alt: 21.599999999999998px;"><strong><span style="font-size:18px;">Journey Details</span>{to}</strong></p>
+      </div>
+      </div>
+      </td>
+      </tr>
+      </table>
+      <table border="0" cellpadding="10" cellspacing="0" class="text_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+      <tr>
+      <td class="pad">
+      <div style="font-family: sans-serif">
+      <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+      <p style="margin: 0; font-size: 18px; mso-line-height-alt: 21.599999999999998px;"><strong><span style="font-size:18px;">Departure Date:</span>{to.departureDate}</strong></p>
+      </div>
+      </div>
+      </td>
+      </tr>
+      </table>
+      <table border="0" cellpadding="10" cellspacing="0" class="text_block block-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+      <tr>
+      <td class="pad">
+      <div style="font-family: sans-serif">
+      <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+      <p style="margin: 0; font-size: 18px; mso-line-height-alt: 21.599999999999998px;"><strong><span style="font-size:18px;">Departure Time:</span>{}</strong></p>
+      </div>
+      </div>
+      </td>
+      </tr>
+      </table>
+      </td>
+      </tr>
+      </tbody>
+      </table>
+      </td>
+      </tr>
+      </tbody>
+      </table>
+      </td>
+      </tr>
+      </tbody>
+      </table><!-- End -->
       </body>
-      
-      </html>
-      `;
+      </html>`;
       const browser = await puppeteer.launch({ headless: "new", timeout: 0 });
       // const browser = await puppeteer.launch({ headless: true, timeout: 0 });
       const page = await browser.newPage();

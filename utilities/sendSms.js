@@ -7,7 +7,7 @@ const YOUR_TWILIO_PHONE_NUMBER = process.env.YOUR_TWILIO_PHONE_NUMBER;
 const accountSid = TWILIO_ACCOUNT_SID;
 const authToken = TWILIO_AUTH_TOKEN;
 const client = new twilio(accountSid, authToken);
-const key = "lbwUbocDLNFjenpa"; // Or use multiple numbers like: "XXXXXXXXXX,XXXXXXXXXX"
+const key = process.env.SMSAPIKEY; 
 const senderid = process.env.SMSSENDERID;
 const route = process.env.ROUTE;
 const templateid = process.env.OTP_TEMLATEID;
@@ -109,7 +109,7 @@ module.exports = {
       return response.data;
     } catch (error) {
       console.error("Error occurred in axios request:", error);
-      throw error;
+      // throw error;
     }
   },
   sendSMSForHotelBooking: async (data) => {
@@ -128,7 +128,7 @@ module.exports = {
       return response.data;
     } catch (error) {
       console.error("Error occurred in axios request:", error);
-      throw error;
+      // throw error;
     }
   },
   sendSMSForFlightBooking: async (data) => {
@@ -149,7 +149,7 @@ module.exports = {
       return response.data;
     } catch (error) {
       console.error("Error occurred in axios request:", error);
-      throw error;
+      // throw error;
     }
   },
   sendSMSBusBooking: async (data, name) => {
@@ -167,7 +167,7 @@ module.exports = {
       return response.data;
     } catch (error) {
       console.error("Error occurred in axios request:", error);
-      throw error;
+      // throw error;
     }
   },
   sendSMSForFlightBookingAgent: async (data) => {
@@ -189,7 +189,7 @@ module.exports = {
       return response.data;
     } catch (error) {
       console.error("Error occurred in axios request:", error);
-      throw error;
+      // throw error;
     }
   },
   sendSMSBusBookingAgent: async (data) => {
@@ -209,7 +209,7 @@ module.exports = {
       return response.data;
     } catch (error) {
       console.error("Error occurred in axios request:", error);
-      throw error;
+      // throw error;
     }
   },
   sendSMSForHotelBookingAgent: async (data) => {
@@ -228,7 +228,7 @@ module.exports = {
       return response.data;
     } catch (error) {
       console.error("Error occurred in axios request:", error);
-      throw error;
+      // throw error;
     }
   },
   sendSMSForSubAdmin: async (mobileNumber, otp) => {
@@ -246,7 +246,7 @@ module.exports = {
       return response.data;
     } catch (error) {
       console.error("Error occurred in axios request:", error);
-      throw error;
+      // throw error;
     }
   },
   sendSMSAgents: async (mobileNumber, message) => {
@@ -264,7 +264,7 @@ module.exports = {
       return response.data;
     } catch (error) {
       console.error("Error occurred in axios request:", error);
-      throw error;
+      // throw error;
     }
   },
   sendSMSVisaBooking: async (mobileNumber, message) => {
@@ -282,7 +282,7 @@ module.exports = {
       return response.data;
     } catch (error) {
       console.error("Error occurred in axios request:", error);
-      throw error;
+      // throw error;
     }
   },
   sendSMSPackageEnquiry: async (mobileNumber, message) => {
@@ -300,7 +300,7 @@ module.exports = {
       return response.data;
     } catch (error) {
       console.error("Error occurred in axios request:", error);
-      throw error;
+      // throw error;
     }
   },
 };

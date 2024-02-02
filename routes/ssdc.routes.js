@@ -8,4 +8,8 @@ module.exports = function (app) {
 
     app.post("/skyTrails/ssdc/registration",controller.ssdcRegistration);
     app.get("/skyTrails/ssdc/leads", controller.ssdcLeads)
+
+    //ssdc jons
+
+    app.post("/skyTrails/ssdc/ssdcJobs", controller.ssdcJobs);
 }

@@ -15,9 +15,22 @@ app.use(cors());
 
 const WebSocket = require('websocket').server;
 const http = require('http'); 
+var admin=require('firebase-admin');
+var serviceAccount=require('./firebase_google.json');
+// const {initializeApp, applicationDefault } =require ('firebase-admin/app');
+// const { getMessaging } = require( "firebase-admin/messaging");
+// // const adCharu=admin.initializeApp({credential:admin.credential.cert(serviceAccount)});
 
+// initializeApp({
+//   credential: applicationDefault(),
+//   projectId: 'potion-for-creators',
+// });
 const server = http.createServer(app);
 
+
+
+
+// $env:GOOGLE_APPLICATION_CREDENTIALS="D:\Desktop\TheSkyTrails\ST_BackEnd\firebase_google.json"
 // Create a WebSocket server and attach it to the HTTP server
 const wsServer = new WebSocket({
   httpServer: server,

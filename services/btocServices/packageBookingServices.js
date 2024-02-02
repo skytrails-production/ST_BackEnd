@@ -15,6 +15,9 @@ const packageBookingModelServices = {
         return await packageBookingModel.findOne(query)
     },
 
+    findPackagePopulate: async (query) => {
+        return await packageBookingModel.findOne(query).populate('packageId').exec();
+    },
     getUserPackage: async (query) => {
         return await packageBookingModel.find(query)
     },

@@ -8,7 +8,7 @@ const packageBookingSchema = new mongoose.Schema(
   {
     packageId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "internationl",
+      ref: "internationls",
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,

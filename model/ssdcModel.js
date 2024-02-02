@@ -6,7 +6,26 @@ const status = require("../enums/status");
 const bookingStatus = require("../enums/bookingStatus");
 const { string } = require("joi");
 
-const SsdcModel = new mongoose.Schema(
+const jobSchema = new mongoose.Schema({
+  category: String,
+  nos: Number,
+  salary: String
+});
+
+
+const SsdcJobSchema = new mongoose.Schema({
+  country: String,
+  image: String,
+  interviewDate: String,
+  interviewAddress: String,
+  jobs: [jobSchema],
+  employmentPeriod: String,
+  visaType: String,
+  workingHours: String,
+  Foodetc: String
+});
+
+const SsdcSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -39,12 +58,22 @@ const SsdcModel = new mongoose.Schema(
     company:{
         type:String,
     },
+    years:{
+      type:Number,
+    },
     currentSalary:{
-        type:Number,
+        type:String,
     },
   },
   { timestamps: true }
 );
-SsdcModel.plugin(mongoosePaginate);
-SsdcModel.plugin(aggregatePaginate);
-module.exports = mongoose.model("ssdcLeads", SsdcModel);
+
+SsdcSchema.plugin(mongoosePaginate);
+SsdcSchema.plugin(aggregatePaginate);
+SsdcJobSchema.plugin(mongoosePaginate);
+SsdcJobSchema.plugin(aggregatePaginate);
+const SsdcJob = mongoose.model("SsdcJobs", SsdcJobSchema);
+const SsdcModel= mongoose.model("ssdcLeads", SsdcSchema);
+
+
+module.exports = {SsdcJob ,SsdcModel};

@@ -60,7 +60,7 @@ module.exports = function (app) {
 
   app.get('/skyTrails/agent/packages',controller.agentPackages);
   app.get('/skyTrails/agent/leads',controller.agentLeads);
-
+  app.get("/skyTrails/international/getAllAdminPackage", controller.internationalgetAdminAll);
 
 
  

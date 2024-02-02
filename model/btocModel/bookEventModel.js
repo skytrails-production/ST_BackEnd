@@ -14,6 +14,14 @@ const bookEventSchema = new mongoose.Schema(
       type: Schema.Types.ObjectId,
       ref: "users",
     },
+    email:{},
+    contactNo: {
+      country_code: {
+        type: String,
+        default: "+91",
+      },
+      mobile_number: { type: String },
+    },
     noOfMember: {
       type: Number,
     },

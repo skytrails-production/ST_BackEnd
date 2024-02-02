@@ -1,6 +1,9 @@
 const axios = require("axios");
 const sdk = require("api")("@doubletick/v2.0#19ixm2gblq0ov4vn");
 const { v4: uuidv4 } = require("uuid");
+const apiKey=process.env.DOUBLE_TICK_API_KEY;
+const doubleTickNumber=process.env.DOUBLE_TICK_NUMBER;
+const doubleTick=process.env.DOUBLETICK_URL;
 sdk.auth(process.env.DOUBLE_TICK_API_KEY);
 async function sendWhatsAppMessage(number, msg) {
   try {
@@ -17,70 +20,49 @@ async function sendWhatsAppMessage(number, msg) {
     return response.data;
   } catch (error) {
     console.error("Error in WhatsApp API:", error);
-    throw error;
   }
 }
-async function sendMessageWhatsApp(number, msg) {
-  const messageId = uuidv4();
-  console.log("Template Message ID:", messageId);
-  // const url = 'https://public.doubletick.io/whatsapp/message/text';
-  // const authorizationKey = 'key_IqTwUC2O8n';
-
-  // const messageData = {
-  //   content: {
-  //     template: true,
-  //     templateName: 'hello_test',
-  //     language: 'en',
-  //     content: {
-  //       text: "Welcome to TheSkyTrails. Now you are a sub admin.",
-  //     },
-  //   },
-  //   from: '+919056768815',
-  //   to: '+918115199076',
-  //   messageId: '6e3d79c7-ca3d-456c-8694-c0a16ad9f6b5',
-  // };
-  // console.log('Request Payload:', JSON.stringify(messageData));
-
-  // console.log('Message Data:', messageData);
-  // console.log('Text Value:', messageData.content.content.text);
-
-  // try {
-  //   const response = await axios.post(url, messageData, {
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       Authorization: authorizationKey,
-  //     },
-  //   });
-
-  //   console.log('Success:', response.data);
-  // } catch (error) {
-  //   console.error('Error:', error.message, error.response?.data);
-  // }
-
-  const options = {
-    method: "POST",
-    url: "https://public.doubletick.io/whatsapp/message/text",
-    headers: {
-      accept: "application/json",
-      "content-type": "application/json",
-      Authorization: "key_IqTwUC2O8n",
-    },
-    data: {
-      content: {language: "en",templateName: "hello_test",template: true, text: "welcome to TheSkyTrails. Now you are a sub admin." },
-      from: "+919056768815",
-      to: "+918115199076",
-      messageId: messageId,
-    },
-  };
-
-  axios
-    .request(options)
-    .then(function (response) {
-      console.log(response.data);
-    })
-    .catch(function (error) {
-      console.error(error);
-    });
+async function sendMessageWhatsApp(number, msg,temName) {
+  try{
+    const options = {
+      method: 'POST',
+      url: doubleTick,
+      headers: {
+        accept: 'application/json',
+        'content-type': 'application/json',
+        Authorization: apiKey
+      },
+      data: {
+        messages: [
+          {
+            content: {
+              language: 'en',
+              templateData: {
+                header: {
+                  type: 'TEXT',
+                  placeholder: 'Header text',
+                  mediaUrl: 'https://example.com/image.png',
+                  filename: 'Document caption'
+                },
+                body: {placeholders: [msg]}
+              },
+              templateName: 'hello_test'
+            },
+            from: doubleTickNumber,
+            to: number
+          }
+        ]
+      }
+    };
+    const response= await axios.request(options);
+    console.log(".data.messages[0]=====",response.data);
+    if(response.data.messages[0]){
+      return response.data.messages[0];
+    }
+  }
+  catch(err){
+    console.log("erorr while send whatsapp=====>>>>>>",err.response)
+  }
 }
 
 module.exports = { sendWhatsAppMessage, sendMessageWhatsApp };

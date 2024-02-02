@@ -1,0 +1,29 @@
+{
+    "project_info": {
+      "project_number": "47420968118",
+      "project_id": "theskytrailscom",
+      "storage_bucket": "theskytrailscom.appspot.com"
+    },
+    "client": [
+      {
+        "client_info": {
+          "mobilesdk_app_id": "1:47420968118:android:394492ac80c122e11aea17",
+          "android_client_info": {
+            "package_name": "com.theskytrails.com"
+          }
+        },
+        "oauth_client": [],
+        "api_key": [
+          {
+            "current_key": "AIzaSyDQHe2Qk9J1zw-gz7kh-e1LEgEflLakR3U"
+          }
+        ],
+        "services": {
+          "appinvite_service": {
+            "other_platform_oauth_client": []
+          }
+        }
+      }
+    ],
+    "configuration_version":"1"
+  }

@@ -41,7 +41,7 @@ exports.createEvent = async (req, res, next) => {
       venue,
       adultPrice,
       childPrice,
-      couplePrice,
+      couplePrice, 
       startTime,
       endTime,
       breakTime,
@@ -78,10 +78,12 @@ exports.createEvent = async (req, res, next) => {
       couplePrice: couplePrice,
       location: { coordinates: [longitude, latitude] },
       slot: [],
+      isPaid: req.body.isPaid,
     };
+
     const startingDate = Moment(startDate, "YYYY-MM-DD");
     const endingDate = Moment(endDate, "YYYY-MM-DD");
-    const storeStartDate=startingDate.format("YYYY-MM-DD");
+    const storeStartDate = startingDate.format("YYYY-MM-DD");
     // console.log("startingDate:", startingDate, "endingDate:,", endingDate);
     while (startingDate <= endingDate) {
       const startingTime = Moment(startTime, "HH:mm");
@@ -98,8 +100,8 @@ exports.createEvent = async (req, res, next) => {
         object.slot.push({
           startTime: startingTime.format("HH:mm"),
           endTime: slotEndTime.format("HH:mm"),
-          startDate:startingDate.format("YYYY-MM-DD"),
-          endDate:endingDate.format("YYYY-MM-DD"),
+          startDate: startingDate.format("YYYY-MM-DD"),
+          endDate: endingDate.format("YYYY-MM-DD"),
           isAvailable: true,
           peoples: Number(noOfMember),
         });
@@ -197,10 +199,8 @@ exports.getEventById = async (req, res, next) => {
   }
 };
 
-
-exports.getTopEvents=async(req,res,next)=>{
+exports.getTopEvents = async (req, res, next) => {
   try {
-
     const result = await allEvent({ status: status.ACTIVE });
     if (!result || result.length === 0) {
       return res.status(statusCode.NotFound).send({
@@ -218,23 +218,25 @@ exports.getTopEvents=async(req,res,next)=>{
     console.log("Error while get data: " + error);
     return next(error);
   }
-}
+};
 
-exports.getAllEventsAggregate=async(req,res,next)=>{
+exports.getAllEventsAggregate = async (req, res, next) => {
   try {
-    const {page,limit,search}=req.query;
-    const result=await getEvent(req.query);
-    if(!result){return res.status(statusCode.NotFound).send({
-      statusCode: statusCode.NotFound,
-      responseMessage: responseMessage.DATA_NOT_FOUND,
-    });}
+    const { page, limit, search } = req.query;
+    const result = await getEvent(req.query);
+    if (!result) {
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
+      });
+    }
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.DATA_FOUND,
       result: result,
     });
   } catch (error) {
-    console.log("Error while trying to get events",error);
-    return next(error)
+    console.log("Error while trying to get events", error);
+    return next(error);
   }
-}
+};

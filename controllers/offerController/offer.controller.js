@@ -131,13 +131,11 @@ exports.createOffer = async (req, res) => {
 exports.getOffer = async (req, res) => {
   try {
     const { offertype, page = 1, pageSize = 10 } = req.query; // Set default values for page and pageSize
-
     const matchStage = {
       $match: {
         offertype: offertype ? offertype : offerType.BANKOFFERS,
       },
     };
-
     const lookupStage = {
       $lookup: {
         from: 'users', // Replace 'users' with the actual name of your User collection
@@ -146,9 +144,7 @@ exports.getOffer = async (req, res) => {
         as: 'user',
       },
     };
-
     const unwindStage = { $unwind: '$user' };
-
     const totalOffers = await Offer.aggregate([
       matchStage,
       lookupStage,
@@ -157,7 +153,6 @@ exports.getOffer = async (req, res) => {
         $count: 'total',
       },
     ]);
-
     const options = [
       matchStage,
       lookupStage,
@@ -169,9 +164,7 @@ exports.getOffer = async (req, res) => {
         $limit: pageSize,
       },
     ];
-
     const response = await Offer.aggregate(options);
-
     const msg = "Offer data retrieved successfully.";
     const result = {
       offers: response,
@@ -179,7 +172,6 @@ exports.getOffer = async (req, res) => {
       currentPage: page,
       pageSize: pageSize,
     };
-
     actionCompleteResponse(res, result, msg);
   } catch (error) {
     sendActionFailedResponse(res, {}, error.message);
