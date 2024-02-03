@@ -318,7 +318,7 @@ exports.pefaEventBooking=async(req,res,next)=>{
      const result= await createBookingEvent(object);
      console.log("result==>>",result);
      const eventname=isEventExist.title;
-     const date='12-Mar-2024, 5:00'
+     const date='12-Mar-2024, 5pm'
      await sendSMS.sendSMSPackageEnquiry(mobileNo,isUserExist.username);
      await whatsApi.sendWhatsAppMessage(result.contactNumber.phone,eventname,date, 'event_2');
     await whatsappAPIUrl.sendMessageWhatsApp(result)

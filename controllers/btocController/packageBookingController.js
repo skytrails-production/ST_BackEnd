@@ -78,8 +78,8 @@ exports.packageBooking = async (req, res, next) => {
     };
     const result = await createPackage(object);
     console.log("result============",result);
-    const contactNo=`+91+${phone}`
-    const url=`https://back.theskytrails.com/skyTrails/flight/bookings/${result._id}`;
+    const contactNo='+91'+phone
+    const url=`https://back.theskytrails.com/skyTrails/package/bookings/${result._id}`;
     const populatedResult=await findPackagePopulate({_id:result._id});
     await sendSMS.sendSMSPackageEnquiry(phone,fullName)
     const data=await whatsApi.sendMessageWhatsApp(contactNo,fullName,url,'package');
