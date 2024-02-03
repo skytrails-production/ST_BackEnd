@@ -132,7 +132,6 @@ exports.createCoupons = async (req, res, next) => {
         result: update,
       });
     }
-   
     const newCoupon = await createCoupon(obj);
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,

@@ -317,8 +317,10 @@ exports.pefaEventBooking=async(req,res,next)=>{
      object.tickets.push(ticketNumber)
      const result= await createBookingEvent(object);
      console.log("result==>>",result);
+     const eventname=isEventExist.title;
+     const date='12-Mar-2024, 5:00'
      await sendSMS.sendSMSPackageEnquiry(mobileNo,isUserExist.username);
-    //  await whatsApi.sendWhatsAppMessage(result.contactNumber.phone, message);
+     await whatsApi.sendWhatsAppMessage(result.contactNumber.phone,eventname,date, 'event_2');
     await whatsappAPIUrl.sendMessageWhatsApp(result)
      
      return res.status(statusCode.OK).send({

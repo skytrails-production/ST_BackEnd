@@ -82,7 +82,8 @@ exports.packageBooking = async (req, res, next) => {
     const url=`https://back.theskytrails.com/skyTrails/flight/bookings/${result._id}`;
     const populatedResult=await findPackagePopulate({_id:result._id});
     await sendSMS.sendSMSPackageEnquiry(phone,fullName)
-    await whatsApi.sendMessageWhatsApp(contactNo,fullName,url,'package');
+    const data=await whatsApi.sendMessageWhatsApp(contactNo,fullName,url,'package');
+    console.log("data=====",data)
     await commonFunction.packageBookingConfirmationMail(populatedResult);
     if (result) {
       return res.status(statusCode.OK).send({

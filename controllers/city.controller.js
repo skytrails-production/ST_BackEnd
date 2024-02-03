@@ -59,29 +59,29 @@ exports.cityBusProductionData = async (req, res) =>{
 
 //testing 
 
-// exports.searchCityBusData = async (req, res) => {
-//   try {
-//     var regex = new RegExp(escapeRegex(req.query.keyword), "gi");
-//     const response = await cityBusData.find({ CityName: regex });
-//     const msg = "data searched successfully";
-//     actionCompleteResponse(res, response, msg);
-//   } catch (error) {
-//     sendActionFailedResponse(res, {}, error.message);
-//   }
-// };
-
-//production
-
 exports.searchCityBusData = async (req, res) => {
   try {
     var regex = new RegExp(escapeRegex(req.query.keyword), "gi");
-    const response = await cityBusProductionData.find({ CityName: regex });
+    const response = await cityBusData.find({ CityName: regex });
     const msg = "data searched successfully";
     actionCompleteResponse(res, response, msg);
   } catch (error) {
     sendActionFailedResponse(res, {}, error.message);
   }
 };
+
+//production
+
+// exports.searchCityBusData = async (req, res) => {
+//   try {
+//     var regex = new RegExp(escapeRegex(req.query.keyword), "gi");
+//     const response = await cityBusProductionData.find({ CityName: regex });
+//     const msg = "data searched successfully";
+//     actionCompleteResponse(res, response, msg);
+//   } catch (error) {
+//     sendActionFailedResponse(res, {}, error.message);
+//   }
+// };
 
 
 exports.hotelCitySearch = async (req, res) => {
@@ -137,6 +137,5 @@ exports.searchCityFlight= async (req, res) =>{
     
   } catch (error) {
     sendActionFailedResponse(res, {}, error.message);
-    // console.log("error",error)
   }
 }

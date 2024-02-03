@@ -34,11 +34,12 @@ exports.login = async (req, res, next) => {
       userType: userType.USER,
       status: status.ACTIVE,
     });
-    const var1 = `${isExist.username}`;
-    const var2=`${otp}`
+    
     const userMobile = isExist.phone.country_code + isExist.phone.mobile_number;
     const otp = commonFunction.getOTP();
     const otpExpireTime = new Date().getTime() + 300000;
+    const var1 = `${isExist.username}`;
+    const var2=`${otp}`
     const obj = {
       phone: {
         mobile_number: mobileNumber,
