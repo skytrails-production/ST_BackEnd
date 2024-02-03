@@ -14,7 +14,9 @@ const bookEventSchema = new mongoose.Schema(
       type: Schema.Types.ObjectId,
       ref: "users",
     },
-    email:{},
+    email:{type: String,},
+    name:{type:String},
+    city:{type: String},
     contactNo: {
       country_code: {
         type: String,
@@ -51,6 +53,11 @@ const bookEventSchema = new mongoose.Schema(
     tickets: [
        { type: String } 
     ],
+    isCoupanApplied:{
+      type:Boolean,
+      default:false
+    },
+    deviceToken:{type:String},
     status: {
       type: String,
       enum: [status.ACTIVE, status.BLOCK, status.DELETE],

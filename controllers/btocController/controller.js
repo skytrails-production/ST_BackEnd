@@ -34,6 +34,8 @@ exports.login = async (req, res, next) => {
       userType: userType.USER,
       status: status.ACTIVE,
     });
+    const var1 = `${isExist.username}`;
+    const var2=`${otp}`
     const userMobile = isExist.phone.country_code + isExist.phone.mobile_number;
     const otp = commonFunction.getOTP();
     const otpExpireTime = new Date().getTime() + 300000;
@@ -47,8 +49,7 @@ exports.login = async (req, res, next) => {
     if (!isExist) {
       const result1 = await createUser(obj);
       await sendSMS.sendSMSForOtp(mobileNumber, otp);
-      const message = `Use this OTP ${otp} to login to your. theskytrails account`;
-      await whatsappAPIUrl.sendWhatsAppMessage(userMobile, message);
+      await whatsappAPIUrl.sendWhatsAppMessage(userMobile,'user',var2, 'otp');
       token = await commonFunction.getToken({
         _id: result1._id,
         mobile_number: result1.mobile_number,
@@ -92,8 +93,7 @@ exports.login = async (req, res, next) => {
         token: token,
       };
       await sendSMS.sendSMSForOtp(mobileNumber, result.otp);
-      const message = `Use this OTP ${result.otp} to login to your. theskytrails account`;
-      await whatsappAPIUrl.sendMessageWhatsApp(userMobile, message);
+      await whatsappAPIUrl.sendMessageWhatsApp(userMobile,var1, var2,'otp');
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         message: responseMessage.LOGIN_SUCCESS,
@@ -107,8 +107,7 @@ exports.login = async (req, res, next) => {
     );
 
     await sendSMS.sendSMSForOtp(mobileNumber, otp);
-    const message = `Use this OTP ${otp} to login to your. theskytrails account`;
-    await whatsappAPIUrl.sendMessageWhatsApp(userMobile, message, "hello_test");
+    await whatsappAPIUrl.sendMessageWhatsApp(userMobile, var1,var2, 'otp');
     if (!updatedUser) {
       return res.status(statusCode.InternalError).json({
         statusCode: statusCode.InternalError,
@@ -266,6 +265,8 @@ exports.resendOtp = async (req, res, next) => {
         message: responseMessage.USERS_NOT_FOUND,
       });
     }
+    const var1 = `${isExist.username}`;
+    const var2=`${otp}`
     const updateData = await updateUser(
       { _id: isExist._id, status: status.ACTIVE },
       { otp: otp, otpExpireTime: otpExpireTime }
@@ -278,8 +279,7 @@ exports.resendOtp = async (req, res, next) => {
     }
     const userMobile =
       updateData.phone.country_code + updateData.phone.mobile_number;
-    const message = `Use this OTP ${otp} to login to your. theskytrails account`;
-    // await whatsappAPIUrl.sendMessageWhatsApp(userMobile, message);
+    await whatsappAPIUrl.sendMessageWhatsApp(userMobile, var1,var2,'otp');
     await sendSMS.sendSMSForOtp(mobileNumber, otp);
     const token = await commonFunction.getToken({
       _id: updateData._id,
@@ -295,7 +295,6 @@ exports.resendOtp = async (req, res, next) => {
       status: updateData.status,
       token: token,
     };
-    console.log("result========", result);
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       message: responseMessage.OTP_SEND,
@@ -412,13 +411,14 @@ exports.forgetPassword = async (req, res, next) => {
     }
     const otp = commonFunction.getOTP();
     const otpExpireTime = new Date().getTime() + 300000;
+    const var1 = `${isUserExist.username}`;
+    const var2=`${otp}`
     const updateUser = await updateUser(
       { _id: isUserExist._id },
       { $set: { otp: otp, otpExpireTime: otpExpireTime } }
     );
     await sendSMS.sendSMSForOtp(mobileNumber, otp);
-    const message = `Use this OTP ${otp} to login to your. theskytrails account`;
-    // await whatsappAPIUrl.sendWhatsAppMessage(mobileNumber, message);
+    await whatsappAPIUrl.sendWhatsAppMessage(mobileNumber, var1,var2,'otp');
     await commonFunction.sendEmailOtp(userResult.email, otp);
     return res
       .status(statusCode.OK)

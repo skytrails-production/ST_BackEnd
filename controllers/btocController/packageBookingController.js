@@ -57,7 +57,6 @@ exports.packageBooking = async (req, res, next) => {
       _id: req.userId,
       status: status.ACTIVE,
     });
-    console.log("isUserExist============",isUserExist);
     if (!isUserExist) {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,
@@ -79,13 +78,12 @@ exports.packageBooking = async (req, res, next) => {
     };
     const result = await createPackage(object);
     console.log("result============",result);
+    const contactNo=`+91+${phone}`
+    const url=`https://back.theskytrails.com/skyTrails/flight/bookings/${result._id}`;
     const populatedResult=await findPackagePopulate({_id:result._id});
-    console.log("populatedResult==============",populatedResult);
-    const message = `Hello ${fullName} ,Thank you for enquiry of your package stay with TheSkytrails. Please click on url to see details:. Or You Can login theskytrails.com/login`;
-    await sendSMS.sendSMSPackageEnquiry(result.contactNumber.phone,isUserExist.username);
-    // await whatsApi.sendWhatsAppMessage(result.contactNumber.phone, message);
+    await sendSMS.sendSMSPackageEnquiry(phone,fullName)
+    await whatsApi.sendMessageWhatsApp(contactNo,fullName,url,'package');
     await commonFunction.packageBookingConfirmationMail(populatedResult);
-
     if (result) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
@@ -149,10 +147,27 @@ exports.getAllPackageEnquiry=async(req,res,next)=>{
   }
 }
 
-exports.getPackageEnquiry=async(req,res,next)=>{
+exports.getPackageEnquiryById=async(req,res,next)=>{
   try {
-    
+    console.log("req.params.bookingId,===",req.params.bookingId,)
+    const response = await findPackagePopulate({
+      _id: req.params.bookingId,
+    });
+    if (!response) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        message: responseMessage.DATA_NOT_FOUND,
+      });
+    }
+    return res
+      .status(statusCode.OK)
+      .send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.DATA_FOUND,
+        result: response,
+      });
   } catch (error) {
-    
+    console.log("Error======================", error);
+    return next(error);
   }
 }

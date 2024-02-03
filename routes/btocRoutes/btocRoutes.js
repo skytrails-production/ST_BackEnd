@@ -73,5 +73,6 @@ module.exports = function (app) {
     app.get('/skyTrails/flight/bookings/:bookingId',flightBookingController.getFlightBookingById);
     app.get('/skyTrails/hotel/bookings/:bookingId',hotelBookingController.getUserHotelBookingById);
     app.get('/skyTrails/bus/bookings/:bookingId',busBookingController.getUserBusBookingById);
-    app.post('/skyTrails/api/notification/sendNotification',webAdvertismentController.sendNotification)
+    app.get('/skyTrails/package/bookings/:bookingId',packageController.getPackageEnquiryById);
+    app.post('/skyTrails/api/notification/sendNotification',webAdvertismentController.sendNotification);
 }

@@ -42,6 +42,7 @@ exports.busBooking = async (req, res, next) => {
       _id: req.userId,
       status: status.ACTIVE,
     });
+    const contactNo =`${isUserExist.phone.country_code}+${isUserExist.phone.mobile_number}`
     if (!isUserExist) {
       return res
         .status(statusCode.NotFound)
@@ -53,9 +54,9 @@ exports.busBooking = async (req, res, next) => {
     data.userId=isUserExist._id
     const result = await createUserBusBooking(data);
     const userName =`${result.passenger[0].firstName} ${result.passenger[0].lastName}`
-    const message = `Hello ${userName} ,Thank you for booking your hotel stay with TheSkytrails. Your reservation is confirmed! Please click on url to see details:. Or You Can login theskytrails.com/login`;
     await sendSMS.sendSMSBusBooking(result.passenger[0].Phone, userName);
-    // await whatsApi.sendWhatsAppMessage(result.passenger[0].Phone, message);
+    const url=`https://back.theskytrails.com/skyTrails/bus/bookings/${result._id}`
+    await whatsApi.sendMessageWhatsApp(contactNo,userName,url,'bus')
     await commonFunction.BusBookingConfirmationMail(result);
 
     if (result) {

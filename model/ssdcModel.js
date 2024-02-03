@@ -23,7 +23,9 @@ const SsdcJobSchema = new mongoose.Schema({
   visaType: String,
   workingHours: String,
   Foodetc: String
-});
+},
+  { timestamps: true }
+);
 
 const SsdcSchema = new mongoose.Schema(
   {
@@ -72,7 +74,7 @@ SsdcSchema.plugin(mongoosePaginate);
 SsdcSchema.plugin(aggregatePaginate);
 SsdcJobSchema.plugin(mongoosePaginate);
 SsdcJobSchema.plugin(aggregatePaginate);
-const SsdcJob = mongoose.model("SsdcJobs", SsdcJobSchema);
+const SsdcJob = mongoose.model("ssdcJobs", SsdcJobSchema);
 const SsdcModel= mongoose.model("ssdcLeads", SsdcSchema);
 
 

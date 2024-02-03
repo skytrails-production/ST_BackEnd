@@ -295,3 +295,39 @@ async function generateUniqueRandomString(length) {
 
   return uniqueString.slice(0, length);
 }
+
+
+//*********************************PEFA EVENT BOOKING*****************************/
+
+exports.pefaEventBooking=async(req,res,next)=>{
+  try {
+    const {name,mobileNumber,city,deviceToken,eventDate,eventId}=req.body;
+    const isEventExist=await findEventData({_id:eventId,status:status.ACTIVE});
+    if (!isEventExist) {
+      return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,message: responseMessage.EVENT_NOT_FOUND,});
+    }
+    await updateEvent(
+      { _id: eventId, "slot.startTime": startTime },
+      { $inc: { "slot.$.peoples": -1 } }
+    );
+     const object={
+      name:name,mobileNumber:mobileNumber,city:city,eventDate:eventDate,eventId:eventId,deviceToken:deviceToken,tickets:[]
+     }
+     const ticketNumber = await generateUniqueRandomString(15);
+     object.tickets.push(ticketNumber)
+     const result= await createBookingEvent(object);
+     console.log("result==>>",result);
+     await sendSMS.sendSMSPackageEnquiry(mobileNo,isUserExist.username);
+    //  await whatsApi.sendWhatsAppMessage(result.contactNumber.phone, message);
+    await whatsappAPIUrl.sendMessageWhatsApp(result)
+     
+     return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.SLOT_BOOKED,
+      result: result,
+    });
+  } catch (error) {
+    console.log("error while booking event",error);
+    return  next(error)
+  }
+}

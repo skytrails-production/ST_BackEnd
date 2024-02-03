@@ -22,7 +22,7 @@ async function sendWhatsAppMessage(number, msg) {
     console.error("Error in WhatsApp API:", error);
   }
 }
-async function sendMessageWhatsApp(number, msg,temName) {
+async function sendMessageWhatsApp(number, var1,var2,temName) {
   try{
     const options = {
       method: 'POST',
@@ -44,9 +44,9 @@ async function sendMessageWhatsApp(number, msg,temName) {
                   mediaUrl: 'https://example.com/image.png',
                   filename: 'Document caption'
                 },
-                body: {placeholders: [msg]}
+                body: {placeholders: [var1,var2]}
               },
-              templateName: 'hello_test'
+              templateName: temName
             },
             from: doubleTickNumber,
             to: number

@@ -17,6 +17,7 @@ const templateid3 = process.env.BUS_TEMLATEID;
 const subAdmintemplateid = process.env.SUBADMINTEMPLATEId;
 const agentTempId = process.env.AGENTTEMPLATEID;
 const visaTempId = process.env.VISATEMPLATEID;
+const packageTempId=process.env.PACKAGETEMPID
 const baseURL = "https://localhost:8000";
 
 module.exports = {
@@ -286,12 +287,12 @@ module.exports = {
     }
   },
   sendSMSPackageEnquiry: async (mobileNumber, message) => {
-    const messageContent = `Dear ${message} Thank you for booking your visa with us. We have received your request and partial payment. Further processing is required, and we will keep you informed about the progress. Please make sure to keep all required documents ready for the visa application process. If you have any questions, please feel free to reach out to our customer support team. Best regards, TheSkyTrails Pvt ltd`;
+    const messageContent = `Dear ${message}, Thank you for your package enquiry. Our team is reviewing the details and will get back to you soon. For any queries, reach our website https://theskytrails.com/about Best Regards, TheSkyTrails pvt ltd`;
     const url = `http://sms.txly.in/vb/apikey.php?`;
     const params = {
       apikey: key,
       senderid: senderid,
-      templateid: visaTempId,
+      templateid: packageTempId,
       number: mobileNumber,
       message: messageContent,
     };
