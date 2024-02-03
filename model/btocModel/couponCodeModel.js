@@ -58,6 +58,8 @@ const couponSchema = new Schema(
         offerType.HOLIDAYS,
         offerType.HOTELS,
         offerType.FORALL,
+        offerType.EVENTS,
+        offerType.PACKAGES
       ],
     
     },

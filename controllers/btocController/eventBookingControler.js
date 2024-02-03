@@ -51,6 +51,21 @@ const {
   getBookingEvent,
 } = eventBookingServices;
 
+const {
+  couponServices,
+} = require("../../services/btocServices/couponServices");
+const {
+  createCoupon,
+  findCoupon,
+  getCoupon,
+  findCouponData,
+  deleteCoupon,
+  couponList,
+  updateCoupon,
+  paginateCouponSearch,
+} = couponServices;
+
+
 exports.eventBooking = async (req, res, next) => {
   try {
     const {
@@ -316,13 +331,15 @@ exports.pefaEventBooking=async(req,res,next)=>{
      const ticketNumber = await generateUniqueRandomString(15);
      object.tickets.push(ticketNumber)
      const result= await createBookingEvent(object);
+     const obj={title:'Mohali',couponCode:'WELCOMEPEFA',content:'pefa2024 TheSkyTrails registration coupon',limitAmount:100,discountPercentage:5,offerType:'EVENT'}
+     const createCoupon=await createCoupon(obj);
      console.log("result==>>",result);
      const eventname=isEventExist.title;
-     const date='12-Mar-2024, 5pm'
+     const date='12-Mar-2024, 5pm';
      await sendSMS.sendSMSPackageEnquiry(mobileNo,isUserExist.username);
      await whatsApi.sendWhatsAppMessage(result.contactNumber.phone,eventname,date, 'event_2');
     await whatsappAPIUrl.sendMessageWhatsApp(result)
-     
+    
      return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.SLOT_BOOKED,

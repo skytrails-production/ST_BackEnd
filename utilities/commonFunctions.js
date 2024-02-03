@@ -17,6 +17,7 @@ const {
   otpMail,
   welcomeMail,
   welcomeAgentMail,
+  ssdcMail
 } = require("./mailingFunction.js");
 let cloudinary = require("cloudinary");
 cloudinary.config({
@@ -4622,6 +4623,39 @@ module.exports = {
       html: html,
     };
     return await transporter.sendMail(mailOptions);
+  },
+
+
+  ssdcConfirmationMail: async (to) => {
+    try {
+      const transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false,
+        auth: {
+          user: nodemailerConfig.options.auth.user,
+          pass: nodemailerConfig.options.auth.pass,
+        },
+        connectionTimeout: 60000,
+      });
+
+      const userEmail = to.email;
+      const mailOptions = {
+        from: nodemailerConfig.options.auth.user,
+        to: userEmail,
+        subject: "Interview successfully scheduled by SSDC.",
+        html: ssdcMail(to),        
+      };
+
+      await transporter.verify();
+      const info = await transporter.sendMail(mailOptions);
+    
+
+     
+    } catch (error) {
+      console.error("Email sending failed:", error);
+      throw error;
+    }
   },
 
   packageBookingConfirmationMail: async (to) => {

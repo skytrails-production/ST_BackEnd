@@ -34,12 +34,8 @@ exports.login = async (req, res, next) => {
       userType: userType.USER,
       status: status.ACTIVE,
     });
-    
-    const userMobile = isExist.phone.country_code + isExist.phone.mobile_number;
     const otp = commonFunction.getOTP();
     const otpExpireTime = new Date().getTime() + 300000;
-    const var1 = `${isExist.username}`;
-    const var2=`${otp}`
     const obj = {
       phone: {
         mobile_number: mobileNumber,
@@ -49,8 +45,11 @@ exports.login = async (req, res, next) => {
     };
     if (!isExist) {
       const result1 = await createUser(obj);
+      const contactNumber = result1.phone.country_code + result1.phone.mobile_number;
       await sendSMS.sendSMSForOtp(mobileNumber, otp);
-      await whatsappAPIUrl.sendWhatsAppMessage(userMobile,'user',var2, 'otp');
+      const userName="Dear";
+      const userOtp=`${otp}`
+      await whatsappAPIUrl.sendMessageWhatsApp(contactNumber,userName,userOtp,'otp');
       token = await commonFunction.getToken({
         _id: result1._id,
         mobile_number: result1.mobile_number,
@@ -69,6 +68,8 @@ exports.login = async (req, res, next) => {
         result: result,
       });
     }
+    const var1 = `${isExist.username}`;
+    const var2=`${otp}`
     if (mobileNumber === "9999123232") {
       let updatedNumber = await updateUser(
         { "phone.mobile_number": mobileNumber, status: status.ACTIVE },
@@ -94,7 +95,7 @@ exports.login = async (req, res, next) => {
         token: token,
       };
       await sendSMS.sendSMSForOtp(mobileNumber, result.otp);
-      await whatsappAPIUrl.sendMessageWhatsApp(userMobile,var1, var2,'otp');
+      await whatsappAPIUrl.sendMessageWhatsApp('+919999123232',var1,otp,'otp');
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         message: responseMessage.LOGIN_SUCCESS,
@@ -106,7 +107,7 @@ exports.login = async (req, res, next) => {
       { "phone.mobile_number": mobileNumber, status: status.ACTIVE },
       obj
     );
-
+    const userMobile = isExist.phone.country_code + isExist.phone.mobile_number;
     await sendSMS.sendSMSForOtp(mobileNumber, otp);
     await whatsappAPIUrl.sendMessageWhatsApp(userMobile, var1,var2, 'otp');
     if (!updatedUser) {

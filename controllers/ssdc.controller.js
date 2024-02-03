@@ -5,6 +5,7 @@ const {
 } = require("../common/common");
 
 const { SsdcJob, SsdcModel } = require("../model/ssdcModel");
+const commonFunctions = require("../utilities/commonFunctions");
 
 const s3 = new aws.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -15,6 +16,7 @@ exports.ssdcRegistration = async (req, res) => {
   try {
     const data = req.body;
     const response = await SsdcModel.create(data);
+    await commonFunctions.ssdcConfirmationMail(response);
     msg = "Registration Successfully Submit!";
     actionCompleteResponse(res, response, msg);
   } catch (err) {

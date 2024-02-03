@@ -5,23 +5,23 @@ const apiKey=process.env.DOUBLE_TICK_API_KEY;
 const doubleTickNumber=process.env.DOUBLE_TICK_NUMBER;
 const doubleTick=process.env.DOUBLETICK_URL;
 sdk.auth(process.env.DOUBLE_TICK_API_KEY);
-async function sendWhatsAppMessage(number, msg) {
-  try {
-    const whatsappAPIUrl = process.env.WHATSAPP_URL;
-    const apiKey = process.env.WHATSAPP_API_KEY;
-    const mobileNumbers = number;
-    const message = msg;
-    const response = await axios.get(
-      `${whatsappAPIUrl}?apikey=${apiKey}&mobile=${mobileNumbers}&msg=${message}`
-    );
-    if (!response) {
-      console.log("response===========Error in uploading image");
-    }
-    return response.data;
-  } catch (error) {
-    console.error("Error in WhatsApp API:", error);
-  }
-}
+// async function sendWhatsAppMessage(number, msg) {
+//   try {
+//     const whatsappAPIUrl = process.env.WHATSAPP_URL;
+//     const apiKey = process.env.WHATSAPP_API_KEY;
+//     const mobileNumbers = number;
+//     const message = msg;
+//     const response = await axios.get(
+//       `${whatsappAPIUrl}?apikey=${apiKey}&mobile=${mobileNumbers}&msg=${message}`
+//     );
+//     if (!response) {
+//       console.log("response===========Error in uploading image");
+//     }
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error in WhatsApp API:", error);
+//   }
+// }
 async function sendMessageWhatsApp(number, var1,var2,temName) {
   try{
     const options = {
@@ -65,7 +65,7 @@ async function sendMessageWhatsApp(number, var1,var2,temName) {
   }
 }
 
-module.exports = { sendWhatsAppMessage, sendMessageWhatsApp };
+module.exports = {sendMessageWhatsApp };
 
 // const axios = require('axios');
 
