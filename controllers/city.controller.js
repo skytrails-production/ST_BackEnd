@@ -137,5 +137,6 @@ exports.searchCityFlight= async (req, res) =>{
     
   } catch (error) {
     sendActionFailedResponse(res, {}, error.message);
+    // console.log("error",error)
   }
 }
