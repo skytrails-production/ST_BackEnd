@@ -2,6 +2,7 @@ const axios = require("axios"); // Make sure to import axios if not already done
 const FCM = require('fcm-node'); 
 const { initializeApp } = require('firebase-admin/app');
 const app = initializeApp();
+const fsmserverkey=process.env.FIREBASESERVERKEY
 const sendNotification = async (notifDetails) => {
   try {
     const formData = {
@@ -47,7 +48,7 @@ const sendNotification = async (notifDetails) => {
 
 const pushNotification = async (deviceToken, title, body) => {
     try {
-      const serverKey = 'AAAACwqCjLY:APA91bF6qvz3u7mDWYqy3up1wOSCzyw7JjcTwy4zDybyYO4bzeExKxv_aYmCmMB_Co_BFDlDoBB4Fs1W4A4XLKw351l9VL6aoFwd8yPbJcAWhu_daIZkdKlBzLCoSWrV_6r1WE8iABJM'; // Replace with your actual server key
+      const serverKey = fsmserverkey; // Replace with your actual server key
       const fcm = new FCM(serverKey);
 
         var message = {

@@ -396,7 +396,7 @@ exports.pefaEventBooking = async (req, res, next) => {
     );
     const dateNot=new Date().toISOString()
     const messageTitle="TheSkyTrails PEFA2024";
-    const messageBody=`This notification regarding your pefa event booking.......${CurrentDate}`
+    const messageBody=`This notification regarding your pefa event booking.......${CurrentDate},😂😂😂😂😍😍😍`
     await commonPushFunction.pushNotification(deviceToken,messageTitle,messageBody)
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,

@@ -16,7 +16,6 @@ app.use(cors());
 const WebSocket = require('websocket').server;
 const http = require('http'); 
 var admin=require('firebase-admin');
-var serviceAccount=require('./firebase_google.json');
 // const {initializeApp, applicationDefault } =require ('firebase-admin/app');
 // const { getMessaging } = require( "firebase-admin/messaging");
 // // const adCharu=admin.initializeApp({credential:admin.credential.cert(serviceAccount)});

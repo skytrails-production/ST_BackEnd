@@ -81,7 +81,7 @@ exports.packageBooking = async (req, res, next) => {
     const url=`https://theskytrails.com/holidayInfo/${packageId}`;
     const populatedResult=await findPackagePopulate({_id:result._id});
     await sendSMS.sendSMSPackageEnquiry(phone,fullName)
-    await whatsApi.sendMessageWhatsApp(contactNo,fullName,url,'packagetem1_v2');
+    await whatsApi.sendMessageWhatsApp(contactNo,fullName,url,'packagetem1_v3');
     await commonFunction.packageBookingConfirmationMail(populatedResult);
     if (result) {
       return res.status(statusCode.OK).send({
