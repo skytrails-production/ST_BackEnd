@@ -2,11 +2,14 @@ const responseMessage = require("../../utilities/responses");
 const statusCode = require("../../utilities/responceCode");
 const status = require("../../enums/status");
 const crypto = require("crypto");
-const paymentStatus=require("../../enums/paymentStatus");
+const paymentStatus = require("../../enums/paymentStatus");
 const userType = require("../../enums/userType");
 const sendSMS = require("../../utilities/sendSms");
 const commonFunction = require("../../utilities/commonFunctions");
+const commonPushFunction=require("../../utilities/commonFunForPushNotification")
 const whatsappAPIUrl = require("../../utilities/whatsApi");
+const moment=require('moment');
+var CurrentDate = moment().format();
 //*****************************************SERVICES************************************************/
 const { eventServices } = require("../../services/eventServices");
 const {
@@ -54,6 +57,7 @@ const {
 const {
   couponServices,
 } = require("../../services/btocServices/couponServices");
+const offerType = require("../../enums/offerType");
 const {
   createCoupon,
   findCoupon,
@@ -64,7 +68,6 @@ const {
   updateCoupon,
   paginateCouponSearch,
 } = couponServices;
-
 
 exports.eventBooking = async (req, res, next) => {
   try {
@@ -99,7 +102,7 @@ exports.eventBooking = async (req, res, next) => {
         message: responseMessage.EVENT_NOT_FOUND,
       });
     }
-    console.log("isEventExist=============",isEventExist)
+    console.log("isEventExist=============", isEventExist);
     const selectedSlot = isEventExist.slot.find(
       (slot) => slot.startTime === startTime && slot.isAvailable === true
     );
@@ -110,14 +113,20 @@ exports.eventBooking = async (req, res, next) => {
         responseMessage: responseMessage.SLOT_NOT_AVAILABLE,
       });
     }
-    if(isEventExist.price>=1){
-      if(!transactionId){
-        return res.status(statusCode.badRequest).send({statusCode:statusCode.badRequest, responseMessage:"transactionId  is required"});
+    if (isEventExist.price >= 1) {
+      if (!transactionId) {
+        return res.status(statusCode.badRequest).send({
+          statusCode: statusCode.badRequest,
+          responseMessage: "transactionId  is required",
+        });
       }
-     
     }
     if (transactionId) {
-      const isPaid = await findUsertransaction({ _id: transactionId,userId:isUserExist._id,transactionStatus:paymentStatus.SUCCESS });
+      const isPaid = await findUsertransaction({
+        _id: transactionId,
+        userId: isUserExist._id,
+        transactionStatus: paymentStatus.SUCCESS,
+      });
       if (!isPaid) {
         return res.status(statusCode.NotFound).send({
           statusCode: statusCode.NotFound,
@@ -137,8 +146,8 @@ exports.eventBooking = async (req, res, next) => {
       }
       const object = {
         userId: isUserExist._id,
-        email:isUserExist.email,
-        contactNo:{mobile_number:isUserExist.phone.mobile_number},
+        email: isUserExist.email,
+        contactNo: { mobile_number: isUserExist.phone.mobile_number },
         noOfMember: noOfMember,
         adults: adults,
         child: child,
@@ -149,18 +158,19 @@ exports.eventBooking = async (req, res, next) => {
         transactionId: transactionId,
         tickets: [],
       };
-      for(var i=0;i<noOfMember;i++){
+      for (var i = 0; i < noOfMember; i++) {
         const ticketNumber = await generateUniqueRandomString(15);
-        object.tickets.push(ticketNumber)
+        object.tickets.push(ticketNumber);
       }
-      const mobileNo=isUserExist.phone.country_code+isUserExist.phone.mobile_number
+      const mobileNo =
+        isUserExist.phone.country_code + isUserExist.phone.mobile_number;
       const makeBooking = await createBookingEvent(object);
       const message = `Hello ${fullName} ,Thank you for enquiry of your package stay with TheSkytrails. Please click on url to see details:. Or You Can login theskytrails.com/login`;
-      await sendSMS.sendSMSPackageEnquiry(mobileNo,isUserExist.username);
+      await sendSMS.sendSMSPackageEnquiry(mobileNo, isUserExist.username);
       // await whatsApi.sendWhatsAppMessage(result.contactNumber.phone, message);
       // await commonFunction.packageBookingConfirmationMail(populatedResult);
-  
-      await updateEvent({_id:eventId},{$inc:{saleCount:+noOfMember}});
+
+      await updateEvent({ _id: eventId }, { $inc: { saleCount: +noOfMember } });
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.SLOT_BOOKED,
@@ -189,15 +199,16 @@ exports.eventBooking = async (req, res, next) => {
       tickets: [],
     };
     const makeBooking = await createBookingEvent(object);
-    const mobileNo=isUserExist.phone.country_code+isUserExist.phone.mobile_number
-      const message = `Hello ${fullName} ,Thank you for enquiry of your package stay with TheSkytrails. Please click on url to see details:. Or You Can login theskytrails.com/login`;
-      await sendSMS.sendSMSPackageEnquiry(mobileNo,isUserExist.username);
-      // await whatsApi.sendWhatsAppMessage(result.contactNumber.phone, message);
-      // await commonFunction.packageBookingConfirmationMail(populatedResult);
-    await updateEvent({_id:eventId},{$inc:{saleCount:+noOfMember}})
-    for(var i=0;i<noOfMember;i++){
+    const mobileNo =
+      isUserExist.phone.country_code + isUserExist.phone.mobile_number;
+    const message = `Hello ${fullName} ,Thank you for enquiry of your package stay with TheSkytrails. Please click on url to see details:. Or You Can login theskytrails.com/login`;
+    await sendSMS.sendSMSPackageEnquiry(mobileNo, isUserExist.username);
+    // await whatsApi.sendWhatsAppMessage(result.contactNumber.phone, message);
+    // await commonFunction.packageBookingConfirmationMail(populatedResult);
+    await updateEvent({ _id: eventId }, { $inc: { saleCount: +noOfMember } });
+    for (var i = 0; i < noOfMember; i++) {
       const ticketNumber = await generateUniqueRandomString(15);
-      object.tickets.push(ticketNumber)
+      object.tickets.push(ticketNumber);
     }
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
@@ -220,6 +231,7 @@ exports.bookFreeEvents = async (req, res, next) => {
       eventId,
       startTime,
       noOfMember,
+      profession
     } = req.body;
     const isUserExist = await findUserData({
       _id: req.userId,
@@ -283,6 +295,121 @@ exports.bookFreeEvents = async (req, res, next) => {
   }
 };
 
+
+//*********************************PEFA EVENT BOOKING*****************************/
+exports.pefaEventBooking = async (req, res, next) => {
+  try {
+    const {
+      name,
+      mobileNumber,
+      city,
+      deviceToken,
+      eventDate,
+      eventId,
+      profession
+    } = req.body;
+    const isUserExist = await findUserData({
+      _id: req.userId,
+      status: status.ACTIVE,
+    });
+    if (!isUserExist) {
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+    const isEventExist = await findEventData({
+      _id: eventId,
+      status: status.ACTIVE,
+    });
+    if (!isEventExist) {
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.EVENT_NOT_FOUND,
+      });
+    }
+    await updateEvent(
+      { _id: eventId, "slot.startTime": "17:00" },
+      { $inc: { "slot.$.peoples": -1 } }
+    );
+    await updateUser({_id:isUserExist._id},{deviceToken:deviceToken})
+    const object = {
+      userId:isUserExist._id,
+      name: name,
+      contactNo: { mobile_number: mobileNumber },
+      city: city,
+      eventDate: eventDate,
+      eventId: eventId,
+      deviceToken: deviceToken,
+      profession:profession,
+      tickets: [],
+    };
+    const ticketNumber = await generateUniqueRandomString(15);
+    object.tickets.push(ticketNumber);
+    const result = await createBookingEvent(object);
+    const obj = {
+      title: "Mohali",
+      couponCode: "PEFA2024",
+      content: "pefa2024 TheSkyTrails registration coupon",
+      limitAmount: 100,
+      discountPercentage: 5,
+      offerType: offerType.EVENTS,
+      termsAndCond: ["coupon will be apply upto 100rs/"],
+    };
+    const isCouponExist=await findCoupon({couponCode:"PEFA2024"});
+    if(isCouponExist){
+      const eventname = "*PEFA - Punjab Entertainment Festival and Awards!*";
+    const eventDate1 = "2Mar2024 5pm";
+    const date = `${eventDate1}`;
+    const contactNo = "+91" + mobileNumber;
+    const smsFormat = `PEFA - Punjab Entertainment Festival and Awards! on ${eventDate1}`;
+    console.log("smsFormat===========",smsFormat);
+    await sendSMS.sendSMSEventEnquiry(mobileNumber,smsFormat);
+    await whatsappAPIUrl.sendMessageWhatsApp(
+      contactNo,
+      eventname,
+      date,
+      "event4_v3"
+    );
+    const messageTitle="TheSkyTrails PEFA2024";
+    console.log("CurrentDate-------",CurrentDate)
+    const messageBody=`This notification regarding your pefa event booking.welcome to ${eventname}....${CurrentDate}`
+    await commonPushFunction.pushNotification(deviceToken,messageTitle,messageBody)
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.SLOT_BOOKED,
+      result: result,
+    });
+    }
+    const createPefaCoupon = await createCoupon(obj);
+    const eventname = "*PEFA - Punjab Entertainment Festival and Awards!*";
+    const eventDate1 = "12-Mar-2024 5pm";
+    const date = `${eventDate1}`;
+    const contactNo = "+91" + mobileNumber;
+    const smsFormat = `PEFA - Punjab Entertainment Festival and Awards! on ${eventDate1}`;
+     await sendSMS.sendSMSEventEnquiry(mobileNumber,smsFormat);
+    await whatsappAPIUrl.sendMessageWhatsApp(
+      contactNo,
+      eventname,
+      date,
+      "event4_v3"
+    );
+    const dateNot=new Date().toISOString()
+    const messageTitle="TheSkyTrails PEFA2024";
+    const messageBody=`This notification regarding your pefa event booking.......${CurrentDate}`
+    await commonPushFunction.pushNotification(deviceToken,messageTitle,messageBody)
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.SLOT_BOOKED,
+      result: result,
+    });
+  } catch (error) {
+    console.log("error while booking event", error);
+    return next(error);
+  }
+};
+
+
 //generate function**************************************************************************
 // function generateRandomAlphanumeric(length) {
 //   const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -306,47 +433,7 @@ async function generateUniqueRandomString(length) {
     .toString("hex")
     .slice(0, length);
   const timestampPart = Date.now().toString();
-  const uniqueString = randomPart + timestampPart;
+  const uniqueString = 'PEFA'+randomPart + timestampPart;
 
   return uniqueString.slice(0, length);
-}
-
-
-//*********************************PEFA EVENT BOOKING*****************************/
-
-exports.pefaEventBooking=async(req,res,next)=>{
-  try {
-    const {name,mobileNumber,city,deviceToken,eventDate,eventId}=req.body;
-    const isEventExist=await findEventData({_id:eventId,status:status.ACTIVE});
-    if (!isEventExist) {
-      return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,message: responseMessage.EVENT_NOT_FOUND,});
-    }
-    await updateEvent(
-      { _id: eventId, "slot.startTime": startTime },
-      { $inc: { "slot.$.peoples": -1 } }
-    );
-     const object={
-      name:name,mobileNumber:mobileNumber,city:city,eventDate:eventDate,eventId:eventId,deviceToken:deviceToken,tickets:[]
-     }
-     const ticketNumber = await generateUniqueRandomString(15);
-     object.tickets.push(ticketNumber)
-     const result= await createBookingEvent(object);
-     const obj={title:'Mohali',couponCode:'WELCOMEPEFA',content:'pefa2024 TheSkyTrails registration coupon',limitAmount:100,discountPercentage:5,offerType:'EVENT'}
-     const createCoupon=await createCoupon(obj);
-     console.log("result==>>",result);
-     const eventname=isEventExist.title;
-     const date='12-Mar-2024, 5pm';
-     await sendSMS.sendSMSPackageEnquiry(mobileNo,isUserExist.username);
-     await whatsApi.sendWhatsAppMessage(result.contactNumber.phone,eventname,date, 'event_2');
-    await whatsappAPIUrl.sendMessageWhatsApp(result)
-    
-     return res.status(statusCode.OK).send({
-      statusCode: statusCode.OK,
-      responseMessage: responseMessage.SLOT_BOOKED,
-      result: result,
-    });
-  } catch (error) {
-    console.log("error while booking event",error);
-    return  next(error)
-  }
 }

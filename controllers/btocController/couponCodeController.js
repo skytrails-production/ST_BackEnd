@@ -78,6 +78,24 @@ const {
   paginateCouponSearch,
 } = couponServices;
 
+const {
+  eventBookingServices,
+} = require("../../services/btocServices/eventBookingServices");
+const {
+  createBookingEvent,
+  findBookingEventData,
+  deleteBookingEvent,
+  eventBookingList,
+  updateBookingEvent,
+  countTotalBookingEvent,
+  getBookingEvent,
+} = eventBookingServices;
+
+
+///**************API********* */
+
+
+
 exports.createCoupons = async (req, res, next) => {
   try {
     const {
@@ -202,6 +220,34 @@ exports.applyCoupon = async (req, res, next) => {
         responseMessage: responseMessage.COUPON_NOT_FOUND,
       });
     }
+    if(isCouponExist.couponCode==="PEFA2024"){
+      const isUserRegister = await findBookingEventData({userId: isUserExist._id,status:status.ACTIVE});
+    if (!isUserRegister) {
+      return res.status(statusCode.badRequest).send({
+        statusCode: statusCode.badRequest,
+        responseMessage: responseMessage.PEFA_NOT_REGISTER,
+      });
+    }
+    if (isCouponExist.userApplied.includes(isUserExist._id)) {
+      return res.status(statusCode.Conflict).json({
+        statusCode: statusCode.Conflict,
+        responseMessage: responseMessage.ALREDY_COUPOUN_APPLIED,
+        result:isCouponExist
+      });
+    }
+    couponUser.push(isUserExist._id);
+   await updateCoupon({_id:isCouponExist._id}, {
+      userApplied: couponUser,
+    });
+    await updateBookingEvent({_id:isUserRegister._id},{isCoupanApplied:true})
+    return res
+      .status(statusCode.OK)
+      .json({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.COUPON_APPLIED_SUCCESS,
+        result:isCouponExist
+      });
+    }
     // Check if the coupon is already expired
     const currentDateTime = new Date();
     if (currentDateTime > isCouponExist.expirationDate.getTime()) {
@@ -217,7 +263,7 @@ exports.applyCoupon = async (req, res, next) => {
       });
     }
     couponUser.push(isUserExist._id);
-    await updateCoupon({_id:isCouponExist._id}, {
+   const result= await updateCoupon({_id:isCouponExist._id}, {
       userApplied: couponUser,
     });
     return res
@@ -225,6 +271,7 @@ exports.applyCoupon = async (req, res, next) => {
       .json({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.COUPON_APPLIED_SUCCESS,
+        result:isCouponExist
       });
   } catch (error) {
     console.log("error while trying to apply coupon", error);

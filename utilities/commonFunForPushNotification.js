@@ -45,10 +45,10 @@ const sendNotification = async (notifDetails) => {
 
 // Import the FCM module
 
-const pushNotification = async (deviceToken, title, body, data1) => {
+const pushNotification = async (deviceToken, title, body) => {
     try {
-        var serverKey = 'BOPPSLM-ymczT_49aZG98nhLCUu7GBWpNpDT0RZr01NNYbWsGNKw1GMeSYhkDvW4xFH-1rweEqaJdn7KGKNlrtI'; // Replace with your FCM server key
-        var fcm = new FCM(serverKey);
+      const serverKey = 'AAAACwqCjLY:APA91bF6qvz3u7mDWYqy3up1wOSCzyw7JjcTwy4zDybyYO4bzeExKxv_aYmCmMB_Co_BFDlDoBB4Fs1W4A4XLKw351l9VL6aoFwd8yPbJcAWhu_daIZkdKlBzLCoSWrV_6r1WE8iABJM'; // Replace with your actual server key
+      const fcm = new FCM(serverKey);
 
         var message = {
             to: deviceToken,
@@ -57,7 +57,6 @@ const pushNotification = async (deviceToken, title, body, data1) => {
                 title: title,
                 body: body
             },
-            data: data1
         };
 
         const response = await new Promise((resolve, reject) => {

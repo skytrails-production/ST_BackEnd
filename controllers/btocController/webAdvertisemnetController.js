@@ -138,152 +138,42 @@ exports.getAggregateWebAdvertisement=async(req,res,next)=>{
 //     }
 // };
 
-
-function getAccessToken() {
-    return new Promise(function(resolve, reject) {
-        const key = {
-            "project_info": {
-              "project_number": "47420968118",
-              "project_id": "theskytrailscom",
-              "storage_bucket": "theskytrailscom.appspot.com"
-            },
-            "client": [
-              {
-                "client_info": {
-                  "mobilesdk_app_id": "1:47420968118:android:394492ac80c122e11aea17",
-                  "android_client_info": {
-                    "package_name": "com.theskytrails.com"
-                  }
-                },
-                "oauth_client": [],
-                "api_key": 
-                  {
-                    "current_key": "AIzaSyDQHe2Qk9J1zw-gz7kh-e1LEgEflLakR3U"
-                  }
-                ,
-                "services": {
-                  "appinvite_service": {
-                    "other_platform_oauth_client": []
-                  }
-                }
-              }
-            ],
-            "configuration_version":"1"
-          }
-        const jwtClient = new google.auth.JWT(
-            key.client[0].client_info.android_client_info.package_name,
-            null,
-            key.api_key.current_key,
-            SCOPES,
-            null
-        );
-        console.log("jwtClient==========",jwtClient);
-        jwtClient.authorize(function(err, tokens) {
-            if (err) {
-                reject(err);
-                return;
-            }
-            console.log("tokens=================",tokens);
-            console.log("tokens.access_token=========",tokens.access_token);
-            resolve(tokens.access_token);
-        });
-    });
-}
-  exports.sendNotification = async (req, res, next) => {
+exports.sendNotification = async (req, res, next) => {
     try {
-        // Get the access token by invoking the getAccessToken function
-        const accessToken = await getAccessToken();
-        console.log("Access Token:", accessToken);
-
         // Define your server key
-        const serverKey = 'BOPPSLM-ymczT_49aZG98nhLCUu7GBWpNpDT0RZr01NNYbWsGNKw1GMeSYhkDvW4xFH-1rweEqaJdn7KGKNlrtI'; // Replace with your actual server key
+        // const serverKey = 'YOUR_SERVER_KEY';
+        const serverKey = 'AAAACwqCjLY:APA91bF6qvz3u7mDWYqy3up1wOSCzyw7JjcTwy4zDybyYO4bzeExKxv_aYmCmMB_Co_BFDlDoBB4Fs1W4A4XLKw351l9VL6aoFwd8yPbJcAWhu_daIZkdKlBzLCoSWrV_6r1WE8iABJM'; // Replace with your actual server key
         const fcm = new FCM(serverKey);
-
+        // Define your FCM message
         // Define your FCM message
         const message = {
-            to: '1:47420968118:android:394492ac80c122e11aea17',
+            to: 'cebfIZKNQJWA69SiUMlQ1Z:APA91bGMFL9JNdL5NYYYfM6u_AFpysu1AvZyxJzyCxuOBf7zqoR7W7kuyAQF2MF4_MtsOCv4rzCJiptmq7qg6wEzRGbVZAegGVCx35eZlmeLRY0-CrLpbjtFQqvfQIRsXl8L68wxsgwu',
             collapse_key: '1',
             notification: {
-                title: 'Title of your push notification',
-                body: 'Body of your push notification'
+                title: 'Aise restart na kro mujhe check krna h ',
+                body: 'Bhai qa kr rhe ho vjvhvvjbhvnpcvkiffjpvvbkvjbnm,'
             },
             data: {
-                my_key: serverKey
+                my_key: serverKey,
             }
         };
 
-        // Send the FCM message using axios with the correct headers, including the access token
-        const response = await axios.post('https://fcm.googleapis.com/fcm/send', message, {
-            headers: {
-                Accept: 'application/json, text/plain, */*',
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${accessToken}`, // Use 'Bearer' prefix for access token
-                'User-Agent': 'axios/1.2.2',
-                'Content-Length': '279',
-                'Accept-Encoding': 'gzip, compress, deflate, br',
-            },
-        });
+        console.log("message===========", message);
 
-        console.log("Successfully sent with response: ", response.data);
-        res.status(200).json({ message: "Notification sent successfully" });
+        // Send the FCM message with a callback function
+        fcm.send(message, function (err, response) {
+            if (err) {
+                console.error("Something has gone wrong!", err);
+                console.error("error ms",err.message)
+                return next(err);
+            } else {
+                console.log("Successfully sent with response: ", response);
+                res.status(200).json({ message: "Notification sent successfully" });
+            }
+        });
     } catch (error) {
-        console.error("Something has gone wrong!", error.message);
+        console.error("Error while trying to send a notification", error);
         return next(error);
     }
 };
-
-
-
-
-// exports.sendNotification=async(req,res,next)=>{
-//     try {
-//         // var message={
-//         //     to:"",
-//         //     notification:{
-//         //         title:"Notification",
-//         //         body:"Hello this is test notification"
-//         //     },
-//         //     data:{
-//         //         title:"ok vhsjkihgfs",
-//         //         body:'{"name":"charu","product_id":"123","final_price":"0.90"}'
-//         //     }
-//         // };
-
-//         // fcm.send(message,function(err,response){
-//         //     if(err){
-//         //         console.log("something went wrong",+err);
-//         //         console.log("responses==============",+response);
-//         //     }else{
-//         //         console.log("successfully sent with respose:==>>",response);
-//         //     }
-//         // })
-
-//         var message = { //this may vary according to the message type (single recipient, multicast, topic, et cetera)
-//             to: '47420968118:android:394492ac80c122e11aea17', 
-//             collapse_key: '1',
-            
-//             notification: {
-//                 title: 'Title of your push notification', 
-//                 body: 'Body of your push notification' 
-//             },
-            
-//             data: {  //you can send only notification or only data(or include both)
-//                 my_key: serverKey,
-//                 // my_another_key: 'my another value'
-//             }
-//         };
-        
-//         fcm.send(message, function(err, response){
-//             if (err) {
-//                 console.log("Something has gone wrong!");
-//             } else {
-//                 console.log("Successfully sent with response: ", response);
-//             }
-//         });
-//     } catch (error) {
-//         console.log("error while trying get data",error);
-//         return next(error)
-//     }
-// }
-
 

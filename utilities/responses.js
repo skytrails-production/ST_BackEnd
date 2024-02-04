@@ -101,5 +101,6 @@ module.exports = {
 	COUPON_APPLIED_SUCCESS:"Coupon applied successfully.",
 	POST_DELETED:"Post deleted successfull.",
 	TASK_CREATED:"Task created successfull.!",
-	BLURRY_IMAGE:"image blur , make sure your are in proper light and click a clear picture.!"
+	BLURRY_IMAGE:"image blur , make sure your are in proper light and click a clear picture.!",
+	PEFA_NOT_REGISTER:"This coupon is available for those user , who register for pefa2024 event...!"
 };

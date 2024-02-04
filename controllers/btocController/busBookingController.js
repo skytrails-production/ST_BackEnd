@@ -55,7 +55,7 @@ exports.busBooking = async (req, res, next) => {
     const result = await createUserBusBooking(data);
     const userName =`${result.passenger[0].firstName} ${result.passenger[0].lastName}`
     await sendSMS.sendSMSBusBooking(result.passenger[0].Phone, userName);
-    const url=`https://back.theskytrails.com/skyTrails/bus/bookings/${result._id}`
+    const url=`https://theskytrails.com/bus`
     await whatsApi.sendMessageWhatsApp(contactNo,userName,url,'bus')
     await commonFunction.BusBookingConfirmationMail(result);
 

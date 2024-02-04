@@ -89,7 +89,7 @@ exports.hotelBooking = async (req, res, next) => {
     const result = await createUserhotelBookingModel(bookingObject);
     if (result) {
       const contactNo = '+91'+phoneNumber;
-      const url = `https://back.theskytrails.com/skyTrails/hotel/bookings/${result._id}`;
+      const url = `https://theskytrails.com/hotel`;
       await sendSMS.sendSMSForHotelBooking(result);
       await whatsApi.sendMessageWhatsApp(contactNo, name, url, "hotel");
       await commonFunction.HotelBookingConfirmationMail(result);

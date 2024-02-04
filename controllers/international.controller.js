@@ -184,11 +184,11 @@ exports.internationalgetAll = async (req, res) => {
             {
               destination: {
                 $elemMatch: {
-                  addMore: { $regex: new RegExp(req.query.keyword, "i") }, // 'i' flag for case-insensitive search
+                  addMore: req.query.keyword, // 'i' flag for case-insensitive search
                 },
               },
             },
-            { country: { $regex: new RegExp(req.query.keyword, "i") } },
+            { country: req.query.keyword },
           ],
         })
         .exec();

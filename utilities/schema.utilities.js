@@ -529,10 +529,17 @@ const schemas = {
     couple: joi.number().optional(),
     transactionId: joi.string().optional(),
     eventId: joi.string().required(),
-    startTime: joi.string().required(),
+    startTime: joi.string().optional(),
     EndTime: joi.string().optional(),
-    noOfMember: joi.number().required(),
+    noOfMember: joi.number().optional(),
+    name: joi.string().required(),
+    mobileNumber: joi.string().required(),
+    city: joi.string().required(),
+    deviceToken: joi.string().required(),
+    profession: joi.string().required()
   }),
+
+  
 
   webAddSchema: joi.object().keys({
     title: joi.string().required(),

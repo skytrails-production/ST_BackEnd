@@ -17,6 +17,7 @@ const bookEventSchema = new mongoose.Schema(
     email:{type: String,},
     name:{type:String},
     city:{type: String},
+    profession:{type: String},
     contactNo: {
       country_code: {
         type: String,
