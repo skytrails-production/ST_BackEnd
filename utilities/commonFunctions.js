@@ -722,7 +722,7 @@ module.exports = {
                             word-wrap: break-word;
                             margin:0;
                           ">
-                  +91 8917972301
+                  +91 9209793097
                 </p>
               </div>
               <div style="
@@ -756,7 +756,7 @@ module.exports = {
                             font-weight: 600;
                             word-wrap: break-word;
                           ">
-                  support@theskytrails.com
+                          Info@theskytrails.com
                 </div>
               </div>
             </div>
@@ -1189,7 +1189,7 @@ module.exports = {
                             word-wrap: break-word;
                             margin:0;
                           ">
-                  +91 8917972301
+                  +91 9209793097
                 </p>
               </div>
               <div style="
@@ -1223,7 +1223,7 @@ module.exports = {
                             font-weight: 600;
                             word-wrap: break-word;
                           ">
-                  support@theskytrails.com
+                          Info@theskytrails.com
                 </div>
               </div>
             </div>
@@ -1659,7 +1659,7 @@ module.exports = {
                             word-wrap: break-word;
                             margin:0;
                           ">
-                  +91 8917972301
+                  +91 9209793097
                 </p>
               </div>
               <div style="
@@ -1693,7 +1693,7 @@ module.exports = {
                             font-weight: 600;
                             word-wrap: break-word;
                           ">
-                  support@theskytrails.com
+                          Info@theskytrails.com
                 </div>
               </div>
             </div>
@@ -2012,7 +2012,7 @@ module.exports = {
                   Boarding Address
                 </div>
                 <div style="width: 50%; margin-right: 0;">
-                  RedBus Support No: 080-30916657
+                  Bus Support No: 080-30916657
                 </div>
               </div>
       
@@ -2056,7 +2056,7 @@ module.exports = {
                 </div>
                 <div>
                   <div>
-                    RedBus Help Line Numbers
+                    Bus Help Line Numbers
                   </div>
                   <div style="display: flex; gap: 10px;">
                     <div>
@@ -2223,7 +2223,7 @@ module.exports = {
                               word-wrap: break-word;
                               margin: 0;
                             ">
-                    +91 8917972301
+                    +91 9209793097
                   </p>
                 </div>
                 <div style="
@@ -2257,7 +2257,7 @@ module.exports = {
                               font-weight: 600;
                               word-wrap: break-word;
                             ">
-                    support@theskytrails.com
+                      Info@theskytrails.com
                   </div>
                 </div>
               </div>
@@ -2571,7 +2571,7 @@ module.exports = {
                   Boarding Address
                 </div>
                 <div style="width: 50%; margin-right: 0;">
-                  RedBus Support No: 080-30916657
+                  Bus Support No: 080-30916657
                 </div>
               </div>
       
@@ -2615,7 +2615,7 @@ module.exports = {
                 </div>
                 <div>
                   <div>
-                    RedBus Help Line Numbers
+                    Bus Help Line Numbers
                   </div>
                   <div style="display: flex; gap: 10px;">
                     <div>
@@ -2782,7 +2782,7 @@ module.exports = {
                               word-wrap: break-word;
                               margin: 0;
                             ">
-                    +91 8917972301
+                    +91 9209793097
                   </p>
                 </div>
                 <div style="
@@ -2816,7 +2816,7 @@ module.exports = {
                               font-weight: 600;
                               word-wrap: break-word;
                             ">
-                    support@theskytrails.com
+                            Info@theskytrails.com
                   </div>
                 </div>
               </div>
@@ -3474,7 +3474,7 @@ module.exports = {
                     word-wrap: break-word;
                   "
                 >
-                  +91 8917972301
+                  +91 9209793097
                 </div>
               </div>
               <div
@@ -3516,7 +3516,7 @@ module.exports = {
                     word-wrap: break-word;
                   "
                 >
-                  HB374-RE@Skytrails.com
+                Info@theskytrails.com
                 </div>
               </div>
             </div>
@@ -4174,7 +4174,7 @@ module.exports = {
                       word-wrap: break-word;
                     "
                   >
-                    +91 8917972301
+                    +91 9209793097
                   </div>
                 </div>
                 <div

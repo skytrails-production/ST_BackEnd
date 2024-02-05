@@ -63,6 +63,8 @@ exports.packageBooking = async (req, res, next) => {
         responseMessage: responseMessage.USERS_NOT_FOUND,
       });
     }
+    const addition=Number(adults)+Number(child);
+    console.log("addition====",addition);
     const object = {
       packageId: packageId,
       userId: isUserExist._id,
@@ -74,7 +76,7 @@ exports.packageBooking = async (req, res, next) => {
       adults: adults,
       child: child,
       packageType: packageType,
-      noOfPeople:noOfPeople
+      noOfPeople:addition
     };
     const result = await createPackage(object);
     const contactNo='+91'+phone

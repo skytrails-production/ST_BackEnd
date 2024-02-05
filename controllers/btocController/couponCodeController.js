@@ -296,8 +296,11 @@ exports.CouponApplied=async(req,res,next)=>{
       if (!isUserRegister) {
         return res.status(statusCode.badRequest).send({statusCode: statusCode.badRequest,responseMessage: responseMessage.PEFA_NOT_REGISTER});
       }
-      couponUser.push(isUserExist._id);
-   const resultData=await updateCoupon({_id:isCouponExist._id},{userApplied: couponUser});
+      const resultData = await updateCoupon(
+        { _id: isCouponExist._id },
+        { $push: { userApplied: isUserExist._id } }
+      );
+
     await updateBookingEvent({_id:isUserRegister._id},{isCoupanApplied:true});
     return res.status(statusCode.OK).json({statusCode: statusCode.OK,responseMessage: responseMessage.COUPON_APPLIED_SUCCESS,result:resultData});
     }
