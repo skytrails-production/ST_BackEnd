@@ -306,6 +306,7 @@ exports.pefaEventBooking = async (req, res, next) => {
       deviceToken,
       eventDate,
       eventId,
+      noOfMember,
       profession
     } = req.body;
     const isUserExist = await findUserData({
@@ -344,8 +345,11 @@ exports.pefaEventBooking = async (req, res, next) => {
       profession:profession,
       tickets: [],
     };
-    const ticketNumber = await generateUniqueRandomString(15);
+    for (var i = 0; i < noOfMember; i++) {
+       const ticketNumber = await generateUniqueRandomString(15);
     object.tickets.push(ticketNumber);
+    }
+   
     const result = await createBookingEvent(object);
     const obj = {
       title: "Mohali",
@@ -395,8 +399,25 @@ exports.pefaEventBooking = async (req, res, next) => {
       "event4_v3"
     );
     const dateNot=new Date().toISOString()
-    const messageTitle="TheSkyTrails PEFA2024";
-    const messageBody=`This notification regarding your pefa event booking.......${CurrentDate},😂😂😂😂😍😍😍`
+    const messageTitle="🌟 PEFA 2024 Event Booking Confirmed! Upgrade to VIP Experience Unlocked! 🌟";
+    const messageBody=`
+    Dear ${name}😎,
+
+    We're delighted to confirm your booking for the upcoming PEFA 2024—get ready for an unforgettable experience! 🎉
+    
+    Event Details:
+    📅 Date: ${eventDate1}
+    🕒 Time: 5 PM sharp
+    📍 Venue: CGC Mohali
+    
+    But wait, there's more! 😍🌟 You're one of our lucky users, and we're thrilled to upgrade your pass to an exclusive VIP experience. 🎁 Get ready for premium perks and a night to remember!
+    
+    Keep an eye on your inbox for the updated pass details—your VIP journey awaits! ✨😍
+    
+    Thank you for choosing us. We can't wait to elevate your event experience!
+    
+    Best Regards
+    TheSkyTrails pvt ltd`
     await commonPushFunction.pushNotification(deviceToken,messageTitle,messageBody)
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,

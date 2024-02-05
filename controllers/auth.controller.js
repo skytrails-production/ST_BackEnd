@@ -800,7 +800,7 @@ exports.getAllBusBookingList = async (req, res, next) => {
     const pipeline = [
       {
         $lookup: {
-          from: "users",
+          from: "userBtoC",
           localField: "userId",
           foreignField: "_id",
           as: "userDetails",
