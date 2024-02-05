@@ -20,5 +20,5 @@ module.exports = function (app) {
   app.get('/skyTrails/api/coupons/getCoupons',couponController.getAllCoupons);
   app.get('/skyTrails/api/coupons/getCouponsById',couponController.getCouponById);
   app.put('/skyTrails/api/coupons/applyCoupon',[authJwt.verifcationToken],SchemaValidator(schemas.applyCouponSchema),couponController.applyCoupon);
-
+  app.get('/skyTrails/api/coupons/couponApplied/:couponCode',[authJwt.verifcationToken],couponController.CouponApplied)
 };

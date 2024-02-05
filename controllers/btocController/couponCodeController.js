@@ -4,7 +4,7 @@ const status = require("../../enums/status");
 const userType = require("../../enums/userType");
 const sendSMS = require("../../utilities/sendSms");
 const commonFunction = require("../../utilities/commonFunctions");
-const adminModel=require("../../model/user.model")
+const adminModel=require("../../model/user.model");
 //*****************************************SERVICES************************************************/
 const { userServices } = require("../../services/userServices");
 const {
@@ -205,7 +205,6 @@ exports.getCouponById = async (req, res, next) => {
 exports.applyCoupon = async (req, res, next) => {
   try {
     const { couponCode } = req.body;
-    let couponUser = [];
     const isUserExist = await findUserData({_id: req.userId,status: status.ACTIVE });
     if (!isUserExist) {
       return res.status(statusCode.NotFound).send({
@@ -235,11 +234,11 @@ exports.applyCoupon = async (req, res, next) => {
         result:isCouponExist
       });
     }
-    couponUser.push(isUserExist._id);
-   await updateCoupon({_id:isCouponExist._id}, {
-      userApplied: couponUser,
-    });
-    await updateBookingEvent({_id:isUserRegister._id},{isCoupanApplied:true})
+  //   couponUser.push(isUserExist._id);
+  //  await updateCoupon({_id:isCouponExist._id}, {
+  //     userApplied: couponUser,
+  //   });
+  //   await updateBookingEvent({_id:isUserRegister._id},{isCoupanApplied:true});
     return res
       .status(statusCode.OK)
       .json({
@@ -262,10 +261,10 @@ exports.applyCoupon = async (req, res, next) => {
         responseMessage: responseMessage.ALREDY_COUPOUN_APPLIED,
       });
     }
-    couponUser.push(isUserExist._id);
-   const result= await updateCoupon({_id:isCouponExist._id}, {
-      userApplied: couponUser,
-    });
+  //   couponUser.push(isUserExist._id);
+  //  const result= await updateCoupon({_id:isCouponExist._id}, {
+  //     userApplied: couponUser,
+  //   });
     return res
       .status(statusCode.OK)
       .json({
@@ -279,3 +278,33 @@ exports.applyCoupon = async (req, res, next) => {
   }
 };
 
+exports.CouponApplied=async(req,res,next)=>{
+  try {
+    const { couponCode } = req.params.couponCode;
+    console.log("req.params.couponCode",req.params.couponCode)
+    let couponUser = [];
+    const isUserExist = await findUserData({_id: req.userId,status: status.ACTIVE });
+    if (!isUserExist) {
+      return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.USERS_NOT_FOUND});
+    }
+    const isCouponExist = await findCoupon({ couponCode: req.params.couponCode });
+    if (!isCouponExist) {
+      return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.COUPON_NOT_FOUND});
+    }
+    if(isCouponExist.couponCode==="PEFA2024"){
+        const isUserRegister = await findBookingEventData({userId: isUserExist._id,status:status.ACTIVE});
+      if (!isUserRegister) {
+        return res.status(statusCode.badRequest).send({statusCode: statusCode.badRequest,responseMessage: responseMessage.PEFA_NOT_REGISTER});
+      }
+      couponUser.push(isUserExist._id);
+   const resultData=await updateCoupon({_id:isCouponExist._id},{userApplied: couponUser});
+    await updateBookingEvent({_id:isUserRegister._id},{isCoupanApplied:true});
+    return res.status(statusCode.OK).json({statusCode: statusCode.OK,responseMessage: responseMessage.COUPON_APPLIED_SUCCESS,result:resultData});
+    }
+    const result= await updateCoupon({_id:isCouponExist._id},{userApplied: couponUser});
+    return res.status(statusCode.OK).json({statusCode: statusCode.OK,responseMessage: responseMessage.COUPON_APPLIED_SUCCESS,result:result});
+  } catch (error) {
+    console.log("error while apply coupon");
+    return next(error);
+  }
+}

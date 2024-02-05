@@ -130,10 +130,16 @@ exports.userLogin = async (req, res) => {
 };
 
 //------------------------Recharge API----------------------------//
+const header= {
+  UserName: "Skytrial",
+  Password: "trail@441",
+  SponsorFormNo: "1000053099",
+}
 
 exports.getService = async (req, res) => {
   try {
-    const { header, data } = req.body;
+   
+    const { data } = req.body;
     let params = { header: header, data: data };
     const response = await axios.post(`${api.getServiceRechegeURL}`, params, {
       headers: {
@@ -152,7 +158,8 @@ exports.getService = async (req, res) => {
 
 exports.getRechargePlan = async (req, res) => {
   try {
-    const { header, data } = req.body;
+    
+    const {data } = req.body;
     let params = { header: header, data: data };
     const response = await axios.post(`${api.getRechargePlanULR}`, params, {
       headers: {
@@ -171,7 +178,7 @@ exports.getRechargePlan = async (req, res) => {
 
 exports.getRechargePlanDetails = async (req, res) => {
   try {
-    const { header, data } = req.body;
+    const { data } = req.body;
     let params = { header: header, data: data };
     const response = await axios.post(`${api.getPlanDetailURL}`, params, {
       headers: {
@@ -190,7 +197,7 @@ exports.getRechargePlanDetails = async (req, res) => {
 
 exports.rechageRequest = async (req, res) => {
   try {
-    const { header, data } = req.body;
+    const { data } = req.body;
     let params = { header: header, data: data };
     const response = await axios.post(`${api.rechageRequestURL}`, params, {
       headers: {

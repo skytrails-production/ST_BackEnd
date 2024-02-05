@@ -359,7 +359,7 @@ exports.pefaEventBooking = async (req, res, next) => {
     const isCouponExist=await findCoupon({couponCode:"PEFA2024"});
     if(isCouponExist){
       const eventname = "*PEFA - Punjab Entertainment Festival and Awards!*";
-    const eventDate1 = "2Mar2024 5pm";
+    const eventDate1 = "*2 Mar 2024 5 pm*";
     const date = `${eventDate1}`;
     const contactNo = "+91" + mobileNumber;
     const smsFormat = `PEFA - Punjab Entertainment Festival and Awards! on ${eventDate1}`;
