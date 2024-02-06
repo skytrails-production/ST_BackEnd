@@ -26,6 +26,7 @@ module.exports = function (app) {
     controller.internationalDelete
   );
   app.get("/skyTrails/international/getAll", controller.internationalgetAll);
+  app.get("/skyTrails/packages/getAllcrm",controller.crmPackage);
   app.get("/skyTrails/packagecitylist",controller.packageCityList);
   app.post(
     "/skyTrails/international/setactive",

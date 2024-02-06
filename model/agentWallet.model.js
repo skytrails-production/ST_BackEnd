@@ -11,6 +11,9 @@ const AgentWallet=new mongoose.Schema({
     paymentId : {
         type:String,
     },
+    easepayid:{
+        type:String,
+    },
     amount :{
         type:Number,
     },

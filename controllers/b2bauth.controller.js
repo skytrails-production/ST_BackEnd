@@ -1407,6 +1407,7 @@ exports.easebuzzPayment = async (req, res, next) => {
         amount: amount,
         paymentId: txnId,
         bookingType: bookingType,
+        easepayid:'NA'
       };
       const createData = await agentWallets.create(object);
       res.status(201).send({
@@ -1426,7 +1427,7 @@ exports.easebuzzPayment = async (req, res, next) => {
 //success response********************************************************
 exports.paymentSuccess = async (req, res, next) => {
   try {
-    // console.log("successVerifyApi==",successVerifyApi)
+    // console.log("successVerifyApi==",req.body.easepayid);
     const { merchantTransactionId } = req.query;
     const isTransactionExist = await agentWallets.find({
       paymentId: merchantTransactionId,
@@ -1436,7 +1437,7 @@ exports.paymentSuccess = async (req, res, next) => {
       // console.log("isTransactionExist=========",isTransactionExist);
       const result = await agentWallets.findOneAndUpdate(
         { _id: isTransactionExist[0]._id },
-        { $set: { transactionStatus: "SUCCESS" } },
+        { $set: { transactionStatus: "SUCCESS",easepayid: req.body.easepayid  } },
         { new: true }
       );
 

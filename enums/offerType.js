@@ -6,6 +6,7 @@ module.exports = Object.freeze({
     CABS: 'CABS',
     BANKOFFERS: 'BANKOFFERS',
     BUS:'BUS',
+    RECHARGES:'RECHARGES',
     EVENTS:'EVENTS',
     PACKAGES:'PACKAGES',
     FORALL:"FORALL"
