@@ -10,7 +10,7 @@ mongoose.pluralize(null);
 const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const transactionSchema = mongoose.Schema({
+const rechargeSchema = mongoose.Schema({
     userId: {
         type: Schema.Types.ObjectId,
         ref: "userBtoC",
@@ -18,33 +18,31 @@ const transactionSchema = mongoose.Schema({
     amount: { 
         type: Number
      },
+    mobileOperator:{
+        type:String
+    },
+    mobileNumber:{
+        type:String
+    },
     paymentId:{
         type:String
     },
-    orderId:{
-        type:String
-    },
-    phoneNumber:{
+    easeBuzzPayId:{
         type:String
     },
     bookingType: {
         type: String,
-        enum: [offerType.FLIGHTS, offerType.HOTELS, offerType.BUS],
+        // enum: [offerType.FLIGHTS, offerType.HOTELS, offerType.BUS,offerType.EVENTS],
     },
-    bookingStatus: {
-        type: String,
-        enum: [paymentStatus.PENDING, paymentStatus.SUCCESS, paymentStatus.FAILED],
-        default: paymentStatus.FAILED
-    },
-    transactionStatus:{
-        type: String,
-        enum: ['REFUNDED','NOT_REFUNDED'],
-        default:'NOT_REFUNDED'
-    }
+    // transactionStatus: {
+    //     type: String,
+    //     enum: [paymentStatus.PENDING, paymentStatus.SUCCESS, paymentStatus.FAILED],
+    //     default: paymentStatus.SUCCESS
+    // }
 
 }, { timestamps: true })
 
-transactionSchema.plugin(aggregatePaginate);
+rechargeSchema.plugin(aggregatePaginate);
 
-transactionSchema.plugin(mongoosePaginate);
-module.exports = mongoose.model("userFailedBookings", transactionSchema);
+rechargeSchema.plugin(mongoosePaginate);
+module.exports = mongoose.model("userRecharges", rechargeSchema);

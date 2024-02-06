@@ -9,5 +9,6 @@ module.exports = Object.freeze({
     RECHARGES:'RECHARGES',
     EVENTS:'EVENTS',
     PACKAGES:'PACKAGES',
-    FORALL:"FORALL"
+    FORALL:"FORALL",
+    RECHARGE:"RECHARGE"
 })

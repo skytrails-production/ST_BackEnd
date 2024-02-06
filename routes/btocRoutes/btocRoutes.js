@@ -1,4 +1,5 @@
 // const {upload} = require('../../utilities/uploadHandler');
+const Controller=require('../../controllers/btocController/controller')
 const busBookingController = require('../../controllers/btocController/busBookingController');
 const flightBookingController=require('../../controllers/btocController/flightBookingController');
 const hotelBookingController=require('../../controllers/btocController/hotelBookingController');
@@ -10,6 +11,7 @@ const userTransactionsController=require('../../controllers/btocController/userT
 const userSearchHistoryController=require('../../controllers/btocController/userSearchesController');
 const userBookingFailed=require('../../controllers/btocController/userTransactionController');
 const webAdvertismentController=require('../../controllers/btocController/webAdvertisemnetController');
+const userRechargeController=require('../../controllers/btocController/userRechargeController')
 const schemas = require('../../utilities/schema.utilities');
 const SchemaValidator = require('../../utilities/validations.utilities');
 // const upload=require('../../utilities/uploadHandler')
@@ -75,4 +77,11 @@ module.exports = function (app) {
     app.get('/skyTrails/bus/bookings/:bookingId',busBookingController.getUserBusBookingById);
     app.get('/skyTrails/package/bookings/:bookingId',packageController.getPackageEnquiryById);
     app.post('/skyTrails/api/notification/sendNotification',webAdvertismentController.sendNotification);
+
+    app.post('/skyTrails/api/user/recharge/createRechareData',[authJwt.verifcationToken],userRechargeController.createRechargeHistory)
+    
+    app.get("/skyTrails/api/user/getRechargeHistory",[authJwt.verifcationToken], userRechargeController.getReachargeHistory);
+    app.get("/skyTrails/api/user/getTransactionHistory",[authJwt.verifcationToken], Controller.getReachargeHistory);
+    app.get("/skyTrails/api/user/getUrl/:mobileNumber",Controller.getAppLink)
+
 }

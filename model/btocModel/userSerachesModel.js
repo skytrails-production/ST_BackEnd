@@ -9,7 +9,7 @@ const userSearchSchema = new mongoose.Schema(
   {
     userId: {
       type: Schema.Types.ObjectId,
-      ref: "users",
+      ref: "userBtoC",
     },
     origin: {
       type: String,

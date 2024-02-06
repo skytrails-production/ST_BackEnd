@@ -13,7 +13,7 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 const transactionSchema = mongoose.Schema({
     userId: {
         type: Schema.Types.ObjectId,
-        ref: "users",
+        ref: "userBtoC",
     },
     amount: { 
         type: Number

@@ -11,7 +11,7 @@ const likeSchema = new mongoose.Schema(
     likes: [
       {
         type: mongoose.Types.ObjectId,
-        ref: "users",
+        ref: "userBtoC",
       },
     ],
     status: {

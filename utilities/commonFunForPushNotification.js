@@ -50,7 +50,7 @@ const pushNotification = async (deviceToken, title, body) => {
     try {
       const serverKey = fsmserverkey; // Replace with your actual server key
       const fcm = new FCM(serverKey);
-
+console.log("body======",body)
         var message = {
             to: deviceToken,
             "content_avilable": true,
@@ -59,7 +59,7 @@ const pushNotification = async (deviceToken, title, body) => {
                 body: body
             },
         };
-
+console.log("message=======",message)
         const response = await new Promise((resolve, reject) => {
             fcm.send(message, (err, response) => {
                 if (err) {

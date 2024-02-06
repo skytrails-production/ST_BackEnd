@@ -12,18 +12,32 @@ const s3 = new aws.S3({
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 });
 
+
 exports.ssdcRegistration = async (req, res) => {
   try {
     const data = req.body;
-    const response = await SsdcModel.create(data);
-    await commonFunctions.ssdcConfirmationMail(response);
-    msg = "Registration Successfully Submit!";
-    actionCompleteResponse(res, response, msg);
+    // Check if the data already exists
+    const existingRecord = await SsdcModel.findOne(data);
+    // console.log(existingRecord,"data")
+    if (existingRecord) {
+      // If the data already exists, send details in the response
+      actionCompleteResponse(res, existingRecord, "Data already registered");
+      await commonFunctions.ssdcConfirmationMail(existingRecord);
+    } else {
+      // If the data does not exist, create a new record
+      const response = await SsdcModel.create(data);
+      await commonFunctions.ssdcConfirmationMail(response);
+      msg = "Registration Successfully Submit!";
+      actionCompleteResponse(res, response, msg);
+    }
   } catch (err) {
     // console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
+
+
+
 
 exports.ssdcLeads = async (req, res) => {
   try {

@@ -18,6 +18,19 @@ const userType = require("../../enums/userType");
 const sendSMS = require("../../utilities/sendSms");
 const commonFunction = require("../../utilities/commonFunctions");
 const whatsappAPIUrl = require("../../utilities/whatsApi");
+const {
+  transactionModelServices,
+} = require("../../services/btocServices/transactionServices");
+const {
+  createUsertransaction,
+  findUsertransaction,
+  getUsertransaction,
+  deleteUsertransaction,
+  userUsertransactionList,
+  updateUsertransaction,
+  paginateUsertransaction,
+  countTotalUsertransaction,
+} = transactionModelServices;
 //******************************************User SignUp api*************************/
 
 exports.login = async (req, res, next) => {
@@ -625,3 +638,57 @@ exports.deleteUserAccount = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.getReachargeHistory=async(req,res,next)=>{
+  try {
+    const isUserExist = await findUserData({
+      _id: req.userId,
+      status: status.ACTIVE,
+    });
+    if (!isUserExist) {
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+    const result=await userUsertransactionList({userId:isUserExist._id,bookingType:"RECHARGES"});
+    if (result.length === 0 || !result) {
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.DATA_NOT_FOUND,
+      });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      message: responseMessage.DATA_FOUND,
+      result:result
+    });
+  } catch (error) {
+    console.log("error while trying to get history of user recharge====",error);
+    return next(error)
+  }
+}
+
+exports.getAppLink=async(req,res,next)=>{
+  try {
+    const mobileNumber=req.params;
+    const contactNo = "+91" + req.params.mobileNumber;;
+    const IOS = "https://apps.apple.com/in/app/the-skytrails/id6475768819";
+    const Andriod =
+      "https://play.google.com/store/apps/details?id=com.skytrails&pli=1";
+      const result = await whatsappAPIUrl.sendMessageWhatsApp(
+        contactNo,
+        IOS,
+        Andriod,
+        "sendurl"
+      );
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        message: responseMessage.URL_SEND,
+        result: result,
+      });
+  } catch (error) {
+    console.log("error while send link",error);
+    return next(error)
+  }
+}

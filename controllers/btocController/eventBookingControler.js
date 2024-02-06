@@ -299,16 +299,7 @@ exports.bookFreeEvents = async (req, res, next) => {
 //*********************************PEFA EVENT BOOKING*****************************/
 exports.pefaEventBooking = async (req, res, next) => {
   try {
-    const {
-      name,
-      mobileNumber,
-      city,
-      deviceToken,
-      eventDate,
-      eventId,
-      noOfMember,
-      profession
-    } = req.body;
+    const {name,mobileNumber,city,deviceToken,eventDate,eventId,noOfMember,profession} = req.body;
     const isUserExist = await findUserData({
       _id: req.userId,
       status: status.ACTIVE,
@@ -329,9 +320,16 @@ exports.pefaEventBooking = async (req, res, next) => {
         message: responseMessage.EVENT_NOT_FOUND,
       });
     }
+    const isBookingExist=await findBookingEventData({userId:isUserExist._id,eventId:isEventExist._id});
+    if(isBookingExist){
+      return res.status(statusCode.Conflict).send({
+        statusCode: statusCode.Conflict,
+        message: responseMessage.EVENT_ALREADY_BOOKED,
+      });
+    }
     await updateEvent(
       { _id: eventId, "slot.startTime": "17:00" },
-      { $inc: { "slot.$.peoples": -1 } }
+      { $inc: { "slot.$.peoples": -noOfMember } }
     );
     await updateUser({_id:isUserExist._id},{deviceToken:deviceToken})
     const object = {
@@ -361,13 +359,23 @@ exports.pefaEventBooking = async (req, res, next) => {
       termsAndCond: ["coupon will be apply upto 100rs/"],
     };
     const isCouponExist=await findCoupon({couponCode:"PEFA2024"});
+    const messageBody=`Dear ${name} 😎,
+    We're delighted to confirm your booking for the upcoming PEFA 2024—get ready for an unforgettable experience! 🎉
+    Event Details:
+    📅 Date:2 Mar 2024 5pm
+    🕒 Time: 5 PM sharp
+    📍 Venue: CGC Mohali
+    But wait, there's more! 😍🌟 You're one of our lucky users, and we're thrilled to upgrade your pass to an exclusive VIP experience. 🎁 Get ready for premium perks and a night to remember!
+    Keep an eye on your inbox for the updated pass details—your VIP journey awaits! ✨😍
+    Thank you for choosing us. We can't wait to elevate your event experience!
+    Best Regards
+    TheSkyTrails pvt ltd`
     if(isCouponExist){
       const eventname = "*PEFA - Punjab Entertainment Festival and Awards!*";
     const eventDate1 = "*2 Mar 2024 5 pm*";
     const date = `${eventDate1}`;
     const contactNo = "+91" + mobileNumber;
-    const smsFormat = `PEFA - Punjab Entertainment Festival and Awards! on ${eventDate1}`;
-    console.log("smsFormat===========",smsFormat);
+    const smsFormat = `PEFA - Punjab Entertainment Festival and Awards! on 2 Mar 2024 5 pm`;
     await sendSMS.sendSMSEventEnquiry(mobileNumber,smsFormat);
     await whatsappAPIUrl.sendMessageWhatsApp(
       contactNo,
@@ -377,7 +385,7 @@ exports.pefaEventBooking = async (req, res, next) => {
     );
     const messageTitle="TheSkyTrails PEFA2024";
     console.log("CurrentDate-------",CurrentDate)
-    const messageBody=`This notification regarding your pefa event booking.welcome to ${eventname}....${CurrentDate}`
+    // const messageBody=`This notification regarding your pefa event booking.welcome to ${eventname}....${CurrentDate}`
     await commonPushFunction.pushNotification(deviceToken,messageTitle,messageBody)
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
@@ -386,11 +394,11 @@ exports.pefaEventBooking = async (req, res, next) => {
     });
     }
     const createPefaCoupon = await createCoupon(obj);
-    const eventname = "*PEFA - Punjab Entertainment Festival and Awards!*";
-    const eventDate1 = "12-Mar-2024 5pm";
+    const eventname = "*PEFA Punjab Entertainment Festival and Awards!*";
+    const eventDate1 = "2 Mar 2024 5pm";
     const date = `${eventDate1}`;
     const contactNo = "+91" + mobileNumber;
-    const smsFormat = `PEFA - Punjab Entertainment Festival and Awards! on ${eventDate1}`;
+    const smsFormat = `PEFA - Punjab Entertainment Festival and Awards! on 2 Mar 2024 5pm`;
      await sendSMS.sendSMSEventEnquiry(mobileNumber,smsFormat);
     await whatsappAPIUrl.sendMessageWhatsApp(
       contactNo,
@@ -400,24 +408,6 @@ exports.pefaEventBooking = async (req, res, next) => {
     );
     const dateNot=new Date().toISOString()
     const messageTitle="🌟 PEFA 2024 Event Booking Confirmed! Upgrade to VIP Experience Unlocked! 🌟";
-    const messageBody=`
-    Dear ${name}😎,
-
-    We're delighted to confirm your booking for the upcoming PEFA 2024—get ready for an unforgettable experience! 🎉
-    
-    Event Details:
-    📅 Date: ${eventDate1}
-    🕒 Time: 5 PM sharp
-    📍 Venue: CGC Mohali
-    
-    But wait, there's more! 😍🌟 You're one of our lucky users, and we're thrilled to upgrade your pass to an exclusive VIP experience. 🎁 Get ready for premium perks and a night to remember!
-    
-    Keep an eye on your inbox for the updated pass details—your VIP journey awaits! ✨😍
-    
-    Thank you for choosing us. We can't wait to elevate your event experience!
-    
-    Best Regards
-    TheSkyTrails pvt ltd`
     await commonPushFunction.pushNotification(deviceToken,messageTitle,messageBody)
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,

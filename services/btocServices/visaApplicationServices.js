@@ -1,4 +1,4 @@
-const visaApplicationServices = require('../../model/btocModel/applyVisaModel');
+const applyVisaModel = require('../../model/btocModel/applyVisaModel');
 const userType = require("../../enums/userType");
 const status = require("../../enums/status");
 //**************************************WORK BY */
@@ -7,23 +7,23 @@ const status = require("../../enums/status");
 
 const visaApplicationServices = {
     createUserVisaApplication: async (insertObj) => {
-        return await userSerachesModel.create(insertObj);
+        return await applyVisaModel.create(insertObj);
     },
 
     findUserVisaApplication: async (query) => {
-        return await userSerachesModel.findOne(query)
+        return await applyVisaModel.findOne(query)
     },
     deleteUserVisaApplication: async (query) => {
-        return await userSerachesModel.deleteOne(query);
+        return await applyVisaModel.deleteOne(query);
     },
     userVisaApplicationList: async (query) => {
-        return await userSerachesModel.find(query).populate('userId').exec();
+        return await applyVisaModel.find(query).populate('userId').exec();
     },
     updateUserVisaApplication: async (query, updateObj) => {
-        return await userSerachesModel.findOneAndUpdate(query, updateObj, { new: true });
+        return await applyVisaModel.findOneAndUpdate(query, updateObj, { new: true });
     },
     countTotalUserVisaApplication: async (body) => {
-        return await userSerachesModel.countDocuments(body)
+        return await applyVisaModel.countDocuments(body)
     }
 }
 
