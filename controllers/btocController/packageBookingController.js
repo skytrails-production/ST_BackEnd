@@ -150,7 +150,7 @@ exports.getAllPackageEnquiry=async(req,res,next)=>{
 
 exports.getPackageEnquiryById=async(req,res,next)=>{
   try {
-    console.log("req.params.bookingId,===",req.params.bookingId,)
+    // console.log("req.params.bookingId,===",req.params.bookingId,)
     const response = await findPackagePopulate({
       _id: req.params.bookingId,
     });
