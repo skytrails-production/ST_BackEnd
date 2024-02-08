@@ -55,7 +55,6 @@ async function sendMessageWhatsApp(number, var1,var2,temName) {
       }
     };
     const response= await axios.request(options);
-    console.log(".data.messages[0]=====",response.data);
     if(response.data.messages[0]){
       return response.data.messages[0];
     }

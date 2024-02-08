@@ -418,16 +418,16 @@ exports.latestPackages = async (req, res) => {
 
 exports.beachesPackages = async (req, res) => {
   try {
-    const data = req.query;
+    const data = req.query.keyword;
     let query = {};
+  //  console.log(data,"datqa")
+    // for (var key in data) {
+      // if (Object.hasOwnProperty.call(data, key)) {
+        // var value = data[key];
 
-    for (var key in data) {
-      if (Object.hasOwnProperty.call(data, key)) {
-        var value = data[key];
-
-        query[`insclusions.${key}`] = value;
-      }
-    }
+        query[`insclusions.${data}`] = "true";
+      // }
+    // }
 
     // console.log('Generated Query:', query);
 
@@ -458,12 +458,13 @@ exports.domesticAndInternational = async (req, res) => {
 
     let query;
 
-    if (country === "India") {
-      // Handle query for Indian packages
-      query = { country: "India" };
+    if (country === "All") {
+      // Handle query for all packages 
+      query = {};      
     } else {
       // Handle query for other countries
-      query = {};
+      query = { country: country };
+      
     }
 
     const packages = await internationl.find({ $and: [{ is_active: 1 }, query] });
@@ -471,12 +472,11 @@ exports.domesticAndInternational = async (req, res) => {
     if (packages.length > 0) {
       // const msg = `आपने किया है ${country === 'India' ? 'देशी' : 'विदेशी'} पैकेजं सर्च`;
       const msg = `packages found for ${
-        country === "India" ? "Indian" : "others countries"
-      }`;
+        country === "All" ?  "All Countries":country }`;
       actionCompleteResponse(res, packages, msg);
     } else {
       const msg = `No packages found for ${
-        country === "India" ? "Indian" : "other"
+        country === country ? country : "All Countries"
       } countries`;
       actionCompleteResponse(res, [], msg);
     }

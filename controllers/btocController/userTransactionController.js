@@ -10,7 +10,13 @@ const { URLSearchParams } = require("url");
 const Razorpay = require("razorpay");
 const { v4: uuidv4 } = require("uuid");
 const uuid = uuidv4();
+const client_secret = process.env.CASHFREE_API_KEY;
+const clientId = process.env.CASHFREE_API_ID;
+// const Cashfree=require("cashfree-pg"); 
 
+// Cashfree.XClientId = process.env.CASHFREE_API_ID;
+// Cashfree.XClientSecret = process.env.CASHFREE_API_KEY;
+// Cashfree.XEnvironment = Cashfree.Environment.SANDBOX;
 const {
   actionCompleteResponse,
   sendActionFailedResponse,
@@ -891,13 +897,13 @@ exports.makeCashfreePayment = async (req, res, next) => {
     console.log("object==>>>>>", object);
     const options = {
       method: "post",
-      url: `https://sandbox.cashfree.com/pg/orders `,
+      url: ` https://api.cashfree.com/pg/orders`,
       headers: {
         accept: "application/json",
-        "x-api-version": "2022-09-01",
+        "x-api-version": "2022-01-01",
         "content-type": "application/json",
-        "x-client-id": clientId,
-        "x-client-secret": client_secret,
+        "x-client-id": "601957620817aa2f1bd8c36094759106",
+        "x-client-secret": "cfsk_ma_prod_16b5005939a07cdb32736d8445fbf1e9_92aea845",
       },
       data: object,
     };
@@ -1033,3 +1039,49 @@ exports.CCEVENUEPayment = async (req, res, next) => {
   }
 };
 
+exports.cashfreeRefund=async(req,res,next)=>{
+  try {
+    const{orderId,amount,refund_id,}=req.body;
+    const refundId = "REFUNDTST" + Date.now();
+    const requestData = {
+      refund_amount: amount,
+      refund_id: refundId
+    };    
+    const options = {
+      method: "post",
+      url: `https://sandbox.cashfree.com/pg/orders/${orderId}/refunds`,
+      headers:{
+        'accept': 'application/json',
+        'content-type': 'application/json',
+        'x-api-version': '2022-01-01',
+        "x-client-id": clientId,
+        "x-client-secret": client_secret,
+      },
+      data: requestData,
+    };
+    // const headers = {
+    //   'accept': 'application/json',
+    //   'content-type': 'application/json',
+    //   'x-api-version': '2022-01-01',
+    //   "x-client-id": clientId,
+    //   "x-client-secret": client_secret,
+    // };
+    const { data } = await axios.request(options);
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.PAYMENT_INTIATE,
+      result: data,
+    });
+    // axios.post(`https://sandbox.cashfree.com/pg/orders/${orderId}/refunds`, requestData, { headers })
+    //   .then(response => {
+    //     console.log('Response:', response.data);
+    //   })
+    //   .catch(error => {
+    //     console.error('Error:', error.response.data);
+    //   });
+  } catch (error) {
+    console.log("error while refund====>>>",error);
+    return next(error);
+
+  }
+}

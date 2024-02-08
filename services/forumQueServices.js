@@ -142,12 +142,11 @@ const forumQueServices={
         },
       ];
    
-      if (questionId) {
-        pipeline.push({
-          $match: { "questionsData.questionId": mongoose.Types.ObjectId(questionId) },
-        });
-      }
-   
+      // if (questionId) {
+      //   pipeline.push({
+      //     $match: { "questionsData.questionId": mongoose.Types.ObjectId(questionId) },
+      //   });
+      // }
       if (userId) {
         pipeline.push({
           $match: { "userDetail.userId": mongoose.Types.ObjectId(userId) },

@@ -49,7 +49,7 @@ const bookEventSchema = new mongoose.Schema(
     },
     eventId: {
       type: Schema.Types.ObjectId,
-      ref: "skyTraislEvents",
+      ref: "skyTrailsEvents",
     },
     tickets: [
        { type: String } 
@@ -59,6 +59,9 @@ const bookEventSchema = new mongoose.Schema(
       default:false
     },
     deviceToken:{type:String},
+    deviceType:{type:String},
+    isluckyUser:{type:Boolean,
+      default:false},
     status: {
       type: String,
       enum: [status.ACTIVE, status.BLOCK, status.DELETE],

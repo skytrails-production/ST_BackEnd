@@ -20,8 +20,8 @@ const userRechargeServices = {
         return await userRechargeModel.find(query).populate('userId').exec();
     },
     userRechargeApplicationfind: async (query) => {
-        return await userRechargeModel.find(query);
-    },
+        return await userRechargeModel.find(query).sort({ createdAt: -1 });
+    },    
     updateUserRechargeApplication: async (query, updateObj) => {
         return await userRechargeModel.findOneAndUpdate(query, updateObj, { new: true });
     },

@@ -2313,6 +2313,28 @@ function welcomeAgentMail(to,pass){
 
 
 function ssdcMail(to){
+
+    const isRomania = to.country === "ROMANIA";
+      const mailData=isRomania ?` <div class="container">
+      <h1>Confirmation of Interview Schedule</h1>
+      <p>Dear ${to.name},</p>
+      <p>We appreciate your interest in joining our team and taking the time to register for the upcoming interview.</p>
+      <p>We are pleased to inform you that your interview has been scheduled for:</p>
+      <ul>
+        <li><strong>Date:</strong> February 18, 2024</li>
+        <li><strong>Time:</strong> 9 AM</li>
+        <li>
+          <strong>Location:</strong><br>
+          NH 1, Village Bhuri Mazara,<br>
+          Tehsil Rajpura,<br>
+          Patiala, Punjab - 140401
+        </li>
+      </ul>
+      <p>Please arrive at least 15 minutes prior to your scheduled time. Should you encounter any unforeseen circumstances or need to reschedule, please contact us at least 24 hours in advance.</p>
+      <p>We look forward to meeting you and discussing the potential opportunities within our organization. Should you have any questions or need further information, please do not hesitate to reach out.</p>
+    </div>`:`<div class="container"><h1>Confirmation of interview to be declared.</h1>
+    <p>Dear ${to.name},</p>
+    <p>Thank you for registering with us. We will be in touch with you shortly.</p></div>`;
     return `<html>
     <head>
       <style>
@@ -2338,24 +2360,7 @@ function ssdcMail(to){
       </style>
     </head>
     <body>
-      <div class="container">
-        <h1>Confirmation of Interview Schedule</h1>
-        <p>Dear ${to.name},</p>
-        <p>We appreciate your interest in joining our team and taking the time to register for the upcoming interview.</p>
-        <p>We are pleased to inform you that your interview has been scheduled for:</p>
-        <ul>
-          <li><strong>Date:</strong> February 18, 2024</li>
-          <li><strong>Time:</strong> 9 AM</li>
-          <li>
-            <strong>Location:</strong><br>
-            NH 1, Village Bhuri Mazara,<br>
-            Tehsil Rajpura,<br>
-            Patiala, Punjab - 140401
-          </li>
-        </ul>
-        <p>Please arrive at least 15 minutes prior to your scheduled time. Should you encounter any unforeseen circumstances or need to reschedule, please contact us at least 24 hours in advance.</p>
-        <p>We look forward to meeting you and discussing the potential opportunities within our organization. Should you have any questions or need further information, please do not hesitate to reach out.</p>
-      </div>
+     ${mailData}
     </body>
   </html>`
 

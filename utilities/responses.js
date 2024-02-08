@@ -102,5 +102,7 @@ module.exports = {
 	POST_DELETED:"Post deleted successfull.",
 	TASK_CREATED:"Task created successfull.!",
 	BLURRY_IMAGE:"image blur , make sure your are in proper light and click a clear picture.!",
-	PEFA_NOT_REGISTER:"This coupon is available for those user , who register for pefa2024 event...!"
+	PEFA_NOT_REGISTER:"This coupon is available for those user , who register for pefa2024 event...!",
+	EVENT_ALREADY_BOOKED:"You are already registerd for this event.!",
+	SUCCESS:"Notification send successfully....!"
 };

@@ -64,7 +64,6 @@ exports.packageBooking = async (req, res, next) => {
       });
     }
     const addition=Number(adults)+Number(child);
-    console.log("addition====",addition);
     const object = {
       packageId: packageId,
       userId: isUserExist._id,
@@ -150,7 +149,7 @@ exports.getAllPackageEnquiry=async(req,res,next)=>{
 
 exports.getPackageEnquiryById=async(req,res,next)=>{
   try {
-    // console.log("req.params.bookingId,===",req.params.bookingId,)
+    console.log("req.params.bookingId,===",req.params.bookingId,)
     const response = await findPackagePopulate({
       _id: req.params.bookingId,
     });

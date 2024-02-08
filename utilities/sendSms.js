@@ -288,7 +288,7 @@ module.exports = {
     }
   },
   sendSMSPackageEnquiry: async (mobileNumber, message) => {
-    const messageContent = `Dear ${message}, Thank you for your package enquiry. Our team is reviewing the details and will get back to you soon. For any queries, reach our website https://theskytrails.com/about Best Regards, TheSkyTrails pvt ltd`;
+    const messageContent = `Dear ${message}, Thank you for your package enquiry. Our team is reviewing the details and will get back to you soon. For any queries, reach our website https://theskytrails.com Best Regards, TheSkyTrails pvt ltd`;
     const url = `http://sms.txly.in/vb/apikey.php?`;
     const params = {
       apikey: key,
@@ -307,7 +307,7 @@ module.exports = {
   },
   sendSMSEventEnquiry: async (mobileNumber, message) => {
     const dta="PEFA2024";
-    const messageContent = `Exciting News! Thank you for securing your spot at ${dta}! We're over the moon to have you with us. Brace yourself for an amazing time! For event specifics, check out https://play.google.com/store/apps/details?id=com.skytrails. Get ready for a blast! See you at the event! TheSkyTrails Pvt Ltd`;
+    const messageContent = `exciting News! Thank you for securing your spot at PEFA2024! We're over the moon to have you with us. Brace yourself for an amazing time! For event specifics, check out https://play.google.com/store/apps/details?id=com.skytrails. Get ready for a blast! See you at the event! TheSkyTrails Pvt Ltd`;
     const url = `http://sms.txly.in/vb/apikey.php?`;
     const params = {
       apikey: key,

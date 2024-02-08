@@ -79,48 +79,54 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
                 </AMA_SecurityHostedUser>
             </soap:Header>        ​
             <soapenv:Body>
-                <Fare_MasterPricerTravelBoardSearch
-            xmlns="http://xml.amadeus.com/FMPTBQ_14_3_1A">
-                    <numberOfUnit>
-                        <unitNumberDetail>
-                            <numberOfUnits>${req.body.px}</numberOfUnits>
-                            <typeOfUnit>PX</typeOfUnit>
-                        </unitNumberDetail>
-                    </numberOfUnit>
-                    <paxReference>
-                        <ptc>ADT</ptc>
-                        <traveller>
-                            <ref>1</ref>
-                        </traveller>
-                    </paxReference>
-                    <fareOptions>
-                        <pricingTickInfo>
-                            <pricingTicketing>
-                                <priceType>IFS</priceType>
-                            </pricingTicketing>
-                        </pricingTickInfo>
-                    </fareOptions>
-                    <itinerary>
-                        <requestedSegmentRef>
-                            <segRef>1</segRef>
-                        </requestedSegmentRef>
-                        <departureLocalization>
-                            <departurePoint>
-                                <locationId>${req.body.from}</locationId>
-                            </departurePoint>
-                        </departureLocalization>
-                        <arrivalLocalization>
-                            <arrivalPointDetails>
-                                <locationId>${req.body.to}</locationId>
-                            </arrivalPointDetails>
-                        </arrivalLocalization>
-                        <timeDetails>
-                            <firstDateTimeDetail>
-                                <date>${req.body.date}</date>
-                            </firstDateTimeDetail>
-                        </timeDetails>
-                    </itinerary>
-                </Fare_MasterPricerTravelBoardSearch>
+            <Fare_MasterPricerTravelBoardSearch xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd="http://www.w3.org/2001/XMLSchema&quot;>
+            <numberOfUnit xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A&quot;>
+                <unitNumberDetail>
+                    <numberOfUnits>1</numberOfUnits>
+                    <typeOfUnit>PX</typeOfUnit>
+                </unitNumberDetail>
+                <unitNumberDetail>
+                    <numberOfUnits>250</numberOfUnits>
+                    <typeOfUnit>RC</typeOfUnit>
+                </unitNumberDetail>
+            </numberOfUnit>
+            <paxReference xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A&quot;>
+                <ptc>ADT</ptc>
+                <traveller>
+                    <ref>${req.body.px}</ref>
+                </traveller>
+            </paxReference>
+            <fareOptions xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A&quot;>
+                <pricingTickInfo>
+                    <pricingTicketing>
+                        <priceType>RP</priceType>
+                        <priceType>ET</priceType>
+                        <priceType>RU</priceType>
+                        <priceType>TAC</priceType>
+                    </pricingTicketing>
+                </pricingTickInfo>
+            </fareOptions>
+            <itinerary xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A&quot;>
+                <requestedSegmentRef>
+                    <segRef>1</segRef>
+                </requestedSegmentRef>
+                <departureLocalization>
+                    <departurePoint>
+                        <locationId>${req.body.from}</locationId>
+                    </departurePoint>
+                </departureLocalization>
+                <arrivalLocalization>
+                    <arrivalPointDetails>
+                        <locationId>${req.body.to}</locationId>
+                    </arrivalPointDetails>
+                </arrivalLocalization>
+                <timeDetails>
+                    <firstDateTimeDetail>
+                        <date>${req.body.date}</date>
+                    </firstDateTimeDetail>
+                </timeDetails>
+            </itinerary>
+        </Fare_MasterPricerTravelBoardSearch>
             </soapenv:Body>
         </soapenv:Envelope>`;
     const headers = {
@@ -130,11 +136,24 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
 
     // console.log("data", data);
 
-    // const response = await axios.post(url,data,{headers} );
+    const response = await axios.post(url,data,{headers} );
+
+    const responseData = extractDataFromResponse(response);
     msg = "Flight Searched Successfully!";
-    actionCompleteResponse(res, response, msg);
+    actionCompleteResponse(res, responseData, msg);
   } catch (err) {
     // console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
+
+
+
+function extractDataFromResponse(response) {
+    
+    return {
+      status: response.status,
+      data: response.data,
+      
+    };
+  }

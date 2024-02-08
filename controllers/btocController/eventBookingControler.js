@@ -51,6 +51,7 @@ const {
   eventBookingList,
   updateBookingEvent,
   countTotalBookingEvent,
+  eventBookingListPopulated,
   getBookingEvent,
 } = eventBookingServices;
 
@@ -299,15 +300,12 @@ exports.bookFreeEvents = async (req, res, next) => {
 //*********************************PEFA EVENT BOOKING*****************************/
 exports.pefaEventBooking = async (req, res, next) => {
   try {
-    const {name,mobileNumber,city,deviceToken,eventDate,eventId,noOfMember,profession} = req.body;
-    const isUserExist = await findUserData({
-      _id: req.userId,
-      status: status.ACTIVE,
-    });
+    const {name,mobileNumber,city,deviceToken,deviceType,eventDate,eventId,noOfMember,profession} = req.body;
+    const isUserExist = await findUserData({_id: req.userId,status: status.ACTIVE,});
     if (!isUserExist) {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,
-        message: responseMessage.USERS_NOT_FOUND,
+        responseMessage: responseMessage.USERS_NOT_FOUND,
       });
     }
     const isEventExist = await findEventData({
@@ -322,8 +320,8 @@ exports.pefaEventBooking = async (req, res, next) => {
     }
     const isBookingExist=await findBookingEventData({userId:isUserExist._id,eventId:isEventExist._id});
     if(isBookingExist){
-      return res.status(statusCode.Conflict).send({
-        statusCode: statusCode.Conflict,
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
         message: responseMessage.EVENT_ALREADY_BOOKED,
       });
     }
@@ -340,6 +338,7 @@ exports.pefaEventBooking = async (req, res, next) => {
       eventDate: eventDate,
       eventId: eventId,
       deviceToken: deviceToken,
+      deviceType:deviceType,
       profession:profession,
       tickets: [],
     };
@@ -347,7 +346,6 @@ exports.pefaEventBooking = async (req, res, next) => {
        const ticketNumber = await generateUniqueRandomString(15);
     object.tickets.push(ticketNumber);
     }
-   
     const result = await createBookingEvent(object);
     const obj = {
       title: "Mohali",
@@ -359,19 +357,8 @@ exports.pefaEventBooking = async (req, res, next) => {
       termsAndCond: ["coupon will be apply upto 100rs/"],
     };
     const isCouponExist=await findCoupon({couponCode:"PEFA2024"});
-    const messageBody=`Dear ${name} 😎,
-    We're delighted to confirm your booking for the upcoming PEFA 2024—get ready for an unforgettable experience! 🎉
-    Event Details:
-    📅 Date:2 Mar 2024 5pm
-    🕒 Time: 5 PM sharp
-    📍 Venue: CGC Mohali
-    But wait, there's more! 😍🌟 You're one of our lucky users, and we're thrilled to upgrade your pass to an exclusive VIP experience. 🎁 Get ready for premium perks and a night to remember!
-    Keep an eye on your inbox for the updated pass details—your VIP journey awaits! ✨😍
-    Thank you for choosing us. We can't wait to elevate your event experience!
-    Best Regards
-    TheSkyTrails pvt ltd`
     if(isCouponExist){
-      const eventname = "*PEFA - Punjab Entertainment Festival and Awards!*";
+    const eventname = "*PEFA - Punjab Entertainment Festival and Awards!*";
     const eventDate1 = "*2 Mar 2024 5 pm*";
     const date = `${eventDate1}`;
     const contactNo = "+91" + mobileNumber;
@@ -384,16 +371,14 @@ exports.pefaEventBooking = async (req, res, next) => {
       "event4_v3"
     );
     const messageTitle="TheSkyTrails PEFA2024";
-    console.log("CurrentDate-------",CurrentDate)
-    // const messageBody=`This notification regarding your pefa event booking.welcome to ${eventname}....${CurrentDate}`
-    await commonPushFunction.pushNotification(deviceToken,messageTitle,messageBody)
+    // await commonPushFunction.pushNotification(result.deviceToken,messageTitle,messageBody);
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.SLOT_BOOKED,
       result: result,
     });
-    }
-    const createPefaCoupon = await createCoupon(obj);
+    }else{
+      const createPefaCoupon = await createCoupon(obj);
     const eventname = "*PEFA Punjab Entertainment Festival and Awards!*";
     const eventDate1 = "2 Mar 2024 5pm";
     const date = `${eventDate1}`;
@@ -406,20 +391,54 @@ exports.pefaEventBooking = async (req, res, next) => {
       date,
       "event4_v3"
     );
-    const dateNot=new Date().toISOString()
-    const messageTitle="🌟 PEFA 2024 Event Booking Confirmed! Upgrade to VIP Experience Unlocked! 🌟";
-    await commonPushFunction.pushNotification(deviceToken,messageTitle,messageBody)
+    // await commonPushFunction.pushNotification(deviceToken,messageTitle,messageBody)
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.SLOT_BOOKED,
       result: result,
     });
+    }
+    
   } catch (error) {
     console.log("error while booking event", error);
     return next(error);
   }
 };
 
+exports.sendNotificationAfterBooking=async(req,res,next)=>{
+  try {
+    const{name,deviceToken}=req.body;
+    const notificationMessage = `🎉 Your PEFA 2024 Booking Confirmation! 🎉`;
+      const messageBody=`Dear ${name} 😎,
+      We're delighted to confirm your booking for PEFA 2024 🎉Event Details:
+      📅 Date:2 Mar 2024 5pm🕒 Time: 5 PM sharp📍Venue: CGC Mohali
+      But wait, there's more! 😍🌟 You're one of our lucky users.! ✨😍Thank you for choosing us. We can't wait to elevate your event experience!Best RegardsTheSkyTrails pvt ltd`
+      const messageTitle="🌟🎉 Your PEFA 2024 Booking Confirmation! 🎉🌟";
+      await commonPushFunction.pushNotification(deviceToken,messageTitle,messageBody);
+      return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.SUCCESS})
+  } catch (error) {
+   console.log("error while send notification"); 
+   return next(error)
+  }
+}
+
+exports.getEventBookingStatus=async(req,res,next)=>{
+  try {
+    const isUserExist = await findUserData({_id: req.userId,status: status.ACTIVE,});
+    if (!isUserExist) {
+      return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.USERS_NOT_FOUND});
+    }
+    const isBookingExist=await eventBookingListPopulated({userId:isUserExist._id});
+    if(!isBookingExist){
+      return res.status(statusCode.OK).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND});
+    }
+    // const dateMoment=
+    return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result:isBookingExist});
+  } catch (error) {
+    console.log("eror while get pefaeventHistory",error);
+    return next(error);
+  }
+}
 
 //generate function**************************************************************************
 // function generateRandomAlphanumeric(length) {
@@ -448,3 +467,4 @@ async function generateUniqueRandomString(length) {
 
   return uniqueString.slice(0, length);
 }
+

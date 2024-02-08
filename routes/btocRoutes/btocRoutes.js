@@ -82,6 +82,6 @@ module.exports = function (app) {
     
     app.get("/skyTrails/api/user/getRechargeHistory",[authJwt.verifcationToken], userRechargeController.getReachargeHistory);
     app.get("/skyTrails/api/user/getTransactionHistory",[authJwt.verifcationToken], Controller.getReachargeHistory);
-    app.get("/skyTrails/api/user/getUrl/:mobileNumber",Controller.getAppLink)
-
+    app.get("/skyTrails/api/user/getUrl/:mobileNumber",Controller.getAppLink);
+    
 }

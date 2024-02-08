@@ -535,8 +535,9 @@ const schemas = {
     name: joi.string().required(),
     mobileNumber: joi.string().required(),
     city: joi.string().required(),
-    deviceToken: joi.string().required(),
-    profession: joi.string().required()
+    deviceToken: joi.string().optional(),
+    profession: joi.string().required(),
+    deviceType:joi.string().optional(),
   }),
 
   

@@ -24,6 +24,9 @@ const eventBookingServices={
     eventBookingList: async (query) => {
         return await bookEventModel.find(query)
     },
+    eventBookingListPopulated: async (query) => {
+        return await bookEventModel.find(query).populate('eventId','location.coordinates image showType age venue').sort({createdAt: -1});
+    },
     updateBookingEvent: async (query, updateObj) => {
         return await bookEventModel.findOneAndUpdate(query, updateObj, { new: true });
     },
