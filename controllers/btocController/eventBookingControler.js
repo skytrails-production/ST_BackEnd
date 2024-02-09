@@ -409,10 +409,11 @@ exports.sendNotificationAfterBooking=async(req,res,next)=>{
   try {
     const{name,deviceToken}=req.body;
     const notificationMessage = `🎉 Your PEFA 2024 Booking Confirmation! 🎉`;
-      const messageBody=`Dear ${name} 😎,
-      We're delighted to confirm your booking for PEFA 2024 🎉Event Details:
-      📅 Date:2 Mar 2024 5pm🕒 Time: 5 PM sharp📍Venue: CGC Mohali
-      But wait, there's more! 😍🌟 You're one of our lucky users.! ✨😍Thank you for choosing us. We can't wait to elevate your event experience!Best RegardsTheSkyTrails pvt ltd`
+      const messageBody=`Dear ${name} 😎,We're delighted to confirm your booking for PEFA 2024 🎉Event Details:
+      📅Date:2 Mar 2024 5pm
+      🕒Time: 5 PM sharp
+      📍Venue: CGC Mohali
+      But wait, there's more! 😍🌟 You're one of our lucky users.!✨😍Thank you for choosing us. We can't wait to elevate your event experience!Best RegardsTheSkyTrails pvt ltd`
       const messageTitle="🌟🎉 Your PEFA 2024 Booking Confirmation! 🎉🌟";
       await commonPushFunction.pushNotification(deviceToken,messageTitle,messageBody);
       return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.SUCCESS})
@@ -429,7 +430,7 @@ exports.getEventBookingStatus=async(req,res,next)=>{
       return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.USERS_NOT_FOUND});
     }
     const isBookingExist=await eventBookingListPopulated({userId:isUserExist._id});
-    if(!isBookingExist){
+    if(isBookingExist.length==0||!isBookingExist||isBookingExist===null){
       return res.status(statusCode.OK).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND});
     }
     // const dateMoment=

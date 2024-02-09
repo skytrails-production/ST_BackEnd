@@ -45,6 +45,37 @@ const sendNotification = async (notifDetails) => {
   }
 };
 
+
+// Initialize Firebase Admin SDK
+// const serviceAccount = require("path/to/serviceAccountKey.json");
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount),
+// });
+
+const pushNotificationIOS = async (deviceToken, title, body) => {
+  try {
+    const message = {
+      token: deviceToken,
+      apns: {
+        payload: {
+          aps: {
+            alert: {
+              title: title,
+              body: body,
+            },
+          },
+        },
+      },
+    };
+
+    const response = await admin.messaging().send(message);
+    console.log("Successfully sent push notification:", response);
+    return response;
+  } catch (error) {
+    console.error("Error while trying to send a push notification:", error);
+    throw error;
+  }
+};
 // Import the FCM module
 
 const pushNotification = async (deviceToken, title, body) => {
@@ -130,4 +161,4 @@ const mediapushNotification = async (deviceToken, title, body) => {
   }
 };
 
-module.exports = { sendNotification, pushNotification,mediapushNotification };
+module.exports = { sendNotification, pushNotification,mediapushNotification,pushNotificationIOS };

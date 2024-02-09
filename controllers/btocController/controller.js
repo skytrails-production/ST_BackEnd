@@ -31,6 +31,18 @@ const {
   paginateUsertransaction,
   countTotalUsertransaction,
 } = transactionModelServices;
+
+const {eventBookingServices,} = require("../../services/btocServices/eventBookingServices");
+const {
+  createBookingEvent,
+  findBookingEventData,
+  deleteBookingEvent,
+  eventBookingList,
+  updateBookingEvent,
+  countTotalBookingEvent,
+  eventBookingListPopulated,
+  getBookingEvent,
+} = eventBookingServices;
 //******************************************User SignUp api*************************/
 
 exports.login = async (req, res, next) => {
@@ -690,5 +702,33 @@ exports.getAppLink=async(req,res,next)=>{
   } catch (error) {
     console.log("error while send link",error);
     return next(error)
+  }
+}
+
+
+exports.updateDeviceToken=async(req,res,next)=>{
+  try {
+    const {deviceToken,deviceType}=req.body;
+    const isUserExist = await findUserData({
+      _id: req.userId,
+      status: status.ACTIVE,
+    });
+    if (!isUserExist) {
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+    const result=await updateUser({_id:isUserExist._id},req.body);
+    const updateEventDeviceToken=await updateBookingEvent({userId:isUserExist._id},{deviceToken:deviceToken,deviceType:deviceType});
+    if(result){
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        message: responseMessage.TOKEN_UPDATE_SUCCESS,
+      });
+    }
+  } catch (error) {
+    console.log("error while update deviceToken===",error);
+    return next(error);
   }
 }

@@ -127,6 +127,7 @@ const usersSchema = new Schema({
       type: String,
       default: "",
     },
+    deviceType:{type: String,},
     balance: {
       type: Number,
     },

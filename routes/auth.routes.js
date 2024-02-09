@@ -13,7 +13,8 @@ const upload = multer({ storage: storage });
 const eventController = require("../controllers/eventController");
 const userSearchesController=require("../controllers/btocController/userSearchesController");
 const packageControlelr=require("../controllers/btocController/packageBookingController");
-const subAdminTaskControlelr=require("../controllers/subAdminTaskControlelr")
+const subAdminTaskControlelr=require("../controllers/subAdminTaskControlelr");
+const pushNotification=require("../controllers/btocController/pushNotificationController")
 module.exports = function (app) {
   app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
@@ -63,5 +64,7 @@ module.exports = function (app) {
   app.get('/skyTrails/api/admin/userSearchHistory',userSearchesController.getUserSerchHistory);
   app.get('/skyTrails/api/admin/getAllPackageEnquiry',packageControlelr.getAllPackageEnquiry);
   app.put('/skyTrails/api/admin/updateMarkup',SchemaValidator(schemas.updateMarkupSchema),controller.updateMarkup);
-  app.post('/skyTrails/api/admin/createTask',subAdminTaskControlelr.createTask)
+  app.post('/skyTrails/api/admin/createTask',subAdminTaskControlelr.createTask);
+  app.post('/skyTrails/api/user/pushNotification',pushNotification.pushNotificationsToUser);
+
 };

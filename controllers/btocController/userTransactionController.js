@@ -900,7 +900,7 @@ exports.makeCashfreePayment = async (req, res, next) => {
       url: ` https://api.cashfree.com/pg/orders`,
       headers: {
         accept: "application/json",
-        "x-api-version": "2022-01-01",
+        "x-api-version": "2023-08-01",
         "content-type": "application/json",
         "x-client-id": "601957620817aa2f1bd8c36094759106",
         "x-client-secret": "cfsk_ma_prod_16b5005939a07cdb32736d8445fbf1e9_92aea845",
