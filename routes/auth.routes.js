@@ -65,6 +65,6 @@ module.exports = function (app) {
   app.get('/skyTrails/api/admin/getAllPackageEnquiry',packageControlelr.getAllPackageEnquiry);
   app.put('/skyTrails/api/admin/updateMarkup',SchemaValidator(schemas.updateMarkupSchema),controller.updateMarkup);
   app.post('/skyTrails/api/admin/createTask',subAdminTaskControlelr.createTask);
-  app.post('/skyTrails/api/user/pushNotification',pushNotification.pushNotificationsToUser);
+  app.post('/skyTrails/api/admin/pushNotification',pushNotification.pushNotificationsToUser);
 
 };
