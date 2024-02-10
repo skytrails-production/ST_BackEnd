@@ -3,7 +3,7 @@ const statusCode = require("../../utilities/responceCode");
 const status = require("../../enums/status");
 const bcrypt = require("bcryptjs");
 const { pushNotification,mediapushNotification } = require('../../utilities/commonFunForPushNotification'); // Assuming you have a controller to send notifications
-/**********************************SERVICES********************************** */
+/***********SERVICES*********** */
 const { userServices } = require("../../services/userServices");
 const {
   createUser,
@@ -13,6 +13,7 @@ const {
   updateUser,
   deleteUser,
   paginateUserSearch,
+  userList,
   countTotalUser,
 } = userServices;
 const userType = require("../../enums/userType");
@@ -59,7 +60,7 @@ exports.pushNotificationsToUser=async(req,res,next)=>{
             await pushNotification(user.deviceToken, messageBody,messageTitle);
           }
       }
-      const usereTokenExist=await findUserData({status: status.ACTIVE,deviceToken: { $exists: true, $ne: ""}});
+      const usereTokenExist=await userList({status: status.ACTIVE,deviceToken: { $exists: true, $ne: ""}});
       for (const user of usereTokenExist) {
         await pushNotification(user.deviceToken, messageBody,messageTitle);
       }
