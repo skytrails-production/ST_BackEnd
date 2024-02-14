@@ -1384,7 +1384,7 @@ exports.getAgentchangeBusRequest = async (req, res, next) => {
   try {
     const { page, limit, search, fromDate, toDate } = req.query;
     const result = await aggregatePaginatechangeBusRequestList(req.query);
-    console.log(result);
+    // console.log(result);
     if (!result) {
       return res
         .status(statusCode.NotFound)
@@ -1412,7 +1412,7 @@ exports.createMarkup = async (req, res, next) => {
       holidayPackageMarkup: packageMarkup,
     };
     const data = await findMarkup({ status: status.ACTIVE });
-    console.log("data", data);
+    // console.log("data", data);
     if (data) {
       const resultData = await updateMarkup({ _id: data._id }, object);
       if (!resultData) {
@@ -1604,7 +1604,7 @@ exports.getUserchangeBusRequest = async (req, res, next) => {
   try {
     const { page, limit, search, fromDate, toDate } = req.query;
     const result = await buschangeRequestUserList(req.query);
-    console.log(result);
+    // console.log(result);
     if (!result) {
       return res
         .status(statusCode.NotFound)

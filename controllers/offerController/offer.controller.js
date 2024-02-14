@@ -71,7 +71,7 @@ exports.createOffer = async (req, res) => {
         .then((savedOffer) => {
           const msg = "Offer saved successfully.";
           actionCompleteResponse(res, savedOffer, msg);
-          console.log("Offer saved:", savedOffer);
+          // console.log("Offer saved:", savedOffer);
         })
         .catch((err) => {
           sendActionFailedResponse(res, {}, err.message);

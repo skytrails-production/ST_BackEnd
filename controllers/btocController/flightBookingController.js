@@ -107,7 +107,7 @@ exports.getUserflightBooking = async (req, res, next) => {
       _id: req.userId,
       status: status.ACTIVE,
     });
-    console.log("======",isUserExist)
+    // console.log("======",isUserExist)
     if (!isUserExist) {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,
@@ -123,7 +123,7 @@ exports.getUserflightBooking = async (req, res, next) => {
       userId: isUserExist._id,
     };
     const result = await aggregatePaginateGetBooking(body);
-    console.log("result=========", result);
+    // console.log("result=========", result);
     if (result.docs.length == 0) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
@@ -182,7 +182,7 @@ exports.sendPDF=async(req,res,next)=>{
       });
     }
     const result=await findUserflightBooking({_id:ticketId});
-    console.log("==================",result)
+    // console.log("==================",result)
     await commonFunction.FlightBookingConfirmationMailWithNewEmail(result,email);
     return res
     .status(statusCode.OK)

@@ -18,7 +18,7 @@ exports.createDocumentCategory=async(req,res,next)=>{
     try {
         const {categoryName,description,documentTypes,docType,}=req.body;
         const isCategoryExist=await findDocCategoryData({categoryName:categoryName});
-         console.log("isCategoryExist=========",isCategoryExist)
+        //  console.log("isCategoryExist=========",isCategoryExist)
         if(isCategoryExist && isCategoryExist.documentTypesId && isCategoryExist.documentTypesId.documentName === documentTypes){
             const update=await updateDocCategory({_id:isCategoryExist._id},req.body);
             return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.UPDATE_SUCCESS,result: update,});

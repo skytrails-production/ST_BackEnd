@@ -396,8 +396,8 @@ exports.payVerify = (req, res) => {
       .createHmac("sha256", process.env.Razorpay_KEY_SECRET)
       .update(body.toString())
       .digest("hex");
-    console.log("sig" + req.body.razorpay_signature);
-    console.log("sig" + expectedSignature);
+    // console.log("sig" + req.body.razorpay_signature);
+    // console.log("sig" + expectedSignature);
 
     if (expectedSignature === req.body.razorpay_signature) {
       console.log("Payment Success");
@@ -488,7 +488,7 @@ exports.agentQues = async (req, res, next) => {
         .send(responseMessage.AGENT_NOT_FOUND);
     }
     const hotelData = await aggregatePaginateHotelBookingList(req.query);
-    console.log("hotelData============", busBookData);
+    // console.log("hotelData============", busBookData);
     if (search) {
       var filter = search;
     }
@@ -580,7 +580,7 @@ exports.agentQues = async (req, res, next) => {
         },
       },
     ];
-    console.log("flightData=========", flightData);
+    // console.log("flightData=========", flightData);
     let aggregate1 = busBookingModel.aggregate(pipeline);
     const options1 = {
       page: parseInt(page, 10) || 1,
@@ -592,7 +592,7 @@ exports.agentQues = async (req, res, next) => {
       options1
     );
     const combinedData = [hotelData, flightData, busBookData];
-    console.log("busBookData===========", busBookData);
+    // console.log("busBookData===========", busBookData);
     return res
       .status(statusCode.OK)
       .send({ message: responseMessage.DATA_FOUND, result: combinedData });
@@ -1084,7 +1084,7 @@ exports.getchangeBusRequest = async (req, res, next) => {
 exports.addSector = async (req, res) => {
   try {
     const { Sector } = req.body;
-    console.log(Sector);
+    // console.log(Sector);
     const oldSector = await sectors.findOne({ Sector: Sector });
     if (oldSector) {
       res.status(400).send({ status: "failed", error: "Sector already exits" });

@@ -153,7 +153,7 @@ verifcationToken = (req, res, next) => {
 verifcationSubAdminToken = (req, res, next) => {
   try {
     if (req.headers.token) {
-      console.log(req.headers.token,"token")
+      // console.log(req.headers.token,"token")
       jwt.verify(req.headers.token, config.secret, (err, result) => {
         if (err) {
           if (err.name == "TokenExpiredError") {
@@ -200,7 +200,7 @@ verifcationSubAdminToken = (req, res, next) => {
               }
               else {
                 req.userId = result.id;
-                console.log(req.userId,"req.userId")
+                // console.log(req.userId,"req.userId")
                 req.userDetails = result
                 next();
               }

@@ -142,7 +142,7 @@ exports.getPostCommentsOfUser = async (req, res, next) => {
     try {
         const { search, page, limit, questionId, userId } = req.query;
         const isUserExist = await findUser({ _id: req.userId,status:status.ACTIVE,otpVerified:true });
-        console.log("isAgentExists", isUserExist);
+        // console.log("isAgentExists", isUserExist);
         if (!isUserExist) {
             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
         }

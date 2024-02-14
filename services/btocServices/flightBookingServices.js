@@ -119,7 +119,7 @@ const userflightBookingServices = {
       });
     }
     let aggregate = flightBookingModel.aggregate(pipeline);
-    console.log("aggregate========>>>>>>>", aggregate);
+    // console.log("aggregate========>>>>>>>", aggregate);
     const options = {
       page: Number(page) || 1,
       limit: Number(limit) || 1000000,
@@ -129,7 +129,7 @@ const userflightBookingServices = {
       aggregate,
       options
     );
-    console.log("=--------=-=-=--------", result);
+    // console.log("=--------=-=-=--------", result);
     return result;
   },
   aggregatePaginateGetBooking1: async (query) => {
@@ -174,7 +174,7 @@ const userflightBookingServices = {
       });
     }
     let aggregate = flightBookingModel.aggregate(pipeline);
-    console.log("aggregate========>>>>>>>", aggregate);
+    // console.log("aggregate========>>>>>>>", aggregate);
     const options = {
       page: Number(page) || 1,
       limit: Number(limit) || 10,
@@ -184,7 +184,7 @@ const userflightBookingServices = {
       aggregate,
       options
     );
-    console.log("=--------=-=-=--------", result);
+    // console.log("=--------=-=-=--------", result);
     return result;
   },
 };

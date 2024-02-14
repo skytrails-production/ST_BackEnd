@@ -37,7 +37,7 @@ exports.createWebAdvertisement=async(req,res,next)=>{
             remainingDays: remainingDays,
             addType:addType
         }
-        console.log('object',object)
+        // console.log('object',object)
         const result=await createWebadvertisement(object);
 
         if(result){
@@ -158,7 +158,7 @@ exports.sendNotification = async (req, res, next) => {
             }
         };
 
-        console.log("message===========", message);
+        // console.log("message===========", message);
 
         // Send the FCM message with a callback function
         fcm.send(message, function (err, response) {

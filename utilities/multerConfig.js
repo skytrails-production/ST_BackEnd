@@ -22,7 +22,7 @@ class UploadHandler {
       storage: this.storage,
       fileFilter: function (req, file, cb) {
         var ext = path.extname(file.originalname).toLowerCase();
-        console.log("sssssssss", ext);
+        // console.log("sssssssss", ext);
         // Add your custom file filter logic here if needed
         cb(null, true);
       },

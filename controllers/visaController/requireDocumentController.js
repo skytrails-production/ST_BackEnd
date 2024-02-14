@@ -107,7 +107,7 @@ exports.getRequireDocumentPerCountry=async(req,res,next)=>{
         const {countryId}=req.query;
         const result=await findRequireDocData1({visaCountry:countryId});
         
-        console.log("result==================",result);
+        // console.log("result==================",result);
         if(!result){
             return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND,result: result,});
         }

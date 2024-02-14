@@ -172,7 +172,7 @@ exports.getMonthlyList = async (req, res, next) => {
         const currentDate = new Date();
         const guaranteedVisaDate = new Date(currentDate);
         guaranteedVisaDate.setDate(guaranteedVisaDate.getDate() + result.docs[0].daysToProcess);
-        console.log("=-----------", guaranteedVisaDate)
+        // console.log("=-----------", guaranteedVisaDate)
         const amOrPm = guaranteedVisaDate.getHours() >= 12 ? 'PM' : 'AM';
         const hours = guaranteedVisaDate.getHours() % 12 || 12;
         const formattedDate = `${guaranteedVisaDate.getDate()} ${guaranteedVisaDate.toLocaleString('default', { month: 'short' })}, ${hours}:${(guaranteedVisaDate.getMinutes() < 10 ? '0' : '')}${guaranteedVisaDate.getMinutes()} ${amOrPm}`;
@@ -194,7 +194,7 @@ exports.getonArrivalList = async (req, res, next) => {
         if (!result) {
             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.NOT_FOUND, result: result })
         }
-        console.log("result", RecordingRulesList)
+        // console.log("result", RecordingRulesList)
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.DATA_FOUND, result: result });
     } catch (error) {
         console.log("error=======>>>>>>", error);
@@ -211,7 +211,7 @@ exports.getWeeklyVisa = async (req, res, next) => {
         const currentDate = new Date();
         const guaranteedVisaDate = new Date(currentDate);
         guaranteedVisaDate.setDate(guaranteedVisaDate.getDate() + result.docs[0].daysToProcess);
-        console.log("=-----------", guaranteedVisaDate)
+        // console.log("=-----------", guaranteedVisaDate)
         const amOrPm = guaranteedVisaDate.getHours() >= 12 ? 'PM' : 'AM';
         const hours = guaranteedVisaDate.getHours() % 12 || 12;
 
@@ -221,7 +221,7 @@ exports.getWeeklyVisa = async (req, res, next) => {
             doc._doc.pricePerPerson = `${doc.price}/person`;
             doc._doc.getData = `Submit Today For Guaranteed Visa By: ${formattedDate}`;
         });
-        console.log("result", result);
+        // console.log("result", result);
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.DATA_FOUND, result: result });
     } catch (error) {
         console.log("error========>>>>>>", error);
@@ -234,7 +234,7 @@ exports.getVisaById=async(req,res,next)=>{
         const {visaId}=req.query;
         
         const result=await findWeeklyVisa({_id:visaId,status:status.ACTIVE});
-        console.log("result==========",result)
+        // console.log("result==========",result);
         if(!result){
             return res
             .status(statusCode.NotFound)
@@ -244,16 +244,16 @@ exports.getVisaById=async(req,res,next)=>{
             });
         }
         if(result.issuedType=="MONTHLY VISA"||result.issuedType=="WEEKLY VISA"){
-            console.log("======MONTHLY====",result)
+            // console.log("======MONTHLY====",result)
             const currentDate = new Date();
             currentDate.setDate(currentDate.getDate() + result.daysToProcess);
             const amOrPm = currentDate.getHours() >= 12 ? 'PM' : 'AM';
             const hours = currentDate.getHours() % 12 || 12;
             const formattedDate = `${currentDate.getDate()} ${currentDate.toLocaleString('default', { month: 'short' })}, ${hours}:${(currentDate.getMinutes() < 10 ? '0' : '')}${currentDate.getMinutes()} ${amOrPm}`;
-            console.log("currentDate===",currentDate)
+            // console.log("currentDate===",currentDate)
             result._doc.pricePerPerson=`${result.price}/person`;
             result._doc.getData = `Submit Today For Guaranteed Visa By: ${formattedDate}`;
-            console.log("modified result===========",result)
+            // console.log("modified result===========",result)
         }
 
             return res

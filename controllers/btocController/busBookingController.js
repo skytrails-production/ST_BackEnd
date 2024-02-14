@@ -192,7 +192,7 @@ exports.getUserBusData = async (req, res, next) => {
       _id: req.userId,
       status: status.ACTIVE,
     });
-    console.log("isUSerExist", isUserExist);
+    // console.log("isUSerExist", isUserExist);
     if (!isUserExist) {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,

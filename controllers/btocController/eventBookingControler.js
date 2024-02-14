@@ -103,11 +103,11 @@ exports.eventBooking = async (req, res, next) => {
         message: responseMessage.EVENT_NOT_FOUND,
       });
     }
-    console.log("isEventExist=============", isEventExist);
+    // console.log("isEventExist=============", isEventExist);
     const selectedSlot = isEventExist.slot.find(
       (slot) => slot.startTime === startTime && slot.isAvailable === true
     );
-    console.log("selectedSlot=========", selectedSlot);
+    // console.log("selectedSlot=========", selectedSlot);
     if (!selectedSlot) {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,
@@ -255,7 +255,7 @@ exports.bookFreeEvents = async (req, res, next) => {
     const selectedSlot = isEventExist.slot.find(
       (slot) => slot.startTime === startTime && slot.isAvailable
     );
-    console.log("selectedSlot========>>>>>>>", selectedSlot);
+    // console.log("selectedSlot========>>>>>>>", selectedSlot);
     if (selectedSlot) {
       const updatedSlot = await updateEvent(
         { _id: eventId, "slot.startTime": startTime },
@@ -263,8 +263,8 @@ exports.bookFreeEvents = async (req, res, next) => {
       );
       // const generatedString=isEventExist._id+Date.now()
       const ticketNumber = await generateUniqueRandomString(15);
-      console.log("generateTicket======", generatedString);
-      console.log("ticketNumber==========>>>>>", ticketNumber);
+      // console.log("generateTicket======", generatedString);
+      // console.log("ticketNumber==========>>>>>", ticketNumber);
       const object = {
         userId: isUserExist._id,
         noOfMember: noOfMember,
@@ -275,9 +275,9 @@ exports.bookFreeEvents = async (req, res, next) => {
         eventId: eventId,
         tickets: [ticketNumber],
       };
-      console.log("object==========", object);
+      // console.log("object==========", object);
       const makeBooking = await createBookingEvent(object);
-      console.log("makeBooking=============", makeBooking);
+      // console.log("makeBooking=============", makeBooking);
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         message: "Slot booked successfully.",

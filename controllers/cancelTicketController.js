@@ -92,13 +92,13 @@ exports.cancelHotelBooking = async (req, res, next) => {
             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.AGENT_NOT_FOUND });
         }
         const currentDate = new Date().toISOString();
-        console.log("currentDate:", currentDate);
+        // console.log("currentDate:", currentDate);
         const isBookingExist = await findhotelBooking({
             userId: isAgentExists._id,
             bookingId: bookingId,
             CheckInDate: { $gt: currentDate }
         });
-        console.log("bookingDate=====", isBookingExist)
+        // console.log("bookingDate=====", isBookingExist)
         if (!isBookingExist) {
             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.BOOKING_NOT_FOUND });
         }
@@ -144,7 +144,7 @@ exports.cancelBusBooking=async(req,res,next)=>{
             busId:busId,
             dateOfJourney:{$gt:currentDate},
         });
-        console.log("isBookingExist===========",isBookingExist)
+        // console.log("isBookingExist===========",isBookingExist)
         if (!isBookingExist) {
             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.BOOKING_NOT_FOUND });
         }

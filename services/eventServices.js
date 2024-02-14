@@ -64,7 +64,7 @@ const eventServices={
         // Now, retrieve the events using the constructed query and options
         const data = await eventModel.paginate(query, options);
         
-        console.log("data", data);
+        // console.log("data", data);
         return data;
         
     }

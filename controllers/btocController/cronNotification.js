@@ -106,17 +106,17 @@ var task =cron.schedule('0 * * * *', async () => {
             See you there!
             TheSkyTrails Team`
             await pushNotification(user.deviceToken, notifications,messageBody1);
-            console.log('Notification cron job executed successfully.messageBody1');
+            // console.log('Notification cron job executed successfully.messageBody1');
       }
       var task2=cron.schedule('0 8 * * *', async () => {
         try {
            const notificationMessage = "🚀एक सफ़र पे यूँ ही कभी चल दो तुम,✈️";
            const messageBody=`✨Check out our latest promotion! We're offering deals so good, even your coffee will do a double-take! ☕️✨`
            await mediapushNotification(user.deviceToken, notificationMessage,messageBody);
-           console.log('Notification cron job executed successfully.TASK 2');
+          //  console.log('Notification cron job executed successfully.TASK 2');
      // Stop the cron job after execution
             task2.stop();
-         console.log('Notification cron job stopped.');
+        //  console.log('Notification cron job stopped.');
         } catch (error) {
           console.log("error when run second task",error);
         }
@@ -124,10 +124,10 @@ var task =cron.schedule('0 * * * *', async () => {
       task2.start();
    
     }
-    console.log('Notification cron job executed successfully.');
+    // console.log('Notification cron job executed successfully.');
      // Stop the cron job after execution
      task.stop();
-     console.log('Notification cron job stopped.');
+    //  console.log('Notification cron job stopped.');
   } catch (error) {
     console.error('Error occurred during notification cron job:', error);
   }

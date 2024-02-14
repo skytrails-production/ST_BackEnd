@@ -259,12 +259,12 @@ exports.getSubAdminByAggregate = async (req, res, next) => {
 
 exports.subAdminDashboard = async (req, res, next) => {
   try {
-    console.log("================================")
+    // console.log("================================")
     const isSubAdmin = await findSubAdminData({
       _id: req.userId,
       userType: userType.SUBADMIN,
     });
-    console.log("isSubAdmin==========", isSubAdmin);
+    // console.log("isSubAdmin==========", isSubAdmin);
     if (!isSubAdmin) {
       return res
         .status(statusCode.NotFound)

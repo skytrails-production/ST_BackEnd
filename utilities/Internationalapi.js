@@ -25,7 +25,7 @@ class Internationalapi {
         filterquery = filterquery.replace((key)=>`${key}`);
         // filterquery = filterquery.replace(/\b(gt|gte|lt|lte)\b/g,(key)=>`$${key}`);
         filterquery = JSON.parse(filterquery);
-        console.log(this.queryStr.filter);
+        // console.log(this.queryStr.filter);
         // const filter = this.queryStr.filter ?{
         //     // select_tags:{
         //     //     $in:[this.queryStr.filter]

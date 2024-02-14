@@ -102,7 +102,7 @@ exports.getPost = async (req, res, next) => {
         message: responseMessage.DATA_NOT_FOUND,
       });
     }
-    console.log("lenghth", post.length);
+    // console.log("lenghth", post.length);
     const unanswered = await forumQueListLookUp(req.query);
     if (unanswered) {
       result.unanswered = unanswered;
@@ -196,7 +196,7 @@ exports.getPostOfUser = async (req, res, next) => {
     }
     req.query.userId = isUserExist._id;
     const result = await forumQueListLookUpOfUser(req.query);
-    console.log("result============",result);
+    // console.log("result============",result);
     // const likeLength=await findPostlikes({postId:result})
 
     if (!result) {

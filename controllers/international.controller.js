@@ -538,7 +538,7 @@ exports.agentLeads = async (req, res) =>{
 
   try {
     const agent=req.query;
-    console.log("agent", agent)
+    // console.log("agent", agent)
     const agentPackagesData=await internationl.find(agent);
     const filterData = agentPackagesData.map((item) => item._id);
 
@@ -746,7 +746,7 @@ exports.internationalgetAdminAll = async (req, res) => {
       .pagintion(pagintionData);
 
     let pakage = await apiSearch.query;
-    console.log(pakage.length,"package")
+    // console.log(pakage.length,"package")
     if (pakage.length === 0) {
       // console.log(req.query)
       // pakage=await internationl.find({ 'destination.addMore': req.query.keyword }).exec();

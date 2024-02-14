@@ -18,7 +18,7 @@ class UploadHandler {
         });
         this.uploadFile = this.uploadFile.bind(this);
         const root = path.normalize(`${__dirname}/../..`);
-        console.log("root",root );
+        // console.log("root",root );
     }
 
     handleUploadError(req, res, next, upload) {

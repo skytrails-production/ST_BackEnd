@@ -119,7 +119,7 @@ exports.makePayment = async (req, res, next) => {
     const razorpayOrder = await instance.orders.create(options);
 
     // Log the order details for debugging
-    console.log("Razorpay Order:", razorpayOrder);
+    // console.log("Razorpay Order:", razorpayOrder);
 
     //   const transactionData={
     //     userId:isUserExist._id,
@@ -207,7 +207,7 @@ exports.paymentUrl = async (req, res, next) => {
     };
 
     const response = await instance.paymentLink.create(orderData);
-    console.log("Entire Response: ", JSON.stringify(response, null, 2));
+    // console.log("Entire Response: ", JSON.stringify(response, null, 2));
 
     let paymentLink = response.short_url;
     if (!paymentLink) {
@@ -219,7 +219,7 @@ exports.paymentUrl = async (req, res, next) => {
       });
     }
 
-    console.log("paymentLink==============", paymentLink);
+    // console.log("paymentLink==============", paymentLink);
 
     // In a real-world scenario, you would save the payment link or associated order details in your database.
 
@@ -258,7 +258,7 @@ exports.bookingFailedUser = async (req, res, next) => {
       phoneNumber: isUserExist.phone.mobile_number,
     };
     const result = await createUserBookingFailed(obj);
-    console.log("result===========", result);
+    // console.log("result===========", result);
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.CREATED_SUCCESS,
@@ -409,11 +409,11 @@ exports.makePhonePayPayment1 = async (req, res, next) => {
       },
       data: encodedParams,
     };
-    console.log("data=====================", options);
+    // console.log("data=====================", options);
 
     try {
       const { data } = await axios.request(options);
-      console.log(data);
+      // console.log(data);
       res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.PAYMENT_INTIATE,
@@ -488,7 +488,7 @@ exports.easebussPayment = async (req, res, next) => {
     };
     try {
       const { data } = await axios.request(options);
-      console.log(data);
+      // console.log(data);
       const result = {
         access: data.data,
         key: process.env.EASEBUZZ_KEY,
@@ -497,7 +497,7 @@ exports.easebussPayment = async (req, res, next) => {
       const env = config.env;
       // https://pay.easebuzz.in/
       const redirectURL = `${env}/v2/pay/${data.data}`;
-      console.log("redirectURL=========", redirectURL);
+      // console.log("redirectURL=========", redirectURL);
       const object = {
         userId: isUserExist._id,
         amount: amount,
@@ -529,13 +529,13 @@ exports.easebussPayment = async (req, res, next) => {
 exports.refundApi = async (req, res, next) => {
   try {
     const { refund_amount, txnId } = req.body;
-    console.log(refund_amount, txnId, "body data");
+    // console.log(refund_amount, txnId, "body data");
     const merchantId = "M" + Date.now();
     const hashComponents = [config.key, merchantId, txnId, refund_amount];
     const hashString = hashComponents.join("|");
     const inputString = `${hashString}|${config.salt}`;
     const sha512Hash = generateSHA512Hash(inputString);
-    console.log(sha512Hash, "hash");
+    // console.log(sha512Hash, "hash");
     const options = {
       method: "POST",
       url: "https://dashboard.easebuzz.in/transaction/v2/refund",
@@ -554,7 +554,7 @@ exports.refundApi = async (req, res, next) => {
 
     try {
       const { data } = await axios.request(options);
-      console.log("data========", data);
+      // console.log("data========", data);
       return res.send({ data: data });
     } catch (error) {
       console.error(error);
@@ -600,7 +600,7 @@ exports.makePhonePayPayment = async (req, res, next) => {
     const string = payloadMain + "/pg/v1/pay" + process.env.PHONE_PAY_SALT_KEY;
     const sha256 = crypto.createHash("sha256").update(string).digest("hex");
     const checksum = sha256 + "###" + process.env.PHONE_PAY_INDEX;
-    console.log("checksum==", checksum);
+    // console.log("checksum==", checksum);
     const options = {
       method: "post",
       url: "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay",
@@ -615,7 +615,7 @@ exports.makePhonePayPayment = async (req, res, next) => {
     };
     try {
       const { data } = await axios.request(options);
-      console.log("data==", data);
+      // console.log("data==", data);
       const object = {
         userId: isUserExist._id,
         amount: amount,
@@ -623,7 +623,7 @@ exports.makePhonePayPayment = async (req, res, next) => {
         bookingType: bookingType,
       };
       const createData = await createUsertransaction(object);
-      console.log("createData========", createData);
+      // console.log("createData========", createData);
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.PAYMENT_INTIATE,
@@ -686,9 +686,9 @@ exports.paymentSuccess = async (req, res, next) => {
     const isTransactionExist = await findUsertransaction({
       paymentId: merchantTransactionId,
     });
-    console.log("isTransactionExist==", isTransactionExist);
+    // console.log("isTransactionExist==", isTransactionExist);
     if (isTransactionExist) {
-      console.log("isTransactionExist=========", isTransactionExist);
+      // console.log("isTransactionExist=========", isTransactionExist);
       const result = await updateUsertransaction(
         { _id: isTransactionExist._id },
         { transactionStatus: paymentStatus.SUCCESS }
@@ -712,8 +712,8 @@ exports.paymentFailure = async (req, res, next) => {
     const isTransactionExist = await findUsertransaction({
       paymentId: merchantTransactionId,
     });
-    console.log("successVerifyApi==", merchantTransactionId);
-    console.log("isTransactionExist==", isTransactionExist);
+    // console.log("successVerifyApi==", merchantTransactionId);
+    // console.log("isTransactionExist==", isTransactionExist);
     if (isTransactionExist) {
       const result = await updateUsertransaction(
         { _id: isTransactionExist._id },
@@ -739,9 +739,9 @@ exports.paymentSuccessPhonePe = async (req, res, next) => {
     const isTransactionExist = await findUsertransaction({
       paymentId: merchantTransactionId,
     });
-    console.log("isTransactionExist==", isTransactionExist);
+    // console.log("isTransactionExist==", isTransactionExist);
     if (isTransactionExist) {
-      console.log("isTransactionExist=========", isTransactionExist);
+      // console.log("isTransactionExist=========", isTransactionExist);
       const result = await updateUsertransaction(
         { _id: isTransactionExist._id },
         { transactionStatus: paymentStatus.SUCCESS }
@@ -765,8 +765,8 @@ exports.paymentFailurePhonePe = async (req, res, next) => {
     const isTransactionExist = await findUsertransaction({
       paymentId: merchantTransactionId,
     });
-    console.log("successVerifyApi==", merchantTransactionId);
-    console.log("isTransactionExist==", isTransactionExist);
+    // console.log("successVerifyApi==", merchantTransactionId);
+    // console.log("isTransactionExist==", isTransactionExist);
     if (isTransactionExist) {
       const result = await updateUsertransaction(
         { _id: isTransactionExist._id },
@@ -894,7 +894,7 @@ exports.makeCashfreePayment = async (req, res, next) => {
       order_amount: 10,
       order_currency: "INR",
     };
-    console.log("object==>>>>>", object);
+    // console.log("object==>>>>>", object);
     const options = {
       method: "post",
       url: ` https://api.cashfree.com/pg/orders`,
@@ -910,7 +910,7 @@ exports.makeCashfreePayment = async (req, res, next) => {
     try {
       const { data } = await axios.request(options);
 
-      console.log("data==>>>>>>>>>>>>>>>>>>>", data);
+      // console.log("data==>>>>>>>>>>>>>>>>>>>", data);
       const objectData = {
         // userId: isUserExist._id,
         amount: object.order_amount,
@@ -921,7 +921,7 @@ exports.makeCashfreePayment = async (req, res, next) => {
         // object.order_currency,
       };
       const createData = await createUsertransaction(objectData);
-      console.log("objectData=======>>>>>>>>>>>========", objectData);
+      // console.log("objectData=======>>>>>>>>>>>========", objectData);
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.PAYMENT_INTIATE,
@@ -943,7 +943,7 @@ exports.checkCashfreePaymentStatus=async(req,res,next)=>{
     const client_secret = process.env.CASHFREE_API_KEY;
     const clientId = process.env.CASHFREE_API_ID;
     const orderId=req.params.orderid;
-    console.log("req-==============",req.params.orderid)
+    // console.log("req-==============",req.params.orderid)
     // const isTransactionExist = await findUsertransaction({
     //   paymentId: merchantTransactionId,
     // });
@@ -971,11 +971,11 @@ exports.checkCashfreePaymentStatus=async(req,res,next)=>{
         "x-client-secret": client_secret,
       },
     };
-    console.log("options=====",options);
+    // console.log("options=====",options);
     const { data } = await axios.request(options);
 
-    console.log("data==>>>>>>>>>>>>>>>>>>>", data.data.message);
-    console.log("=======================",data.data.codey);
+    // console.log("data==>>>>>>>>>>>>>>>>>>>", data.data.message);
+    // console.log("=======================",data.data.codey);
   } catch (error) {
     console.log("error while trying to get status",error);
     return next(error);
@@ -1017,7 +1017,7 @@ exports.CCEVENUEPayment = async (req, res, next) => {
     const txnId = "T" + Date.now();
     try {
       const redirectURL = `${env}/v2/pay/${data.data}`;
-      console.log("redirectURL=========", redirectURL);
+      // console.log("redirectURL=========", redirectURL);
       const object = {
         userId: isUserExist._id,
         amount: amount,

@@ -461,7 +461,7 @@ const cancelBookingServices = {
         };
 
         const result = await cancelBusModel.aggregatePaginate(aggregate, options);
-        console.log("result============",result)
+        // console.log("result============",result)
         return result;
     },
     getBusCancellationAgent: async (body) => {
@@ -534,7 +534,7 @@ const cancelBookingServices = {
         };
 
         const result = await cancelBusModel.aggregatePaginate(aggregate, options);
-        console.log("result============",result)
+        // console.log("result============",result)
         return result;
     },
     countTotalAgentBusCancelled: async (body) => {
