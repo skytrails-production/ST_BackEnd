@@ -107,7 +107,7 @@ exports.getUserflightBooking = async (req, res, next) => {
       _id: req.userId,
       status: status.ACTIVE,
     });
-    // console.log("======",isUserExist)
+    console.log("======",isUserExist)
     if (!isUserExist) {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,

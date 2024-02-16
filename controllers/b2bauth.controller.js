@@ -406,7 +406,7 @@ exports.payVerify = (req, res) => {
     }
   } catch (error) {
     sendActionFailedResponse(res, {}, "Internal server error");
-    console.log(error.message);
+    // console.log(error.message);
   }
 };
 
@@ -1084,7 +1084,7 @@ exports.getchangeBusRequest = async (req, res, next) => {
 exports.addSector = async (req, res) => {
   try {
     const { Sector } = req.body;
-    // console.log(Sector);
+    console.log(Sector);
     const oldSector = await sectors.findOne({ Sector: Sector });
     if (oldSector) {
       res.status(400).send({ status: "failed", error: "Sector already exits" });

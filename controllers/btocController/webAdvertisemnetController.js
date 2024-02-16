@@ -167,7 +167,7 @@ exports.sendNotification = async (req, res, next) => {
                 console.error("error ms",err.message)
                 return next(err);
             } else {
-                console.log("Successfully sent with response: ", response);
+                // console.log("Successfully sent with response: ", response);
                 res.status(200).json({ message: "Notification sent successfully" });
             }
         });

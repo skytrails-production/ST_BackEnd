@@ -409,11 +409,11 @@ exports.makePhonePayPayment1 = async (req, res, next) => {
       },
       data: encodedParams,
     };
-    // console.log("data=====================", options);
+    console.log("data=====================", options);
 
     try {
       const { data } = await axios.request(options);
-      // console.log(data);
+      console.log(data);
       res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.PAYMENT_INTIATE,
@@ -488,7 +488,7 @@ exports.easebussPayment = async (req, res, next) => {
     };
     try {
       const { data } = await axios.request(options);
-      // console.log(data);
+      console.log(data);
       const result = {
         access: data.data,
         key: process.env.EASEBUZZ_KEY,
@@ -662,7 +662,7 @@ exports.checkPaymentStatus = async (req, res, next) => {
     axios
       .request(options)
       .then(function (response) {
-        console.log(response.data);
+        // console.log(response.data);
         return res.status(statusCode.OK).send({
           statusCode: statusCode.OK,
           responseMessage: responseMessage.OK,
@@ -712,8 +712,8 @@ exports.paymentFailure = async (req, res, next) => {
     const isTransactionExist = await findUsertransaction({
       paymentId: merchantTransactionId,
     });
-    // console.log("successVerifyApi==", merchantTransactionId);
-    // console.log("isTransactionExist==", isTransactionExist);
+    console.log("successVerifyApi==", merchantTransactionId);
+    console.log("isTransactionExist==", isTransactionExist);
     if (isTransactionExist) {
       const result = await updateUsertransaction(
         { _id: isTransactionExist._id },
@@ -943,7 +943,7 @@ exports.checkCashfreePaymentStatus=async(req,res,next)=>{
     const client_secret = process.env.CASHFREE_API_KEY;
     const clientId = process.env.CASHFREE_API_ID;
     const orderId=req.params.orderid;
-    // console.log("req-==============",req.params.orderid)
+    console.log("req-==============",req.params.orderid)
     // const isTransactionExist = await findUsertransaction({
     //   paymentId: merchantTransactionId,
     // });

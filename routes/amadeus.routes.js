@@ -6,5 +6,7 @@ module.exports = function (app) {
       next();
     });
 
-    app.post("/skyTrails/amadeus/FareMasterPricerTravelBoardSearch",controller.fareMasterPricerTravelBoardSearch)
-}
+    app.post("/skyTrails/amadeus/FareMasterPricerTravelBoardSearch",controller.fareMasterPricerTravelBoardSearch);
+    app.post("/skyTrails/amadeus/FareInformativePricingWithoutPNR",controller.FareInformativePricingWithoutPNR);
+
+  }

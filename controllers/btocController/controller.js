@@ -464,7 +464,7 @@ exports.verifyUserOtpWithSocialId = async (req, res, next) => {
         message: responseMessage.USERS_NOT_FOUND,
       });
     }
-    // console.log("isUserExist.otp !== otp", isUserExist.otp !== otp);
+    console.log("isUserExist.otp !== otp", isUserExist.otp !== otp);
     if (isUserExist.otp !== otp) {
       return res.status(statusCode.badRequest).json({
         statusCode: statusCode.badRequest,
@@ -481,7 +481,7 @@ exports.verifyUserOtpWithSocialId = async (req, res, next) => {
       { _id: isUserExist._id, status: status.ACTIVE },
       { otpVerified: true }
     );
-    // console.log("======================", updation);
+    console.log("======================", updation);
     if (updation.firstTime === false) {
       const token = await commonFunction.getToken({
         _id: updation._id,

@@ -26,7 +26,7 @@ exports.createFlightTicketChangeRequest=async(req,res,next)=>{
             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
         }
         const currentDate = new Date().toISOString();
-        // console.log("currentDate:", currentDate);
+        console.log("currentDate:", currentDate);
         const isBookingExist=await findUserflightBooking({ userId: isUserExist._id,bookingId: bookingId,_id:flightBookingId,status:status.ACTIVE});
 
         if (!isBookingExist) {
@@ -58,7 +58,7 @@ exports.getUserFlightChangeRequest=async(req,res,next)=>{
     try {
         const {page, limit, search, fromDate, toDate}=req.query;
         const isUserExist = await findUser({ _id: req.userId,status:status.ACTIVE,otpVerified:true });
-        // console.log("isAgentExists", isUserExist);
+        console.log("isAgentExists", isUserExist);
         if (!isUserExist) {
             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
         }

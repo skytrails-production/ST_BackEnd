@@ -281,7 +281,7 @@ exports.applyCoupon = async (req, res, next) => {
 exports.CouponApplied=async(req,res,next)=>{
   try {
     const { couponCode } = req.params.couponCode;
-    // console.log("req.params.couponCode",req.params.couponCode)
+    console.log("req.params.couponCode",req.params.couponCode)
     let couponUser = [];
     const isUserExist = await findUserData({_id: req.userId,status: status.ACTIVE });
     if (!isUserExist) {

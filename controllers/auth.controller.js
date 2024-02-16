@@ -1412,7 +1412,7 @@ exports.createMarkup = async (req, res, next) => {
       holidayPackageMarkup: packageMarkup,
     };
     const data = await findMarkup({ status: status.ACTIVE });
-    // console.log("data", data);
+    console.log("data", data);
     if (data) {
       const resultData = await updateMarkup({ _id: data._id }, object);
       if (!resultData) {

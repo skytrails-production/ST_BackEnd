@@ -230,14 +230,14 @@ exports.makePayment = async (req, res) => {
 
 exports.payVerify = (req, res) => {
   try {
-    // console.log(req.body);
+    console.log(req.body);
     body = req.body.razorpay_order_id + "|" + req.body.razorpay_payment_id;
     var crypto = require("crypto");
     var expectedSignature = crypto.createHmac('sha256', process.env.Razorpay_KEY_SECRET)
       .update(body.toString())
       .digest('hex');
-    // console.log("sig" + req.body.razorpay_signature);
-    // console.log("sig" + expectedSignature);
+    console.log("sig" + req.body.razorpay_signature);
+    console.log("sig" + expectedSignature);
 
     if (expectedSignature === req.body.razorpay_signature) {
       console.log("Payment Success");
