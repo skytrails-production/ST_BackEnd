@@ -1895,7 +1895,7 @@ module.exports = {
                   (item) => `
               <div style="width:100%; display: flex; padding: 5px 0 0 5px; overflow: hidden;">
                 <p style="width: 40%">
-                ${item?.title} ${item?.firstName} ${item?.lastName}
+                 ${item?.firstName} ${item?.lastName}
                 </p>
                 <p style="width: 20%; text-align: center;">
                   ${to.pnr}
@@ -1919,86 +1919,85 @@ module.exports = {
       
       
             </div>
-      
+
             <!-- Bus Detail start -->
-            <div style="width: 100%; float: left; margin-top: 15px; border: 1px solid #D6D8E7;">
+<div style="width: 100%; float: left; margin-top: 15px; border: 1px solid #D6D8E7; box-sizing: border-box;">
+
+  <div style="width: 100%; background: #004684; float: left; font-weight: bold; padding: 5px;padding-right: 0px; border-bottom: 1px solid #D6D8E7; color: #fff; box-sizing: border-box;">
+    <div style="width: 100%; float: left; margin-right: 0; box-sizing: border-box;">
+      Bus Details
+    </div>
+  </div>
+
+  <div style="width: 100%; display: flex; white-space: nowrap; justify-content: space-between; padding: 5px 0 1px 5px; box-sizing: border-box;">
+    <div style="width: 100%; max-width: 300px; box-sizing: border-box;">
+      <p>
+        <strong>From:</strong>
+      </p>
+      <p>
+        <strong>Travels:</strong>
+      </p>
+      <p>
+        <strong>Journey Date:</strong>
+      </p>
+      <p>
+        <strong>PNR:</strong>
+      </p>
+    </div>
+    <div style="width: 100%; max-width: 300px; box-sizing: border-box;">
+      <p>
+        ${to.origin}
+      </p>
+      <p>
+        ${to.travelName}
+      </p>
+
+      <p>
+        ${journeyDateFormatted}
+      </p>
+      <p>
+        ${to.pnr}
+      </p>
+    </div>
+    <div style="width: 100%; max-width: 300px; box-sizing: border-box;">
+      <p>
+        <strong>To:</strong>
+      </p>
+      <p>
+        <strong>Bus Type:</strong>
+      </p>
+
+      <p>
+        <strong>Dep time:</strong>
+      </p>
+      <p>
+        <strong>FinalPrice:</strong>
+      </p>
+      <p style="font-size: 9px;margin-top:-8px">
+        <span style="color:red; font-size: 16px;"><b>*</b></span>including Tax and coupon if applicable 
+      </p>
+    </div>
+    <div style="width: 100%; max-width: 300px; box-sizing: border-box;">
+      <p>
+        ${to.destination}
+      </p>
+      <p>
+        ${to.busType}
+      </p>
+
+      <p>
+        ${depTimeFormatted}
+      </p>
+      <p>
+        ₹ ${to.amount}.00
+      </p>
+    </div>
+  </div>
+
+</div>
+<!-- Bus Detail end -->
+
       
-              <div
-                style="width: 100%; background: #004684; float: left; font-weight: bold; padding: 5px;padding-right: 0px; border-bottom: 1px solid #D6D8E7; color: #fff;">
-                <div style="width: 100%; float: left; margin-right: 0;">
-                  Bus Details
-                </div>
-              </div>
-      
-              <div style="width: 100%; display: flex; justify-content: flex-start; gap: 35%; padding: 5px 0 1px 5px;">
-                <div style="display: flex; gap: 10px;">
-                  <div>
-                    <p>
-                      <strong>From:</strong>
-                    </p>
-                    <p>
-                      <strong>Travels:</strong>
-                    </p>
-                    <p>
-                      <strong>Journey Date:</strong>
-                    </p>
-                    <p>
-                      <strong>PNR:</strong>
-                    </p>
-                  </div>
-                  <div>
-                    <p>
-                      ${to.origin}
-                    </p>
-                    <p>
-                      ${to.travelName}
-                    </p>
-      
-                    <p>
-                      ${journeyDateFormatted}
-                    </p>
-                    <p>
-                      ${to.pnr}
-                    </p>
-                  </div>
-                </div>
-                <div style="display: flex; gap: 10px;">
-                  <div>
-                    <p>
-                      <strong>To:</strong>
-                    </p>
-                    <p>
-                      <strong>Bus Type:</strong>
-                    </p>
-      
-                    <p>
-                      <strong>Dep time:</strong>
-                    </p>
-                    <p>
-                      <strong>Price:</strong>
-                    </p>
-                  </div>
-                  <div>
-                    <p>
-                      ${to.destination}
-                    </p>
-                    <p>
-                      ${to.busType}
-                    </p>
-      
-                    <p>
-                      ${depTimeFormatted}
-                    </p>
-                    <p>
-                    ₹ ${to.amount}.00
-                    </p>
-                  </div>
-                </div>
-              </div>
-      
-            </div>
-      
-            <!-- Bus Detail end -->
       
       
             <!-- Boarding Detail -->
