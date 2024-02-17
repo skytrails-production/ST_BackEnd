@@ -45,7 +45,6 @@ const sendNotification = async (notifDetails) => {
   }
 };
 
-
 // Initialize Firebase Admin SDK
 // const serviceAccount = require("path/to/serviceAccountKey.json");
 // admin.initializeApp({
@@ -79,7 +78,7 @@ const pushNotificationIOS = async (deviceToken, title, body) => {
 // Import the FCM module
 
 const pushNotification = async (deviceToken, title, body) => {
-  try {
+
     const serverKey = fsmserverkey; // Replace with your actual server key
     const fcm = new FCM(serverKey);
     var message = {
@@ -103,10 +102,7 @@ const pushNotification = async (deviceToken, title, body) => {
     });
 
     return response;
-  } catch (error) {
-    console.error("Error while trying to send a push notification", error);
-    throw error;
-  }
+  
 };
 
 const mediapushNotification = async (deviceToken, title, body) => {
@@ -129,10 +125,12 @@ const mediapushNotification = async (deviceToken, title, body) => {
       apns: {
         payload: {
           aps: {
-            'mutable-content': 1
-          }
+            alert: {
+              title: title,
+              body: body,
+            },
+          },
         },
-        image: 'https://img.freepik.com/free-photo/adorable-illustration-kittens-playing-forest-generative-ai_260559-483.jpg?w=740&t=st=1707305553~exp=1707306153~hmac=74710f453b258d9ed94fb71d970751a717a75b57fef50bbbd3cb89d8775d0a2e'
       },
       webpush: {
         notification: {

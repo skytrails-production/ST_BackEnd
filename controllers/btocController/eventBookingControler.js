@@ -412,7 +412,7 @@ exports.sendNotificationAfterBooking=async(req,res,next)=>{
       const messageBody=`Dear ${name} 😎,We're delighted to confirm your booking for PEFA 2024 🎉Event Details:
       📅Date:2 Mar 2024 5pm
       🕒Time: 5 PM sharp
-      📍Venue: CGC Mohali
+      📍Venue: V.P.O. Sahauran, Tehsil Kharar Distt, Kharar, Punjab
       But wait, there's more! 😍🌟 You're one of our lucky users.!✨😍Thank you for choosing us. We can't wait to elevate your event experience!Best RegardsTheSkyTrails pvt ltd`
       const messageTitle="🌟🎉 Your PEFA 2024 Booking Confirmation! 🎉🌟";
       await commonPushFunction.pushNotification(deviceToken,messageTitle,messageBody);
@@ -436,7 +436,7 @@ exports.getEventBookingStatus=async(req,res,next)=>{
     // const dateMoment=
     return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result:isBookingExist});
   } catch (error) {
-    console.log("eror while get pefaeventHistory",error);
+    console.log("error while get pefaeventHistory",error);
     return next(error);
   }
 }

@@ -3,7 +3,7 @@ const statusCode = require("../../utilities/responceCode");
 const status = require("../../enums/status");
 const bcrypt = require("bcryptjs");
 const { pushNotification,mediapushNotification } = require('../../utilities/commonFunForPushNotification'); // Assuming you have a controller to send notifications
-/***********SERVICES*********** */
+/**********************************SERVICES********************************** */
 const { userServices } = require("../../services/userServices");
 const {
   createUser,
@@ -57,12 +57,28 @@ exports.pushNotificationsToUser=async(req,res,next)=>{
       });
       if(notificationType==="PEFA2024"){
         for (const user of users) {
-            await pushNotification(user.deviceToken, messageBody,messageTitle);
+          try {
+            await pushNotification(user.deviceToken, messageTitle, messageBody);
+            console.log('Notification cron job executed successfully');
+          } catch (pushError) {
+            // Handle if any user is not registered
+            console.error('Error while sending push notification to user:', pushError);
+            // continue to the next user even if one fails
+            continue;
+          }
           }
       }
       const usereTokenExist=await userList({status: status.ACTIVE,deviceToken: { $exists: true, $ne: ""}});
       for (const user of usereTokenExist) {
-        await pushNotification(user.deviceToken, messageBody,messageTitle);
+        try {
+          await pushNotification(user.deviceToken, messageTitle, messageBody);
+          console.log('Notification cron job executed successfully');
+        } catch (pushError) {
+          // Handle if any user is not registered
+          console.error('Error while sending push notification to user:', pushError);
+          // continue to the next user even if one fails
+          continue;
+        }
       }
       return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.SUCCESS})
     } catch (error) {
