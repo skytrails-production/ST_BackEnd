@@ -24,7 +24,7 @@ exports.searchCityData = async (req, res) => {
     // console.log("location", userLocation)
 
     var regex = new RegExp(escapeRegex(req.query.keyword), "gi");
-    const response = await cityData.find({ name: regex });
+    const response = await cityData.find({$or:[{ name: regex },{AirportCode:regex}]});
 
      // Sort the search results based on matching country code
      const sortedResponse = response.sort((a, b) => {
