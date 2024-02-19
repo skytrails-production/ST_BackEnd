@@ -93,7 +93,7 @@ exports.login = async (req, res, next) => {
         result: result,
       });
     }
-    const var1 = isExist.username !== "" ? `${isExist.username}` : "Dear";
+    const var1 = isExist.username === "" ? "Dear" : isExist.username;
     const var2=`${otp}`
     if (mobileNumber === "9999123232") {
       let updatedNumber = await updateUser(

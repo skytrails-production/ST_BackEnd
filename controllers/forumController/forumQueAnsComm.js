@@ -35,7 +35,9 @@ const { createlikes, findlikes, findlikesData, deletelikes, updatelikes } =
 const { subCommentServices } = require("../../services/subCommentServices");
 const {
     createsubComment, findsubComment, findsubCommentData, deletesubComment, updatesubComment, } = subCommentServices;
-exports.createComment = async (req, res, next) => {
+
+//api for comment on stories********************************************
+    exports.createComment = async (req, res, next) => {
     try {
         const { userId, questionId, content, commentId } = req.body;
         const isUser = await findUser({ _id: userId });

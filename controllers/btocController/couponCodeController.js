@@ -219,7 +219,7 @@ exports.applyCoupon = async (req, res, next) => {
         responseMessage: responseMessage.COUPON_NOT_FOUND,
       });
     }
-    if(isCouponExist.couponCode==="PEFA2024"){
+    if(isCouponExist.couponCode==="WELCOMEPEFA"){
       const isUserRegister = await findBookingEventData({userId: isUserExist._id,status:status.ACTIVE});
     if (!isUserRegister) {
       return res.status(statusCode.badRequest).send({
@@ -291,7 +291,7 @@ exports.CouponApplied=async(req,res,next)=>{
     if (!isCouponExist) {
       return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.COUPON_NOT_FOUND});
     }
-    if(isCouponExist.couponCode==="PEFA2024"){
+    if(isCouponExist.couponCode==="WELCOMEPEFA"){
         const isUserRegister = await findBookingEventData({userId: isUserExist._id,status:status.ACTIVE});
       if (!isUserRegister) {
         return res.status(statusCode.badRequest).send({statusCode: statusCode.badRequest,responseMessage: responseMessage.PEFA_NOT_REGISTER});

@@ -85,7 +85,7 @@ const {
 // task.start();
 
 // Define and schedule task2 separately
-var taskPromotionalNotification = cron.schedule("30 10 * * *",async () => {
+var taskPromotionalNotification = cron.schedule("5 5 10 * * *",async () => {
     try {
       const users = await userList({
         // 'contactNo.mobile_number': { $in: ['8115199076', '9354416602','9810704352'] },
@@ -93,8 +93,10 @@ var taskPromotionalNotification = cron.schedule("30 10 * * *",async () => {
         deviceToken: { $exists: true, $ne: "" },
       });
       // Task 2 logic
-      const notificationMessage = "🚀एक सफ़र पे यूँ ही कभी चल दो तुम,✈️";
-      const messageBody = `✨Check out our latest promotion! We're offering deals so good, even your coffee will do a double-take! ☕️ Explore your journey with TheSkyTrails pvt ltd✨`;
+      // const notificationMessage = "🚀एक सफ़र पे यूँ ही कभी चल दो तुम,✈️";
+      // const messageBody = `✨Check out our latest promotion! We're offering deals so good, even your coffee will do a double-take! ☕️ Explore your journey with TheSkyTrails pvt ltd✨`;
+      const notificationMessage = "🚀PEFA2024 Award Show ✈️" 
+      const messageBody = `✨Your free pass is waiting- book your tickets and check out our app for all the travel and event updates.✨`;
       for (const user of users) {
         try {
           await pushNotification(
@@ -130,46 +132,42 @@ var taskPromotionalNotification = cron.schedule("30 10 * * *",async () => {
 taskPromotionalNotification.start(); // Start the task2
 
 // Main task
-var taskEventNotification = cron.schedule("59 * * * * *",async () => {
-    try {
+const taskEventNotification = cron.schedule("*/3 * * * *", async () => {
+  try {
       // Fetch all users from the database
-      const users = await eventBookingList({
-        status: status.ACTIVE,
-        deviceToken: { $exists: true, $ne: "" },
-      });
+      const users = await eventBookingList({status: status.ACTIVE,deviceToken: { $exists: true, $ne: "" },});
+      // Get the current date and time
       const current_Date = new Date();
-      // Iterate through each user and send a notification
+      // Define the time window for notifications (in minutes)
+      const notificationWindow = 5; // Adjust as needed
+      // Iterate through each user and send a notification if the registration time is within the defined window
       for (const user of users) {
-        if (user.createdAt.getTime() >= current_Date.getTime()) {
-          try {
-            const notifications = `🎉Excited for PEFA 2024,${user.name}😎?`;
-            const messageBody1 = `📅 Time: 5 PM 😅 Date: Mar. 2, 2024
-            📍 Location: Rayat Bahra University,V.P.O. Sahauran, Tehsil Kharar Distt, Kharar, Punjab 
-            📱Check to make sure you get the most out of TheSkyTrails app! Special deals are on the way. Don't pass this up! ✨
-            See you there!
-            TheSkyTrails Team`;
-            await pushNotification(
-              user.deviceToken,
-              notifications,
-              messageBody1
-            );
-          } catch (error) {
-            console.log("error when running task2", error);
+          // Get the registration timestamp of the user
+          const createdAtUser = user.createdAt.getTime();
+          // Calculate the earliest time for notifications
+          const earliestNotificationTime = new Date(current_Date.getTime() - (notificationWindow * 60000));
+          // Check if the registration time is within the notification window
+          if (createdAtUser >= earliestNotificationTime.getTime() && createdAtUser <= current_Date.getTime()) {
+              // Send the notification to the user
+              const notifications = `🎉 Excited for PEFA2024, Dear ${user.name} 😎?`;
+              const messageBody1 = `We are pleased to inform you that your booking for PEFA 2024, an extraordinary night, is confirmed with TheSkytrails PVT LTD. We will be sharing more details soon, so stay tuned for regular updates on our app.Looking forward to seeing you there!.
+              ✈️ TheSkyTrails Team,✈️`;
+
+              await pushNotification(user.deviceToken, notifications, messageBody1);
           }
-        }
       }
+
       console.log("Notification cron job executed successfully.");
-      taskEventNotification.stop();
-    } catch (error) {
+      // taskEventNotification.stop();
+  } catch (error) {
       console.error("Error occurred during notification cron job:", error);
-    }
-  },
-  {
-    scheduled: true,
-    timezone: "Asia/Kolkata", // Adjust timezone as per your requirement
   }
-);
-taskEventNotification.start(); // Start the task1
+}, {
+  scheduled: true,
+  timezone: "Asia/Kolkata", // Adjust timezone as per your requirement
+});
+
+taskEventNotification.start(); // Start the task
 
 // Define and schedule task2 separately
 var taskEventNotification1 = cron.schedule("41 17 * * *",async () => {
@@ -179,8 +177,8 @@ var taskEventNotification1 = cron.schedule("41 17 * * *",async () => {
         deviceToken: { $exists: true, $ne: "" },
       });
       // Task 2 logic
-      const notificationMessage ="✨Reminder: PEFA2024 Event !✨";
-      const messageBody =`✨Just a reminder that PEFA2024,is happening on 2 March 2024!We look forward to seeing you at PEFA2024!
+      const notificationMessage ="✨Countdown to PEFA2024 Begins!🕔✨";
+      const messageBody =`✨Don't miss out on the excitement! PEFA2024 is happening on 2nd March, 2024. Get ready for an extraordinary night.
       Best regards,
       TheSkyTrails pvt ltd✨`; 
       for (const user of users) {
@@ -223,7 +221,7 @@ taskEventNotification1.start(); // Start the task2
 
 
 // const title='📅 Attention: Venue Change! 🏢'
-//             const msg=`Dear ${user.name}😎,
+//             const msg=`Dear ${user.name}😎, 
 //             We wanted to inform you that there has been a change in the venue for the upcoming PEFA 2024 event. The new venue details are as follows:
 //            📍New Location: Rayat Bahra University,V.P.O. Sahauran, Tehsil Kharar Distt, Kharar, Punjab 
 //             We apologize for any inconvenience this change may cause. Please make a note of the updated venue to ensure you don't miss out on the excitement!

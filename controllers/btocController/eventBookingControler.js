@@ -349,14 +349,14 @@ exports.pefaEventBooking = async (req, res, next) => {
     const result = await createBookingEvent(object);
     const obj = {
       title: "Mohali",
-      couponCode: "PEFA2024",
+      couponCode: "WELCOMEPEFA",
       content: "pefa2024 TheSkyTrails registration coupon",
       limitAmount: 100,
       discountPercentage: 5,
       offerType: offerType.EVENTS,
       termsAndCond: ["coupon will be apply upto 100rs/"],
     };
-    const isCouponExist=await findCoupon({couponCode:"PEFA2024"});
+    const isCouponExist=await findCoupon({couponCode:"WELCOMEPEFA"});
     if(isCouponExist){
     const eventname = "*PEFA - Punjab Entertainment Festival and Awards!*";
     const eventDate1 = "*2 Mar 2024 5 pm*";
