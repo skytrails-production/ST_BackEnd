@@ -205,6 +205,19 @@ const {
   userSearchList,
   updateUserSearch,
 } = userSerachesServices;
+const {
+  eventBookingServices,
+} = require("../services/btocServices/eventBookingServices");
+const {
+  createBookingEvent,
+  findBookingEventData,
+  deleteBookingEvent,
+  eventBookingList,
+  updateBookingEvent,
+  countTotalBookingEvent,
+  eventBookingListPopulated,
+  getBookingEvent,
+} = eventBookingServices;
 
 //**********Necessary models***********/
 const flightModel = require("../model/flightBookingData.model");
@@ -777,6 +790,7 @@ exports.adminDashBoard = async (req, res, next) => {
       userChangeBusBookingCount +
       userChangeHotelBookingCount +
       userChangeFlightBookingCount;
+      result.TotalEventBooking = await countTotalBookingEvent({ status: status.ACTIVE });
     return res
       .status(statusCode.OK)
       .send({ message: responseMessage.DATA_FOUND, result: result });

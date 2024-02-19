@@ -44,4 +44,14 @@ const newhotelCityCode = mongoose.model(
     countrycode: { type: String },
   })
 );
-module.exports = { cityData, cityBusData, newhotelCityCode,cityBusProductionData };
+
+const userIPDetail=mongoose.model(
+  "userIPDetails",
+  new mongoose.Schema({
+    userIp:String,
+    bookingType:String,
+  },{
+    timestamps:true
+  })
+);
+module.exports = { cityData, cityBusData, newhotelCityCode,cityBusProductionData, userIPDetail };

@@ -5,7 +5,8 @@ const {
   actionCompleteResponse,
   sendActionFailedResponse,
 } = require("../common/common");
-const {cityBusData} = require("../model/city.model");
+const {cityBusData, userIPDetail} = require("../model/city.model");
+const requestIp = require('request-ip');
 exports.getBusCityList = async (req, res) => {
   try {
     const data = {
@@ -94,6 +95,12 @@ exports.busBook = async (req, res) => {
     const data = {
       ...req.body,
     };
+
+    const userIP = requestIp.getClientIp(req);
+    const userBookingIpDetails={userIp:userIP,
+      bookingType:"BusBooking"
+    };
+    await userIPDetail.create(userBookingIpDetails); 
 
     const response = await axios.post(`${api.busBookURL}`, data);
 

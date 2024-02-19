@@ -307,7 +307,7 @@ module.exports = {
   },
   sendSMSEventEnquiry: async (mobileNumber, message) => {
     const dta="PEFA2024";
-    const messageContent = `exciting News! Thank you for securing your spot at PEFA2024! We're over the moon to have you with us. Brace yourself for an amazing time! For event specifics, check out https://play.google.com/store/apps/details?id=com.skytrails. Get ready for a blast! See you at the event! TheSkyTrails Pvt Ltd`;
+    const messageContent = `Exciting News! Thank you for securing your spot at ${dta}! We're over the moon to have you with us. Brace yourself for an amazing time! For event specifics, check out https://play.google.com/store/apps/details?id=com.skytrails. Get ready for a blast! See you at the event! TheSkyTrails Pvt Ltd`;
     const url = `http://sms.txly.in/vb/apikey.php?`;
     const params = {
       apikey: key,

@@ -5,6 +5,8 @@ const {
   actionCompleteResponse,
   sendActionFailedResponse,
 } = require("../common/common");
+const { userIPDetail } = require("../model/city.model");
+const requestIp = require('request-ip');
 
 exports.searchHotelDeDup = async (req, res) => {
   try {
@@ -136,6 +138,12 @@ exports.searchHotelBookRoom = async (req, res) => {
       ...req.body,
     };
 
+    const userIP = requestIp.getClientIp(req);
+    const userBookingIpDetails={userIp:userIP,
+      bookingType:"HotelBooking"
+    };
+    await userIPDetail.create(userBookingIpDetails);
+
     const response = await axios.post(`${api.hotelBookRoomURL}`, data);
     msg = "Hotel Book Room Searched Successfully!";
     actionCompleteResponse(res, response.data, msg);
@@ -150,6 +158,12 @@ exports.searchHotelBookRoomDeDup = async (req, res) => {
     const data = {
       ...req.body,
     };
+
+    const userIP = requestIp.getClientIp(req);
+    const userBookingIpDetails={userIp:userIP,
+      bookingType:"HotelBooking"
+    };
+    await userIPDetail.create(userBookingIpDetails);
 
     const response = await axios.post(`${api.hotelBookRoomURL}`, data);
     msg = "Hotel Book Room Searched Successfully!";

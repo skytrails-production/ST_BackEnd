@@ -4,6 +4,8 @@ const {
   actionCompleteResponse,
   sendActionFailedResponse,
 } = require("../common/common");
+const { userIPDetail } = require("../model/city.model");
+const requestIp = require('request-ip');
 
 exports.getOTP = async (req, res) => {
   try {
@@ -199,6 +201,13 @@ exports.rechageRequest = async (req, res) => {
   try {
     const { data } = req.body;
     let params = { header: header, data: data };
+
+    const userIP = requestIp.getClientIp(req);
+    const userBookingIpDetails={userIp:userIP,
+      bookingType:"Recharge"
+    };
+    await userIPDetail.create(userBookingIpDetails);
+
     const response = await axios.post(`${api.rechageRequestURL}`, params, {
       headers: {
         "Content-Type": "application/json",

@@ -7,6 +7,9 @@ const {
   sendActionFailedResponse,
 } = require("../common/common");
 const { response } = require("express");
+
+const requestIp = require('request-ip');
+const { userIPDetail } = require("../model/city.model");
 //**************************************COMMON SERVICES***************************************/
 
 
@@ -372,8 +375,13 @@ exports.getTicketLCC = async (req, res) => {
       ...req.body,
     };
 
+    const userIP = requestIp.getClientIp(req);
+    const userBookingIpDetails={userIp:userIP,
+      bookingType:"FlightBooking"
+    };
+    await userIPDetail.create(userBookingIpDetails);
     const response = await axios.post(`${api.flightTicketLCCURL}`, data);
-
+   
     msg = "Get Ticket LCC Searched Successfully!";
 
     actionCompleteResponse(res, response.data, msg);
@@ -388,6 +396,12 @@ exports.getTicketNonLCCpass = async (req, res) => {
     const data = {
       ...req.body,
     };
+
+    const userIP = requestIp.getClientIp(req);
+    const userBookingIpDetails={userIp:userIP,
+      bookingType:"FlightBooking"
+    };
+    await userIPDetail.create(userBookingIpDetails);
 
     const response = await axios.post(`${api.flightTicketNonLCCURL}`, data);
 
@@ -405,6 +419,12 @@ exports.getTicketNonLCC = async (req, res) => {
     const data = {
       ...req.body,
     };
+
+    const userIP = requestIp.getClientIp(req);
+    const userBookingIpDetails={userIp:userIP,
+      bookingType:"FlightBooking"
+    };
+    await userIPDetail.create(userBookingIpDetails);    
 
     const response = await axios.post(`${api.flightTicketNonLCCURL}`, data);
 

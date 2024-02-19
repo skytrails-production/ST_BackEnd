@@ -74,7 +74,7 @@ exports.login = async (req, res, next) => {
       await sendSMS.sendSMSForOtp(mobileNumber, otp);
       const userName="Dear";
       const userOtp=`${otp}`
-      await whatsappAPIUrl.sendMessageWhatsApp(contactNumber,userName,userOtp,'otp');
+      await whatsappAPIUrl.sendMessageWhatsApp(contactNumber,userName,userOtp,'loginotp');
       token = await commonFunction.getToken({
         _id: result1._id,
         mobile_number: result1.mobile_number,
@@ -120,7 +120,7 @@ exports.login = async (req, res, next) => {
         token: token,
       };
       await sendSMS.sendSMSForOtp(mobileNumber, result.otp);
-      await whatsappAPIUrl.sendMessageWhatsApp('+919999123232',var1,otp,'otp');
+      await whatsappAPIUrl.sendMessageWhatsApp('+919999123232',var1,otp,'loginotp');
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         message: responseMessage.LOGIN_SUCCESS,
@@ -134,7 +134,7 @@ exports.login = async (req, res, next) => {
     );
     const userMobile = isExist.phone.country_code + isExist.phone.mobile_number;
     await sendSMS.sendSMSForOtp(mobileNumber, otp);
-    await whatsappAPIUrl.sendMessageWhatsApp(userMobile, var1,var2, 'otp');
+    await whatsappAPIUrl.sendMessageWhatsApp(userMobile, var1,var2, 'loginotp');
     if (!updatedUser) {
       return res.status(statusCode.InternalError).json({
         statusCode: statusCode.InternalError,
@@ -306,7 +306,7 @@ exports.resendOtp = async (req, res, next) => {
     }
     const userMobile =
       updateData.phone.country_code + updateData.phone.mobile_number;
-    await whatsappAPIUrl.sendMessageWhatsApp(userMobile, var1,var2,'otp');
+    await whatsappAPIUrl.sendMessageWhatsApp(userMobile, var1,var2,'loginotp');
     await sendSMS.sendSMSForOtp(mobileNumber, otp);
     const token = await commonFunction.getToken({
       _id: updateData._id,
@@ -445,7 +445,7 @@ exports.forgetPassword = async (req, res, next) => {
       { $set: { otp: otp, otpExpireTime: otpExpireTime } }
     );
     await sendSMS.sendSMSForOtp(mobileNumber, otp);
-    await whatsappAPIUrl.sendWhatsAppMessage(mobileNumber, var1,var2,'otp');
+    await whatsappAPIUrl.sendWhatsAppMessage(mobileNumber, var1,var2,'loginotp');
     await commonFunction.sendEmailOtp(userResult.email, otp);
     return res
       .status(statusCode.OK)

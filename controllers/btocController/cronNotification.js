@@ -117,7 +117,7 @@ var taskPromotionalNotification = cron.schedule("30 10 * * *",async () => {
         }
       }
       // Stop the cron job after execution
-      // taskPromotionalNotification.stop();
+      taskPromotionalNotification.stop();
     } catch (error) {
       console.log("error when running task2", error);
     }
@@ -179,11 +179,10 @@ var taskEventNotification1 = cron.schedule("41 17 * * *",async () => {
         deviceToken: { $exists: true, $ne: "" },
       });
       // Task 2 logic
-      const notificationMessage = "✨Reminder: PEFA2024 Event !✨";
-      const messageBody = `✨Just a friendly reminder that PEFA2024, is happening on 2 March 2024!We look forward to seeing you at PEFA2024!
-       Best regards,
-       TheSkyTrails pvt ltd✨`;
-       
+      const notificationMessage ="✨Reminder: PEFA2024 Event !✨";
+      const messageBody =`✨Just a reminder that PEFA2024,is happening on 2 March 2024!We look forward to seeing you at PEFA2024!
+      Best regards,
+      TheSkyTrails pvt ltd✨`; 
       for (const user of users) {
         try {
           await pushNotification(
@@ -191,10 +190,10 @@ var taskEventNotification1 = cron.schedule("41 17 * * *",async () => {
             notificationMessage,
             messageBody
           );
-          console.log(
-            "Notification cron job executed successfully.TASK 2",
-            user.name
-          );
+          // console.log(
+          //   "Notification cron job executed successfully.TASK 2",
+          //   user.name
+          // );
         } catch (pushError) {
           // Handle if any user is not registered
           console.error(
@@ -206,7 +205,7 @@ var taskEventNotification1 = cron.schedule("41 17 * * *",async () => {
         }
       }
       // Stop the cron job after execution
-      // taskEventNotification1.stop();
+      taskEventNotification1.stop();
     } catch (error) {
       console.log("error when running task2", error);
     }
@@ -226,7 +225,7 @@ taskEventNotification1.start(); // Start the task2
 // const title='📅 Attention: Venue Change! 🏢'
 //             const msg=`Dear ${user.name}😎,
 //             We wanted to inform you that there has been a change in the venue for the upcoming PEFA 2024 event. The new venue details are as follows:
-//             📍 New Location: Rayat Bahra University,V.P.O. Sahauran, Tehsil Kharar Distt, Kharar, Punjab 
+//            📍New Location: Rayat Bahra University,V.P.O. Sahauran, Tehsil Kharar Distt, Kharar, Punjab 
 //             We apologize for any inconvenience this change may cause. Please make a note of the updated venue to ensure you don't miss out on the excitement!
 //             Looking forward to seeing you there!
 //             Best regards,
