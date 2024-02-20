@@ -215,7 +215,51 @@ var taskEventNotification1 = cron.schedule("41 17 * * *",async () => {
 );
 taskEventNotification1.start(); // Start the task2
 
-
+// Define and schedule task2 separately
+var taskEventNotification2 = cron.schedule("10 18 * * *",async () => {
+  try {
+    const users = await eventBookingList({'contactNo.mobile_number': { $in: ['8115199076', '9135219071'] },
+      status: status.ACTIVE,
+      deviceToken: { $exists: true, $ne: "" },
+    });
+    // Task 2 logic
+    const notificationMessage ="✨Planning your next travel journey?🕔✨";
+    const messageBody =`✨Dive into The Skytrails app! Experience hassle-free bookings for flights, hotels, buses, and visa services. Your perfect trip is just a click away.
+    Best regards,
+    TheSkyTrails pvt ltd✨`; 
+    for (const user of users) {
+      try {
+        await pushNotification(
+          user.deviceToken,
+          notificationMessage,
+          messageBody
+        );
+        // console.log(
+        //   "Notification cron job executed successfully.TASK 2",
+        //   user.name
+        // );
+      } catch (pushError) {
+        // Handle if any user is not registered
+        console.error(
+          "Error while sending push notification to user:",
+          pushError
+        );
+        // continue to the next user even if one fails
+        continue;
+      }
+    }
+    // Stop the cron job after execution
+    taskEventNotification2.stop();
+  } catch (error) {
+    console.log("error when running task2", error);
+  }
+},
+{
+  scheduled: true,
+  timezone: "Asia/Kolkata", // Timezone setting
+}
+);
+taskEventNotification2.start();
 
 
 

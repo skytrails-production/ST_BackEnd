@@ -409,11 +409,7 @@ exports.sendNotificationAfterBooking=async(req,res,next)=>{
   try {
     const{name,deviceToken}=req.body;
     const notificationMessage = `🎉 Your PEFA 2024 Booking Confirmation! 🎉`;
-      const messageBody=`Dear ${name} 😎,We're delighted to confirm your booking for PEFA 2024 🎉Event Details:
-      📅Date:2 Mar 2024 5pm
-      🕒Time: 5 PM sharp
-      📍Venue: V.P.O. Sahauran, Tehsil Kharar Distt, Kharar, Punjab
-      But wait, there's more! 😍🌟 You're one of our lucky users.!✨😍Thank you for choosing us. We can't wait to elevate your event experience!Best RegardsTheSkyTrails pvt ltd`
+      const messageBody=`Dear ${name} 😎,We are pleased to inform you that your booking for PEFA 2024, an extraordinary night, is confirmed with Skytrails. We will be sharing more details soon, so stay tuned for regular updates on our app. See you at PEFA2024.Best Regards TheSkyTrails pvt ltd`
       const messageTitle="🌟🎉 Your PEFA 2024 Booking Confirmation! 🎉🌟";
       await commonPushFunction.pushNotification(deviceToken,messageTitle,messageBody);
       return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.SUCCESS})

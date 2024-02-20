@@ -57,7 +57,7 @@ const eventServices={
         // Set up pagination options
         let options = {
             page: Number(page) || 1,
-            limit: Number(limit) || 8,
+            limit: Number(limit) || 10,
             sort: { createdAt: -1 },
         };
         

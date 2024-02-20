@@ -217,6 +217,7 @@ const {
   countTotalBookingEvent,
   eventBookingListPopulated,
   getBookingEvent,
+  getEventPopulate,
 } = eventBookingServices;
 
 //**********Necessary models***********/
@@ -1767,13 +1768,7 @@ exports.statusChange = async (req, res, next) => {
       { _id: iSubAdminExist._id },
       { status: approveStatus }
     );
-      return res
-        .status(statusCode.OK)
-        .send({
-          statusCode: statusCode.OK,
-          responseMessage: responseMessage.SUBADMIN_UPDATED,
-          result: updateData,
-        });
+      return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.SUBADMIN_UPDATED,result: updateData});
     
   } catch (error) {
     console.log("error in changeing subadmin status", error);
@@ -1811,3 +1806,17 @@ exports.updateMarkup = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.getAllEventBookings=async(req,res,next)=>{
+  try {
+    const { page, limit, search } = req.query;
+    const result=await getEventPopulate(req.query);
+    if(!result){
+      return res.status(statusCode.OK).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND});
+    }
+    return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result: result});
+  } catch (error) {
+    console.log("error while trying to get all event booking list",error);
+    return next(error);
+  }
+}
