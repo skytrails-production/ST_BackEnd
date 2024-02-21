@@ -173,16 +173,9 @@ async function xmlToJson(xml) {
     const {date,to,from}=req.body;
     const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
 
-    // console.log("messageId", messageId);
-    // console.log("uniqueId", uniqueId);
-    // console.log("NONCE", NONCE);
-    // console.log("TIMESTAMP", TIMESTAMP);
-    // console.log("hashedPassword", hashedPassword);
-    // console.log("url", url);
-//   console.log(date,to,from, "data");
+ 
 
     try {
-        return;
         let data =`<?xml version="1.0" encoding="utf-8"?>
         <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
             <soap:Header xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
@@ -282,8 +275,7 @@ async function xmlToJson(xml) {
       
            const responseData = extractDataFromResponse(response);
            msg = "Flight Searched Successfully!";
-           actionCompleteResponse(res, responseData, msg);
-        
+        actionCompleteResponse(res, responseData, msg);        
     }catch (err) {
         // console.log(err)
         sendActionFailedResponse(res, {}, err.message);

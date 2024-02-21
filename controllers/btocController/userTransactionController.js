@@ -885,11 +885,10 @@ exports.makeCashfreePayment = async (req, res, next) => {
         customer_phone: "8115199076",
       },
       order_id: OrderId,
-      order_meta: {
-        notify_url: "https://webhook.site/0578a7fd-a0c0-4d47-956c-d02a061e36d3",
-        // return_url: `http://localhost:8000/skyTrails/api/transaction/checkCashfreePaymentStatus?${OrderId}`,
-        // return_url: `http://localhost:8000/skyTrails/api/transaction/paymentSuccessPhonePe?merchantTransactionId=${OrderId}`,
-      },
+      "order_meta": {
+        "return_url": "https://www.cashfree.com/devstudio/preview/pg/mobile/android?order_id={order_id}",
+        "notify_url": "https://www.cashfree.com/devstudio/preview/pg/webhooks/77891295"
+    },
       order_expiry_time: newDate,
       order_amount: 10,
       order_currency: "INR",
@@ -1085,3 +1084,17 @@ exports.cashfreeRefund=async(req,res,next)=>{
 
   }
 }
+
+
+
+// import { Cashfree } from "cashfree-pg"; 
+
+// Cashfree.XClientId = "601957620817aa2f1bd8c36094759106";
+// Cashfree.XClientSecret = "cfsk_ma_prod_16b5005939a07cdb32736d8445fbf1e9_92aea845";
+// Cashfree.XEnvironment = Cashfree.Environment.PRODUCTION;
+
+// Cashfree.PGOrderFetchPayments("2023-08-01", "order_65334917").then((response) => {
+//     console.log('Order fetched successfully:', response.data);
+// }).catch((error) => {
+//     console.error('Error:', error.response.data.message);
+// });

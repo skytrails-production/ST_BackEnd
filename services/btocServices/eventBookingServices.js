@@ -45,7 +45,7 @@ const eventBookingServices={
         };
         return await bookEventModel.paginate(query, options);
     },
-    getEventPopulate:async(body)=>{
+    getEventPopulate1:async(body)=>{
         const { page, limit, search } = body;
         const currentDate = new Date().toISOString();
         
@@ -80,25 +80,18 @@ const eventBookingServices={
         return data;
         
     },
-    getEventPopulate1: async (body) => {
+    getEventPopulate: async (body) => {
         const { page, limit, search } = body;
-        let filter = {};
-    
+        let query = {status:status.ACTIVE}
         if (search) {
-            filter = {
-                $or: [
-                    { profession: { $regex: search, $options: 'i' } },
-                    { name: { $regex: search, $options: 'i' } },
-                    { city: { $regex: search, $options: 'i' } },
-                    { 'contactNo.mobile_number': { $regex: search, $options: 'i' } },
-                ],
-            };
+            query.$or = [
+                { profession: { $regex: search, $options: 'i' } },
+                { name: { $regex: search, $options: 'i' } },
+                { city: { $regex: search, $options: 'i' } },
+                { 'contactNo.mobile_number': { $regex: search, $options: 'i' } },
+            ]
         }
-    
         let pipeline = [
-            {
-                $match: filter,
-            },
             {
                 $lookup: {
                     from: "userBtoC",
@@ -127,15 +120,37 @@ const eventBookingServices={
                     preserveNullAndEmptyArrays: true
                 }
             },
-            // Add more aggregation stages if needed
+            {
+                $match:query
+            },
+            {$project: {
+                "userDetails.username": 1,
+                "userDetails.email": 1,
+                "userDetails.phone.mobile_number": 1,
+                "eventDetails.title": 1,
+                "eventDetails.venue": 1,
+                "eventDetails.isPaid": 1,
+                name: 1,
+                city: 1,
+                profession: 1,
+                'contactNo.mobile_number': 1,
+                tickets: 1,
+                isluckyUser: 1,
+                deviceType: 1,
+                eventDate: 1,
+
+                createdAt:1
+              },},
+              {$sort:{createdAt:-1}}
+
         ];
-       const aggregate= await bookEventModel.aggregate(pipeline);
+       const aggregate=  bookEventModel.aggregate(pipeline);
         let options = {
             page: Number(page) || 1,
             limit: Number(limit) || 10,
             sort: { createdAt: -1 },
         };
-        return await bookEventModel.paginate(aggregate, options);
+        return await bookEventModel.aggregatePaginate(aggregate, options);
       },
     
 }
