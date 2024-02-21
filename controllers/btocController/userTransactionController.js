@@ -789,73 +789,6 @@ function generateSHA512Hash(input) {
   return hash.digest("hex");
 }
 
-//  function makePayment(req, res) {
-//   function checkReverseHash(response) {
-//     var hashstring = config.salt + "|" + response.status + "|" + response.udf10 + "|" + response.udf9 + "|" + response.udf8 + "|" + response.udf7 +
-//       "|" + response.udf6 + "|" + response.udf5 + "|" + response.udf4 + "|" + response.udf3 + "|" + response.udf2 + "|" + response.udf1 + "|" +
-//       response.email + "|" + response.firstname + "|" + response.productinfo + "|" + response.amount + "|" + response.txnid + "|" + response.key
-//     hash_key = sha512.sha512(hashstring);
-//     if (hash_key == req.body.hash)
-//       return true;
-//     else
-//       return false;
-//   }
-//   if (checkReverseHash(req.body)) {
-//     res.send(req.body);
-//   }
-//   res.send('false, check the hash value ');
-// };
-
-// const sdk = require('api')('@cashfreedocs-new/v3#lwcaw2xlrg6kt82');
-
-// sdk.auth('TEST1009338104d5e3d4f1f2d46ae39a18339001');
-// sdk.auth('cfsk_ma_test_2465e393bc943188fa8ce919d8f6f9d0_a3f68c24');
-// sdk.pGCreateOrder({
-//   customer_details: {
-//     customer_id: '9437ed98-b2',
-//     customer_email: 'lcharu071@gmail.com',
-//     customer_phone: '8115199076'
-//   },
-//   order_id: 'cfsk_ma_test_2465e393bc943188fa8ce919d8f6f9d0',
-//   order_amount: 10,
-//   order_currency: 'INR'
-// }, {'x-api-version': '2022-09-01'})
-//   .then(({ data }) => console.log(data))
-//   .catch(err => console.error(err));
-
-// const object= {
-//   customer_details: {
-//     customer_id: '9437e098-b2',
-//     customer_email: 'lcharu071@gmail.com',
-//     customer_phone: '8115199076'
-//   },
-//   order_id: 'cfsk_mb_test_2465e393bc943188fa8ce919d8f6f9d0',
-//   order_amount: 10,
-//   order_currency: 'INR'
-// }
-// const options = {
-//   method: 'POST',
-//   url: 'https://sandbox.cashfree.com/pg/orders',
-//   headers: {
-//     accept: 'application/json',
-//     'x-api-version': '2022-09-01',
-//     'content-type': 'application/json',
-//     'x-client-id': 'TEST1009338104d5e3d4f1f2d46ae39a18339001',
-//     'x-client-secret': 'cfsk_ma_test_2465e393bc943188fa8ce919d8f6f9d0_a3f68c24'
-//   },
-//   data:object
-// };
-
-// axios
-//   .request(options)
-//   .then(function (response) {
-//     console.log(response.data);
-//   })
-//   .catch(function (error) {
-//     console.error(error);
-//   });
-
-//handle transaction details into db using cashfree ****************************************
 exports.makeCashfreePayment = async (req, res, next) => {
   try {
     const { firstname, phone, amount, redirectUrl, bookingType } = req.body;
@@ -990,7 +923,7 @@ exports.checkout = async (req, res, next) => {
   }
 };
 
-exports.CCEVENUEPayment = async (req, res, next) => {
+exports.CCEVENUEPayment1 = async (req, res, next) => {
   try {
     const {
       firstname,
@@ -1084,7 +1017,89 @@ exports.cashfreeRefund=async(req,res,next)=>{
 
   }
 }
+const nodeCCAvenue = require("node-ccavenue");
+const ccav = new nodeCCAvenue.Configure({
+  merchant_id: process.env.CC_AVENUE_MERCHANT_ID,
+  working_key:
+    process.env.CC_AVENUE_ACCESSCODE1 || process.env.CC_AVENUE_ACCESSCODE,
+  access_code:
+    process.env.CC_AVENUE_WORKING_KEY1 || process.env.CC_AVENUE_WORKING_KEY,
+});
+exports.CCEVENUEPayment = async (req, res, next) => {
+  try {
+    const {customerEmail,bookingType,customerPhone,customerAddress,country,customerName,orderId,amount,refund_id,refund_note,refund_speed,redirect_url,cancel_url} = req.body;
+      const url = "https://secure.ccavenue.com/transaction/initTrans";
+      const txnId = "orderId" + Date.now();
+      const data={
+        working_key:process.env.CC_AVENUE_WORKING_KEY,
+        access_code:process.env.CC_AVENUE_ACCESSCODE,
+        request_type:JSON
+      }
+      const checksum = ccav.encrypt(data);
+      // Prepare request data
+      const requestData = {
+        merchant_id: merchant_id,
+        order_id: txnId,
+        currency: "INR", // Change currency based on your requirement
+        amount: '1',
+        redirect_url: `http://localhost:8000//skyTrails/api/transaction/paymentSuccess?merchantTransactionId=${txnId}`,
+        cancel_url: `http://localhost:8000//skyTrails/api/transaction/paymentFailure?merchantTransactionId=${txnId}`,
+        language: "EN", // Change language as needed
+        billing_name: customerName, // Change customer name as needed
+        billing_address: customerAddress, // Change customer address as needed
+        billing_country: country, // Change country as needed
+        billing_tel: customerPhone, // Change customer phone as needed
+        billing_email: customerEmail, // Change customer email as needed
+      };
+console.log("requestData",requestData);
+      // Generate checksum
+     
+      console.log("checksum==============",checksum);
+      const encryptedData = ccav.encrypt(requestData);
+      console.log(encryptedData);
+      const decryptedData = ccav.decrypt(encryptedData);
+      console.log(decryptedData);
+      try {
+        // Send request to CCAvenue
+        const response = await axios.post(url, checksum);
 
+        // Redirect user to CCAvenue payment page
+        console.log("Redirecting to CCAvenue payment page:", response.data);
+      } catch (error) {
+        console.error("Error initiating payment:", error.message);
+        // Handle error
+      }
+    
+    // Example function to initiate payment
+    // async function initiatePayment(amount, orderId) {
+    //     try {
+    //       // Generate payment form
+    //       const form = await ccav.getPaymentForm({
+    //         order_id: orderId,
+    //         amount: amount,
+    //         currency: 'INR',
+    //         language: 'EN',
+    //         billing_name: 'Customer Name',
+    //         billing_address: 'Customer Address',
+    //         billing_country: 'India',
+    //         billing_tel: 'Customer Phone',
+    //         billing_email: 'customer@example.com',
+    //         redirect_url: 'https://yourwebsite.com/payment/redirect', // Redirect URL after payment
+    //         cancel_url: 'https://yourwebsite.com/payment/cancel', // Cancel URL
+    //       });
+
+    //       // The 'form' variable now contains the HTML form to be rendered in your view
+    //       console.log(form);
+    //     } catch (error) {
+    //       console.error('Error initiating payment:', error.message);
+    //       // Handle error
+    //     }
+    //   }
+  } catch (error) {
+    console.log("error while trying to refund amount==", error);
+    return next(error);
+  }
+};
 
 
 // import { Cashfree } from "cashfree-pg"; 

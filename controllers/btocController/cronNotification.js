@@ -85,13 +85,11 @@ const {
 // task.start();
 
 // Define and schedule task2 separately
-var taskPromotionalNotification = cron.schedule("5 5 10 * * *",async () => {
+var taskPromotionalNotification = cron.schedule("4 10 * * *",async () => {
     try {
-      const users = await userList({
-        // 'contactNo.mobile_number': { $in: ['8115199076', '9354416602','9810704352'] },
-        status: status.ACTIVE,
-        deviceToken: { $exists: true, $ne: "" },
-      });
+      // 'phone.mobile_number':'8115199076'
+      const users = await userList({status: status.ACTIVE,deviceToken: { $exists: true, $ne: "" }});
+      console.log("users===========",users.length);
       // Task 2 logic
       // const notificationMessage = "🚀एक सफ़र पे यूँ ही कभी चल दो तुम,✈️";
       // const messageBody = `✨Check out our latest promotion! We're offering deals so good, even your coffee will do a double-take! ☕️ Explore your journey with TheSkyTrails pvt ltd✨`;
@@ -99,15 +97,7 @@ var taskPromotionalNotification = cron.schedule("5 5 10 * * *",async () => {
       const messageBody = `✨Your free pass is waiting- book your tickets and check out our app for all the travel and event updates.✨`;
       for (const user of users) {
         try {
-          await pushNotification(
-            user.deviceToken,
-            notificationMessage,
-            messageBody
-          );
-          console.log(
-            "Notification cron job executed successfully.TASK 2",
-            user.username
-          );
+          await pushNotification(user.deviceToken,notificationMessage,messageBody);
         } catch (pushError) {
           // Handle if any user is not registered
           console.error(
@@ -117,9 +107,9 @@ var taskPromotionalNotification = cron.schedule("5 5 10 * * *",async () => {
           // continue to the next user even if one fails
           continue;
         }
-      }
-      // Stop the cron job after execution
-      taskPromotionalNotification.stop();
+        // Stop the cron job after execution
+     taskPromotionalNotification.stop(); 
+    } 
     } catch (error) {
       console.log("error when running task2", error);
     }
@@ -170,12 +160,13 @@ const taskEventNotification = cron.schedule("*/3 * * * *", async () => {
 taskEventNotification.start(); // Start the task
 
 // Define and schedule task2 separately
-var taskEventNotification1 = cron.schedule("41 17 * * *",async () => {
+var taskEventNotification1 = cron.schedule("52 17 * * *",async () => {
     try {
       const users = await eventBookingList({
         status: status.ACTIVE,
         deviceToken: { $exists: true, $ne: "" },
       });
+console.log("=======================",users.length);
       // Task 2 logic
       const notificationMessage ="✨Countdown to PEFA2024 Begins!🕔✨";
       const messageBody =`✨Don't miss out on the excitement! PEFA2024 is happening on 2nd March, 2024. Get ready for an extraordinary night.
@@ -188,10 +179,10 @@ var taskEventNotification1 = cron.schedule("41 17 * * *",async () => {
             notificationMessage,
             messageBody
           );
-          // console.log(
-          //   "Notification cron job executed successfully.TASK 2",
-          //   user.name
-          // );
+          console.log(
+            "Notification cron job executed successfully.TASK 2",
+            user.name
+          );
         } catch (pushError) {
           // Handle if any user is not registered
           console.error(
@@ -216,16 +207,13 @@ var taskEventNotification1 = cron.schedule("41 17 * * *",async () => {
 taskEventNotification1.start(); // Start the task2
 
 // Define and schedule task2 separately
-var taskEventNotification2 = cron.schedule("10 18 * * *",async () => {
+var taskPlatformNotification = cron.schedule("20 16 * * *",async () => {
   try {
-    const users = await eventBookingList({'contactNo.mobile_number': { $in: ['8115199076', '9135219071'] },
-      status: status.ACTIVE,
-      deviceToken: { $exists: true, $ne: "" },
-    });
+    // 'contactNo.mobile_number': { $in: ['8115199076', '9135219071'] },
+    const users = await userList({status: status.ACTIVE,deviceToken: { $exists: true, $ne: "" }});
     // Task 2 logic
     const notificationMessage ="✨Planning your next travel journey?🕔✨";
-    const messageBody =`✨Dive into The Skytrails app! Experience hassle-free bookings for flights, hotels, buses, and visa services. Your perfect trip is just a click away.
-    Best regards,
+    const messageBody =`✨Dive into The Skytrails app! Experience hassle-free bookings for flights, hotels, buses, and visa services. Your perfect trip is just a click away.Best regards,
     TheSkyTrails pvt ltd✨`; 
     for (const user of users) {
       try {
@@ -234,10 +222,10 @@ var taskEventNotification2 = cron.schedule("10 18 * * *",async () => {
           notificationMessage,
           messageBody
         );
-        // console.log(
-        //   "Notification cron job executed successfully.TASK 2",
-        //   user.name
-        // );
+        console.log(
+          "Notification cron job executed successfully.TASK 2",
+          user.username
+        );
       } catch (pushError) {
         // Handle if any user is not registered
         console.error(
@@ -249,7 +237,7 @@ var taskEventNotification2 = cron.schedule("10 18 * * *",async () => {
       }
     }
     // Stop the cron job after execution
-    taskEventNotification2.stop();
+    taskPlatformNotification.stop();
   } catch (error) {
     console.log("error when running task2", error);
   }
@@ -259,7 +247,7 @@ var taskEventNotification2 = cron.schedule("10 18 * * *",async () => {
   timezone: "Asia/Kolkata", // Timezone setting
 }
 );
-taskEventNotification2.start();
+taskPlatformNotification.start();
 
 
 
