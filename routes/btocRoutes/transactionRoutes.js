@@ -27,6 +27,6 @@ module.exports = function (app) {
     //refund api
 
     app.post('/skyTrails/api/transaction/refundPolicy',userTransactionsController.refundApi);
-    app.get('/skyTrails/api/transaction/checkCashfreeStatus/:orderid',userTransactionsController.checkCashfreePaymentStatus);
+    app.get('/skyTrails/api/transaction/checkCashfreeStatus',userTransactionsController.checkCashfreePaymentStatus);
     app.post('/skyTrails/api/transaction/refundCashfree',userTransactionsController.cashfreeRefund)
 }

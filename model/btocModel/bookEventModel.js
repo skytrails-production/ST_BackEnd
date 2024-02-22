@@ -12,7 +12,7 @@ const bookEventSchema = new mongoose.Schema(
   {
     userId: {
       type: Schema.Types.ObjectId,
-      ref: "users",
+      ref: "userBtoC",
     },
     email:{type: String,},
     name:{type:String},

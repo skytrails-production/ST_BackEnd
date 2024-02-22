@@ -411,7 +411,8 @@ exports.sendNotificationAfterBooking=async(req,res,next)=>{
     const notificationMessage = `🎉 Your PEFA 2024 Booking Confirmation! 🎉`;
       const messageBody=`Dear ${name} 😎,We are pleased to inform you that your booking for PEFA 2024, an extraordinary night, is confirmed with Skytrails. We will be sharing more details soon, so stay tuned for regular updates on our app. See you at PEFA2024.Best Regards TheSkyTrails pvt ltd`
       const messageTitle="🌟🎉 Your PEFA 2024 Booking Confirmation! 🎉🌟";
-      await commonPushFunction.pushNotification(deviceToken,messageTitle,messageBody);
+      const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`;
+      await commonPushFunction.pushNotification(deviceToken,messageTitle,messageBody,imageurl);
       return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.SUCCESS})
   } catch (error) {
    console.log("error while send notification"); 

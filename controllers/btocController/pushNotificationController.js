@@ -48,17 +48,18 @@ const {
 
 exports.pushNotificationsToUser=async(req,res,next)=>{
     try {
-        const {messageBody,messageTitle,notificationType}=req.body;
+        const {messageBody,messageTitle,notificationType,imageUrl}=req.body;
         // Fetch all users from the database
     const users = await eventBookingList({
         // 'contactNo.mobile_number': { $in: ['7222937463','8115199076', '9354416602'] },
         status: status.ACTIVE,
         deviceToken: { $exists: true, $ne: "" }
       });
+      const image="https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg"||imageUrl;
       if(notificationType==="PEFA2024"){
         for (const user of users) {
           try {
-            await pushNotification(user.deviceToken, messageTitle, messageBody);
+            await pushNotification(user.deviceToken, messageTitle, messageBody,image);
             console.log('Notification cron job executed successfully');
           } catch (pushError) {
             // Handle if any user is not registered

@@ -29,6 +29,7 @@ const {
   paginateUserSearch,
   countTotalUser,
 } = userServices;
+const lastNotificationSent = new Map();
 // Define your cron job schedule. This example runs the job every day at 9:00 AM.
 
 // var task =cron.schedule('0 * * * *', async () => {
@@ -85,19 +86,41 @@ const {
 // task.start();
 
 // Define and schedule task2 separately
-var taskPromotionalNotification = cron.schedule("4 10 * * *",async () => {
+var taskPromotionalNotification = cron.schedule("51 10 * * *",async () => {
     try {
       // 'phone.mobile_number':'8115199076'
-      const users = await userList({status: status.ACTIVE,deviceToken: { $exists: true, $ne: "" }});
-      console.log("users===========",users.length);
+      const users = await userList({
+      // 'phone.mobile_number':{ $in: ['8115199076', '9135219071'] },
+        status: status.ACTIVE,
+        deviceToken: { $exists: true, $ne: "" },
+      });
+      console.log("users===========", users.length);
       // Task 2 logic
       // const notificationMessage = "🚀एक सफ़र पे यूँ ही कभी चल दो तुम,✈️";
       // const messageBody = `✨Check out our latest promotion! We're offering deals so good, even your coffee will do a double-take! ☕️ Explore your journey with TheSkyTrails pvt ltd✨`;
-      const notificationMessage = "🚀PEFA2024 Award Show ✈️" 
-      const messageBody = `✨Your free pass is waiting- book your tickets and check out our app for all the travel and event updates.✨`;
+      const notificationMessage = "🚀 Missing Travel? Find it Here! ✈️";
+      const messageBody = `✨TheSkytrails app is your platform for all type of bookings for a seamless travel experience. Your dream journey is just a click away!✨`;
+      const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`;
       for (const user of users) {
         try {
-          await pushNotification(user.deviceToken,notificationMessage,messageBody);
+          // Check if a notification has been sent to this user recently
+          const lastSent = lastNotificationSent.get(user._id);
+          if (lastSent && Date.now() - lastSent < 3600000) {
+            // One hour interval
+            console.log(
+              "Notification already sent to user within the last hour. Skipping."
+            );
+            continue; // Skip sending notification
+          }
+          await pushNotification(
+            user.deviceToken,
+            notificationMessage,
+            messageBody,
+            imageurl
+          );
+
+          // Update the last notification sent time for this user
+          lastNotificationSent.set(user._id, Date.now());
         } catch (pushError) {
           // Handle if any user is not registered
           console.error(
@@ -108,8 +131,8 @@ var taskPromotionalNotification = cron.schedule("4 10 * * *",async () => {
           continue;
         }
         // Stop the cron job after execution
-     taskPromotionalNotification.stop(); 
-    } 
+        taskPromotionalNotification.stop();
+      }
     } catch (error) {
       console.log("error when running task2", error);
     }
@@ -122,66 +145,145 @@ var taskPromotionalNotification = cron.schedule("4 10 * * *",async () => {
 taskPromotionalNotification.start(); // Start the task2
 
 // Main task
-const taskEventNotification = cron.schedule("*/3 * * * *", async () => {
-  try {
+const taskEventNotification = cron.schedule("*/3 * * * *",
+  async () => {
+    try {
       // Fetch all users from the database
-      const users = await eventBookingList({status: status.ACTIVE,deviceToken: { $exists: true, $ne: "" },});
+      const users = await eventBookingList({
+        status: status.ACTIVE,
+        deviceToken: { $exists: true, $ne: "" },
+      });
       // Get the current date and time
       const current_Date = new Date();
       // Define the time window for notifications (in minutes)
       const notificationWindow = 5; // Adjust as needed
       // Iterate through each user and send a notification if the registration time is within the defined window
       for (const user of users) {
-          // Get the registration timestamp of the user
-          const createdAtUser = user.createdAt.getTime();
-          // Calculate the earliest time for notifications
-          const earliestNotificationTime = new Date(current_Date.getTime() - (notificationWindow * 60000));
-          // Check if the registration time is within the notification window
-          if (createdAtUser >= earliestNotificationTime.getTime() && createdAtUser <= current_Date.getTime()) {
-              // Send the notification to the user
-              const notifications = `🎉 Excited for PEFA2024, Dear ${user.name} 😎?`;
-              const messageBody1 = `We are pleased to inform you that your booking for PEFA 2024, an extraordinary night, is confirmed with TheSkytrails PVT LTD. We will be sharing more details soon, so stay tuned for regular updates on our app.Looking forward to seeing you there!.
+        // Get the registration timestamp of the user
+        const createdAtUser = user.createdAt.getTime();
+        // Calculate the earliest time for notifications
+        const earliestNotificationTime = new Date(
+          current_Date.getTime() - notificationWindow * 60000
+        );
+        // Check if the registration time is within the notification window
+        if (
+          createdAtUser >= earliestNotificationTime.getTime() &&
+          createdAtUser <= current_Date.getTime()
+        ) {
+          // Send the notification to the user
+          const notifications = `🎉 Excited for PEFA2024, Dear ${user.name} 😎?`;
+          const messageBody1 = `We are pleased to inform you that your booking for PEFA 2024, an extraordinary night, is confirmed with TheSkytrails PVT LTD. We will be sharing more details soon, so stay tuned for regular updates on our app.Looking forward to seeing you there!.
               ✈️ TheSkyTrails Team,✈️`;
-
-              await pushNotification(user.deviceToken, notifications, messageBody1);
-          }
+              const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`
+          await pushNotification(user.deviceToken, notifications, messageBody1,imageurl);
+        }
       }
 
       console.log("Notification cron job executed successfully.");
       // taskEventNotification.stop();
-  } catch (error) {
+    } catch (error) {
       console.error("Error occurred during notification cron job:", error);
+    }
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Kolkata", // Adjust timezone as per your requirement
   }
-}, {
-  scheduled: true,
-  timezone: "Asia/Kolkata", // Adjust timezone as per your requirement
-});
+);
 
 taskEventNotification.start(); // Start the task
 
 // Define and schedule task2 separately
-var taskEventNotification1 = cron.schedule("52 17 * * *",async () => {
+// Define a map to store the timestamp of the last notification sent to each user
+
+// Modify your cron job logic
+var taskEventNotification1 = cron.schedule("23 17 * * *",
+  async () => {
     try {
       const users = await eventBookingList({
+        // 'contactNo.mobile_number':'8115199076',
         status: status.ACTIVE,
         deviceToken: { $exists: true, $ne: "" },
       });
-console.log("=======================",users.length);
-      // Task 2 logic
-      const notificationMessage ="✨Countdown to PEFA2024 Begins!🕔✨";
-      const messageBody =`✨Don't miss out on the excitement! PEFA2024 is happening on 2nd March, 2024. Get ready for an extraordinary night.
+      console.log("=======================", users.length);
+      const notificationMessage = "✨Dhamakedaar performances aur shandaar awards, sirf ek click mein 🎊✨";
+      const messageBody = `✨visit theSkytrails app and Get your Free Passes Now for the PEFA award show!
       Best regards,
-      TheSkyTrails pvt ltd✨`; 
+      TheSkyTrails pvt ltd✨`;
+      const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`;
+      for (const user of users) {
+        try {
+          // Check if a notification has been sent to this user recently
+          const lastSent = lastNotificationSent.get(user._id);
+          if (lastSent && Date.now() - lastSent < 3600000) {
+            // One hour interval
+            console.log(
+              "Notification already sent to user within the last hour. Skipping."
+            );
+            continue; // Skip sending notification
+          }
+
+          await pushNotification(
+            user.deviceToken,
+            notificationMessage,
+            messageBody,
+            imageurl
+          );
+          console.log(
+            "Notification cron job executed successfully. TASK 2",
+            user.name
+          );
+
+          // Update the last notification sent time for this user
+          lastNotificationSent.set(user._id, Date.now());
+        } catch (pushError) {
+          console.error(
+            "Error while sending push notification to user:",
+            pushError
+          );
+          continue; // Continue to the next user even if one fails
+        }
+      }
+      // Stop the cron job after execution
+      taskEventNotification1.stop();
+    } catch (error) {
+      console.log("Error when running task2", error);
+    }
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Kolkata", // Timezone setting
+  }
+);
+
+taskEventNotification1.start(); // Start the task2
+
+// Define and schedule task2 separately
+var taskPlatformNotification = cron.schedule("20 16 * * *",
+  async () => {
+    try {
+      // 'contactNo.mobile_number': { $in: ['8115199076', '9135219071'] },
+      const users = await userList({
+        status: status.ACTIVE,
+        deviceToken: { $exists: true, $ne: "" },
+      });
+      // Task 2 logic
+      const notificationMessage = "✨Get Ready to Dhol Beats! PEFA Night is Here!💃🪩";
+      const messageBody = `✨Register from the Skytrails app for free passes and enjoy the glamorous night.🎤
+    Best regards,
+    TheSkyTrails pvt ltd✨`;
+    const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`;
       for (const user of users) {
         try {
           await pushNotification(
             user.deviceToken,
             notificationMessage,
-            messageBody
+            messageBody,
+            imageurl
           );
           console.log(
             "Notification cron job executed successfully.TASK 2",
-            user.name
+            user.username
           );
         } catch (pushError) {
           // Handle if any user is not registered
@@ -194,7 +296,7 @@ console.log("=======================",users.length);
         }
       }
       // Stop the cron job after execution
-      taskEventNotification1.stop();
+      taskPlatformNotification.stop();
     } catch (error) {
       console.log("error when running task2", error);
     }
@@ -204,58 +306,12 @@ console.log("=======================",users.length);
     timezone: "Asia/Kolkata", // Timezone setting
   }
 );
-taskEventNotification1.start(); // Start the task2
-
-// Define and schedule task2 separately
-var taskPlatformNotification = cron.schedule("20 16 * * *",async () => {
-  try {
-    // 'contactNo.mobile_number': { $in: ['8115199076', '9135219071'] },
-    const users = await userList({status: status.ACTIVE,deviceToken: { $exists: true, $ne: "" }});
-    // Task 2 logic
-    const notificationMessage ="✨Planning your next travel journey?🕔✨";
-    const messageBody =`✨Dive into The Skytrails app! Experience hassle-free bookings for flights, hotels, buses, and visa services. Your perfect trip is just a click away.Best regards,
-    TheSkyTrails pvt ltd✨`; 
-    for (const user of users) {
-      try {
-        await pushNotification(
-          user.deviceToken,
-          notificationMessage,
-          messageBody
-        );
-        console.log(
-          "Notification cron job executed successfully.TASK 2",
-          user.username
-        );
-      } catch (pushError) {
-        // Handle if any user is not registered
-        console.error(
-          "Error while sending push notification to user:",
-          pushError
-        );
-        // continue to the next user even if one fails
-        continue;
-      }
-    }
-    // Stop the cron job after execution
-    taskPlatformNotification.stop();
-  } catch (error) {
-    console.log("error when running task2", error);
-  }
-},
-{
-  scheduled: true,
-  timezone: "Asia/Kolkata", // Timezone setting
-}
-);
 taskPlatformNotification.start();
 
-
-
-
 // const title='📅 Attention: Venue Change! 🏢'
-//             const msg=`Dear ${user.name}😎, 
+//             const msg=`Dear ${user.name}😎,
 //             We wanted to inform you that there has been a change in the venue for the upcoming PEFA 2024 event. The new venue details are as follows:
-//            📍New Location: Rayat Bahra University,V.P.O. Sahauran, Tehsil Kharar Distt, Kharar, Punjab 
+//            📍New Location: Rayat Bahra University,V.P.O. Sahauran, Tehsil Kharar Distt, Kharar, Punjab
 //             We apologize for any inconvenience this change may cause. Please make a note of the updated venue to ensure you don't miss out on the excitement!
 //             Looking forward to seeing you there!
 //             Best regards,

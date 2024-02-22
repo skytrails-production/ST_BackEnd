@@ -77,17 +77,28 @@ const pushNotificationIOS = async (deviceToken, title, body) => {
 };
 // Import the FCM module
 
-const pushNotification = async (deviceToken, title, body) => {
+const pushNotification = async (deviceToken, title, body,imageUrl) => {
 
     const serverKey = fsmserverkey; // Replace with your actual server key
     const fcm = new FCM(serverKey);
     var message = {
       to: deviceToken,
-      content_avilable: true,
+      // content_avilable: true,
       notification: {
         title: title,
         body: body,
+        imageUrl: imageUrl, // Include the image URL in the notification payload
+        image: imageUrl,
       },
+      data: {
+        imageUrl: imageUrl, // Include the image URL in the data payload
+      },
+      android: {
+        notification: {
+          style: 'bigPicture', // Use Big Picture Style
+          bigPicture: imageUrl, // Specify the Big Picture URL
+        },
+      }
     };
     const response = await new Promise((resolve, reject) => {
       fcm.send(message, (err, response) => {
@@ -159,4 +170,32 @@ const mediapushNotification = async (deviceToken, title, body) => {
   }
 };
 
-module.exports = { sendNotification, pushNotification,mediapushNotification,pushNotificationIOS };
+
+const pushSimpleNotification = async (deviceToken, title, body) => {
+
+  const serverKey = fsmserverkey; // Replace with your actual server key
+  const fcm = new FCM(serverKey);
+  var message = {
+    to: deviceToken,
+    content_avilable: true,
+    notification: {
+      title: title,
+      body: body,
+    },
+  };
+  const response = await new Promise((resolve, reject) => {
+    fcm.send(message, (err, response) => {
+      if (err) {
+        console.log("Error while push notification:", err);
+        reject(err);
+      } else {
+        console.log("Success while push notification:", response);
+        resolve(response);
+      }
+    });
+  });
+
+  return response;
+
+};
+module.exports = { sendNotification, pushNotification,mediapushNotification,pushNotificationIOS,pushSimpleNotification };

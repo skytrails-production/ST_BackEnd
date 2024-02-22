@@ -431,6 +431,7 @@ const schemas = {
   paymentSchema: joi.object().keys({
     amount: joi.number().required(),
     paymentId: joi.string().required(),
+    easeBuzzPayId:joi.string().optional(),
     bookingType: joi
       .string()
       .valid(...Object.values(queryType))

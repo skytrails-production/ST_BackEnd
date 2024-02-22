@@ -21,6 +21,9 @@ const transactionSchema = mongoose.Schema({
     paymentId:{
         type:String
     },
+    easeBuzzPayId:{
+        type:String,
+    },
     orderId:{
         type:String
     },
