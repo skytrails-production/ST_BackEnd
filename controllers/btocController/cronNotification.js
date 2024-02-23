@@ -107,9 +107,9 @@ var taskPromotionalNotification = cron.schedule("51 10 * * *",async () => {
           const lastSent = lastNotificationSent.get(user._id);
           if (lastSent && Date.now() - lastSent < 3600000) {
             // One hour interval
-            console.log(
-              "Notification already sent to user within the last hour. Skipping."
-            );
+            // console.log(
+            //   "Notification already sent to user within the last hour. Skipping."
+            // );
             continue; // Skip sending notification
           }
           await pushNotification(
@@ -176,10 +176,11 @@ const taskEventNotification = cron.schedule("*/3 * * * *",
               ✈️ TheSkyTrails Team,✈️`;
               const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`
           await pushNotification(user.deviceToken, notifications, messageBody1,imageurl);
+          // console.log("send notification======",user.name);
         }
       }
 
-      console.log("Notification cron job executed successfully.");
+      // console.log("Notification cron job executed successfully.");
       // taskEventNotification.stop();
     } catch (error) {
       console.error("Error occurred during notification cron job:", error);
@@ -217,9 +218,9 @@ var taskEventNotification1 = cron.schedule("23 17 * * *",
           const lastSent = lastNotificationSent.get(user._id);
           if (lastSent && Date.now() - lastSent < 3600000) {
             // One hour interval
-            console.log(
-              "Notification already sent to user within the last hour. Skipping."
-            );
+            // console.log(
+            //   "Notification already sent to user within the last hour. Skipping."
+            // );
             continue; // Skip sending notification
           }
 
@@ -281,10 +282,10 @@ var taskPlatformNotification = cron.schedule("20 16 * * *",
             messageBody,
             imageurl
           );
-          console.log(
-            "Notification cron job executed successfully.TASK 2",
-            user.username
-          );
+          // console.log(
+          //   "Notification cron job executed successfully.TASK 2",
+          //   user.username
+          // );
         } catch (pushError) {
           // Handle if any user is not registered
           console.error(

@@ -799,12 +799,12 @@ exports.makeCashfreePayment = async (req, res, next) => {
       _id: req.userId,
       status: status.ACTIVE,
     });
-    if (!isUserExist) {
-      return res.status(statusCode.NotFound).send({
-        statusCode: statusCode.NotFound,
-        message: responseMessage.USERS_NOT_FOUND,
-      });
-    }
+    // if (!isUserExist) {
+    //   return res.status(statusCode.NotFound).send({
+    //     statusCode: statusCode.NotFound,
+    //     message: responseMessage.USERS_NOT_FOUND,
+    //   });
+    // }
     const currentDate = new Date();
     const newDate = new Date(currentDate.getTime() + 16 * 60000); // Adding 16 minutes in milliseconds (1 minute = 60,000 milliseconds)
 
@@ -822,7 +822,7 @@ exports.makeCashfreePayment = async (req, res, next) => {
       },
       order_id: OrderId,
       "order_meta": {
-        "return_url": `https://www.cashfree.com/devstudio/preview/pg/mobile/android?order_id=${order_id}`,
+        "return_url": `https://www.cashfree.com/devstudio/preview/pg/mobile/android?order_id=${OrderId}`,
         "notify_url": "https://www.cashfree.com/devstudio/preview/pg/webhooks/77891295"
     },
       order_expiry_time: newDate,
@@ -832,13 +832,13 @@ exports.makeCashfreePayment = async (req, res, next) => {
     // console.log("object==>>>>>", object);
     const options = {
       method: "post",
-      url: ` https://api.cashfree.com/pg/orders`,
+      url: `https://api.cashfree.com/pg/orders`,
       headers: {
         accept: "application/json",
         "x-api-version": "2023-08-01",
         "content-type": "application/json",
-        "x-client-id": "601957620817aa2f1bd8c36094759106",
-        "x-client-secret": "cfsk_ma_prod_16b5005939a07cdb32736d8445fbf1e9_92aea845",
+        "x-client-id": clientId,
+        "x-client-secret": client_secret,
       },
       data: object,
     };
@@ -846,7 +846,7 @@ exports.makeCashfreePayment = async (req, res, next) => {
       const { data } = await axios.request(options);
       // console.log("data==>>>>>>>>>>>>>>>>>>>", data);
       const objectData = {
-        userId: isUserExist._id,
+        // userId: isUserExist._id,
         amount: object.order_amount,
         paymentId: data.order_id,
         orderId: data.cf_order_id,
@@ -870,76 +870,6 @@ exports.makeCashfreePayment = async (req, res, next) => {
     return next(error);
   }
 };
-
-// exports.checkCashfreePaymentStatus=async(req,res,next)=>{
-  
-//   try {
-//     const client_secret = process.env.CASHFREE_API_KEY;
-//     const clientId = process.env.CASHFREE_API_ID;
-//     const orderId=req.query.orderid;
-//     console.log("req-==============",req.query.orderid)
-//     // const isTransactionExist = await findUsertransaction({
-//     //   paymentId: merchantTransactionId,
-//     // });
-//     // console.log("isTransactionExist==", isTransactionExist);
-//     // if (isTransactionExist) {
-//     //   console.log("isTransactionExist=========", isTransactionExist);
-//     //   const result = await updateUsertransaction(
-//     //     { _id: isTransactionExist._id },
-//     //     { transactionStatus: paymentStatus.SUCCESS }
-//     //   );
-
-//     //   return res.status(statusCode.OK).send({
-//     //     statusCode: statusCode.OK,
-//     //     responseMessage: responseMessage.PAYMENT_SUCCESS,
-//     //   });
-//     // }
-//     Cashfree.XClientId = "601957620817aa2f1bd8c36094759106";
-// Cashfree.XClientSecret = "cfsk_ma_prod_16b5005939a07cdb32736d8445fbf1e9_92aea845";
-// Cashfree.XEnvironment = "https://api.cashfree.com/pg";
-
-//     const options = {
-//       method: "get",
-//       url: `https://api.cashfree.com/pg/${req.query.orderid}`,
-//       headers: {
-//         accept: "application/json",
-//         "x-api-version": "2022-09-01",
-//         "content-type": "application/json",
-//         "x-client-id": clientId,
-//         "x-client-secret": client_secret,
-//       },
-//     };
-//     const { data } = await axios.request(options);
-//     console.log("options=====",options);
-
-//     Cashfree.PGOrderFetchPayments("2023-08-01", orderId).then((response) => {
-//       console.log('Order fetched successfully:', response.data);
-//       return res.status(statusCode.OK).send({
-//             statusCode: statusCode.OK,
-//             responseMessage: responseMessage.PAYMENT_SUCCESS,
-//           });
-//           // let getOrderResponse = []; //Get Order API Response
-//           // let orderStatus;
-          
-//           // if(getOrderResponse.filter(transaction => transaction.payment_status === "SUCCESS").length > 0){
-//           //     orderStatus = "Success"
-//           // }else if(getOrderResponse.filter(transaction => transaction.payment_status === "PENDING").length > 0){
-//           //     orderStatus = "Pending"
-//           // }else{
-//           //     orderStatus = "Failure"
-//           // }
-//   }).catch((error) => {
-//       console.error('Error:', error.response.data.message);
-//   });
-//     // console.log("data==>>>>>>>>>>>>>>>>>>>", data.data.message);
-//     // console.log("=======================",data.data.codey);
-//   } catch (error) {
-//     console.log("error while trying to get status",error);
-//     return next(error);
-//   }
-// }
-
-
 exports.checkCashfreePaymentStatus = async (req, res, next) => {
   try {
     const clientSecret = process.env.CASHFREE_API_KEY;
@@ -952,8 +882,8 @@ exports.checkCashfreePaymentStatus = async (req, res, next) => {
         accept: 'application/json',
         'x-api-version': '2023-08-01',
         'content-type': 'application/json',
-        "x-client-id": "601957620817aa2f1bd8c36094759106",
-        "x-client-secret": "cfsk_ma_prod_16b5005939a07cdb32736d8445fbf1e9_92aea845",
+        "x-client-id": clientId,
+        "x-client-secret": clientSecret,
       },
     };
     const { data } = await axios.request(options);
@@ -1180,14 +1110,3 @@ console.log("requestData",requestData);
 };
 
 
-// import { Cashfree } from "cashfree-pg"; 
-
-// Cashfree.XClientId = "601957620817aa2f1bd8c36094759106";
-// Cashfree.XClientSecret = "cfsk_ma_prod_16b5005939a07cdb32736d8445fbf1e9_92aea845";
-// Cashfree.XEnvironment = Cashfree.Environment.PRODUCTION;
-
-// Cashfree.PGOrderFetchPayments("2023-08-01", "order_65334917").then((response) => {
-//     console.log('Order fetched successfully:', response.data);
-// }).catch((error) => {
-//     console.error('Error:', error.response.data.message);
-// });
