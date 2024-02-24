@@ -9,6 +9,9 @@ const sendSMS = require("../../utilities/sendSms");
 const commonFunction = require('../../utilities/commonFunctions');
 
 //*****************************************SERVICES************************************************/
+const{pushNotificationServices}=require('../../services/pushNotificationServices');
+const{createPushNotification,findPushNotification,findPushNotificationData,deletePushNotification,updatePushNotification,countPushNotification}=pushNotificationServices;
+
 const { advertisementServices } = require("../../services/btocServices/advertisementServices");
 const { createadvertisement, findadvertisementData, deleteadvertisement, advertisementList, updateadvertisement, countTotaladvertisement ,getAdvertisment} = advertisementServices;
 const { flightadvertisementServices } = require("../../services/btocServices/flightAdvertismentServices");

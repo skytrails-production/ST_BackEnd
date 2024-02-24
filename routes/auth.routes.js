@@ -66,5 +66,7 @@ module.exports = function (app) {
   app.put('/skyTrails/api/admin/updateMarkup',SchemaValidator(schemas.updateMarkupSchema),controller.updateMarkup);
   app.post('/skyTrails/api/admin/createTask',subAdminTaskControlelr.createTask);
   app.post('/skyTrails/api/admin/pushNotification',pushNotification.pushNotificationsToUser);
-app.get('/skyTrails/api/admin/getAllEventBookings',controller.getAllEventBookings)
+app.get('/skyTrails/api/admin/getAllEventBookings',controller.getAllEventBookings);
+app.get('/skyTrails/api/admin/getAllNotification/:adminId',pushNotification.getAllNotificationOfAmdin);
+app.get('/skyTrails/api/admin/getNotificationById/:id',pushNotification.getNotificationById);
 };

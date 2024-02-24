@@ -2,6 +2,7 @@ const responseMessage = require("../../utilities/responses");
 const statusCode = require("../../utilities/responceCode");
 const status = require("../../enums/status");
 const bcrypt = require("bcryptjs");
+const adminModel=require('../../model/user.model')
 const { pushNotification,mediapushNotification } = require('../../utilities/commonFunForPushNotification'); // Assuming you have a controller to send notifications
 /**********************************SERVICES********************************** */
 const { userServices } = require("../../services/userServices");
@@ -45,7 +46,12 @@ const {
   eventBookingListPopulated,
   getBookingEvent,
 } = eventBookingServices;
+const{pushNotificationServices}=require('../../services/pushNotificationServices');
+const _ = require("mongoose-paginate-v2");
+const{createPushNotification,findPushNotification,findPushNotificationData,deletePushNotification,updatePushNotification,countPushNotification}=pushNotificationServices;
 
+
+//*******************************API************************************************** */
 exports.pushNotificationsToUser=async(req,res,next)=>{
     try {
         const {messageBody,messageTitle,notificationType,imageUrl}=req.body;
@@ -81,9 +87,43 @@ exports.pushNotificationsToUser=async(req,res,next)=>{
           continue;
         }
       }
-      return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.SUCCESS})
+      return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.SUCCESS});
     } catch (error) {
         console.log("error while push notification",error);
         return next(error)
     }
+}
+
+
+exports.getAllNotificationOfAmdin=async(req,res,next)=>{
+  try {
+    const {adminId}=req.params;
+    const isAdminExist=await adminModel.findOne({_id:adminId,userType:userType.ADMIN});
+    if(!isAdminExist){
+      return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.ADMIN_NOT_FOUND})
+    }
+    const result=await findPushNotificationData({isRead:'false'});
+    console.log("result===========",result.length);
+    if(result.length==null||!result){
+      return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.NOTIFICATION_NOT_AVAILABLE,message:"Stay in touch!You will find all the new updates here"});
+    }
+    return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.DATA_FOUND,result:result})
+  } catch (error) {
+    console.log("error while trying to get all notification",error);
+    return next(error)
+  }
+}
+
+exports.getNotificationById=async(req,res,next)=>{
+  try {
+    const {id}=req.params;
+    const isNotificationExist=await findPushNotification({_id:id});
+    if(!isNotificationExist){
+      return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.NOTIFICATION_NOT_AVAILABLE});
+    }
+    await updatePushNotification({_id:isNotificationExist._id},{isRead:true});
+    return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.NOTIFICATION_READ});
+  } catch (error) {
+    console.log("error while get notification by Id",error);
+  }
 }

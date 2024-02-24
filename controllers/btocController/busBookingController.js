@@ -3,7 +3,11 @@ const statusCode = require("../../utilities/responceCode");
 const status = require("../../enums/status");
 const bcrypt = require("bcryptjs");
 const axios = require("axios");
+const AdminNumber=process.env.ADMINNUMBER;
 /**********************************SERVICES********************************** */
+const{pushNotificationServices}=require('../../services/pushNotificationServices');
+const{createPushNotification,findPushNotification,findPushNotificationData,deletePushNotification,updatePushNotification,countPushNotification}=pushNotificationServices;
+
 const { userServices } = require("../../services/userServices");
 const {
   createUser,
@@ -53,13 +57,23 @@ exports.busBooking = async (req, res, next) => {
     }
     data.userId=isUserExist._id
     const result = await createUserBusBooking(data);
+    const notObject={
+      userId:isUserExist._id,
+      title:"Bus Booking by User",
+      description:`New Booking form our platform🎊.🙂`,
+      from:'busBookiing',
+      to:userName,
+    }
+    await createPushNotification(notObject);
     const userName =`${result.passenger[0].firstName} ${result.passenger[0].lastName}`
     await sendSMS.sendSMSBusBooking(result.passenger[0].Phone, userName);
     const url=`https://theskytrails.com/bus`
-    await whatsApi.sendMessageWhatsApp(contactNo,userName,url,'bus')
+    await whatsApi.sendMessageWhatsApp(contactNo,userName,url,'bus');
+    await whatsApi.sendWhatsAppMsgAdmin(AdminNumber,'adminbooking_alert');
+    await whatsApi.sendWhatsAppMsgAdmin(AdminNumber,'adminalert');
     await commonFunction.BusBookingConfirmationMail(result);
-
     if (result) {
+     
       return res
         .status(statusCode.OK)
         .send({
@@ -67,7 +81,9 @@ exports.busBooking = async (req, res, next) => {
           responseMessage: responseMessage.BUS_BOOKING_CREATED,
           result: result,
         });
+        
     }
+    
   } catch (error) {
     console.log("error: ", error);
     return next(error);

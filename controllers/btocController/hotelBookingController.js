@@ -7,7 +7,11 @@ const {
 } = require("../../common/common");
 const bcrypt = require("bcryptjs");
 const axios = require("axios");
+const AdminNumber=process.env.ADMINNUMBER;
 /**********************************SERVICES********************************** */
+const{pushNotificationServices}=require('../../services/pushNotificationServices');
+const{createPushNotification,findPushNotification,findPushNotificationData,deletePushNotification,updatePushNotification,countPushNotification}=pushNotificationServices;
+
 const { userServices } = require("../../services/userServices");
 const {
   createUser,
@@ -92,7 +96,18 @@ exports.hotelBooking = async (req, res, next) => {
       const url = `https://theskytrails.com/hotel`;
       await sendSMS.sendSMSForHotelBooking(result);
       await whatsApi.sendMessageWhatsApp(contactNo, name, url, "hotel");
+     
       await commonFunction.HotelBookingConfirmationMail(result);
+      const notObject={
+        userId:isUserExist._id,
+        title:"Hotel Booking by User",
+        description:`New Hotel booking by user on our platform🎊.🙂`,
+        from:'hotelBooking',
+        to:isUserExist.userName,
+      }
+      await createPushNotification(notObject);
+      await whatsApi.sendWhatsAppMsgAdmin(AdminNumber,'adminbooking_alert');
+      await whatsApi.sendWhatsAppMsgAdmin(AdminNumber,'adminalert');
       return res
         .status(statusCode.OK)
         .send({

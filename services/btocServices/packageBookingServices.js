@@ -40,14 +40,15 @@ const packageBookingModelServices = {
                 { status: { $regex: search, $options: 'i' } }
             ]
         }
-       
-
         let options = {
             page: Number(page) || 1,
             limit: Number(limit) || 8,
             sort: { createdAt: -1 },
+            populate: { path: 'packageId', model: 'internationls',select: 'country destination pakage_title pakage_amount' } 
         };
-        return await packageBookingModel.paginate(query, options);
+        const data = await packageBookingModel.paginate(query, options);
+        console.log("data========",data);
+        return data;
     },
     countTotalPackage: async (body) => {
         return await packageBookingModel.countDocuments(body)

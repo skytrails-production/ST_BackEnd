@@ -43,6 +43,8 @@ const {
   eventBookingListPopulated,
   getBookingEvent,
 } = eventBookingServices;
+const{pushNotificationServices}=require('../../services/pushNotificationServices');
+const{createPushNotification,findPushNotification,findPushNotificationData,deletePushNotification,updatePushNotification,countPushNotification}=pushNotificationServices;
 //******************************************User SignUp api*************************/
 
 exports.login = async (req, res, next) => {

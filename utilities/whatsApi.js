@@ -49,7 +49,7 @@ async function sendMessageWhatsApp(number, var1,var2,temName) {
               templateName: temName
             },
             from: doubleTickNumber,
-            to: number
+            to: number,
           }
         ]
       }
@@ -63,8 +63,88 @@ async function sendMessageWhatsApp(number, var1,var2,temName) {
     console.log("erorr while send whatsapp=====>>>>>>",err.response)
   }
 }
-
-module.exports = {sendMessageWhatsApp };
+async function sendWhatsAppMsgAdmin(number,temName) {
+  try{
+    const options = {
+      method: 'POST',
+      url: doubleTick,
+      headers: {
+        accept: 'application/json',
+        'content-type': 'application/json',
+        Authorization: apiKey
+      },
+      data: {
+        messages: [
+          {
+            content: {
+              language: 'en',
+              templateData: {
+                header: {
+                  type: 'TEXT',
+                  placeholder: 'Header text',
+                  mediaUrl: 'https://example.com/image.png',
+                  filename: 'Document caption'
+                },
+              },
+              templateName: temName
+            },
+            from: doubleTickNumber,
+            to: number,
+          }
+        ]
+      }
+    };
+    const response= await axios.request(options);
+    if(response.data.messages[0]){
+      return response.data.messages[0];
+    }
+  }
+  catch(err){
+    console.log("erorr while send whatsapp=====>>>>>>",err.response)
+  }
+}
+async function sendWhatsAppMsgAdminPackage(number,var1,temName) {
+  try{
+    const options = {
+      method: 'POST',
+      url: doubleTick,
+      headers: {
+        accept: 'application/json',
+        'content-type': 'application/json',
+        Authorization: apiKey
+      },
+      data: {
+        messages: [
+          {
+            content: {
+              language: 'en',
+              templateData: {
+                header: {
+                  type: 'TEXT',
+                  placeholder: 'Header text',
+                  mediaUrl: 'https://example.com/image.png',
+                  filename: 'Document caption'
+                },
+                body: {placeholders: [var1]}
+              },
+              templateName: temName
+            },
+            from: doubleTickNumber,
+            to: number,
+          }
+        ]
+      }
+    };
+    const response= await axios.request(options);
+    if(response.data.messages[0]){
+      return response.data.messages[0];
+    }
+  }
+  catch(err){
+    console.log("erorr while send whatsapp=====>>>>>>",err.response)
+  }
+}
+module.exports = {sendMessageWhatsApp,sendWhatsAppMsgAdmin,sendWhatsAppMsgAdminPackage };
 
 // const axios = require('axios');
 

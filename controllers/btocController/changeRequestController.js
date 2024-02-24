@@ -5,6 +5,9 @@ const userType = require("../../enums/userType");
 
 
 /**********************************SERVICES********************************** */
+const{pushNotificationServices}=require('../../services/pushNotificationServices');
+const{createPushNotification,findPushNotification,findPushNotificationData,deletePushNotification,updatePushNotification,countPushNotification}=pushNotificationServices;
+
 const {changeUserBookingServices}=require("../../services/btocServices/changeRequestServices");
 const {createUserFlightChangeRequest,flightchangeRequestUserList1,createUserHotelChangeRequest,hotelchangeRequestUserList,createUserBusChangeRequest,buschangeRequestUserList}=changeUserBookingServices;
 const { userServices } = require('../../services/userServices');
@@ -45,6 +48,14 @@ exports.createFlightTicketChangeRequest=async(req,res,next)=>{
             amount:isBookingExist.totalAmount
         }
         const result=await  createUserFlightChangeRequest(object);
+        const notObject={
+            userId:isUserExist._id,
+            title:"Booking Change Request by User",
+            description:`New Change ticket request form user on our platform🎊.😒`,
+            from:'FlightCancelRequest',
+            to:isUserExist.userName,
+          }
+          await createPushNotification(notObject);
         if(result){
             return res.status(statusCode.OK).send({ statusCode: statusCode.OK,responseMessage:responseMessage.CHANGE_REQUEST_SUCCESS, result: result });
         }

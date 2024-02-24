@@ -69,6 +69,9 @@ const {
   updateCoupon,
   paginateCouponSearch,
 } = couponServices;
+const{pushNotificationServices}=require('../../services/pushNotificationServices');
+const{createPushNotification,findPushNotification,findPushNotificationData,deletePushNotification,updatePushNotification,countPushNotification}=pushNotificationServices;
+
 
 exports.eventBooking = async (req, res, next) => {
   try {
@@ -357,6 +360,8 @@ exports.pefaEventBooking = async (req, res, next) => {
       termsAndCond: ["coupon will be apply upto 100rs/"],
     };
     const isCouponExist=await findCoupon({couponCode:"WELCOMEPEFA"});
+    await whatsApi.sendWhatsAppMsgAdmin(AdminNumber,'adminbooking_alert');
+    await whatsApi.sendWhatsAppMsgAdmin(AdminNumber,'adminalert');
     if(isCouponExist){
     const eventname = "*PEFA - Punjab Entertainment Festival and Awards!*";
     const eventDate1 = "*2 Mar 2024 5 pm*";

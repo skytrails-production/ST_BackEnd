@@ -86,30 +86,30 @@ const lastNotificationSent = new Map();
 // task.start();
 
 // Define and schedule task2 separately
-var taskPromotionalNotification = cron.schedule("51 10 * * *",async () => {
+var taskPromotionalNotification = cron.schedule("30 10 * * *",async () => {
     try {
       // 'phone.mobile_number':'8115199076'
       const users = await userList({
-      // 'phone.mobile_number':{ $in: ['8115199076', '9135219071'] },
+      // 'phone.mobile_number':{ $in: ['8115199076', '9135219071','8847301811'] },
         status: status.ACTIVE,
         deviceToken: { $exists: true, $ne: "" },
       });
-      console.log("users===========", users.length);
       // Task 2 logic
       // const notificationMessage = "🚀एक सफ़र पे यूँ ही कभी चल दो तुम,✈️";
       // const messageBody = `✨Check out our latest promotion! We're offering deals so good, even your coffee will do a double-take! ☕️ Explore your journey with TheSkyTrails pvt ltd✨`;
-      const notificationMessage = "🚀 Missing Travel? Find it Here! ✈️";
-      const messageBody = `✨TheSkytrails app is your platform for all type of bookings for a seamless travel experience. Your dream journey is just a click away!✨`;
-      const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`;
+     
       for (const user of users) {
-        try {
+        try { 
+        const notificationMessage = `💮 Good morning ${user.username}! 💕`;
+        const messageBody = `✨Get ready for a weekend packed with fun !✨`;
+        const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
           // Check if a notification has been sent to this user recently
           const lastSent = lastNotificationSent.get(user._id);
           if (lastSent && Date.now() - lastSent < 3600000) {
             // One hour interval
-            // console.log(
-            //   "Notification already sent to user within the last hour. Skipping."
-            // );
+            console.log(
+              "Notification already sent to user within the last hour. Skipping."
+            );
             continue; // Skip sending notification
           }
           await pushNotification(
@@ -176,11 +176,11 @@ const taskEventNotification = cron.schedule("*/3 * * * *",
               ✈️ TheSkyTrails Team,✈️`;
               const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`
           await pushNotification(user.deviceToken, notifications, messageBody1,imageurl);
-          // console.log("send notification======",user.name);
+          console.log("send notification======",user.name);
         }
       }
 
-      // console.log("Notification cron job executed successfully.");
+      console.log("Notification cron job executed successfully.");
       // taskEventNotification.stop();
     } catch (error) {
       console.error("Error occurred during notification cron job:", error);
@@ -207,8 +207,8 @@ var taskEventNotification1 = cron.schedule("23 17 * * *",
         deviceToken: { $exists: true, $ne: "" },
       });
       console.log("=======================", users.length);
-      const notificationMessage = "✨Dhamakedaar performances aur shandaar awards, sirf ek click mein 🎊✨";
-      const messageBody = `✨visit theSkytrails app and Get your Free Passes Now for the PEFA award show!
+      const notificationMessage = "✨Knock Knock! Guess who? 🎊✨";
+      const messageBody = `✨It's PEFA, and we're ready to set the floor on fire! Are you geared up for the ultimate showtime!
       Best regards,
       TheSkyTrails pvt ltd✨`;
       const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`;
@@ -218,9 +218,9 @@ var taskEventNotification1 = cron.schedule("23 17 * * *",
           const lastSent = lastNotificationSent.get(user._id);
           if (lastSent && Date.now() - lastSent < 3600000) {
             // One hour interval
-            // console.log(
-            //   "Notification already sent to user within the last hour. Skipping."
-            // );
+            console.log(
+              "Notification already sent to user within the last hour. Skipping."
+            );
             continue; // Skip sending notification
           }
 
@@ -268,24 +268,25 @@ var taskPlatformNotification = cron.schedule("20 16 * * *",
         status: status.ACTIVE,
         deviceToken: { $exists: true, $ne: "" },
       });
-      // Task 2 logic
-      const notificationMessage = "✨Get Ready to Dhol Beats! PEFA Night is Here!💃🪩";
-      const messageBody = `✨Register from the Skytrails app for free passes and enjoy the glamorous night.🎤
-    Best regards,
-    TheSkyTrails pvt ltd✨`;
+      
     const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`;
       for (const user of users) {
         try {
+          // Task 2 logic
+      const notificationMessage = `✨Good Evening ${user.userName}🪩`;
+      const messageBody = `✨Get ready for a weekend packed with fun!🎤
+    Best regards,
+    TheSkyTrails pvt ltd✨`;
           await pushNotification(
             user.deviceToken,
             notificationMessage,
             messageBody,
             imageurl
           );
-          // console.log(
-          //   "Notification cron job executed successfully.TASK 2",
-          //   user.username
-          // );
+          console.log(
+            "Notification cron job executed successfully.TASK 2",
+            user.username
+          );
         } catch (pushError) {
           // Handle if any user is not registered
           console.error(

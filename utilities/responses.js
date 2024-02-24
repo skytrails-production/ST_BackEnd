@@ -105,5 +105,7 @@ module.exports = {
 	PEFA_NOT_REGISTER:"This coupon is available for those user , who register for pefa2024 event...!",
 	EVENT_ALREADY_BOOKED:"You are already registerd for this event.!",
 	SUCCESS:"Notification send successfully....!",
-	TOKEN_UPDATE_SUCCESS:"Token updated successfully"
+	TOKEN_UPDATE_SUCCESS:"Token updated successfully",
+	NOTIFICATION_NOT_AVAILABLE:"No new notifications",
+	NOTIFICATION_READ:"Notification Read Successfully"
 };

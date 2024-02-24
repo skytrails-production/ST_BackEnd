@@ -15,6 +15,15 @@ module.exports = function (app) {
     upload.single("file"),
     controller.internationalCreate
   );
+
+  // multiImage 
+
+  // app.post(
+  //   "/skyTrails/international/create",
+  //   upload.array("files", { minCount: 1, maxCount: 5 }),
+  //   controller.internationalCreate
+  // );
+
   app.get("/skyTrails/international/getone/:id", controller.internationalFind);
   app.put(
     "/skyTrails/international/update/:id",

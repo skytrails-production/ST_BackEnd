@@ -1,5 +1,6 @@
 const responseMessage = require("../../utilities/responses");
 const statusCode = require("../../utilities/responceCode");
+const {internationl}=require('../../model/international.model')
 const status = require("../../enums/status");
 const {
   actionCompleteResponse,
@@ -9,6 +10,7 @@ const bcrypt = require("bcryptjs");
 const axios = require("axios");
 const whatsApi = require("../../utilities/whatsApi");
 const bookingStatus = require("../../enums/bookingStatus");
+const AdminNumber=process.env.ADMINNUMBER;
 /**********************************SERVICES********************************** */
 const { userServices } = require("../../services/userServices");
 const {
@@ -37,7 +39,10 @@ const {
   countTotalPackage,
   getPackageEnquiry
 } = packageBookingModelServices;
+const{pushNotificationServices}=require('../../services/pushNotificationServices');
+const{createPushNotification,findPushNotification,findPushNotificationData,deletePushNotification,updatePushNotification,countPushNotification}=pushNotificationServices;
 
+//*************************************************API********************************************* */
 exports.packageBooking = async (req, res, next) => {
   try {
     const {
@@ -63,9 +68,10 @@ exports.packageBooking = async (req, res, next) => {
         responseMessage: responseMessage.USERS_NOT_FOUND,
       });
     }
+    const isPackageExist=await internationl.findOne({_id:packageId});
     const addition=Number(adults)+Number(child);
     const object = {
-      packageId: packageId,
+      packageId: isPackageExist._id,
       userId: isUserExist._id,
       email: email,
       fullName: fullName,
@@ -78,11 +84,21 @@ exports.packageBooking = async (req, res, next) => {
       noOfPeople:addition
     };
     const result = await createPackage(object);
-    const contactNo='+91'+phone
+    const notObject={
+      userId:isUserExist._id,
+      title:"Holiday package Enquiry",
+      description:`New package enquiry come on our platform could you please review and assign any subadmin to support.🙂`,
+      from:'holidayEnquiry',
+      to:fullName,
+    }
+    await createPushNotification(notObject);
+    const contactNo='+91'+phone;
     const url=`https://theskytrails.com/holidayInfo/${packageId}`;
-    const populatedResult=await findPackagePopulate({_id:result._id});
-    await sendSMS.sendSMSPackageEnquiry(phone,fullName)
+    const populatedResult=await findPackagePopulate({_id:result._id}); 
+    await sendSMS.sendSMSPackageEnquiry(phone,fullName);
     await whatsApi.sendMessageWhatsApp(contactNo,fullName,url,'packagetem1_v3');
+    await whatsApi.sendWhatsAppMsgAdminPackage(AdminNumber,isPackageExist.pakage_title,'adminnotification');
+    await whatsApi.sendWhatsAppMsgAdmin(AdminNumber,'adminalert');
     await commonFunction.packageBookingConfirmationMail(populatedResult);
     if (result) {
       return res.status(statusCode.OK).send({

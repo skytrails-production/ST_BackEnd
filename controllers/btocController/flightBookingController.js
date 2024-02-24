@@ -9,7 +9,11 @@ const bcrypt = require("bcryptjs");
 const axios = require("axios");
 const whatsApi = require("../../utilities/whatsApi");
 const bookingStatus = require("../../enums/bookingStatus");
+const AdminNumber=process.env.ADMINNUMBER;
 /**********************************SERVICES********************************** */
+const{pushNotificationServices}=require('../../services/pushNotificationServices');
+const{createPushNotification,findPushNotification,findPushNotificationData,deletePushNotification,updatePushNotification,countPushNotification}=pushNotificationServices;
+
 const { userServices } = require("../../services/userServices");
 const {
   createUser,
@@ -55,33 +59,16 @@ exports.flighBooking = async (req, res, next) => {
     }
     data.userId = isUserExist._id;
     data.bookingStatus = bookingStatus.BOOKED;
-    // const passengerDetails = data.passengerDetails || [];
-    // const modifiedPassengers = [];
-    // for (let i = 0; i < passengerDetails.length; i++) {
-    //   const passenger = passengerDetails[i];
-    //   if (passenger.gender === 1) {
-    //     passenger.gender = 'MALE';
-    //   } else if (passenger.gender === 2) {
-    //     passenger.gender = 'FEMALE';
-    //   } else if (passenger.gender === 3) {
-    //     passenger.gender = 'OTHER';
-    //   }
-    //   modifiedPassengers.push(passenger);
-    // }
-    // const object = {
-    //   bookingId: data.bookingId,
-    //   oneWay: data.oneWay,
-    //   pnr: data.pnr,
-    //   origin: data.origin,
-    //   destination: data.destination,
-    //   paymentStatus: data.paymentStatus,
-    //   dateOfJourney: data.dateOfJourney,
-    //   amount: data.amount,
-    //   userId: isUserExist._id,
-    //   airlineDetails: airlineDetails,
-    //   passengerDetails: modifiedPassengers,
-    // };
-
+    const notObject={
+      userId:isUserExist._id,
+      title:"Flight Booking by User",
+      description:`New Flight ticket booking by user on our platform🎊.🙂`,
+      from:'FLightBooking',
+      to:isUserExist.userName,
+    }
+    await createPushNotification(notObject);
+    await whatsApi.sendWhatsAppMsgAdmin(AdminNumber,'adminbooking_alert');
+    await whatsApi.sendWhatsAppMsgAdmin(AdminNumber,'adminalert');
     const result = await createUserflightBooking(data);
     const userName = `${data?.passengerDetails[0]?.firstName} ${data?.passengerDetails[0]?.lastName}`;
     const phone = '+91'+data?.passengerDetails[0]?.ContactNo;
