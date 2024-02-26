@@ -230,6 +230,7 @@ exports.subAdminLogin = async (req, res, next) => {
       contactNumber: isSubAdminExist.contactNumber,
       status: isSubAdminExist.status,
       userType: isSubAdminExist.userType,
+      authType: isSubAdminExist.authType,
     };
     const result = {
       token,

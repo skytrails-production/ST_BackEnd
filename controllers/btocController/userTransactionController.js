@@ -409,7 +409,6 @@ exports.makePhonePayPayment1 = async (req, res, next) => {
       },
       data: encodedParams,
     };
-    console.log("data=====================", options);
 
     try {
       const { data } = await axios.request(options);
@@ -555,7 +554,6 @@ exports.refundApi = async (req, res, next) => {
 
     try {
       const { data } = await axios.request(options);
-      // console.log("data========", data);
       return res.send({ data: data });
     } catch (error) {
       console.error(error);

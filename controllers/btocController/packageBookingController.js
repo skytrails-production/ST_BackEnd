@@ -87,7 +87,7 @@ exports.packageBooking = async (req, res, next) => {
     const notObject={
       userId:isUserExist._id,
       title:"Holiday package Enquiry",
-      description:`New package enquiry come on our platform could you please review and assign any subadmin to support.🙂`,
+      description:`New package enquiry for ${isPackageExist.pakage_title} on our platform🙂`,
       from:'holidayEnquiry',
       to:fullName,
     }
@@ -161,7 +161,7 @@ exports.getAllPackageEnquiry=async(req,res,next)=>{
     console.log("Error while trying to get all packages",error);
     return next(error)
   }
-}
+};
 
 exports.getPackageEnquiryById=async(req,res,next)=>{
   try {
@@ -185,5 +185,13 @@ exports.getPackageEnquiryById=async(req,res,next)=>{
   } catch (error) {
     console.log("Error======================", error);
     return next(error);
+  }
+};
+
+exports.queryResolved=async(req,res,next)=>{
+  try {
+    
+  } catch (error) {
+    console.log("Error while update ");
   }
 }

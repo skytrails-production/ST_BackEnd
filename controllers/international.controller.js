@@ -6,6 +6,7 @@ const {
   internationl,
   packagebookingSchema,
   confirmPackagebookingSchema,
+  packageCityData
 } = require("../model/international.model");
 const aws = require("aws-sdk");
 const Internationalapi = require("../utilities/Internationalapi");
@@ -883,3 +884,44 @@ exports.internationalgetAdminAll = async (req, res) => {
     sendActionFailedResponse(res, {}, err.message);
   }
 };
+
+
+exports.packageCityData = async (req, res) =>{ 
+  const reqData = JSON.parse(req.body.data);
+  const file = req?.file;
+  const s3Params = {
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key: file.originalname,
+    Body: file.buffer,
+    ContentType: file.mimetype,
+    ACL: "public-read",
+  }; 
+
+    try {
+       // Upload file to S3
+       const data = await s3.upload(s3Params).promise();
+       // Store the URL of the uploaded image
+       reqData.imageUrl = data.Location;
+       const newData = new packageCityData(reqData);
+       // Save to database
+       const response = await newData.save();
+       msg = "Package Data Created";
+        actionCompleteResponse(res, response, msg);
+    } catch (err) {
+      sendActionFailedResponse(res, {}, err.message);
+    }
+}
+
+
+exports.getPackageCityData = async (req, res) =>{
+  const data = req.query.keyword;
+    try{
+      const response=await packageCityData.findOne({cityName:data}).select('-createdAt -updatedAt -__v');
+
+  msg = "Package City Data";
+      actionCompleteResponse(res, response, msg);  
+  } catch (err) {
+    sendActionFailedResponse(res, {}, err.message);
+  }
+
+}

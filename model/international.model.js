@@ -234,8 +234,35 @@ const confirmPackagebookingSchema = mongoose.model(
     }
   )
 );
+
+
+// ========================package City Data==========================
+
+const packageCityData = mongoose.model(
+  "packageCityDatas",
+  mongoose.Schema(
+    {
+      cityName:{
+        type:String,
+      },    
+      description:{
+        type:String,
+      },
+      
+      imageUrl: { 
+        type: String,
+        required: false,
+      } 
+           
+    },
+    {
+      timestamps: true,
+    }
+  )
+);
 module.exports = {
   internationl,
   packagebookingSchema,
   confirmPackagebookingSchema,
+  packageCityData,
 };

@@ -107,5 +107,6 @@ module.exports = {
 	SUCCESS:"Notification send successfully....!",
 	TOKEN_UPDATE_SUCCESS:"Token updated successfully",
 	NOTIFICATION_NOT_AVAILABLE:"No new notifications",
-	NOTIFICATION_READ:"Notification Read Successfully"
+	NOTIFICATION_READ:"Notification Read Successfully",
+	NOTIFICATION_INCORRECT:"Incorrect notification Id"
 };

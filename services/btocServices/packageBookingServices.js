@@ -47,7 +47,6 @@ const packageBookingModelServices = {
             populate: { path: 'packageId', model: 'internationls',select: 'country destination pakage_title pakage_amount' } 
         };
         const data = await packageBookingModel.paginate(query, options);
-        console.log("data========",data);
         return data;
     },
     countTotalPackage: async (body) => {

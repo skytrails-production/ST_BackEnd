@@ -3,6 +3,7 @@ const status = require("../../enums/status");
 const {
   pushNotification,
   mediapushNotification,
+  pushSimpleNotification
 } = require("../../utilities/commonFunForPushNotification"); // Assuming you have a controller to send notifications
 const {
   eventBookingServices,
@@ -86,7 +87,7 @@ const lastNotificationSent = new Map();
 // task.start();
 
 // Define and schedule task2 separately
-var taskPromotionalNotification = cron.schedule("30 10 * * *",async () => {
+var taskPromotionalNotification = cron.schedule("34 10 * * *",async () => {
     try {
       // 'phone.mobile_number':'8115199076'
       const users = await userList({
@@ -100,8 +101,8 @@ var taskPromotionalNotification = cron.schedule("30 10 * * *",async () => {
      
       for (const user of users) {
         try { 
-        const notificationMessage = `💮 Good morning ${user.username}! 💕`;
-        const messageBody = `✨Get ready for a weekend packed with fun !✨`;
+        const notificationMessage = `Monday blues?💕`;
+        const messageBody = `✨Turn them into travel hues - Your flight is waiting to take off!✨`;
         const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
           // Check if a notification has been sent to this user recently
           const lastSent = lastNotificationSent.get(user._id);
@@ -162,8 +163,9 @@ const taskEventNotification = cron.schedule("*/3 * * * *",
         // Get the registration timestamp of the user
         const createdAtUser = user.createdAt.getTime();
         // Calculate the earliest time for notifications
+        
         const earliestNotificationTime = new Date(
-          current_Date.getTime() - notificationWindow * 60000
+        current_Date.getTime() - notificationWindow * 60000
         );
         // Check if the registration time is within the notification window
         if (
@@ -184,6 +186,7 @@ const taskEventNotification = cron.schedule("*/3 * * * *",
       // taskEventNotification.stop();
     } catch (error) {
       console.error("Error occurred during notification cron job:", error);
+      
     }
   },
   {
@@ -198,7 +201,7 @@ taskEventNotification.start(); // Start the task
 // Define a map to store the timestamp of the last notification sent to each user
 
 // Modify your cron job logic
-var taskEventNotification1 = cron.schedule("23 17 * * *",
+var taskEventNotification1 = cron.schedule("20 17 * * *",
   async () => {
     try {
       const users = await eventBookingList({
@@ -207,10 +210,8 @@ var taskEventNotification1 = cron.schedule("23 17 * * *",
         deviceToken: { $exists: true, $ne: "" },
       });
       console.log("=======================", users.length);
-      const notificationMessage = "✨Knock Knock! Guess who? 🎊✨";
-      const messageBody = `✨It's PEFA, and we're ready to set the floor on fire! Are you geared up for the ultimate showtime!
-      Best regards,
-      TheSkyTrails pvt ltd✨`;
+      const notificationMessage = "✨Kho gaye hum kahan…!!🎊✨";
+      const messageBody = `✨Plan your journey with The Skytrails and get the best deals!✨`;
       const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`;
       for (const user of users) {
         try {
@@ -273,10 +274,8 @@ var taskPlatformNotification = cron.schedule("20 16 * * *",
       for (const user of users) {
         try {
           // Task 2 logic
-      const notificationMessage = `✨Good Evening ${user.userName}🪩`;
-      const messageBody = `✨Get ready for a weekend packed with fun!🎤
-    Best regards,
-    TheSkyTrails pvt ltd✨`;
+          const notificationMessage = "✨Kho gaye hum kahan…!!🎊✨";
+          const messageBody = `✨Plan your journey with The Skytrails and get the best deals!✨`;
           await pushNotification(
             user.deviceToken,
             notificationMessage,
@@ -319,3 +318,67 @@ taskPlatformNotification.start();
 //             Best regards,
 //             TheSkyTrails Team ✨
 //             `
+// Modify your cron job logic
+var taskEventNotification1 = cron.schedule("58 22 * * *",
+  async () => {
+    try {
+      const users = await userList({
+        'phone.mobile_number':'8115199076',
+        status: status.ACTIVE,
+        deviceToken: { $exists: true, $ne: "" },
+      });
+      console.log("=======================", users.length);
+      
+      const messageBody = `✨It's PEFA, and we're ready to set the floor on fire! Are you geared up for the ultimate showtime!
+      Best regards,
+      TheSkyTrails pvt ltd✨`;
+      // const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
+      const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`;
+      for (const user of users) {
+        try {
+          const notificationMessage = `Hello ${user.username}Knock Knock! Guess who?`;
+          const messageBody = `✨It's PEFA, and we're ready to set the floor on fire!Are you geared up for the ultimate showtime!Best regards,TheSkyTrails pvt ltd✨`;
+          // Check if a notification has been sent to this user recently
+          const lastSent = lastNotificationSent.get(user._id);
+          if (lastSent && Date.now() - lastSent < 3600000) {
+            // One hour interval
+            console.log(
+              "Notification already sent to user within the last hour. Skipping."
+            );
+            continue; // Skip sending notification
+          }
+
+          await pushNotification(
+            user.deviceToken,
+            notificationMessage,
+            messageBody,
+            imageurl
+          );
+          console.log(
+            "Notification cron job executed successfully. TASK 2",
+            user.username
+          );
+
+          // Update the last notification sent time for this user
+          lastNotificationSent.set(user._id, Date.now());
+        } catch (pushError) {
+          console.error(
+            "Error while sending push notification to user:",
+            pushError
+          );
+          continue; // Continue to the next user even if one fails
+        }
+      }
+      // Stop the cron job after execution
+      taskEventNotification1.stop();
+    } catch (error) {
+      console.log("Error when running task2", error);
+    }
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Kolkata", // Timezone setting
+  }
+);
+
+taskEventNotification1.start(); // Start the task2

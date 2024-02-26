@@ -102,7 +102,7 @@ exports.getAllNotificationOfAmdin=async(req,res,next)=>{
     if(!isAdminExist){
       return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.ADMIN_NOT_FOUND})
     }
-    const result=await findPushNotificationData({isRead:'false'});
+    const result=await findPushNotificationData({isRead:'false',from:'holidayEnquiry'});
     console.log("result===========",result.length);
     if(result.length==null||!result){
       return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.NOTIFICATION_NOT_AVAILABLE,message:"Stay in touch!You will find all the new updates here"});
@@ -119,11 +119,14 @@ exports.getNotificationById=async(req,res,next)=>{
     const {id}=req.params;
     const isNotificationExist=await findPushNotification({_id:id});
     if(!isNotificationExist){
-      return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.NOTIFICATION_NOT_AVAILABLE});
+      return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.NOTIFICATION_INCORRECT});
     }
     await updatePushNotification({_id:isNotificationExist._id},{isRead:true});
-    return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.NOTIFICATION_READ});
+    const result=await findPushNotificationData({isRead:'false',from:'holidayEnquiry'});
+    console.log("result===========",result.length);
+    return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.NOTIFICATION_READ,result:result});
   } catch (error) {
     console.log("error while get notification by Id",error);
+    return next(error)
   }
 }
