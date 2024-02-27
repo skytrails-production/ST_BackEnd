@@ -58,7 +58,20 @@ const {
   countTotalWebadvertisement,
   getWebAdvertisment,
 } = webAdvertisementServices;
+const { forumQueServices } = require("../services/forumQueServices");
+const {
+  createforumQue,
+  findforumQue,
+  findforumQueData,
+  deleteforumQue,
+  updateforumQue,
+  forumQueListLookUp,
+  forumQueListLookUp1,
+  getTopSTories,
+  forumQueListLookUpOfUser,
+} = forumQueServices;
 
+/********************SUbAdmin apis************************************************* */
 exports.createSubAdmin = async (req, res, next) => {
   try {
     const { username, email, password, mobile_number, authType,dynamicProperties } = req.body;
@@ -322,3 +335,18 @@ exports.updateTaskOfSubAdmin=async(req,res,next)=>{
   }
 } 
 
+exports.deletePost=async(req,res,next)=>{
+  try {
+    const isPostExist=await findforumQue({_id:req.params.id});
+    if(!isPostExist){
+      return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.POST_NOT_FOUND});
+    }
+    const result=await deleteforumQue({_id:req.params.id});
+    if(result){
+      return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.DELETE_SUCCESS,result:result});
+    } 
+  } catch (error) {
+    console.error("error while delete post of user========",error);
+    return next(error)
+  }
+}

@@ -17,8 +17,9 @@ const templateid3 = process.env.BUS_TEMLATEID;
 const subAdmintemplateid = process.env.SUBADMINTEMPLATEId;
 const agentTempId = process.env.AGENTTEMPLATEID;
 const visaTempId = process.env.VISATEMPLATEID;
-const eventTempId=process.env.EVENTID
-const packageTempId=process.env.PACKAGETEMPID
+const eventTempId=process.env.EVENTID;
+const packageTempId=process.env.PACKAGETEMPID;
+const PEFAID=process.env.PEFAID
 const baseURL = "https://localhost:8000";
 
 module.exports = {
@@ -319,6 +320,26 @@ module.exports = {
     try {
       const response = await axios.get(url, { params: params });
       // console.log("response====",response.data)
+      return response.data;
+    } catch (error) {
+      console.error("Error occurred in axios request:", error);
+      // throw error;
+    }
+  },
+  sendSMSPasses: async (mobileNumber) => {
+    const dta="PEFA2024";
+    const messageContent = `Greetings User! Your seat is now secured for the PEFA event. Get ready to groove to Punjabi beats. Heartfelt thanks for choosing TheSkytrails - we're thrilled to create memorable moments on your journey!`;
+    const url = `http://sms.txly.in/vb/apikey.php?`;
+    const params = {
+      apikey: key,
+      senderid: senderid,
+      templateid: PEFAID,
+      number: mobileNumber,
+      message: messageContent,
+    };
+    try {
+      const response = await axios.get(url, { params: params });
+      console.log("response====",response.data)
       return response.data;
     } catch (error) {
       console.error("Error occurred in axios request:", error);

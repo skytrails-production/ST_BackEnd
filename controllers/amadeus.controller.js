@@ -89,7 +89,7 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
                     <typeOfUnit>PX</typeOfUnit>
                 </unitNumberDetail>
                 <unitNumberDetail>
-                    <numberOfUnits>10</numberOfUnits>
+                    <numberOfUnits>2</numberOfUnits>
                     <typeOfUnit>RC</typeOfUnit>
                 </unitNumberDetail>
             </numberOfUnit>
@@ -141,11 +141,11 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
 
     const response = await axios.post(url,data,{headers} );
 
-    const responseData = extractDataFromResponse(response);
-    // const jsonResult = await xmlToJson(response.data)
-    // const newData=jsonResult['soapenv:Envelope']['soapenv:Body']['Fare_MasterPricerTravelBoardSearchReply'];
+    // const responseData = extractDataFromResponse(response);
+    const jsonResult = await xmlToJson(response.data)
+    const newData=jsonResult['soapenv:Envelope']['soapenv:Body']['Fare_MasterPricerTravelBoardSearchReply'];
     msg = "Flight Searched Successfully!";
-    actionCompleteResponse(res, responseData, msg);
+    actionCompleteResponse(res, newData, msg);
   } catch (err) {
     // console.log(err);
     sendActionFailedResponse(res, {}, err.message);

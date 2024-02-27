@@ -145,4 +145,5 @@ module.exports = function (app) {
   );
   app.put("/skyTrails/api/admin/updateSubAdminTask",subAdminController.updateTaskOfSubAdmin);
   app.get('/skyTrails/api/admin/getAllEventBookings',controller.getAllEventBookings);
+  app.delete('/skyTrails/api/admin/deletePost/:id',subAdminController.deletePost);
 };

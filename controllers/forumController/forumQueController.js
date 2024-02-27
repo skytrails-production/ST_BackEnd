@@ -215,7 +215,6 @@ exports.getPostOfUser = async (req, res, next) => {
     return next(error);
   }
 };
-
 //add question in bookmark
 exports.addBookmark = async (req, res, next) => {
   try {
@@ -270,7 +269,6 @@ exports.addBookmark = async (req, res, next) => {
     return next(error);
   }
 };
-
 //get top rated stories**************************************************
 exports.getTopStories = async (req, res, next) => {
   try {
@@ -292,7 +290,6 @@ exports.getTopStories = async (req, res, next) => {
     return next(error);
   }
 };
-
 //get post by ID*********************************************************************
 exports.getPostByID = async (req, res, next) => {
   try {

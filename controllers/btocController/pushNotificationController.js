@@ -103,7 +103,6 @@ exports.getAllNotificationOfAmdin=async(req,res,next)=>{
       return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.ADMIN_NOT_FOUND})
     }
     const result=await findPushNotificationData({isRead:'false',from:'holidayEnquiry'});
-    console.log("result===========",result.length);
     if(result.length==null||!result){
       return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.NOTIFICATION_NOT_AVAILABLE,message:"Stay in touch!You will find all the new updates here"});
     }
@@ -123,7 +122,6 @@ exports.getNotificationById=async(req,res,next)=>{
     }
     await updatePushNotification({_id:isNotificationExist._id},{isRead:true});
     const result=await findPushNotificationData({isRead:'false',from:'holidayEnquiry'});
-    console.log("result===========",result.length);
     return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.NOTIFICATION_READ,result:result});
   } catch (error) {
     console.log("error while get notification by Id",error);

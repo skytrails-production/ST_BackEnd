@@ -1,5 +1,11 @@
 const cron = require("node-cron");
 const status = require("../../enums/status");
+const whatsappAPIUrl = require("../../utilities/whatsApi");
+const sendSMS = require("../../utilities/sendSms");
+
+
+
+
 const {
   pushNotification,
   mediapushNotification,
@@ -87,7 +93,7 @@ const lastNotificationSent = new Map();
 // task.start();
 
 // Define and schedule task2 separately
-var taskPromotionalNotification = cron.schedule("34 10 * * *",async () => {
+var taskPromotionalNotification = cron.schedule("15 10 * * *",async () => {
     try {
       // 'phone.mobile_number':'8115199076'
       const users = await userList({
@@ -98,12 +104,12 @@ var taskPromotionalNotification = cron.schedule("34 10 * * *",async () => {
       // Task 2 logic
       // const notificationMessage = "🚀एक सफ़र पे यूँ ही कभी चल दो तुम,✈️";
       // const messageBody = `✨Check out our latest promotion! We're offering deals so good, even your coffee will do a double-take! ☕️ Explore your journey with TheSkyTrails pvt ltd✨`;
-     
       for (const user of users) {
         try { 
-        const notificationMessage = `Monday blues?💕`;
-        const messageBody = `✨Turn them into travel hues - Your flight is waiting to take off!✨`;
-        const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
+        const notificationMessage = `The wait is nearly over!💕`;
+        const messageBody = `✨PEFA event passes are on the way, so prepare for an unforgettable experience.✨`;
+        // const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
+        const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`
           // Check if a notification has been sent to this user recently
           const lastSent = lastNotificationSent.get(user._id);
           if (lastSent && Date.now() - lastSent < 3600000) {
@@ -178,7 +184,7 @@ const taskEventNotification = cron.schedule("*/3 * * * *",
               ✈️ TheSkyTrails Team,✈️`;
               const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`
           await pushNotification(user.deviceToken, notifications, messageBody1,imageurl);
-          console.log("send notification======",user.name);
+          console.log("send notification======user=====================",user.name);
         }
       }
 
@@ -212,7 +218,7 @@ var taskEventNotification1 = cron.schedule("20 17 * * *",
       console.log("=======================", users.length);
       const notificationMessage = "✨Kho gaye hum kahan…!!🎊✨";
       const messageBody = `✨Plan your journey with The Skytrails and get the best deals!✨`;
-      const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`;
+      const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
       for (const user of users) {
         try {
           // Check if a notification has been sent to this user recently
@@ -225,12 +231,7 @@ var taskEventNotification1 = cron.schedule("20 17 * * *",
             continue; // Skip sending notification
           }
 
-          await pushNotification(
-            user.deviceToken,
-            notificationMessage,
-            messageBody,
-            imageurl
-          );
+          await pushNotification(user.deviceToken,notificationMessage,messageBody,imageurl);
           console.log(
             "Notification cron job executed successfully. TASK 2",
             user.name
@@ -328,16 +329,12 @@ var taskEventNotification1 = cron.schedule("58 22 * * *",
         deviceToken: { $exists: true, $ne: "" },
       });
       console.log("=======================", users.length);
-      
-      const messageBody = `✨It's PEFA, and we're ready to set the floor on fire! Are you geared up for the ultimate showtime!
-      Best regards,
-      TheSkyTrails pvt ltd✨`;
       // const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
       const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`;
       for (const user of users) {
         try {
-          const notificationMessage = `Hello ${user.username}Knock Knock! Guess who?`;
-          const messageBody = `✨It's PEFA, and we're ready to set the floor on fire!Are you geared up for the ultimate showtime!Best regards,TheSkyTrails pvt ltd✨`;
+          const notificationMessage = `Hello ${user.username}`;
+          const messageBody = `✨Your Passes generate regarding PEFA2024,enjoy your night with PEFA stars✨`;
           // Check if a notification has been sent to this user recently
           const lastSent = lastNotificationSent.get(user._id);
           if (lastSent && Date.now() - lastSent < 3600000) {

@@ -10,6 +10,11 @@ const commonPushFunction=require("../../utilities/commonFunForPushNotification")
 const whatsappAPIUrl = require("../../utilities/whatsApi");
 const moment=require('moment');
 var CurrentDate = moment().format();
+const {
+  pushNotification,
+  mediapushNotification,
+  pushSimpleNotification
+} = require("../../utilities/commonFunForPushNotification"); 
 //*****************************************SERVICES************************************************/
 const { eventServices } = require("../../services/eventServices");
 const {
@@ -70,6 +75,7 @@ const {
   paginateCouponSearch,
 } = couponServices;
 const{pushNotificationServices}=require('../../services/pushNotificationServices');
+const { stringify } = require("querystring");
 const{createPushNotification,findPushNotification,findPushNotificationData,deletePushNotification,updatePushNotification,countPushNotification}=pushNotificationServices;
 
 
@@ -440,6 +446,51 @@ exports.getEventBookingStatus=async(req,res,next)=>{
   } catch (error) {
     console.log("error while get pefaeventHistory",error);
     return next(error);
+  }
+}
+
+//*****************Geneerate all passes for eventBooking******************************************/
+exports.sendUpdatePasses=async(req,res,next)=>{
+  try {
+    // deviceToken: { $exists: true, $ne: "" }
+    const users = await eventBookingList({status: status.ACTIVE,isluckyUser:false});
+    const result=[]
+    for (const user of users) {
+      // const data=[{
+      //   contactNo:user.contactNo.mobile_number,
+      //   name:user.name,
+      //   profession:user.profession,
+      //   ticketsNumber:user.tickets,
+      //   city:user.city
+      // }]
+      // const base64=await qrcode.toDataURL(JSON.stringify(data));
+      const smsFormat="Your Pass generate please visit into app ."
+      const mobile=user.contactNo.country_code+user.contactNo.mobile_number
+      const update=await updateBookingEvent({_id:user._id},{isluckyUser:true})
+      result.push(update);
+      await sendSMS.sendSMSPasses(user.contactNo.mobile_number,smsFormat);
+      await whatsappAPIUrl.sendWhatsAppMsgAdminPackage(mobile,`${user.name}😎`,"pefa"); 
+      if(user.deviceType==='andriod'){
+        try {
+        const notificationMessage=`Hey ${user.name}😎 You are booked!🎊`;
+        const messageBody="🎉✨You're all set for the PEFA event. See you there for an unforgettable time.✨🎉";
+        const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`;
+        await pushNotification(user.deviceToken,notificationMessage,messageBody,imageurl);
+        console.log("pushNotification=================",user.name);
+      } catch (pushError) {
+        console.error(
+          "Error while sending push notification to user:",
+          pushError
+        );
+        continue;
+      }
+      }
+    }
+    return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result:result});
+
+  } catch (error) {
+    console.log("error while send passes===========",error);
+    return next(error)
   }
 }
 
