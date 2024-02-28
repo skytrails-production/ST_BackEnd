@@ -344,7 +344,7 @@ exports.gethoteladvertisementController = async (req, res, next) => {
     try {
         const { page, limit } = req.query;
         const currentDate = new Date();
-        // console.log("currentDate=======>>>>>",currentDate);
+        console.log("currentDate=======>>>>>",currentDate)
         // endDate: { $gt: currentDate },
         const result=await hoteladvertisementList({status:status.ACTIVE});
         if(!result){

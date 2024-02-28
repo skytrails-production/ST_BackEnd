@@ -64,12 +64,13 @@ const couponSchema = new Schema(
     
     },
     userApplied: [{ type: mongoose.Schema.Types.ObjectId, ref: "userBtoC" }],
+    applicableUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "userBtoC" }] 
   },
   { timestamps: true }
 );
-// couponSchema.plugin(mongoosePaginate);
+couponSchema.plugin(mongoosePaginate);
 
-// couponSchema.plugin(aggregatePaginate);
+couponSchema.plugin(aggregatePaginate);
 
 const Coupon = mongoose.model("B2CCoupons", couponSchema);
 

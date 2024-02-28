@@ -130,6 +130,7 @@ const usersSchema = new Schema({
     deviceType:{type: String,},
     balance: {
       type: Number,
+      default:0
     },
     bio: {
       type: String,
@@ -139,6 +140,8 @@ const usersSchema = new Schema({
       type: String,
       default: "",
     },
+    referralCode: {type:String}, // Add referral code field
+    referrer: { type: Schema.Types.ObjectId, ref: 'userBtoC' }
   },
   {
     timestamps: true,

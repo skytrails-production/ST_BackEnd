@@ -658,9 +658,7 @@ exports.checkPaymentStatus = async (req, res, next) => {
         "X-MERCHANT-ID": process.env.PHONE_PAY_MERCHANT_ID,
       },
     };
-    axios
-      .request(options)
-      .then(function (response) {
+    axios.request(options).then(function (response) {
         // console.log(response.data);
         return res.status(statusCode.OK).send({
           statusCode: statusCode.OK,
@@ -792,31 +790,32 @@ function generateSHA512Hash(input) {
 
 exports.makeCashfreePayment = async (req, res, next) => {
   try {
-    const { firstname, phone, amount, redirectUrl, bookingType } = req.body;
+    const { firstname, phone, email,amount, redirectUrl, bookingType} = req.body;
+    // console.log("req.bod=========",req.body);
     const isUserExist = await findUser({
       _id: req.userId,
       status: status.ACTIVE,
     });
-    // if (!isUserExist) {
-    //   return res.status(statusCode.NotFound).send({
-    //     statusCode: statusCode.NotFound,
-    //     message: responseMessage.USERS_NOT_FOUND,
-    //   });
-    // }
+    if (!isUserExist) {
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.USERS_NOT_FOUND,
+      });
+    }
     const currentDate = new Date();
-    const newDate = new Date(currentDate.getTime() + 16 * 60000); // Adding 16 minutes in milliseconds (1 minute = 60,000 milliseconds)
-
-    const uuid = uuidv4();
+    const newDate = new Date(currentDate.getTime() + 16 * 60000); // Adding 4 minutes in milliseconds (1 minute = 60,000 milliseconds)
     const client_secret = process.env.CASHFREE_API_KEY;
     const clientId = process.env.CASHFREE_API_ID;
     const payUrl = process.env.CASHFREE_URL;
-    const merchantTransactionId = "12e89f0029ea" + Date.now();
+    const merchantTransactionId = "customer" + Date.now();
     const OrderId = "ORDIDTST" + Date.now();
     const object = {
       customer_details: {
         customer_id: merchantTransactionId,
         customer_email: "lcharu071@gmail.com",
         customer_phone: "8115199076",
+        customer_name:'Charu Yadav',
+        // customer_uid:uuid
       },
       order_id: OrderId,
       "order_meta": {
@@ -827,7 +826,7 @@ exports.makeCashfreePayment = async (req, res, next) => {
       order_amount: 1,
       order_currency: "INR",
     };
-    // console.log("object==>>>>>", object);
+    console.log("object==>>>>>", object);
     const options = {
       method: "post",
       url: `https://api.cashfree.com/pg/orders`,
@@ -841,10 +840,10 @@ exports.makeCashfreePayment = async (req, res, next) => {
       data: object,
     };
     try {
-      const { data } = await axios.request(options);
-      // console.log("data==>>>>>>>>>>>>>>>>>>>", data);
+      const {data} = await axios.request(options);
+      console.log("data==>>>>>>>>>>>>>>>>>>>", data);
       const objectData = {
-        // userId: isUserExist._id,
+        userId: isUserExist._id,
         amount: object.order_amount,
         paymentId: data.order_id,
         orderId: data.cf_order_id,
@@ -853,7 +852,7 @@ exports.makeCashfreePayment = async (req, res, next) => {
         // object.order_currency,
       };
       const createData = await createUsertransaction(objectData);
-      // console.log("objectData=======>>>>>>>>>>>========", objectData);
+      console.log("objectData=======>>>>>>>>>>>========", createData);
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.PAYMENT_INTIATE,
@@ -885,23 +884,22 @@ exports.checkCashfreePaymentStatus = async (req, res, next) => {
       },
     };
     const { data } = await axios.request(options);
-    console.log('Data:', data);
     const orderStatus = data.order_status; // Adjust accordingly based on the API response structure
-
     const isTransactionExist = await findUsertransaction({
       paymentId: orderId,
     });
-    if (isTransactionExist) {
+    console.log("isTransactionExist=========",isTransactionExist);
+    if (isTransactionExist){
       // Handle payment status as needed
       if (orderStatus === 'PAID') {
         const result = await updateUsertransaction(
         { _id: isTransactionExist._id },
         { transactionStatus: paymentStatus.SUCCESS }
       );
-
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.PAYMENT_SUCCESS,
+        result:result
       });
       } 
       await updateUsertransaction(

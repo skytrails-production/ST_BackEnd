@@ -32,6 +32,7 @@ const {
   countTotalUsertransaction,
 } = transactionModelServices;
 
+
 const {eventBookingServices,} = require("../../services/btocServices/eventBookingServices");
 const {
   createBookingEvent,
@@ -46,6 +47,7 @@ const {
 const{pushNotificationServices}=require('../../services/pushNotificationServices');
 const{createPushNotification,findPushNotification,findPushNotificationData,deletePushNotification,updatePushNotification,countPushNotification}=pushNotificationServices;
 //******************************************User SignUp api*************************/
+
 
 exports.login = async (req, res, next) => {
   try {
@@ -197,6 +199,7 @@ exports.verifyUserOtp = async (req, res, next) => {
         userType: updateStaticUser.userType,
         username: updateStaticUser.username,
         otpVerified: updateStaticUser.otpVerified,
+        balance:updateStaticUser.balance,
         status: updateStaticUser.status,
         token: token,
       };
@@ -232,6 +235,7 @@ exports.verifyUserOtp = async (req, res, next) => {
         userType: updation.userType,
         username: updation.username,
         otpVerified: updation.otpVerified,
+        balance:updation.balance,
         status: updation.status,
         token: token,
       };
@@ -279,6 +283,7 @@ exports.verifyUserOtp = async (req, res, next) => {
   }
 };
 
+
 exports.resendOtp = async (req, res, next) => {
   try {
     const { mobileNumber } = req.body;
@@ -298,7 +303,7 @@ exports.resendOtp = async (req, res, next) => {
     const var2=`${otp}`
     const updateData = await updateUser(
       { _id: isExist._id, status: status.ACTIVE },
-      { otp: otp, otpExpireTime: otpExpireTime }
+      { otp: otp, otpExpireTime: otpExpireTime}
     );
     if (!updateData) {
       return res.status(statusCode.InternalError).send({
@@ -586,6 +591,7 @@ exports.editProfile = async (req, res, next) => {
         _id: { $ne: isUSer._id },
       });
 
+
       if (isExistEmail) {
         return res
           .status(statusCode.Conflict)
@@ -602,7 +608,9 @@ exports.editProfile = async (req, res, next) => {
   }
 };
 
+
 //******************************************DELETE Account of User**********************************************************/
+
 
 // exports.deleteUserAccount=async(req,res,next)=>{
 // try {
@@ -623,6 +631,7 @@ exports.editProfile = async (req, res, next) => {
 //   return next(error)
 // }
 // }
+
 
 exports.deleteUserAccount = async (req, res, next) => {
   try {
@@ -652,6 +661,7 @@ exports.deleteUserAccount = async (req, res, next) => {
     return next(error);
   }
 };
+
 
 exports.getReachargeHistory=async(req,res,next)=>{
   try {
@@ -683,6 +693,7 @@ exports.getReachargeHistory=async(req,res,next)=>{
   }
 }
 
+
 exports.getAppLink=async(req,res,next)=>{
   try {
     const mobileNumber=req.params;
@@ -706,6 +717,8 @@ exports.getAppLink=async(req,res,next)=>{
     return next(error)
   }
 }
+
+
 
 
 exports.updateDeviceToken=async(req,res,next)=>{
