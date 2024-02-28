@@ -24,86 +24,24 @@ const s3 = new aws.S3({
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 });
 
-// exports.internationalCreate = async (req, res) => {
-//   const reqData = JSON.parse(req.body.data);
-//   const file = req?.file;
-//   const s3Params = {
-//     Bucket: process.env.AWS_BUCKET_NAME,
-//     Key: file.originalname,
-//     Body: file.buffer,
-//     ContentType: file.mimetype,
-//     ACL: "public-read",
-//   };
-//   s3.upload(s3Params, async (err, data) => {
-//     if (err) {
-//       res.status(500).send(err);
-//     } else {
-//       const data1 = new internationl({
-//         userId:reqData.userId,
-//         pakage_title: reqData.pakage_title,
-//         pakage_img: data.Location,
-//         destination: reqData.destination,
-//         country: reqData.country,
-//         days: reqData.days,
-//         schedule: {
-//           flexible: reqData.flexible,
-//           fixed_departure: reqData.fixed_departure,
-//         },
-//         pakage_amount: {
-//           currency: reqData.pakage_amount.currency,
-//           amount: reqData.pakage_amount.amount,
-//         },
-//         insclusions: reqData.insclusions,
-//         hotel_details: reqData.hotel_details,
-//         insclusion_note: reqData.insclusion_note,
-//         exclusion_note: reqData.exclusion_note,
-//         detailed_ltinerary: reqData.detailed_ltinerary,
-//         overview: reqData.overview,
-//         select_tags: reqData.select_tags,
-//         term_Conditions: reqData.term_Conditions,
-//         cancellation_Policy: reqData.cancellation_Policy,
-//       });
-//       try {
-//         const response = await data1.save();
-//         msg = "Pakage is created";
-//         actionCompleteResponse(res, response, msg);
-//       } catch (err) {
-//         sendActionFailedResponse(res, {}, err.message);
-//       }
-//     }
-//   });
-// };
-
-//mulitiImage
-
 exports.internationalCreate = async (req, res) => {
   const reqData = JSON.parse(req.body.data);
-  const files = req?.files;
-  const imageUrls = [];
-  for (const file of files) {
-    const s3Params = {
-      Bucket: process.env.AWS_BUCKET_NAME,
-      Key: file.originalname,
-      Body: file.buffer,
-      ContentType: file.mimetype,
-      ACL: "public-read",
-    };
-
-    try {
-      // Upload file to S3
-      const data = await s3.upload(s3Params).promise();
-      // Store the URL of the uploaded image
-      imageUrls.push(data.Location);
-    } catch (err) {
-      console.error("Error uploading file to S3:", err);
-      return res.status(500).send(err);
-    }
-  }
-
+  const file = req?.file;
+  const s3Params = {
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key: file.originalname,
+    Body: file.buffer,
+    ContentType: file.mimetype,
+    ACL: "public-read",
+  };
+  s3.upload(s3Params, async (err, data) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
       const data1 = new internationl({
         userId:reqData.userId,
         pakage_title: reqData.pakage_title,
-        pakage_img: imageUrls,
+        pakage_img: data.Location,
         destination: reqData.destination,
         country: reqData.country,
         days: reqData.days,
@@ -132,9 +70,71 @@ exports.internationalCreate = async (req, res) => {
       } catch (err) {
         sendActionFailedResponse(res, {}, err.message);
       }
+    }
+  });
+};
+
+//mulitiImage
+
+// exports.internationalCreate = async (req, res) => {
+//   const reqData = JSON.parse(req.body.data);
+//   const files = req?.files;
+//   const imageUrls = [];
+//   for (const file of files) {
+//     const s3Params = {
+//       Bucket: process.env.AWS_BUCKET_NAME,
+//       Key: file.originalname,
+//       Body: file.buffer,
+//       ContentType: file.mimetype,
+//       ACL: "public-read",
+//     };
+
+//     try {
+//       // Upload file to S3
+//       const data = await s3.upload(s3Params).promise();
+//       // Store the URL of the uploaded image
+//       imageUrls.push(data.Location);
+//     } catch (err) {
+//       console.error("Error uploading file to S3:", err);
+//       return res.status(500).send(err);
+//     }
+//   }
+
+//       const data1 = new internationl({
+//         userId:reqData.userId,
+//         pakage_title: reqData.pakage_title,
+//         pakage_img: imageUrls,
+//         destination: reqData.destination,
+//         country: reqData.country,
+//         days: reqData.days,
+//         schedule: {
+//           flexible: reqData.flexible,
+//           fixed_departure: reqData.fixed_departure,
+//         },
+//         pakage_amount: {
+//           currency: reqData.pakage_amount.currency,
+//           amount: reqData.pakage_amount.amount,
+//         },
+//         insclusions: reqData.insclusions,
+//         hotel_details: reqData.hotel_details,
+//         insclusion_note: reqData.insclusion_note,
+//         exclusion_note: reqData.exclusion_note,
+//         detailed_ltinerary: reqData.detailed_ltinerary,
+//         overview: reqData.overview,
+//         select_tags: reqData.select_tags,
+//         term_Conditions: reqData.term_Conditions,
+//         cancellation_Policy: reqData.cancellation_Policy,
+//       });
+//       try {
+//         const response = await data1.save();
+//         msg = "Pakage is created";
+//         actionCompleteResponse(res, response, msg);
+//       } catch (err) {
+//         sendActionFailedResponse(res, {}, err.message);
+//       }
     
  
-};
+// };
 
 exports.internationalupdate = async (req, res) => {
   const reqData = JSON.parse(req.body.data);
