@@ -11,6 +11,6 @@ echo "Installing Dependencies..."
 npm install --yes
 
 echo "PM2 Reload"
-pm2 reload Skytrails-backend/1
+pm2 reload Skytrails-backend
 
 echo "Deployment Finished!"
