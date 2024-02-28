@@ -19,10 +19,10 @@ const internationl = mongoose.model(
         type: String,
         require: false,
       },
-      // pakage_img: {
-      //   type: Array,
-      //   require: false,
-      // },      
+      package_img: {
+        type: Array,
+        require: false,
+      },      
       destination: {
         type: Array,
         require: true,

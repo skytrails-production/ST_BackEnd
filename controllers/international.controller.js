@@ -41,7 +41,7 @@ exports.internationalCreate = async (req, res) => {
       const data1 = new internationl({
         userId:reqData.userId,
         pakage_title: reqData.pakage_title,
-        pakage_img: data.Location,
+        package_img: data.Location,
         destination: reqData.destination,
         country: reqData.country,
         days: reqData.days,
