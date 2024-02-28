@@ -15,14 +15,14 @@ const internationl = mongoose.model(
         type: String,
         require: true,
       },
-      // pakage_img: {
-      //   type: String,
-      //   require: false,
-      // },
       pakage_img: {
-        type: Array,
+        type: String,
         require: false,
-      },      
+      },
+      // pakage_img: {
+      //   type: Array,
+      //   require: false,
+      // },      
       destination: {
         type: Array,
         require: true,

@@ -11,19 +11,20 @@ module.exports = function (app) {
     res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
     next();
   });
-  // app.post(
-  //   "/skyTrails/international/create",
-  //   upload.single("file"),
-  //   controller.internationalCreate
-  // );
-
-  // multiImage 
 
   app.post(
     "/skyTrails/international/create",
-    upload.array("files", { minCount: 1, maxCount: 5 }),
+    upload.single("file"),
     controller.internationalCreate
   );
+
+  // multiImage 
+
+  // app.post(
+  //   "/skyTrails/international/create",
+  //   upload.array("files", { minCount: 1, maxCount: 5 }),
+  //   controller.internationalCreate
+  // );
 
   app.get("/skyTrails/international/getone/:id", controller.internationalFind);
   app.put(
