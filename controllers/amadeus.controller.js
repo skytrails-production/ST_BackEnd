@@ -142,7 +142,7 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
     const response = await axios.post(url,data,{headers} );
 
     // const responseData = extractDataFromResponse(response);
-    const jsonResult = await xmlToJson(response.data)
+    const jsonResult = await xmlToJson(response.data);
     const newData=jsonResult['soapenv:Envelope']['soapenv:Body']['Fare_MasterPricerTravelBoardSearchReply'];
     msg = "Flight Searched Successfully!";
     actionCompleteResponse(res, newData, msg);

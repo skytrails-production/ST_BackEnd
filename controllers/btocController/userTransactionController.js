@@ -791,7 +791,6 @@ function generateSHA512Hash(input) {
 exports.makeCashfreePayment = async (req, res, next) => {
   try {
     const { firstname, phone, email,amount, redirectUrl, bookingType} = req.body;
-    // console.log("req.bod=========",req.body);
     const isUserExist = await findUser({
       _id: req.userId,
       status: status.ACTIVE,
@@ -826,7 +825,6 @@ exports.makeCashfreePayment = async (req, res, next) => {
       order_amount: 1,
       order_currency: "INR",
     };
-    console.log("object==>>>>>", object);
     const options = {
       method: "post",
       url: `https://api.cashfree.com/pg/orders`,
@@ -852,7 +850,6 @@ exports.makeCashfreePayment = async (req, res, next) => {
         // object.order_currency,
       };
       const createData = await createUsertransaction(objectData);
-      console.log("objectData=======>>>>>>>>>>>========", createData);
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.PAYMENT_INTIATE,
@@ -977,44 +974,41 @@ exports.CCEVENUEPayment1 = async (req, res, next) => {
 
 exports.cashfreeRefund=async(req,res,next)=>{
   try {
-    const{orderId,amount,refund_id,}=req.body;
+    const{orderId,amount,refund_id,refund_speed}=req.body;
     const refundId = "REFUNDTST" + Date.now();
     const requestData = {
       refund_amount: amount,
-      refund_id: refundId
+      refund_id: refundId,
+      refund_speed: refund_speed
     };    
     const options = {
       method: "post",
-      url: `https://sandbox.cashfree.com/pg/orders/${orderId}/refunds`,
+      url: `https://api.cashfree.com/pg/orders/${orderId}/refunds`,
       headers:{
         'accept': 'application/json',
         'content-type': 'application/json',
-        'x-api-version': '2022-01-01',
+        'x-api-version': '2023-08-01',
         "x-client-id": clientId,
         "x-client-secret": client_secret,
       },
       data: requestData,
     };
-    // const headers = {
-    //   'accept': 'application/json',
-    //   'content-type': 'application/json',
-    //   'x-api-version': '2022-01-01',
-    //   "x-client-id": clientId,
-    //   "x-client-secret": client_secret,
-    // };
-    const { data } = await axios.request(options);
-    return res.status(statusCode.OK).send({
-      statusCode: statusCode.OK,
-      responseMessage: responseMessage.PAYMENT_INTIATE,
-      result: data,
+    await axios.request(options).then(response => {
+      console.log(response.data);
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.PAYMENT_INTIATE,
+        result: response.data,
+      });
+    })
+    .catch(error => {
+      console.error("error.response==================",error.response);
+      return res.status(statusCode.OK).send({
+        statusCode: error.response.status,
+        responseMessage: responseMessage.INVALD_REQUEST,
+        result: error.response.data,
+      });
     });
-    // axios.post(`https://sandbox.cashfree.com/pg/orders/${orderId}/refunds`, requestData, { headers })
-    //   .then(response => {
-    //     console.log('Response:', response.data);
-    //   })
-    //   .catch(error => {
-    //     console.error('Error:', error.response.data);
-    //   });
   } catch (error) {
     console.log("error while refund====>>>",error);
     return next(error);

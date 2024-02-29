@@ -460,11 +460,14 @@ const schemas = {
     days: joi.number().optional(),
   }),
   createAgentSchema: joi.object().keys({
+    firstName: joi.string().required(),
+    lastName: joi.string().required(),
     email: joi.string().required(),
     panNumber: joi.string().required(),
     mobile_number: joi.string().required(),
     agency_name: joi.string().required(),
     password: joi.string().required(),
+    
   }),
   sendPDFSchema: joi.object().keys({
     ticketId: joi.string().required(),
@@ -619,6 +622,12 @@ const schemas = {
   applyCouponSchema: joi.object().keys({
     couponCode: joi.string().required(),
   }),
+  refundSchema:joi.object().keys({
+    orderId:joi.string().required(),
+    amount:joi.number().required(),
+    refund_id:joi.string().optional(),
+    refund_speed:joi.string().required()
+  })
 };
 
 module.exports = schemas;

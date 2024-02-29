@@ -221,14 +221,14 @@ exports.subAdminLogin = async (req, res, next) => {
     });
     if (!isSubAdminExist) {
       return res
-        .status(statusCode.NotFound)
-        .send({ message: responseMessage.USERS_NOT_FOUND });
+        .status(statusCode.OK)
+        .send({ statusCode:statusCode.NotFound,message: responseMessage.USERS_NOT_FOUND });
     }
     const isMatched = bcrypt.compareSync(password, isSubAdminExist.password);
     if (!isMatched) {
       return res
-        .status(statusCode.badRequest)
-        .send({ message: responseMessage.INCORRECT_LOGIN });
+        .status(statusCode.OK)
+        .send({ statusCode:statusCode.badRequest,message: responseMessage.INCORRECT_LOGIN });
     }
     const token = await commonFunction.getToken({
       id: isSubAdminExist._id,
@@ -251,7 +251,7 @@ exports.subAdminLogin = async (req, res, next) => {
     };
     return res
       .status(statusCode.OK)
-      .send({ message: responseMessage.LOGIN, result: result });
+      .send({ statusCode:statusCode.OK,message: responseMessage.LOGIN, result: result });
   } catch (error) {
     console.log("error=======>>>>>>", error);
     return next(error);

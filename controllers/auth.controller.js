@@ -1661,7 +1661,7 @@ exports.getSearchHistory = async (req, res, next) => {
 //**********************************************CREATE AGENTS********************************/
 exports.createAgent = async (req, res, next) => {
   try {
-    const { email, mobile_number, password, panNumber,agency_name } = req.body;
+    const { email, mobile_number, password, panNumber,agency_name,firstName,lastName } = req.body;
     // Check if pan_number is provided and not an empty string
     if (!panNumber || panNumber.trim() === "") {
       return res.status(statusCode.badRequest).send({
@@ -1674,6 +1674,8 @@ exports.createAgent = async (req, res, next) => {
     // Create the object with personal_details and agency_details including pan_number
     const object = {
       personal_details: {
+        first_name:firstName,
+        last_name:lastName,
         email: email,
         mobile: {
           mobile_number: mobile_number,

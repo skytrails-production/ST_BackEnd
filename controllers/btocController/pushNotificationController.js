@@ -61,7 +61,8 @@ exports.pushNotificationsToUser=async(req,res,next)=>{
         status: status.ACTIVE,
         deviceToken: { $exists: true, $ne: "" }
       });
-      const image="https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg"||imageUrl;
+      // const image="https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg"||imageUrl;
+      const image=`https://skytrails.s3.amazonaws.com/notification.jpg`
       if(notificationType==="PEFA2024"){
         for (const user of users) {
           try {
@@ -75,10 +76,11 @@ exports.pushNotificationsToUser=async(req,res,next)=>{
           }
           }
       }
+      // 'phone.mobile_number':'8115199076'
       const usereTokenExist=await userList({status: status.ACTIVE,deviceToken: { $exists: true, $ne: ""}});
       for (const user of usereTokenExist) {
         try {
-          await pushNotification(user.deviceToken, messageTitle, messageBody);
+          await pushNotification(user.deviceToken, messageTitle, messageBody,image);
           console.log('Notification cron job executed successfully');
         } catch (pushError) {
           // Handle if any user is not registered

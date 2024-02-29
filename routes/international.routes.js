@@ -5,13 +5,12 @@ const handleFileUpload = require('../utilities/fileUpload');
 const multer = require("multer");
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-const uploadMulti = multer({ dest: "uploads/" });
+
 module.exports = function (app) {
   app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
     next();
   });
-
   // app.post(
   //   "/skyTrails/international/create",
   //   upload.single("file"),
