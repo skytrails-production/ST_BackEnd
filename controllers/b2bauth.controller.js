@@ -111,6 +111,7 @@ const {
   sendActionFailedResponse,
 } = require("../common/common");
 const { log } = require("console");
+const { internationl } = require("../model/international.model");
 
 // console.log(process.env.AWS_ACCESS_KEY_ID, process.env.AWS_SECRET_ACCESS_KEY);
 
@@ -1666,3 +1667,49 @@ function generateSHA512Hash(input) {
   hash.update(input);
   return hash.digest("hex");
 }
+
+
+
+
+///agentProfilePage
+
+exports.agentProfilePage = async (req, res) =>{
+
+  const firstName = req.params.first_name;
+
+  try {
+    const userProfile=await  b2bUser.findOne({'personal_details.first_name':firstName});
+    // 65dda9fb34beb2ee7992f2d7
+    // const userProfile=await  b2bUser.findOne({'_id':'65dda9fb34beb2ee7992f2d7'});
+
+    if(!userProfile){
+      return sendActionFailedResponse(res, {}, "Invalid Agent");
+    }
+    // actionCompleteResponse(res,userProfile,"Agent profile fetch successfully");
+
+    const agentPackages = await exports.agentPackagesHelper(userProfile._id); // Assuming _id is used as userId
+    if (!agentPackages) {
+      return sendActionFailedResponse(res, {}, "Error fetching agent packages");
+    }
+
+    actionCompleteResponse(res, { userProfile, agentPackages }, "Agent profile and packages fetched successfully");
+
+    
+  } catch (error) {
+    sendActionFailedResponse(res, {}, "Internal server error");    
+  }
+}
+
+
+
+
+//agent packages
+exports.agentPackagesHelper = async (userId) => {
+  try {
+    const packages = await internationl.find({ userId: userId,is_active: 1 });
+
+    return packages;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};

@@ -83,6 +83,11 @@ module.exports = function (app) {
   app.post('/skyTrails/successVerifyApi',controller.paymentSuccess);
   app.post('/skyTrails/paymentFailure',controller.paymentFailure);
  
+
+  //agentProfilePage with packages
+
+  app.get('/skyTrails/agent/:first_name', controller.agentProfilePage);
+  
   
 
 };
