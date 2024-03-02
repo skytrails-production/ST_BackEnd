@@ -141,7 +141,8 @@ const usersSchema = new Schema({
       default: "",
     },
     referralCode: {type:String}, // Add referral code field
-    referrer: { type: Schema.Types.ObjectId, ref: 'userBtoC' }
+    referrerCode: {type:String},
+    referredBy:{type: Schema.Types.ObjectId, ref: 'userBtoC'}
   },
   {
     timestamps: true,

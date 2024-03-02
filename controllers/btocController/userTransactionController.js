@@ -811,9 +811,9 @@ exports.makeCashfreePayment = async (req, res, next) => {
     const object = {
       customer_details: {
         customer_id: merchantTransactionId,
-        customer_email: "lcharu071@gmail.com",
-        customer_phone: "8115199076",
-        customer_name:'Charu Yadav',
+        customer_email: email,
+        customer_phone: phone,
+        customer_name:firstname,
         // customer_uid:uuid
       },
       order_id: OrderId,
@@ -822,7 +822,7 @@ exports.makeCashfreePayment = async (req, res, next) => {
         "notify_url": "https://www.cashfree.com/devstudio/preview/pg/webhooks/77891295"
     },
       order_expiry_time: newDate,
-      order_amount: 1,
+      order_amount: amount,
       order_currency: "INR",
     };
     const options = {
@@ -997,7 +997,7 @@ exports.cashfreeRefund=async(req,res,next)=>{
       console.log(response.data);
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
-        responseMessage: responseMessage.PAYMENT_INTIATE,
+        responseMessage: responseMessage.REFUND_INITIATE,
         result: response.data,
       });
     })

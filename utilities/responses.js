@@ -109,5 +109,8 @@ module.exports = {
 	NOTIFICATION_NOT_AVAILABLE:"No new notifications",
 	NOTIFICATION_READ:"Notification Read Successfully",
 	NOTIFICATION_INCORRECT:"Incorrect notification Id",
-	INVALD_REQUEST:"Invalid payment request.."
+	INVALD_REQUEST:"Invalid payment request..",
+	PASSES_SENT:"Passes sent successfully to users.",
+	REFUND_INITIATE:"Refund Initiated , your amount reflect on your account within 2-3 working days.",
+	INCORRECT_REFERRAL:"Incorect referal code,please provide valid code..!"
 };

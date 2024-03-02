@@ -89,7 +89,7 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
                     <typeOfUnit>PX</typeOfUnit>
                 </unitNumberDetail>
                 <unitNumberDetail>
-                    <numberOfUnits>2</numberOfUnits>
+                    <numberOfUnits>1</numberOfUnits>
                     <typeOfUnit>RC</typeOfUnit>
                 </unitNumberDetail>
             </numberOfUnit>
@@ -168,7 +168,7 @@ async function xmlToJson(xml) {
 
 
 
-  exports.FareInformativePricingWithoutPNR =async (req, res,next) =>{
+  exports.fareInformativePricingWithoutPNR =async (req, res) =>{
 
     const {date,to,from}=req.body;
     const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
@@ -280,6 +280,100 @@ async function xmlToJson(xml) {
         // console.log(err)
         sendActionFailedResponse(res, {}, err.message);
       }
+
+  }
+
+  exports.airSellFromRecommendation = async (req, res) =>{
+
+    const {date,to,from}=req.body;
+    const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
+
+    try {
+
+        let data =`<?xml version="1.0" encoding="utf-8"?>
+        <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+            <soap:Header xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+                <add:MessageID xmlns:add="http://www.w3.org/2005/08/addressing">${messageId}</add:MessageID>
+                <add:Action xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/TIPNRQ_23_1_1A</add:Action>
+                <add:To xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0</add:To>
+                <link:TransactionFlowLink xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
+                    <link:Consumer>
+                        <link:UniqueID>${uniqueId}</link:UniqueID>
+                    </link:Consumer>
+                </link:TransactionFlowLink>
+                <oas:Security xmlns:oas="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
+                    <oas:UsernameToken xmlns:oas1="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" oas1:Id="UsernameToken-1">
+                        <oas:Username>WSSP0THE</oas:Username>
+                        <oas:Nonce EncodingType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary">${NONCE}</oas:Nonce>
+                        <oas:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordDigest">${hashedPassword}</oas:Password>
+                        <oas1:Created>${TIMESTAMP}</oas1:Created>
+                    </oas:UsernameToken>
+                </oas:Security>
+                <AMA_SecurityHostedUser xmlns="http://xml.amadeus.com/2010/06/Security_v1">
+                    <UserID POS_Type="1" PseudoCityCode="DELVS38UE" AgentDutyCode="SU" RequestorType="U" />
+                </AMA_SecurityHostedUser>
+            </soap:Header>
+            <soap:Body>
+            <Air_SellFromRecommendation>    
+            <messageActionDetails>    
+               <messageFunctionDetails>    
+                  <messageFunction>183</messageFunction> 
+                   <additionalMessageFunction>M1</additionalMessageFunction>  
+               </messageFunctionDetails>    
+            </messageActionDetails>    
+            <itineraryDetails>    
+               <originDestinationDetails>    
+                  <origin>DEL</origin>    
+                  <destination>DXB</destination>
+               </originDestinationDetails>
+               <message>    
+                  <messageFunctionDetails>    
+                     <messageFunction>183</messageFunction>    
+                  </messageFunctionDetails>    
+               </message>    
+               <segmentInformation>    
+                  <travelProductInformation>    
+                     <flightDate>    
+                        <departureDate>200324</departureDate>    
+                     </flightDate>    
+                     <boardPointDetails>    
+                        <trueLocationId>DEL</trueLocationId>    
+                     </boardPointDetails>    
+                     <offpointDetails>    
+                        <trueLocationId>DXB</trueLocationId>    
+                     </offpointDetails>    
+                     <companyDetails>    
+                        <marketingCompany>AI</marketingCompany>    
+                     </companyDetails>    
+                     <flightIdentification>    
+                        <flightNumber>995</flightNumber>    
+                        <bookingClass>Y</bookingClass>    
+                     </flightIdentification>    
+                  </travelProductInformation>    
+                  <relatedproductInformation>    
+                     <quantity>1</quantity>    
+                     <statusCode>NN</statusCode>    
+                  </relatedproductInformation>    
+               </segmentInformation>    
+            </itineraryDetails>    
+         </Air_SellFromRecommendation>
+​        </soap:Body>
+        </soap:Envelope>`;
+
+        const headers = {
+            "Content-Type": "text/xml;charset=UTF-8",
+            SOAPAction: "http://webservices.amadeus.com/ITAREQ_05_2_IA",
+          };
+
+          const response = await axios.post(url,data,{headers} );
+      
+           const responseData = extractDataFromResponse(response);
+           msg = "Flight Searched Successfully!";
+        actionCompleteResponse(res, responseData, msg); 
+        
+    } catch (err) {
+        sendActionFailedResponse(res, {}, err.message);        
+    }
 
   }
 

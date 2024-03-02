@@ -106,7 +106,7 @@ const pushNotification = async (deviceToken, title, body,imageUrl) => {
           console.log("Error while push notification:", err);
           reject(err);
         } else {
-          console.log("Success while push notification:", response);
+          console.log("Success while push notification pushNotification:", response);
           resolve(response);
         }
       });
@@ -157,7 +157,7 @@ const mediapushNotification = async (deviceToken, title, body) => {
           console.log("Error while push notification:", err);
           reject(err);
         } else {
-          console.log("Success while push notification:", response);
+          console.log("Success while push notification mediapushNotification:", response);
           resolve(response);
         }
       });
@@ -189,7 +189,7 @@ const pushSimpleNotification = async (deviceToken, title, body) => {
         console.log("Error while push notification:", err);
         reject(err);
       } else {
-        console.log("Success while push notification:", response);
+        console.log("Success while push notification pushSimpleNotification:", response);
         resolve(response);
       }
     });
@@ -198,4 +198,45 @@ const pushSimpleNotification = async (deviceToken, title, body) => {
   return response;
 
 };
-module.exports = { sendNotification, pushNotification,mediapushNotification,pushNotificationIOS,pushSimpleNotification };
+
+const pushNotification1 = async (deviceToken, title, body, imageUrl) => {
+console.log("deviceToken, title, body, htmlUrl=====",deviceToken, title, body, imageUrl)
+  const serverKey = fsmserverkey; // Replace with your actual server key
+  const fcm = new FCM(serverKey);
+  var message = {
+      to: deviceToken,
+      notification: {
+          title: title,
+          body: body,
+          imageUrl: imageUrl, // Include the image URL in the notification payload
+          image: imageUrl,
+      },
+      data: {
+        imageUrl: imageUrl, // Include the image URL in the data payload
+      },
+      android: {
+          priority: 'high',
+          notification: {
+            style: 'bigPicture', // Use Big Picture Style
+            bigPicture: imageUrl, // Specify the Big Picture URL
+          },
+      }
+  };
+
+  const response = await new Promise((resolve, reject) => {
+      fcm.send(message, (err, response) => {
+          if (err) {
+              console.log("Error while push notification:", err);
+              reject(err);
+          } else {
+              console.log("Success while push notification pushNotification1:", response);
+              resolve(response);
+          }
+      });
+  });
+
+  return response;
+
+};
+
+module.exports = { sendNotification, pushNotification,mediapushNotification,pushNotificationIOS,pushSimpleNotification,pushNotification1 };

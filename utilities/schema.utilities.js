@@ -267,6 +267,7 @@ const schemas = {
     fullName: joi.string().optional(),
     dob: joi.string().optional(),
     socialId: joi.string().optional(),
+    referrerCode: joi.string().optional(),
   }),
 
   userForgetSchema: joi.object().keys({

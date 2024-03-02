@@ -54,7 +54,7 @@ const{createPushNotification,findPushNotification,findPushNotificationData,delet
 //*******************************API************************************************** */
 exports.pushNotificationsToUser=async(req,res,next)=>{
     try {
-        const {messageBody,messageTitle,notificationType,imageUrl}=req.body;
+        const {messageBody,messageTitle,notificationType,imageUrl1}=req.body;
         // Fetch all users from the database
     const users = await eventBookingList({
         // 'contactNo.mobile_number': { $in: ['7222937463','8115199076', '9354416602'] },
@@ -62,11 +62,11 @@ exports.pushNotificationsToUser=async(req,res,next)=>{
         deviceToken: { $exists: true, $ne: "" }
       });
       // const image="https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg"||imageUrl;
-      const image=`https://skytrails.s3.amazonaws.com/notification.jpg`
+      const imageUrl=`https://raw.githubusercontent.com/The-SkyTrails/Images/main/notification2.jpg `
       if(notificationType==="PEFA2024"){
         for (const user of users) {
           try {
-            await pushNotification(user.deviceToken, messageTitle, messageBody,image);
+            await pushNotification(user.deviceToken, messageTitle, messageBody,imageUrl);
             console.log('Notification cron job executed successfully');
           } catch (pushError) {
             // Handle if any user is not registered
@@ -80,7 +80,7 @@ exports.pushNotificationsToUser=async(req,res,next)=>{
       const usereTokenExist=await userList({status: status.ACTIVE,deviceToken: { $exists: true, $ne: ""}});
       for (const user of usereTokenExist) {
         try {
-          await pushNotification(user.deviceToken, messageTitle, messageBody,image);
+          await pushNotification(user.deviceToken, messageTitle, messageBody,imageUrl);
           console.log('Notification cron job executed successfully');
         } catch (pushError) {
           // Handle if any user is not registered

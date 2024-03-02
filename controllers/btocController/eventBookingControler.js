@@ -370,17 +370,12 @@ exports.pefaEventBooking = async (req, res, next) => {
     await whatsApi.sendWhatsAppMsgAdmin(AdminNumber,'adminalert');
     if(isCouponExist){
     const eventname = "*PEFA - Punjab Entertainment Festival and Awards!*";
-    const eventDate1 = "*2 Mar 2024 5 pm*";
+    const eventDate1 = "*9 Mar 2024 5 pm*";
     const date = `${eventDate1}`;
     const contactNo = "+91" + mobileNumber;
     const smsFormat = `PEFA - Punjab Entertainment Festival and Awards! on 2 Mar 2024 5 pm`;
     await sendSMS.sendSMSEventEnquiry(mobileNumber,smsFormat);
-    await whatsappAPIUrl.sendMessageWhatsApp(
-      contactNo,
-      eventname,
-      date,
-      "event4_v3"
-    );
+    await whatsappAPIUrl.sendMessageWhatsApp(contactNo,eventname,date,"event4_v3");
     const messageTitle="TheSkyTrails PEFA2024";
     // await commonPushFunction.pushNotification(result.deviceToken,messageTitle,messageBody);
     return res.status(statusCode.OK).send({
@@ -486,7 +481,7 @@ exports.sendUpdatePasses=async(req,res,next)=>{
       }
       }
     }
-    return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result:result});
+    return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.PASSES_SENT,result:result});
 
   } catch (error) {
     console.log("error while send passes===========",error);

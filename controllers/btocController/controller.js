@@ -170,7 +170,7 @@ exports.login = async (req, res, next) => {
 };
 exports.verifyUserOtp = async (req, res, next) => {
   try {
-    const { otp, fullName, dob, email } = req.body;
+    const { otp, fullName, dob, email ,referrerCode} = req.body;
     const isUserExist = await findUserData({ _id: req.userId });
     if (!isUserExist) {
       return res.status(statusCode.NotFound).send({
@@ -251,10 +251,31 @@ exports.verifyUserOtp = async (req, res, next) => {
         message: responseMessage.FIELD_REQUIRED,
       });
     }
+    const refeerralCode=commonFunction.generateReferralCode();
     const updateData = await updateUser(
       { _id: updation._id },
-      { username: fullName, dob: dob, email: email, otp: "", firstTime: false }
+      { username: fullName, dob: dob, email: email, otp: "", firstTime: false,referralCode:refeerralCode}
     );
+    if(referrerCode){
+      const isRefererExist=await findUser({referralCode:referrerCode});
+      if(!isRefererExist){
+        return res.status(statusCode.OK).send({
+          statusCode: statusCode.badRequest,
+          message: responseMessage.INCORRECT_REFERRAL,
+        });
+      }
+      await updateUser(
+        { _id: updateData._id },
+        { referrerCode:referrerCode,$inc:{balance:50},
+          referredBy:isRefererExist._id
+        }
+      );
+     const data= await updateUser(
+        { referralCode:referrerCode,_id:isRefererExist._id},
+        {$inc:{balance:21}}
+      );
+      console.log("data=======",data);
+    }
     const token = await commonFunction.getToken({
       _id: updation._id,
       mobile_number: updation.phone.mobile_number,

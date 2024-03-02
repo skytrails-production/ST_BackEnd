@@ -58,13 +58,19 @@ function getHtmlContent(name) {
     </body>
     </html>`;
 }
+const crypto = require('crypto');
 
+
+
+// console.log("generateReferralCode=======",generateReferralCode());
 module.exports = {
   getOTP() {
     var otp = Math.floor(100000 + Math.random() * 900000);
     return otp;
   },
-
+  generateReferralCode() {
+    return crypto.randomBytes(4).toString('hex').toUpperCase();
+  },
   getToken: async (payload) => {
     var token = await jwt.sign(payload, config.secret, { expiresIn: "1y" });
     return token;
