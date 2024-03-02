@@ -112,5 +112,6 @@ module.exports = {
 	INVALD_REQUEST:"Invalid payment request..",
 	PASSES_SENT:"Passes sent successfully to users.",
 	REFUND_INITIATE:"Refund Initiated , your amount reflect on your account within 2-3 working days.",
-	INCORRECT_REFERRAL:"Incorect referal code,please provide valid code..!"
+	INCORRECT_REFERRAL:"Incorect referal code,please provide valid code..!",
+	LINK_GENERATED:"Link generated successfully"
 };

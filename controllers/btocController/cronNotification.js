@@ -107,8 +107,8 @@ var taskPromotionalNotification = cron.schedule("15 10 * * *",async () => {
     // const messageBody = `✨Check out our latest promotion! We're offering deals so good, even your coffee will do a double-take! ☕️ Explore your journey with TheSkyTrails pvt ltd✨`;
     for (const user of users) {
       try { 
-      const notificationMessage = `Kahi chalein?✈️💕✈️`;
-      const messageBody = `✨✈️ Skytrails has best flight offers with no convenience fee!✈️✨`;
+      const notificationMessage = `REMINDER FOR ${user.username}😎`;
+      const messageBody = `✨Register and Get Your Free PEFA passes today.✈️✨`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
       // const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`
         // Check if a notification has been sent to this user recently
@@ -218,10 +218,8 @@ var taskEventNotification1 = cron.schedule("20 17 * * *",
         deviceToken: { $exists: true, $ne: "" },
       });
       console.log("=======================", users.length);
-      const notificationMessage = `✨Weekend WOW 🎉
-      But HOW??
-    ✈️🎊✨`;
-      const messageBody = `✨✈️ Count on the Skytrails to help you plan a weekend getaway.✈️✨`;
+      const notificationMessage = `✨Feeling Bored? 😔✨`;
+      const messageBody = `✨✈️ Rejuvenate yourself with great Holiday offers by The Skytrails ✈️✨`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
       for (const user of users) {
         try {
@@ -279,9 +277,8 @@ var taskPlatformNotification = cron.schedule("20 16 * * *",
       for (const user of users) {
         try {
           // Task 2 logic
-          const notificationMessage = `✨Weekend WOW 🎉
-      But HOW??`;
-      const messageBody = `✨✈️ Count on the Skytrails to help you plan a weekend getaway.✈️✨`;
+          const notificationMessage = `✨Personalized Picks Just for You!`;
+      const messageBody = `✨✈️ We've tailored travel recommendations based on your preferences.✈️✨`;
           await pushNotification(
             user.deviceToken,
             notificationMessage,

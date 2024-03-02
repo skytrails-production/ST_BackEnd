@@ -2,6 +2,7 @@ const responseMessage = require("../../utilities/responses");
 const statusCode = require("../../utilities/responceCode");
 const status = require("../../enums/status");
 const bcrypt = require("bcryptjs");
+const shortid = require('shortid');
 /**********************************SERVICES********************************** */
 const { userServices } = require("../../services/userServices");
 const {
@@ -767,4 +768,43 @@ exports.updateDeviceToken=async(req,res,next)=>{
     console.log("error while update deviceToken===",error);
     return next(error);
   }
+}
+
+exports.shareReferralCode=async(req,res,next)=>{
+  try {
+    const isUserExist = await findUserData({
+      _id: req.userId,
+      status: status.ACTIVE,
+    });
+    if (!isUserExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+
+    const referralLink = `https://play.google.com/store/apps/details?id=com.skytrails?referral=${isUserExist.referralCode}`;
+    console.log("referralLink============",referralLink);
+    const referralLinkIOS = `https://apps.apple.com/us/app/the-skytrails/id6475768819?id=com.skytrails/referral=${isUserExist.referralCode}`;
+    console.log("referralLink============",referralLink);
+    
+     // Shorten the referral link
+     var result={}
+     result.shortReferralLink = await shortenURL(referralLink);
+     result.shortReferralLinkIOS = await shortenURL(referralLinkIOS);
+     result.trial=await shortenURL('theskytrails.com')
+console.log(shortid.generate(),"shortReferralLink=============",result);
+return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.LINK_GENERATED,result:result});
+  } catch (error) {
+    console.log("error while send code",error);
+    return next(error);
+  }
+}
+
+async function shortenURL(url) {
+  // Here, you can use any URL shortening service API or your own URL shortening service implementation
+  // For demonstration, let's use a simple method with shortid
+  const shortCode = shortid.generate();
+  const shortURL = `https://${shortCode}`;
+  return shortURL;
 }
