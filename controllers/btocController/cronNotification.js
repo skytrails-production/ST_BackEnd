@@ -107,8 +107,8 @@ var taskPromotionalNotification = cron.schedule("15 10 * * *",async () => {
     // const messageBody = `✨Check out our latest promotion! We're offering deals so good, even your coffee will do a double-take! ☕️ Explore your journey with TheSkyTrails pvt ltd✨`;
     for (const user of users) {
       try { 
-      const notificationMessage = `REMINDER FOR ${user.username}😎`;
-      const messageBody = `✨Register and Get Your Free PEFA passes today.✈️✨`;
+      const notificationMessage = `Feeling stuck in the same routine?🥱`;
+      const messageBody = `✨Skytrails has last-minute⌛ travel deals you can't resist! Break free and explore!✈️✨`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
       // const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`
         // Check if a notification has been sent to this user recently
@@ -322,11 +322,11 @@ taskPlatformNotification.start();
 //             TheSkyTrails Team ✨
 //             `
 // Modify your cron job logic
-var taskEventNotification1 = cron.schedule("20 20 * * *",
+var taskEventNotification1 = cron.schedule("47 16 * * *",
   async () => {
     try {
       const users = await userList({
-        'phone.mobile_number':'8115199076',
+        // 'phone.mobile_number': { $in: ['8115199076'] },
         status: status.ACTIVE,
         deviceToken: { $exists: true, $ne: "" },
       });
@@ -335,8 +335,17 @@ var taskEventNotification1 = cron.schedule("20 20 * * *",
       // const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`;
       for (const user of users) {
         try {
-          const notificationMessage = "✨Kho gaye hum kahan…!!🎊✨";
-          const messageBody = `Plan your journey with TheSkytrails!`;
+          const notificationMessage = "Double Dhamaal!💃🕺🎊";
+          const messageBody=`¯\_(ツ)_/¯
+          ヾ(＠⌒ー⌒＠)°ノ
+          Unlock 10% off your next trip! Simply book your free PEFA passes through our app.`
+//           const messageBody = `FLY
+//    STAY
+//       ENJOY   
+//    WITH    
+// US
+// Skytrails😊
+// Skytrails pe aisi deals hain jo na kar sako ignore!`;
           // Check if a notification has been sent to this user recently
           const lastSent = lastNotificationSent.get(user._id);
           if (lastSent && Date.now() - lastSent < 3600000) {

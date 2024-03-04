@@ -256,8 +256,8 @@ exports.applyCoupon = async (req, res, next) => {
       });
     }
     if (isCouponExist.userApplied.includes(isUserExist._id)) {
-      return res.status(statusCode.badRequest).json({
-        statusCode: statusCode.badRequest,
+      return res.status(statusCode.Conflict).json({
+        statusCode: statusCode.Conflict,
         responseMessage: responseMessage.ALREDY_COUPOUN_APPLIED,
       });
     }
