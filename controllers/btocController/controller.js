@@ -76,10 +76,10 @@ exports.login = async (req, res, next) => {
     if (!isExist) {
       const result1 = await createUser(obj);
       const contactNumber = result1.phone.country_code + result1.phone.mobile_number;
-      await sendSMS.sendSMSForOtp(mobileNumber, otp);
       const userName="Dear";
       const userOtp=`${otp}`
       await whatsappAPIUrl.sendMessageWhatsApp(contactNumber,userName,userOtp,'loginotp');
+      await sendSMS.sendSMSForOtp(mobileNumber, otp);
       token = await commonFunction.getToken({
         _id: result1._id,
         mobile_number: result1.mobile_number,
@@ -138,8 +138,8 @@ exports.login = async (req, res, next) => {
       obj
     );
     const userMobile = isExist.phone.country_code + isExist.phone.mobile_number;
-    await sendSMS.sendSMSForOtp(mobileNumber, otp);
     await whatsappAPIUrl.sendMessageWhatsApp(userMobile, var1,var2, 'loginotp');
+    await sendSMS.sendSMSForOtp(mobileNumber, otp);
     if (!updatedUser) {
       return res.status(statusCode.InternalError).json({
         statusCode: statusCode.InternalError,

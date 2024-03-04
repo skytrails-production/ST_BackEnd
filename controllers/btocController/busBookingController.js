@@ -57,6 +57,7 @@ exports.busBooking = async (req, res, next) => {
     }
     data.userId=isUserExist._id
     const result = await createUserBusBooking(data);
+    const userName =`${result.passenger[0].firstName} ${result.passenger[0].lastName}`
     const notObject={
       userId:isUserExist._id,
       title:"Bus Booking by User",
@@ -65,7 +66,6 @@ exports.busBooking = async (req, res, next) => {
       to:userName,
     }
     await createPushNotification(notObject);
-    const userName =`${result.passenger[0].firstName} ${result.passenger[0].lastName}`
     await sendSMS.sendSMSBusBooking(result.passenger[0].Phone, userName);
     const url=`https://theskytrails.com/bus`
     await whatsApi.sendMessageWhatsApp(contactNo,userName,url,'bus');
