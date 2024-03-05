@@ -423,7 +423,7 @@ exports.packageCityList = async (req, res) => {
     const regex = new RegExp(escapeRegex(req.query.keyword), "gi");
 
     const cityResponse = await internationl.aggregate([
-      { $match: { "destination.addMore": regex } },
+      { $match: { "destination.addMore": regex ,is_active:1} },
       {
         $group: {
           _id: null,
@@ -433,7 +433,7 @@ exports.packageCityList = async (req, res) => {
     ]);
 
     const countryResponse = await internationl.aggregate([
-      { $match: { country: regex } },
+      { $match: { country: regex,is_active:1 } },
       { $group: { _id: null, countryList: { $addToSet: "$country" } } },
     ]);
 

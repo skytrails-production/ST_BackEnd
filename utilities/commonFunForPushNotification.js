@@ -200,7 +200,6 @@ const pushSimpleNotification = async (deviceToken, title, body) => {
 };
 
 const pushNotification1 = async (deviceToken, title, body, imageUrl) => {
-console.log("deviceToken, title, body, htmlUrl=====",deviceToken, title, body, imageUrl)
   const serverKey = fsmserverkey; // Replace with your actual server key
   const fcm = new FCM(serverKey);
   var message = {

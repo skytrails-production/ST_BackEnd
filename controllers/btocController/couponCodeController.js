@@ -304,7 +304,7 @@ exports.CouponApplied=async(req,res,next)=>{
     await updateBookingEvent({_id:isUserRegister._id},{isCoupanApplied:true});
     return res.status(statusCode.OK).json({statusCode: statusCode.OK,responseMessage: responseMessage.COUPON_APPLIED_SUCCESS,result:resultData});
     }
-    const result= await updateCoupon({_id:isCouponExist._id},{userApplied: couponUser});
+    const result= await updateCoupon({_id:isCouponExist._id}, { $push: { userApplied: isUserExist._id } });
     return res.status(statusCode.OK).json({statusCode: statusCode.OK,responseMessage: responseMessage.COUPON_APPLIED_SUCCESS,result:result});
   } catch (error) {
     console.log("error while apply coupon");

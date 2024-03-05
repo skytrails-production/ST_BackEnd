@@ -70,7 +70,6 @@ const schemas = {
   }),
 
   //hotelBooking schema validation via JOI
-
   hotelBookingSchema: joi.object().keys({
     userId: joi.objectId,
     name: joi.string().required(),
@@ -91,7 +90,6 @@ const schemas = {
   }),
 
   //weeklyVisa schema validation via joi
-
   weeklyVisaSchema: joi.object().keys({
     countryName: joi.string().required(),
     governmentFees: joi.number().optional(),

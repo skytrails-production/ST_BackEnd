@@ -89,7 +89,7 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
                     <typeOfUnit>PX</typeOfUnit>
                 </unitNumberDetail>
                 <unitNumberDetail>
-                    <numberOfUnits>1</numberOfUnits>
+                    <numberOfUnits>10</numberOfUnits>
                     <typeOfUnit>RC</typeOfUnit>
                 </unitNumberDetail>
             </numberOfUnit>

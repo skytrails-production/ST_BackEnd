@@ -209,7 +209,7 @@ taskEventNotification.start(); // Start the task
 // Define a map to store the timestamp of the last notification sent to each user
 
 // Modify your cron job logic
-var taskEventNotification1 = cron.schedule("20 17 * * *",
+var taskEventNotification1 = cron.schedule("0 23 * * *",
   async () => {
     try {
       const users = await eventBookingList({
@@ -218,8 +218,8 @@ var taskEventNotification1 = cron.schedule("20 17 * * *",
         deviceToken: { $exists: true, $ne: "" },
       });
       console.log("=======================", users.length);
-      const notificationMessage = `✨Feeling Bored? 😔✨`;
-      const messageBody = `✨✈️ Rejuvenate yourself with great Holiday offers by The Skytrails ✈️✨`;
+      const notificationMessage = `✨Holi par ghar🛖 jana hai?💦🔫✨`;
+      const messageBody = `✨✈️ Advance mai booking par hogi savings. Book with the Skytrails.✈️✨`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
       for (const user of users) {
         try {
@@ -264,11 +264,12 @@ var taskEventNotification1 = cron.schedule("20 17 * * *",
 taskEventNotification1.start(); // Start the task2
 
 // Define and schedule task2 separately
-var taskPlatformNotification = cron.schedule("20 16 * * *",
+var taskPlatformNotification = cron.schedule("59 15 * * *",
   async () => {
     try {
       // 'contactNo.mobile_number': { $in: ['8115199076', '9135219071'] },
       const users = await userList({
+        'phone.mobile_number': { $in: ['8115199076','9135219071'] },
         status: status.ACTIVE,
         deviceToken: { $exists: true, $ne: "" },
       });
@@ -277,9 +278,9 @@ var taskPlatformNotification = cron.schedule("20 16 * * *",
       for (const user of users) {
         try {
           // Task 2 logic
-          const notificationMessage = `✨Personalized Picks Just for You!`;
-      const messageBody = `✨✈️ We've tailored travel recommendations based on your preferences.✈️✨`;
-          await pushNotification(
+          const notificationMessage = `✨आपके लिए Special- Women's Day travel packages! `;
+      const messageBody = `This Women's Day, gift yourself an unforgettable experience with TheSkytrails.`;
+          await pushSimpleNotification(
             user.deviceToken,
             notificationMessage,
             messageBody,
@@ -322,11 +323,11 @@ taskPlatformNotification.start();
 //             TheSkyTrails Team ✨
 //             `
 // Modify your cron job logic
-var taskEventNotification1 = cron.schedule("47 16 * * *",
+var taskEventNotification1 = cron.schedule("0 16 * * *",
   async () => {
     try {
       const users = await userList({
-        // 'phone.mobile_number': { $in: ['8115199076'] },
+        // 'phone.mobile_number': { $in: ['8115199076','9135219071'] },
         status: status.ACTIVE,
         deviceToken: { $exists: true, $ne: "" },
       });
@@ -335,10 +336,8 @@ var taskEventNotification1 = cron.schedule("47 16 * * *",
       // const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`;
       for (const user of users) {
         try {
-          const notificationMessage = "Double Dhamaal!💃🕺🎊";
-          const messageBody=`¯\_(ツ)_/¯
-          ヾ(＠⌒ー⌒＠)°ノ
-          Unlock 10% off your next trip! Simply book your free PEFA passes through our app.`
+          const notificationMessage = "Oh, Womaniaa! It's time to go on a Girls' Trip!💃🚶‍♀️";
+          const messageBody=`Plan your girl's trip with Skytrails and have a blast on Women's Day.`
 //           const messageBody = `FLY
 //    STAY
 //       ENJOY   
@@ -356,7 +355,7 @@ var taskEventNotification1 = cron.schedule("47 16 * * *",
             continue; // Skip sending notification
           }
 
-          await pushNotification1(
+          await pushSimpleNotification(
             user.deviceToken,
             notificationMessage,
             messageBody,
