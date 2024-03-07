@@ -1671,6 +1671,7 @@ exports.createAgent = async (req, res, next) => {
     }
     // Hash the password
     const hashPass = bcrypt.hashSync(password, 10);
+    const code=commonFunction.generateReferralCode();
     // Create the object with personal_details and agency_details including pan_number
     const object = {
       personal_details: {
@@ -1689,6 +1690,7 @@ exports.createAgent = async (req, res, next) => {
       approveStatus: "APPROVED",
       isApproved:true,
       is_active: 1,
+      referralCode:code
     };
 
     // Check if the user already exists based on email

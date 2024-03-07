@@ -8,6 +8,7 @@ const sendSMS = require("../../utilities/sendSms");
 const commonFunction = require("../../utilities/commonFunctions");
 const commonPushFunction=require("../../utilities/commonFunForPushNotification")
 const whatsappAPIUrl = require("../../utilities/whatsApi");
+const AdminNumber=process.env.ADMINNUMBER;
 const moment=require('moment');
 var CurrentDate = moment().format();
 const {
@@ -344,7 +345,7 @@ exports.pefaEventBooking = async (req, res, next) => {
       name: name,
       contactNo: { mobile_number: mobileNumber },
       city: city,
-      eventDate: eventDate,
+      eventDate: isEventExist.startDate,
       eventId: eventId,
       deviceToken: deviceToken,
       deviceType:deviceType,
@@ -366,8 +367,8 @@ exports.pefaEventBooking = async (req, res, next) => {
       termsAndCond: ["coupon will be apply upto 100rs/"],
     };
     const isCouponExist=await findCoupon({couponCode:"WELCOMEPEFA"});
-    await whatsApi.sendWhatsAppMsgAdmin(AdminNumber,'adminbooking_alert');
-    await whatsApi.sendWhatsAppMsgAdmin(AdminNumber,'adminalert');
+    await whatsappAPIUrl.sendWhatsAppMsgAdmin(AdminNumber,'adminbooking_alert');
+    await whatsappAPIUrl.sendWhatsAppMsgAdmin(AdminNumber,'adminalert');
     if(isCouponExist){
     const eventname = "*PEFA - Punjab Entertainment Festival and Awards!*";
     const eventDate1 = "*9 Mar 2024 5 pm*";
@@ -463,7 +464,7 @@ exports.sendUpdatePasses=async(req,res,next)=>{
       const mobile=user.contactNo.country_code+user.contactNo.mobile_number
       const update=await updateBookingEvent({_id:user._id},{isluckyUser:true})
       result.push(update);
-      await sendSMS.sendSMSPasses(user.contactNo.mobile_number,smsFormat);
+      await sendSMS.sendSMSPasses(user.contactNo.mobile_number);
       await whatsappAPIUrl.sendWhatsAppMsgAdminPackage(mobile,`${user.name}😎`,"pefa"); 
       if(user.deviceType==='andriod'){
         try {

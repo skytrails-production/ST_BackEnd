@@ -4,7 +4,7 @@ const multer = require("multer");
 const SchemaValidator = require("../utilities/validations.utilities");
 const schemas = require('../utilities/schema.utilities');
 // Set up multer for image upload
-
+const agentDashboardController=require('../controllers/b2bReferalsControler')
 
 
 
@@ -87,7 +87,7 @@ module.exports = function (app) {
   //agentProfilePage with packages
 
   app.get('/skyTrails/agent/:first_name', controller.agentProfilePage);
-  
-  
-
+  app.get('/skyTrails/agent/inviteAgent/:userId',agentDashboardController.shareAgentReferralCode);
+  app.get('/skyTrails/agent/getAllInvites/:userId',agentDashboardController.getReferrals);
+  app.get('/skyTrails/agent/getAllInvitesBooking/:userId',agentDashboardController.getReferalBookings);
 };

@@ -14,7 +14,9 @@ const brbuserServices = {
     findbrbuser: async (query) => {
         return await brbuserModel.findOne(query).select('-otp -isApproved -roles ');
     },
-
+    findOne: async (query) => {
+        return await brbuserModel.findOne(query);
+    },
     getbrbuser: async (query) => {
         return await brbuserModel.findOne(query).select('-otp -location -isOnline -coinBalance -isChange -otpExpireTime -firstTime');
     },
@@ -22,7 +24,9 @@ const brbuserServices = {
     findbrbuserData: async (query) => {
         return await brbuserModel.findOne(query).select('-createdAt -updatedAt -roles -password -isOnline -firstTime -isApproved');
     },
-
+    findbrbData: async (query) => {
+        return await brbuserModel.find(query);
+    },
     deletebrbuser: async (query) => {
         return await brbuserModel.deleteOne(query);
     },

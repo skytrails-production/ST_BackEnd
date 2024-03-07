@@ -276,6 +276,8 @@ const Userb2bSchema =
       enum: [approveStatus.APPROVED, approveStatus.PENDING, approveStatus.REJECT],
       default: approveStatus.PENDING
     },
+    referralCode: {type:String}, // Add referral code field
+    referrerCode: {type:String},
     },
     {
       timestamps: true,
