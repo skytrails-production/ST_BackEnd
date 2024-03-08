@@ -135,42 +135,68 @@ exports.getReferrals=async(req,res,next)=>{
 }
 
 
-exports.getReferalBookings=async(req,res,next)=>{
+exports.getReferalBookings = async (req, res, next) => {
   try {
-    const finalResult=[];
-    const result={}
-    const isAgentExist=await findOne({_id: req.params.userId});
+    const finalResult = [];
+    const agents=[];
+    const isAgentExist = await findOne({ _id: req.params.userId,});
     if (!isAgentExist) {
-      return res.status(statusCode.OK).send({
+      return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.AGENT_NOT_FOUND,
       });
     }
-    const allReferrals=await findbrbData({referrerCode:isAgentExist.referralCode});
-    for(const againts of allReferrals){
-      const flightBooking=await flightModel.find({userId:againts._id});
-      console.log(againts._id,"flightBooking.length=============",flightBooking.length);
-      result.userId=againts._id;
-      result.flighBookings=flightBooking.length;
-      result.flighBookingRevenue=flightBooking.length;
-      const hotelBooking=await hotelBookingModel.find({userId:againts._id});
-      console.log("hotelBooking.length==============",hotelBooking.length);
-      result.hotelBookings=hotelBooking.length;
-      const busBooking=await busBookingModel.find({userId:againts._id});
-      console.log("busBooking.length================",busBooking.length);
-      result.busBookings=busBooking.length;
+    agents.push(isAgentExist)
+    if(isAgentExist.referralCode!==undefined){
+      const allReferrals = await findbrbData({ referrerCode: isAgentExist.referralCode });
+       for (const againts of allReferrals) {
+      const result = {
+        agentId:againts._id,
+        agencyName: againts.agency_details.agency_name,
+        agentName:againts.personal_details.first_name+againts.personal_details.last_name,
+        flightBookings: 0,
+        flightBookingRevenue: 0,
+        hotelBookings: 0,
+        hotelBookingRevenue: 0,
+        busBookings: 0,
+        busBookingRevenue: 0,
+        totalRevenue: 0,
+      };
+
+      const flightBookings = await flightModel.find({ userId: againts._id });
+      result.flightBookings = flightBookings.length;
+      result.flightBookingRevenue = flightBookings.reduce((acc, curr) => acc + curr.totalAmount, 0);
+
+      const hotelBookings = await hotelBookingModel.find({ userId: againts._id });
+      result.hotelBookings = hotelBookings.length;
+      result.hotelBookingRevenue = hotelBookings.reduce((acc, curr) => acc + curr.amount, 0);
+
+      const busBookings = await busBookingModel.find({ userId: againts._id });
+      result.busBookings = busBookings.length;
+      result.busBookingRevenue = busBookings.reduce((acc, curr) => acc + curr.totalAmount, 0);
+
+      result.totalRevenue = result.flightBookingRevenue + result.hotelBookingRevenue + result.busBookingRevenue;
+
       finalResult.push(result);
     }
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
-      responseMessage: responseMessage.SUCCESS,
-      result:finalResult
+      responseMessage: responseMessage.DATA_FOUND,
+      agentInviteData: finalResult,agentDetails:agents
+    });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      agentDetails:agents
     });
   } catch (error) {
-    console.log("error while trying to get ==========",);
+    console.log("error while trying to get ==========", error);
     return next(error);
   }
-}
+};
+
+
 async function shortenURL(url) {
   // Here, you can use any URL shortening service API or your own URL shortening service implementation
   // For demonstration, let's use a simple method with shortid

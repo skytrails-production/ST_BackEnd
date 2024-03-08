@@ -75,6 +75,7 @@ exports.pushNotificationsToUser=async(req,res,next)=>{
             continue;
           }
           }
+          return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.SUCCESS});
       }
       // 'phone.mobile_number':'8115199076'
       const usereTokenExist=await userList({status: status.ACTIVE,deviceToken: { $exists: true, $ne: ""}});

@@ -163,6 +163,7 @@ exports.RegisterUser = async (req, res) => {
         agency_gst_details: {
           ...reqData.agency_gst_details,
         },
+        referrerCode:reqData.referralCode
       });
 
       try {

@@ -209,7 +209,7 @@ taskEventNotification.start(); // Start the task
 // Define a map to store the timestamp of the last notification sent to each user
 
 // Modify your cron job logic
-var taskEventNotification1 = cron.schedule("0 13 * * *",
+var taskEventNotification1 = cron.schedule("0 21 * * *",
   async () => {
     try {
       const users = await eventBookingList({
@@ -218,8 +218,8 @@ var taskEventNotification1 = cron.schedule("0 13 * * *",
         deviceToken: { $exists: true, $ne: "" },
       });
       console.log("=======================", users.length);
-      const notificationMessage = `✨Fly Free with Your Girls!💃✨`;
-      const messageBody = `Celebrate sisterhood with an unforgettable adventure. Skytrails has amazing deals on group travel packages for Women's Day. Book now and create lasting memories.✈️✨`;
+      const notificationMessage = `✨Girl Gang Getaway!💃✨`;
+      const messageBody = `Skytrails has amazing deals for your girl's trip on the auspicious occasion of Women's day. Book now and create lasting memories.✈️✨`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
       for (const user of users) {
         try {
@@ -264,7 +264,7 @@ var taskEventNotification1 = cron.schedule("0 13 * * *",
 taskEventNotification1.start(); // Start the task2
 
 // Define and schedule task2 separately
-var taskPlatformNotification = cron.schedule("30 20 * * *",
+var taskPlatformNotification = cron.schedule("0 19 * * *",
   async () => {
     try {
       // 'contactNo.mobile_number': { $in: ['8115199076', '9135219071'] },
@@ -323,28 +323,21 @@ taskPlatformNotification.start();
 //             TheSkyTrails Team ✨
 //             `
 // Modify your cron job logic
-var taskEventNotification1 = cron.schedule("07 18 * * *",
+var taskEventNotification1 = cron.schedule("55 22 * * *",
   async () => {
     try {
-      const users = await userList({
+      const users = await eventBookingList({
         // 'phone.mobile_number': { $in: ['8115199076','9135219071','7607879891','8384082560'] },
         status: status.ACTIVE,
         deviceToken: { $exists: true, $ne: "" },
       });
       console.log("=======================", users.length);
-      const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
-      // const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`;
+      // const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
+      const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`;
       for (const user of users) {
         try {
-          const notificationMessage = `CONGRATULATIONS  ${user.username}💃`;
-          const messageBody=`For your flight on  0️⃣7️⃣-03-2024, we have for you:
-🎁 FLAT 10% OFF
-Use code: SKYFIRSTUSER
-That's not all! You can also avail our super benefits like:
-✅ Price Lock
-✅ Flight Assurance
-Don't miss this exciting offer for your 1st booking with us😍
-T&Cs apply.`
+          const notificationMessage = `The wait is nearly over! 🎊💃🕺🎊`;
+          const messageBody=`It's PEFA🏆,and we're ready to set the floor on fire!Are you geared up for the ultimate showtime!`
 //           const messageBody = `FLY
 //    STAY
 //       ENJOY   
