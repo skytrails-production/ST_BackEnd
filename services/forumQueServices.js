@@ -113,11 +113,11 @@ const forumQueServices={
     },
   
     getTopSTories: async (params) => {
-      const { search, page, limit, questionId, userId } = params;
+      const { search, page, limit, questionId, } = params;
    
       const pipeline = [
         {
-          $match: { "image": { $exists: true, $ne: null } },
+          $match: { "image": { $exists: true, $ne: null },"trending":true },
         },
         {
           $lookup: {
@@ -133,13 +133,14 @@ const forumQueServices={
             preserveNullAndEmptyArrays: true,
           },
         },
-        {
-          $match: {
-            $or: [
-              { responseCount: { $gte: 0 } },
-            ],
-          },
-        },
+        {$sort:{likesCount:-1}}
+        // {
+        //   $match: {
+        //     $or: [
+        //       { responseCount: { $gte: 0 } },
+        //     ],
+        //   },
+        // },
       ];
    
       // if (questionId) {
@@ -147,11 +148,11 @@ const forumQueServices={
       //     $match: { "questionsData.questionId": mongoose.Types.ObjectId(questionId) },
       //   });
       // }
-      if (userId) {
-        pipeline.push({
-          $match: { "userDetail.userId": mongoose.Types.ObjectId(userId) },
-        });
-      }
+      // if (userId) {
+      //   pipeline.push({
+      //     $match: { "userDetail.userId": mongoose.Types.ObjectId(userId) },
+      //   });
+      // }
    
       // Sort by createdAt in descending order to get the most recent posts
       // pipeline.push({ $sort: { createdAt: -1 } });
@@ -160,7 +161,7 @@ const forumQueServices={
       let options = {
         page: parseInt(page, 10) || 1,
         limit: parseInt(limit, 10) || 10,
-        $sort:{likesCount:-1}
+        createdAt:-1
       };
    
       const result = await forumQueModel.aggregatePaginate(aggregate, options);
@@ -216,7 +217,46 @@ const forumQueServices={
         };
         const info=await forumQueModel.aggregatePaginate(aggregate, options);
         return info;
-      }
+      },
+      forumQueListLookUpAdmin: async (body) => {
+        const { search, page, limit, questionId, userId } = body;
+        if (search) {
+          var filter = search;
+        }
+        let data = filter || ""
+        let searchData = [
+          {
+            $lookup: {
+              from: "userBtoC",
+              localField: 'userId',
+              foreignField: '_id',
+              as: "userDetail",
+            }
+          },
+          {
+            $unwind: {
+              path: "$userDetail",
+              preserveNullAndEmptyArrays: true
+            }
+          },
+          {
+            $sort: { createdAt: -1 } 
+          }
+        ]
+        if (questionId) {
+          searchData.push({
+            $match: { "questionsData.questionId": mongoose.Types.ObjectId(questionId) }
+          })
+        }
+        let info = forumQueModel.aggregate(searchData)
+        // let options = {
+        //   page: parseInt(page)||1,
+        //   limit: parseInt(limit)||100,
+        //   sort: { createdAt: -1 },
+        // };
+        // const info = await forumQueModel.aggregatePaginate(aggregate, options);
+        return info;
+      },
 }
 
 module.exports={forumQueServices}

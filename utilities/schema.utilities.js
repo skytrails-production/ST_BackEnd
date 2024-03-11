@@ -523,6 +523,7 @@ const schemas = {
     longitude: joi.number().required(),
     isPaid: joi.boolean().required(),
     noOfMember: joi.number().required(),
+    registrationRequired: joi.boolean().required(),
   }),
   eventBookingSchema: joi.object().keys({
     price: joi.number().optional(),

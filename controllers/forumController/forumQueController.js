@@ -272,7 +272,7 @@ exports.addBookmark = async (req, res, next) => {
 //get top rated stories**************************************************
 exports.getTopStories = async (req, res, next) => {
   try {
-    const { search, page, limit, questionId, userId } = req.query;
+    const { search, page, limit, questionId, } = req.query;
     const result = await getTopSTories(req.query);
     if (!result) {
       return res.status(statusCode.NotFound).send({
@@ -404,6 +404,30 @@ exports.likePost = async (req, res, next) => {
     }
   } catch (error) {
     console.log("error========>>>>>>", error);
+    return next(error);
+  }
+};
+
+
+//get top trending stories**************************************************
+exports.getTrendingStories = async (req, res, next) => {
+  try {
+    
+    const { search, page, limit, questionId, userId } = req.query;
+    const result = await getTopSTories(req.query);
+    if (!result) {
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.DATA_NOT_FOUND,
+      });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
+  } catch (error) {
+    console.log("error========", error);
     return next(error);
   }
 };

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const aggregatePaginate = require("mongoose-aggregate-paginate-v2")
 mongoose.pluralize(null);
-const status=require ('../../enums/status')
+const status=require ('../../enums/storyStatus')
 const forumQueSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -53,9 +53,13 @@ const forumQueSchema = new mongoose.Schema({
         type:Number,
         default:0
     },
+    trending:{
+        type:Boolean,
+        default:false
+    },
     status:{
         type:String,
-        default:status.ACTIVE
+        default:status.PENDING
     },
 }, { timestamps: true });
 

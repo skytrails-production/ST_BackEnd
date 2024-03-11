@@ -50,6 +50,7 @@ exports.createEvent = async (req, res, next) => {
       latitude,
       longitude,
       noOfMember,
+      registrationRequired
     } = req.body;
     if (!req.file) {
       return res.status(400).send({ message: "No file uploaded." });
@@ -79,6 +80,7 @@ exports.createEvent = async (req, res, next) => {
       location: { coordinates: [longitude, latitude] },
       slot: [],
       isPaid: req.body.isPaid,
+      registrationRequired:registrationRequired
     };
 
     const startingDate = Moment(startDate, "YYYY-MM-DD");

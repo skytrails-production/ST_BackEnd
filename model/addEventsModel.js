@@ -68,6 +68,10 @@ const eventsSchema = new mongoose.Schema(
     },
     saleCount:{
       type:Number
+    },
+    registrationRequired:{
+      type:Boolean,
+      default:true
     }
   },
   { timestamps: true }

@@ -107,8 +107,8 @@ var taskPromotionalNotification = cron.schedule("0 10 * * *",async () => {
     // const messageBody = `✨Check out our latest promotion! We're offering deals so good, even your coffee will do a double-take! ☕️ Explore your journey with TheSkyTrails pvt ltd✨`;
     for (const user of users) {
       try { 
-      const notificationMessage = `Kashi bula raha hai (हर हर महादेव📿🛕)!🕉️🙏ૐ`;
-      const messageBody = `✨Explore the wonders of Kashi🛕 on Maha Shivratri with the Skytrails. Find incredible deals on flights and hotels through our app.✨`;
+      const notificationMessage = `Travel options got you lost?`;
+      const messageBody = `✨Don't worry! We're here to make planning your trip easy and simple.✨`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
       // const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`
         // Check if a notification has been sent to this user recently
@@ -154,7 +154,7 @@ var taskPromotionalNotification = cron.schedule("0 10 * * *",async () => {
 taskPromotionalNotification.start(); // Start the task2
 
 // Main task
-const taskEventNotification = cron.schedule("*/4 * * * *",
+const taskEventNotification = cron.schedule("0 15 10 10 *",
   async () => {
     try {
       // Fetch all users from the database
@@ -209,7 +209,7 @@ taskEventNotification.start(); // Start the task
 // Define a map to store the timestamp of the last notification sent to each user
 
 // Modify your cron job logic
-var taskEventNotification1 = cron.schedule("0 21 * * *",
+var taskEventNotification1 = cron.schedule("0 14 * * *",
   async () => {
     try {
       const users = await eventBookingList({
@@ -218,8 +218,8 @@ var taskEventNotification1 = cron.schedule("0 21 * * *",
         deviceToken: { $exists: true, $ne: "" },
       });
       console.log("=======================", users.length);
-      const notificationMessage = `✨Girl Gang Getaway!💃✨`;
-      const messageBody = `Skytrails has amazing deals for your girl's trip on the auspicious occasion of Women's day. Book now and create lasting memories.✈️✨`;
+      const notificationMessage = `✨New adventures unlocked! ✨`;
+      const messageBody = `Check the Skytrails app for the exciting deals and offers.✨`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
       for (const user of users) {
         try {
@@ -279,7 +279,7 @@ var taskPlatformNotification = cron.schedule("0 19 * * *",
         try {
           // Task 2 logic
           const notificationMessage = `🏹🕉📿𓆗🚩🛕🐚🕉️🔱🪘`;
-      const messageBody = `The SkyTrails ke offers ke sath apni Shivratri achhe se manana!`;
+      const messageBody = `The SkyTrails ke offers ke sath apni holi achhe se manana!`;
           await pushSimpleNotification(
             user.deviceToken,
             notificationMessage,
@@ -323,7 +323,7 @@ taskPlatformNotification.start();
 //             TheSkyTrails Team ✨
 //             `
 // Modify your cron job logic
-var taskEventNotification1 = cron.schedule("55 22 * * *",
+var taskEventNotification1 = cron.schedule("30 11 * * *",
   async () => {
     try {
       const users = await eventBookingList({
@@ -336,8 +336,8 @@ var taskEventNotification1 = cron.schedule("55 22 * * *",
       const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`;
       for (const user of users) {
         try {
-          const notificationMessage = `The wait is nearly over! 🎊💃🕺🎊`;
-          const messageBody=`It's PEFA🏆,and we're ready to set the floor on fire!Are you geared up for the ultimate showtime!`
+          const notificationMessage = `Jab you Met with the Skytrails  🥰👩🏻‍❤️‍💋‍👨🏻`;
+          const messageBody=`Rekindle your romance amidst the charming hills of Shimla.⋆꙳⛇⋆☃︎☃️❄️☃️🌨️`
 //           const messageBody = `FLY
 //    STAY
 //       ENJOY   
@@ -363,7 +363,7 @@ var taskEventNotification1 = cron.schedule("55 22 * * *",
           );
           console.log(
             "Notification cron job executed successfully. TASK 2",
-            user.username
+            user.name
           );
 
           // Update the last notification sent time for this user

@@ -74,8 +74,13 @@ module.exports = function (app) {
   app.get("/skyTrails/international/getAllAdminPackage", controller.internationalgetAdminAll);
 
 
+
   //package city Data
   app.post("/skyTrails/package/packageCityData",upload.single("file"), controller.packageCityData);
   app.get("/skyTrails/package/getPackageCityData",controller.getPackageCityData);
+
+  //get filter packages based on the amount
+
+  app.get("/skyTrails/package/packagefilterAmount", controller.packageFilterAmount);
 
 };

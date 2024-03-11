@@ -11,6 +11,7 @@ const sendSMS = require("../utilities/sendSms");
 const commonFunction = require("../utilities/commonFunctions");
 const whatsappAPIUrl = require("../utilities/whatsApi");
 const approvalStatus = require("../enums/approveStatus");
+const storyStatus=require("../enums/storyStatus")
 //***********************************SERVICES********************************************** */
 const adminModel=require("../model/user.model")
 const { userServices } = require("../services/userServices");
@@ -65,6 +66,7 @@ const {
   findforumQueData,
   deleteforumQue,
   updateforumQue,
+  forumQueListLookUpAdmin,
   forumQueListLookUp,
   forumQueListLookUp1,
   getTopSTories,
@@ -351,3 +353,79 @@ exports.deletePost=async(req,res,next)=>{
   }
 }
 
+exports.approveStory=async(req,res,next)=>{
+  try {
+    const isPostExist=await findforumQue({_id:req.body.storyId});
+    if(!isPostExist){
+      return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.POST_NOT_FOUND});
+    }
+    const result=await updateforumQue({_id:isPostExist._id},{status:storyStatus.ACTIVE});
+    if(result){
+      return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.UPDATE_SUCCESS,result:result});
+    } 
+  } catch (error) {
+    console.log("error while approve story",error);
+    return next(error)
+  }
+}
+exports.getPost = async (req, res, next) => {
+  try {
+    const result = {}; // Declare as an object
+    const { search, page, limit, questionId, userId } = req.query;
+    const post = await forumQueListLookUpAdmin({});
+    if (post) {
+      result.post = post;
+    } else {
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.DATA_NOT_FOUND,
+      });
+    }
+    // console.log("lenghth", post.length);
+    const unanswered = await forumQueListLookUp(req.query);
+    if (unanswered) {
+      result.unanswered = unanswered;
+    } else {
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.DATA_NOT_FOUND,
+      });
+    }
+    if (result.unanswered) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.DATA_FOUND,
+        result: result,
+      });
+    } else {
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.DATA_NOT_FOUND,
+      });
+    }
+  } catch (error) {
+    console.log("error========>>>>>>", error);
+    return next(error);
+  }
+};
+
+exports.addTrending=async(req,res,next)=>{
+  try {
+    const isPostExist=await findforumQue({_id:req.body.storyId});
+    if(!isPostExist){
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.POST_NOT_FOUND,
+      });
+    }
+    const result=await updateforumQue({_id:req.body.storyId},{trending:true});
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.ADDED_ON_TREND,
+      result: result,
+    });
+  } catch (error) {
+    console.log("error while trying to make it trending.",error);
+    return next(error)
+  }
+}

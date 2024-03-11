@@ -928,3 +928,41 @@ exports.getPackageCityData = async (req, res) =>{
   }
 
 }
+
+
+//get filter packages based on the amount
+
+exports.packageFilterAmount = async (req, res) => {
+  try {
+    const { amount } = req.query;
+
+    if (!amount) {
+      return res.status(400).json({ error: 'amount parameter is required.' });
+    }
+
+    let packages;
+
+    if (amount === "100000") {
+      packages = await internationl.find({ is_active: 1, 'pakage_amount.amount': { $lt: parseInt(amount) } }).sort({ 'pakage_amount.amount': 1 });
+    } else if (amount === "200000") {
+      packages = await internationl.find({ is_active: 1, 'pakage_amount.amount': { $gt: 99999, $lt: parseInt(amount) } }).sort({ 'pakage_amount.amount': 1 });
+    } else if (amount === "300000") {
+      packages = await internationl.find({ is_active: 1, 'pakage_amount.amount': { $gt: 199999, $lt: parseInt(amount) } }).sort({ 'pakage_amount.amount': 1 });
+    } else if (amount === "400000") {
+      packages = await internationl.find({ is_active: 1, 'pakage_amount.amount': { $gt: 299999 } }).sort({ 'pakage_amount.amount': 1 });
+    }
+
+    if (packages && packages.length > 0) {
+      const msg = `Packages found for less than ${amount}`;
+      actionCompleteResponse(res, packages, msg);
+    } else {
+      const msg = `No packages found for this range`;
+      actionCompleteResponse(res, [], msg);
+    }
+  } catch (err) {
+    sendActionFailedResponse(res, {}, err.message);
+  }
+}
+
+
+
