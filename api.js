@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 8000;
 const db = require("./model");
 const Role = db.role;
 app.use(cors());
-const cron=require('./controllers/btocController/cronNotification');
+// const cron=require('./controllers/btocController/cronNotification');
 const WebSocket = require('websocket').server;
 const http = require('http'); 
 var admin=require('firebase-admin');
@@ -145,7 +145,12 @@ require("./routes/faqRoutes")(app);
 //Amadeus Api
 
 require("./routes/amadeus.routes")(app);
+//ssdc
 require("./routes/ssdc.routes")(app);
+
+//mihuru api
+
+require("./routes/mihuru.routes")(app);
 
 //Require forum Routes*************
 const forumQueRoutes = require("./routes/forumRoutes/forumQueRoutes");

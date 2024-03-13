@@ -16,6 +16,9 @@ const eventsSchema = new mongoose.Schema(
     content: {
       type: String,
     },
+    // description: [
+    //   {type: String},
+    // ],
     startDate: {
       type: String,
     },
@@ -72,6 +75,13 @@ const eventsSchema = new mongoose.Schema(
     registrationRequired:{
       type:Boolean,
       default:true
+    },
+    eventCountry:{
+      type: String,
+    },
+    forCouple:{
+      type:Boolean,
+      default:false
     }
   },
   { timestamps: true }

@@ -61,7 +61,7 @@ const bookEventSchema = new mongoose.Schema(
     deviceToken:{type:String},
     deviceType:{type:String},
     isluckyUser:{type:Boolean,
-      default:false},
+      default:true},
     status: {
       type: String,
       enum: [status.ACTIVE, status.BLOCK, status.DELETE],

@@ -357,55 +357,17 @@ exports.pefaEventBooking = async (req, res, next) => {
     object.tickets.push(ticketNumber);
     }
     const result = await createBookingEvent(object);
-    const obj = {
-      title: "Mohali",
-      couponCode: "WELCOMEPEFA",
-      content: "pefa2024 TheSkyTrails registration coupon",
-      limitAmount: 100,
-      discountPercentage: 5,
-      offerType: offerType.EVENTS,
-      termsAndCond: ["coupon will be apply upto 100rs/"],
-    };
-    const isCouponExist=await findCoupon({couponCode:"WELCOMEPEFA"});
-    await whatsappAPIUrl.sendWhatsAppMsgAdmin(AdminNumber,'adminbooking_alert');
-    await whatsappAPIUrl.sendWhatsAppMsgAdmin(AdminNumber,'adminalert');
-    if(isCouponExist){
-    const eventname = "*PEFA - Punjab Entertainment Festival and Awards!*";
-    const eventDate1 = "*9 Mar 2024 5 pm*";
-    const date = `${eventDate1}`;
+    const eventname = isBookingExist.title;
+    const date = isBookingExist.startDate;
     const contactNo = "+91" + mobileNumber;
-    const smsFormat = `PEFA - Punjab Entertainment Festival and Awards! on 2 Mar 2024 5 pm`;
+    const smsFormat = isBookingExist.title;
     await sendSMS.sendSMSEventEnquiry(mobileNumber,smsFormat);
     await whatsappAPIUrl.sendMessageWhatsApp(contactNo,eventname,date,"event4_v3");
-    const messageTitle="TheSkyTrails PEFA2024";
-    // await commonPushFunction.pushNotification(result.deviceToken,messageTitle,messageBody);
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.SLOT_BOOKED,
       result: result,
-    });
-    }else{
-      const createPefaCoupon = await createCoupon(obj);
-    const eventname = "*PEFA Punjab Entertainment Festival and Awards!*";
-    const eventDate1 = "2 Mar 2024 5pm";
-    const date = `${eventDate1}`;
-    const contactNo = "+91" + mobileNumber;
-    const smsFormat = `PEFA - Punjab Entertainment Festival and Awards! on 2 Mar 2024 5pm`;
-     await sendSMS.sendSMSEventEnquiry(mobileNumber,smsFormat);
-    await whatsappAPIUrl.sendMessageWhatsApp(
-      contactNo,
-      eventname,
-      date,
-      "event4_v3"
-    );
-    // await commonPushFunction.pushNotification(deviceToken,messageTitle,messageBody)
-    return res.status(statusCode.OK).send({
-      statusCode: statusCode.OK,
-      responseMessage: responseMessage.SLOT_BOOKED,
-      result: result,
-    });
-    }
-    
+    }); 
   } catch (error) {
     console.log("error while booking event", error);
     return next(error);

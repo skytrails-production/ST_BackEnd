@@ -290,6 +290,20 @@ busCancelURL:
   getOTPRequest: "https://utilitywebapi.bisplindia.in/api/Admin/OTP",
   getVerifyOTPRequest:
     "https://utilitywebapi.bisplindia.in/api/Admin/VerifyOTP",
+
+    //Mihuru api url 
+    partnerAuthentication:
+    "https://uat.partners.mihuru.com/api/assistmodule/login/apiuser",
+    customerSignUp:
+    "https://uat.partners.mihuru.com/api/assistmodule/v1/signup",
+    submitOtp:
+    "https://uat.partners.mihuru.com/api/assistmodule/v1/submitotp",
+    travelPlanGenerator:
+    "https://uat.partners.mihuru.com/api/assistmodule/v1/confirmpersonaldetails",
+    resendOtp:
+    "https://uat.partners.mihuru.com/api/assistmodule/v1/confirmpersonaldetails",
+    applicationStatus:
+    "https://uat.partners.mihuru.com/api/application/status"
 };
 exports.responseFlags = {
   ACTION_COMPLETE: 200,

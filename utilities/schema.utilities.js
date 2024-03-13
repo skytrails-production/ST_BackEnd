@@ -524,6 +524,8 @@ const schemas = {
     isPaid: joi.boolean().required(),
     noOfMember: joi.number().required(),
     registrationRequired: joi.boolean().required(),
+    eventCountry: joi.string().optional(),
+    forCouple:joi.boolean().optional()
   }),
   eventBookingSchema: joi.object().keys({
     price: joi.number().optional(),
@@ -540,7 +542,7 @@ const schemas = {
     mobileNumber: joi.string().required(),
     city: joi.string().required(),
     deviceToken: joi.string().optional(),
-    profession: joi.string().required(),
+    profession: joi.string().optional(),
     deviceType:joi.string().optional(),
   }),
 

@@ -50,7 +50,9 @@ exports.createEvent = async (req, res, next) => {
       latitude,
       longitude,
       noOfMember,
-      registrationRequired
+      registrationRequired,
+      eventCountry,
+      forCouple
     } = req.body;
     if (!req.file) {
       return res.status(400).send({ message: "No file uploaded." });
@@ -80,7 +82,9 @@ exports.createEvent = async (req, res, next) => {
       location: { coordinates: [longitude, latitude] },
       slot: [],
       isPaid: req.body.isPaid,
-      registrationRequired:registrationRequired
+      registrationRequired:registrationRequired,
+      eventCountry:eventCountry,
+      forCouple:forCouple
     };
 
     const startingDate = Moment(startDate, "YYYY-MM-DD");
@@ -187,7 +191,7 @@ exports.getEventById = async (req, res, next) => {
     if (!isEventExist) {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,
-        responseMessage: responseMessage.DATA_NOT_FOUND,
+        responseMessage: responseMessage.EVENT_NOT_FOUND,
       });
     }
     return res.status(statusCode.OK).send({
@@ -242,3 +246,27 @@ exports.getAllEventsAggregate = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.deleteEvents=async(req,res,next)=>{
+  try {
+    const {eventId,action}=req.body;
+    const isEventExist = await findEventData({
+      _id: eventId,
+      status: status.ACTIVE,
+    });
+    if (!isEventExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.EVENT_NOT_FOUND,
+      });};
+      const result=await updateEvent({_id:isEventExist._id},{status:action});
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DELETE_SUCCESS,
+        result:result
+      });
+  } catch (error) {
+    console.log("error while trying to delete ",error );
+    return next(error)
+  }
+}

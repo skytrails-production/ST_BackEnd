@@ -107,8 +107,8 @@ var taskPromotionalNotification = cron.schedule("0 10 * * *",async () => {
     // const messageBody = `✨Check out our latest promotion! We're offering deals so good, even your coffee will do a double-take! ☕️ Explore your journey with TheSkyTrails pvt ltd✨`;
     for (const user of users) {
       try { 
-      const notificationMessage = `Travel options got you lost?`;
-      const messageBody = `✨Don't worry! We're here to make planning your trip easy and simple.✨`;
+      const notificationMessage = `Just Married?🥂👰🏻🤵🏻🕊`;
+      const messageBody = `✨Skytrails offers dream honeymoon packages - explore, relax, and reconnect.🕊♡₊˚ 🦢・₊✧💍`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
       // const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`
         // Check if a notification has been sent to this user recently
@@ -218,8 +218,8 @@ var taskEventNotification1 = cron.schedule("0 14 * * *",
         deviceToken: { $exists: true, $ne: "" },
       });
       console.log("=======================", users.length);
-      const notificationMessage = `✨New adventures unlocked! ✨`;
-      const messageBody = `Check the Skytrails app for the exciting deals and offers.✨`;
+      const notificationMessage = `✨Love is in the air!🥰`;
+      const messageBody = `Find your perfect paradise - beaches, mountains, or charming cities!🏖️`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
       for (const user of users) {
         try {
@@ -336,8 +336,8 @@ var taskEventNotification1 = cron.schedule("30 11 * * *",
       const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`;
       for (const user of users) {
         try {
-          const notificationMessage = `Jab you Met with the Skytrails  🥰👩🏻‍❤️‍💋‍👨🏻`;
-          const messageBody=`Rekindle your romance amidst the charming hills of Shimla.⋆꙳⛇⋆☃︎☃️❄️☃️🌨️`
+          const notificationMessage = `Unlock travel secrets! 🥰👩🏻‍❤️‍💋‍👨🏻`;
+          const messageBody=`Exclusive deals & hidden gems - all on theSkytrails app.⋆꙳⛇⋆☃︎☃️❄️☃️🌨️`
 //           const messageBody = `FLY
 //    STAY
 //       ENJOY   
