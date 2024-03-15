@@ -11,5 +11,6 @@ module.exports = function (app) {
     });
 
     app.post("/skyTrails/mihuru/partnerauthentication",controller.partnerAuthentication);
+    app.post("/skyTrails/mihuru/travelplangenerator", controller.travelPlanGenerator);
     
 }

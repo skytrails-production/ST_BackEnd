@@ -23,10 +23,14 @@ const refundSchema = mongoose.Schema({
     orderId:{
         type:String
     },
-    merchant_refund_id:{
+    refundSpeed:{
+        type:String,
+        enum:['STANDARD','INSTANT']
+    },
+    refundNote:{
         type:String
     },
-    requestId:{
+    refundCurrency:{
         type:String
     },
     bookingType: {
@@ -44,4 +48,4 @@ const refundSchema = mongoose.Schema({
 refundSchema.plugin(aggregatePaginate);
 
 refundSchema.plugin(mongoosePaginate);
-module.exports = mongoose.model("userTransactionRefund", refundSchema);
+module.exports = mongoose.model("appRefund", refundSchema);

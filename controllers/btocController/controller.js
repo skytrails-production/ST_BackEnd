@@ -740,9 +740,6 @@ exports.getAppLink=async(req,res,next)=>{
   }
 }
 
-
-
-
 exports.updateDeviceToken=async(req,res,next)=>{
   try {
     const {deviceToken,deviceType}=req.body;

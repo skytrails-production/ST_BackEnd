@@ -26,7 +26,7 @@ module.exports = function (app) {
     app.post('/skyTrails/api/transaction/makeCCavenuePayment',userTransactionsController.CCEVENUEPayment);
     //refund api
 
-    app.post('/skyTrails/api/transaction/refundPolicy',userTransactionsController.refundApi);
+    app.post('/skyTrails/api/transaction/refundPolicy',[authJwt.verifcationToken],userTransactionsController.refundApi);
     app.get('/skyTrails/api/transaction/checkCashfreeStatus',userTransactionsController.checkCashfreePaymentStatus);
-    app.post('/skyTrails/api/transaction/refundCashfree',SchemaValidator(schemas.refundSchema),userTransactionsController.cashfreeRefund)
+    app.post('/skyTrails/api/transaction/refundCashfree',[authJwt.verifcationToken],SchemaValidator(schemas.refundSchema),userTransactionsController.cashfreeRefund)
 }

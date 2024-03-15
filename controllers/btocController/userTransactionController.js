@@ -69,6 +69,11 @@ const {
   countTotalUserBookingFailed,
 } = userBookingFailedServices;
 
+const {refundModelServices}=require('../../services/btocServices/userRefundServices');
+const {createUsertransactionRefund,findUsertransactionRefund,getUsertransactionRefund,deleteUsertransactionRefund,userUsertransactionListRefund,updateUsertransactionRefund,countTotalUsertransactionRefund}=refundModelServices;
+const {appRefundModelServices}=require('../../services/btocServices/appRefundServices');
+const {createRefund,findUserRefund,getUserRefund,deleteUserRefund,userUserListRefund,updateUserRefund,countTotalUserRefund}=appRefundModelServices;
+
 var config = {
   key: process.env.EASEBUZZ_KEY,
   salt: process.env.EASEBUZZ_SALT,
@@ -528,7 +533,24 @@ exports.easebussPayment = async (req, res, next) => {
 // }
 exports.refundApi = async (req, res, next) => {
   try {
-    const { refund_amount, txnId } = req.body;
+    const { refund_amount, txnId, } = req.body;
+    const isUserExist = await findUser({
+      _id: req.userId,
+      status: status.ACTIVE,
+    });
+    if (!isUserExist) {
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+    const isTransactionExist=await findUsertransaction({easeBuzzPayId:txnId});
+    if (!isTransactionExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.TRANSACTION_NOT_FOUND,
+      });
+    }
     // console.log(refund_amount, txnId, "body data");
     const merchantId = "M" + Date.now();
     const hashComponents = [config.key, merchantId, txnId, refund_amount];
@@ -554,7 +576,30 @@ exports.refundApi = async (req, res, next) => {
 
     try {
       const { data } = await axios.request(options);
-      return res.send({ data: data });
+      if(data.status===true){
+        const obj={
+          userId:isUserExist._id,
+          amount:refund_amount,
+          refundId:txnId,
+          orderId:isTransactionExist.paymentId,
+          merchant_refund_id:data.merchant_refund_id,
+          requestId:data.refund_id
+        }
+        const refundEntry=await createUsertransactionRefund(obj);
+        return res.status(statusCode.OK).send({
+          statusCode: statusCode.OK,
+          responseMessage: responseMessage.REFUND_INITIATE,
+          result: data
+        });
+      }else{
+        return res.status(statusCode.OK).send({
+          statusCode: statusCode.badRequest,
+          responseMessage: data.reason,
+        });
+      }
+      
+      // return res.send({ data: data });
+     
     } catch (error) {
       console.error(error);
     }
@@ -975,6 +1020,24 @@ exports.CCEVENUEPayment1 = async (req, res, next) => {
 exports.cashfreeRefund=async(req,res,next)=>{
   try {
     const{orderId,amount,refund_id,refund_speed}=req.body;
+    const isUserExist = await findUser({
+      _id: req.userId,
+      status: status.ACTIVE,
+    });
+    if (!isUserExist) {
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+    const isTransactionExist=await findUsertransaction({paymentId:orderId});
+    if (!isTransactionExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.TRANSACTION_NOT_FOUND,
+      });
+    }
+
     const refundId = "REFUNDTST" + Date.now();
     const requestData = {
       refund_amount: amount,
@@ -993,22 +1056,37 @@ exports.cashfreeRefund=async(req,res,next)=>{
       },
       data: requestData,
     };
-    await axios.request(options).then(response => {
-      console.log(response.data);
+    try {
+      const response=await axios.request(options);
+      console.log("response================",response.data);
+      if(response.status===200){
+        const obj={
+          userId:isUserExist._id,
+          amount:amount,
+          refundId:response.data.refund_id,
+          orderId:response.data.order_id,
+          refundSpeed:response.data.refund_speed.accepted,
+          bookingType:isTransactionExist.bookingType,
+          refundCurrency:response.data.refund_currency,
+          refundStatus:'SUCCESS'
+        }
+        
+        const refundEntry=await createRefund(obj);
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.REFUND_INITIATE,
         result: response.data,
       });
-    })
-    .catch(error => {
-      console.error("error.response==================",error.response);
+      }
+    } catch (error) {
+      console.log("error==================",error);
       return res.status(statusCode.OK).send({
         statusCode: error.response.status,
         responseMessage: responseMessage.INVALD_REQUEST,
         result: error.response.data,
       });
-    });
+    }
+   
   } catch (error) {
     console.log("error while refund====>>>",error);
     return next(error);
@@ -1098,6 +1176,5 @@ console.log("requestData",requestData);
     return next(error);
   }
 };
-
 
 

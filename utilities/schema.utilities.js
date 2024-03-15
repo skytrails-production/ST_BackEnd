@@ -402,7 +402,12 @@ const schemas = {
   updateofflineQuerySchema: joi.object().keys({
     queryId: joi.string().required(),
   }),
-
+  userInquirySchema: joi.object().keys({
+    email: joi.string().required(),
+    phone: joi.string().required(),
+    content: joi.string().required(),
+    name: joi.string().required(),
+  }),
   razorPaySchema: joi.object().keys({
     amount: joi.number().required(),
   }),
@@ -529,7 +534,7 @@ const schemas = {
   }),
   eventBookingSchema: joi.object().keys({
     price: joi.number().optional(),
-    eventDate: joi.string().required(),
+    eventDate: joi.string().optional(),
     adults: joi.number().optional(),
     child: joi.number().optional(),
     couple: joi.number().optional(),

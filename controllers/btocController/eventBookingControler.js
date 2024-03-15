@@ -328,7 +328,7 @@ exports.pefaEventBooking = async (req, res, next) => {
         message: responseMessage.EVENT_NOT_FOUND,
       });
     }
-    const isBookingExist=await findBookingEventData({userId:isUserExist._id,eventId:isEventExist._id});
+    const isBookingExist=await findBookingEventData({$and:[{userId:isUserExist._id,eventId:isEventExist._id}]});
     if(isBookingExist){
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,
@@ -357,10 +357,10 @@ exports.pefaEventBooking = async (req, res, next) => {
     object.tickets.push(ticketNumber);
     }
     const result = await createBookingEvent(object);
-    const eventname = isBookingExist.title;
-    const date = isBookingExist.startDate;
+    const eventname = isEventExist.title;
+    const date = isEventExist.startDate;
     const contactNo = "+91" + mobileNumber;
-    const smsFormat = isBookingExist.title;
+    const smsFormat = isEventExist.title;
     await sendSMS.sendSMSEventEnquiry(mobileNumber,smsFormat);
     await whatsappAPIUrl.sendMessageWhatsApp(contactNo,eventname,date,"event4_v3");
     return res.status(statusCode.OK).send({
@@ -479,4 +479,6 @@ async function generateUniqueRandomString(length) {
 
   return uniqueString.slice(0, length);
 }
+
+
 

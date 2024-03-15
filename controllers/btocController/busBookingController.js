@@ -67,7 +67,7 @@ exports.busBooking = async (req, res, next) => {
     }
     await createPushNotification(notObject);
     await sendSMS.sendSMSBusBooking(result.passenger[0].Phone, userName);
-    const url=`https://theskytrails.com/bus`
+    const url=`https://theskytrails.com/busEticket/${result._id}`
     await whatsApi.sendMessageWhatsApp(contactNo,userName,url,'bus');
     await whatsApi.sendWhatsAppMsgAdmin(AdminNumber,'adminbooking_alert');
     await whatsApi.sendWhatsAppMsgAdmin(AdminNumber,'adminalert');
