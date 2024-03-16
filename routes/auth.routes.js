@@ -14,7 +14,8 @@ const eventController = require("../controllers/eventController");
 const userSearchesController=require("../controllers/btocController/userSearchesController");
 const packageControlelr=require("../controllers/btocController/packageBookingController");
 const subAdminTaskControlelr=require("../controllers/subAdminTaskControlelr");
-const pushNotification=require("../controllers/btocController/pushNotificationController")
+const pushNotification=require("../controllers/btocController/pushNotificationController");
+const eventPromoBannerControler=require('../controllers/btocController/eventPromoBannerController');
 module.exports = function (app) {
   app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
@@ -69,4 +70,10 @@ module.exports = function (app) {
 app.get('/skyTrails/api/admin/getAllEventBookings',controller.getAllEventBookings);
 app.get('/skyTrails/api/admin/getAllNotification/:adminId',pushNotification.getAllNotificationOfAmdin);
 app.get('/skyTrails/api/admin/getNotificationById/:id',pushNotification.getNotificationById);
+app.post('/skyTrails/api/admin/createAppVersion',controller.createAppVersion);
+app.get('/skyTrails/api/admin/getAppVersion',controller.getAppVersion);
+app.post('/skyTrails/api/admin/event/createPromoEvent',upload.single('images'),SchemaValidator(schemas.promoEventSchema),eventPromoBannerControler.createPromotinalBanner);
+app.put('/skyTrails/api/admin/event/deletePromoEvent',SchemaValidator(schemas.deletPromoEventSchema),eventPromoBannerControler.deletePromoEvent);
+app.delete('/skyTrails/api/admin/event/deletePermanentPromoEvent',SchemaValidator(schemas.deletPromoEventSchema),eventPromoBannerControler.deletePermanentPromoEvent);
+app.get('/skyTrails/api/admin/event/getPromoEvent',eventPromoBannerControler.getPromotionalBanner);
 };

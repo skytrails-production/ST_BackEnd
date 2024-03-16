@@ -127,7 +127,7 @@ exports.RegisterUser = async (req, res) => {
   const reqData = JSON.parse(req.body.data);
   const file = req?.file;
   var salt = bcrypt.genSaltSync(10);
-  // console.log(reqData.personal_details.password);
+  // console.log(reqData.password);
   const s3Params = {
     Bucket: process.env.AWS_BUCKET_NAME,
     Key: file.originalname,
@@ -135,7 +135,12 @@ exports.RegisterUser = async (req, res) => {
     ContentType: file.mimetype,
     ACL: "public-read",
   };
-
+  if(reqData.referralCode){
+    const isCodeValid=await b2bUser.findOne({referralCode:req.params.referralCode});
+  if(!isCodeValid){
+    return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage:responseMessage.REFERRALCODE_NOT_EXIST });
+  }
+  }
   s3.upload(s3Params, async (err, data) => {
     if (err) {
       res.status(500).send(err);
@@ -1715,3 +1720,17 @@ exports.agentPackagesHelper = async (userId) => {
   }
 };
 
+//******************Check is referral code is valid *****************************************/
+exports.checkReferralCode=async(req,res,next)=>{
+  try {
+    // const {referralCode}=req.body;
+    const isCodeValid=await b2bUser.findOne({referralCode:req.params.referralCode});
+    if(!isCodeValid){
+      return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage:responseMessage.REFERRALCODE_NOT_EXIST });
+    }
+    return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage:responseMessage.REFERRALCODE_APPLIED,result:isCodeValid });
+  } catch (error) {
+    console.error("error while trying to check ",error);
+    return next(error)
+  }
+}

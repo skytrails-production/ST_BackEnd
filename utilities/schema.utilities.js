@@ -634,6 +634,19 @@ const schemas = {
     amount:joi.number().required(),
     refund_id:joi.string().optional(),
     refund_speed:joi.string().required()
+  }),
+  promoEventSchema:joi.object().keys({
+    adminId:joi.string().required(),
+    image:joi.string().optional(),
+    url:joi.string().optional(),
+    content:joi.string().required(),
+    startDate:joi.string().required(),
+    endDate:joi.string().required(),
+    isClickAble:joi.boolean().required(),
+    
+  }),
+  deletPromoEventSchema:joi.object().keys({
+    eventId:joi.string().required()
   })
 };
 

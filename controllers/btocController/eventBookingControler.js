@@ -475,7 +475,7 @@ async function generateUniqueRandomString(length) {
     .toString("hex")
     .slice(0, length);
   const timestampPart = Date.now().toString();
-  const uniqueString = 'PEFA'+randomPart + timestampPart;
+  const uniqueString = 'TST'+randomPart + timestampPart;
 
   return uniqueString.slice(0, length);
 }

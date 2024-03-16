@@ -114,5 +114,8 @@ module.exports = {
 	REFUND_INITIATE:"Refund Initiated , your amount reflect on your account within 2-3 working days.",
 	INCORRECT_REFERRAL:"Incorect referal code,please provide valid code..!",
 	LINK_GENERATED:"Link generated successfully",
-	ADDED_ON_TREND:"Post Added on trend"
+	ADDED_ON_TREND:"Post Added on trend",
+	REFERRALCODE_NOT_EXIST:"Please give a corrected form of refferal code.",
+	REFERRALCODE_APPLIED:"Referral code applied successfully.",
+	URL_MANDATORY:"Url mandatory"
 };

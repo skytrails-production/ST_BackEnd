@@ -90,4 +90,5 @@ module.exports = function (app) {
   app.get('/skyTrails/agent/inviteAgent/:userId',agentDashboardController.shareAgentReferralCode);
   app.get('/skyTrails/agent/getAllInvites/:userId',agentDashboardController.getReferrals);
   app.get('/skyTrails/agent/getAllInvitesBooking/:userId',agentDashboardController.getReferalBookings);
+  app.get('/skyTrails/agent/checkValidReferralCode/:referralCode',controller.checkReferralCode);
 };

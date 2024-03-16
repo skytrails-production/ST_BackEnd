@@ -14,7 +14,8 @@ const responseMessage = require("../utilities/responses");
 const sendSMS = require("../utilities/sendSms");
 const whatsappAPIUrl = require("../utilities/whatsApi");
 //************SERVICES*************** */
-
+const {appVersionServices}=require("../services/appVersionServices")
+const {createappVersion,findappVersion,deleteappVersion,appVersionList,updateappVersion}=appVersionServices;
 const { userServices } = require("../services/userServices");
 const userType = require("../enums/userType");
 const status = require("../enums/status");
@@ -1825,3 +1826,48 @@ exports.getAllEventBookings=async(req,res,next)=>{
   }
 }
 
+exports.createAppVersion=async(req,res,next)=>{
+  try {
+    const {iosVersion,androidVersion}=req.body;
+    const obj={
+      iosVersion:iosVersion,
+      androidVersion:androidVersion
+    }
+    const isVersionExist=await findappVersion({});
+    if(isVersionExist){
+      const result=await updateappVersion({_id:isVersionExist._id},obj);
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.UPDATE_SUCCESS,
+      result: result,
+    });
+    }
+      
+    
+    
+  } catch (error) {
+    console.log("error while trying to add app version",error);
+    return next(error);
+  }
+}
+
+exports.getAppVersion=async(req,res,next)=>{
+  try {
+    const result=await findappVersion({});
+    if(!result){
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
+        result: result,
+      });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
+  } catch (error) {
+    console.log("error while trying to get version",error);
+    return next(error)
+  }
+}

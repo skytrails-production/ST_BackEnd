@@ -17,7 +17,7 @@ module.exports = function (app) {
   app.put("/skytrails/api/query/updateOfflineQuery",SchemaValidator(schemas.updateofflineQuerySchema),offlinequeryController.updateOfflineQuery)
   app.post("/skytrails/api/user/query/createuserInquiry", SchemaValidator(schemas.userInquirySchema),userInquiryController.userInquiriesEntry)
   app.get("/skytrails/api/user/query/AllInquiriesList",userInquiryController.getAllInquiriesList)
-  app.put("/skytrails/api/user/query/resolveQuery",userInquiryController.updateInquiryResolved)
+  app.put("/skytrails/api/admin/query/resolveQuery",userInquiryController.updateInquiryResolved)
   
   
   }

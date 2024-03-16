@@ -1,4 +1,5 @@
 const eventBookingControler=require('../../controllers/btocController/eventBookingControler');
+const eventPromoBannerControler=require('../../controllers/btocController/eventPromoBannerController');
 const schemas = require('../../utilities/schema.utilities');
 const SchemaValidator = require('../../utilities/validations.utilities');
 const upload=require('../../utilities/uploadHandler')
@@ -20,5 +21,6 @@ module.exports = function (app) {
     app.post('/skyTrails/api/user/event/pefaBookFreeEvents',[authJwt.verifcationToken],SchemaValidator(schemas.eventBookingSchema),eventBookingControler.pefaEventBooking);
     app.post('/skyTrails/api/user/pushNotification',eventBookingControler.sendNotificationAfterBooking);
     app.get('/skyTrails/api/user/getEventBookingStatus',[authJwt.verifcationToken],eventBookingControler.getEventBookingStatus);
-    app.put('/skyTrails/api/user/event/sendPassesUpdate',eventBookingControler.sendUpdatePasses)
+    app.put('/skyTrails/api/user/event/sendPassesUpdate',eventBookingControler.sendUpdatePasses);
+    app.put('/skyTrails/api/user/event/getPromoBanner',eventPromoBannerControler.getPromotionalBanner);
 }
