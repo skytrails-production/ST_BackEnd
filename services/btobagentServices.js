@@ -14,7 +14,7 @@ const brbuserServices = {
     findbrbuser: async (query) => {
         return await brbuserModel.findOne(query).select('-otp -isApproved -roles ');
     },
-    findOne: async (query) => {
+    findOneAgent: async (query) => {
         return await brbuserModel.findOne(query);
     },
     getbrbuser: async (query) => {

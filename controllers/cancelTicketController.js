@@ -12,7 +12,7 @@ const sendSMS = require('../utilities/sendSms');
 const bookingStatus = require('../enums/bookingStatus');
 /**********************************SERVICES********************************** */
 const { cancelBookingServices } = require("../services/cancelServices");
-const { createcancelFlightBookings, findAnd,updatecancelFlightBookings, aggregatePaginatecancelFlightBookingsList, countTotalcancelFlightBookings, createHotelCancelRequest, updateHotelCancelRequest, getHotelCancelRequesrByAggregate, countTotalHotelCancelled, createBusCancelRequest, updateBusCancelRequest, getBusCancelRequestByAggregate, countTotalBusCancelled,getBusCancellation } = cancelBookingServices;
+const { createcancelFlightBookings, findCancelFlightBookings,updatecancelFlightBookings, aggregatePaginatecancelFlightBookingsList, countTotalcancelFlightBookings,findCancelHotelBookings, createHotelCancelRequest, updateHotelCancelRequest, getHotelCancelRequesrByAggregate, countTotalHotelCancelled, createBusCancelRequest, updateBusCancelRequest, findCancelBusBookings,getBusCancelRequestByAggregate, countTotalBusCancelled,getBusCancellation } = cancelBookingServices;
 const { brbuserServices } = require('../services/btobagentServices');
 const { createbrbuser, findbrbuser, getbrbuser, findbrbuserData, updatebrbuser, deletebrbuser, brbuserList, paginatebrbuserSearch, countTotalbrbUser } = brbuserServices;
 const { userServices } = require('../services/userServices');
@@ -52,6 +52,10 @@ exports.cancelFlightBooking = async (req, res, next) => {
         // console.log("bookingDate=====", isBookingExist)
         if (!isBookingExist) {
             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.BOOKING_NOT_FOUND });
+        }
+        const isAlreadyRequested=await findCancelFlightBookings({userId:isAgentExists._id,flightBookingId:isBookingExist._id});
+        if(isAlreadyRequested){
+            return res.status(statusCode.OK).send({ statusCode: statusCode.Conflict, responseMessage: responseMessage.ALREADY_REQUESTED});
         }
         const object = {
             userId: isAgentExists._id,
@@ -102,6 +106,10 @@ exports.cancelHotelBooking = async (req, res, next) => {
         if (!isBookingExist) {
             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.BOOKING_NOT_FOUND });
         }
+        const isAlreadyRequested=await findCancelHotelBookings({userId:isAgentExists._id,hotelBookingId:isBookingExist._id});
+        if(isAlreadyRequested){
+            return res.status(statusCode.OK).send({ statusCode: statusCode.Conflict, responseMessage: responseMessage.ALREADY_REQUESTED});
+        }
         const object = {
             userId: isAgentExists._id,
             reason: reason,
@@ -147,6 +155,10 @@ exports.cancelBusBooking=async(req,res,next)=>{
         // console.log("isBookingExist===========",isBookingExist)
         if (!isBookingExist) {
             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.BOOKING_NOT_FOUND });
+        }
+        const isAlreadyRequested=await findCancelBusBookings({userId:isAgentExists._id,busBookingId:isBookingExist._id});
+        if(isAlreadyRequested){
+            return res.status(statusCode.OK).send({ statusCode: statusCode.Conflict, responseMessage: responseMessage.ALREADY_REQUESTED});
         }
         const object={
             userId:isAgentExists._id,

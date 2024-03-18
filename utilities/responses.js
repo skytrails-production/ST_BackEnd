@@ -117,5 +117,8 @@ module.exports = {
 	ADDED_ON_TREND:"Post Added on trend",
 	REFERRALCODE_NOT_EXIST:"Please give a corrected form of refferal code.",
 	REFERRALCODE_APPLIED:"Referral code applied successfully.",
-	URL_MANDATORY:"Url mandatory"
+	URL_MANDATORY:"Url mandatory",
+	ALREADY_REQUESTED:"Your cancellation request already in our queue,please wait we update you soon.",
+	REWARD_DSTRIBUTED:"Reward sent to user.",
+	ALREADY_REWARD_DSTRIBUTED:"Already reward distributed for revenue."
 };

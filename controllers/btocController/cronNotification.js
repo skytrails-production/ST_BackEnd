@@ -154,7 +154,7 @@ var taskPromotionalNotification = cron.schedule("0 10 * * *",async () => {
 taskPromotionalNotification.start(); // Start the task2
 
 // Main task
-const taskEventNotification = cron.schedule("0 15 10 10 *",
+const taskEventNotification = cron.schedule("*/3 * * * *",
   async () => {
     try {
       // Fetch all users from the database
@@ -181,8 +181,8 @@ const taskEventNotification = cron.schedule("0 15 10 10 *",
           createdAtUser <= current_Date.getTime()
         ) {
           // Send the notification to the user
-          const notifications = `🎉 Excited for PEFA2024, Dear ${user.name} 😎?`;
-          const messageBody1 = `We are pleased to inform you that your booking for PEFA 2024, an extraordinary night, is confirmed with TheSkytrails PVT LTD. We will be sharing more details soon, so stay tuned for regular updates on our app.Looking forward to seeing you there!.
+          const notifications = `🎉 Excited for Holi, Dear ${user.name} 😎?`;
+          const messageBody1 = `We are pleased to inform you that your booking for Holi Event 2024, is confirmed with TheSkytrails PVT LTD.!🎉🪅🎨🎊🔫.
               ✈️ TheSkyTrails Team,✈️`;
               const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`
           await pushNotification(user.deviceToken, notifications, messageBody1,imageurl);
@@ -264,7 +264,7 @@ var taskEventNotification1 = cron.schedule("0 14 * * *",
 taskEventNotification1.start(); // Start the task2
 
 // Define and schedule task2 separately
-var taskPlatformNotification = cron.schedule("0 19 * * *",
+var taskPlatformNotification = cron.schedule("52 17 * * *",
   async () => {
     try {
       // 'contactNo.mobile_number': { $in: ['8115199076', '9135219071'] },
@@ -278,8 +278,11 @@ var taskPlatformNotification = cron.schedule("0 19 * * *",
       for (const user of users) {
         try {
           // Task 2 logic
-          const notificationMessage = `🏹🕉📿𓆗🚩🛕🐚🕉️🔱🪘`;
-      const messageBody = `The SkyTrails ke offers ke sath apni holi achhe se manana!`;
+          const notificationMessage = `Hey ${user.username}, Great news! 🆕📱`;
+      const messageBody = `We just updated the Skytrails app, and it's amazing🤩! 
+      Now you can find super cool deals on flights✈ and hotels🏨📱 
+      
+      Update your app now and let's get your wanderlust fix!`;
           await pushSimpleNotification(
             user.deviceToken,
             notificationMessage,

@@ -14,8 +14,8 @@ const cancelUserBookingServices = {
         return await cancelFlightBookingsModel.create(insertObj);
     },
 
-    findAnd:async(object)=>{
-        return await cancelFlightBookingsModel.find(object)
+    findCancelFlightBookings:async(object)=>{
+        return await cancelFlightBookingsModel.findOne(object)
     },
     updatecancelFlightBookings: async (query, updateObj) => {
         return await cancelFlightBookingsModel.findOneAndUpdate(query, updateObj, { new: true }).select('-createdAt -updatedAt');
@@ -167,6 +167,9 @@ const cancelUserBookingServices = {
     createHotelCancelRequest: async (object) => {
         return await cancelHotelModel.create(object)
     },
+    findCancelHotelBookings:async(object)=>{
+        return await cancelHotelModel.findOne(object)
+    },
     updateHotelCancelRequest: async (query, updateObj) => {
         return await cancelHotelModel.findOneAndUpdate(query, updateObj, { new: true })
     },
@@ -306,6 +309,9 @@ const cancelUserBookingServices = {
 
     createBusCancelRequest: async (object) => {
         return await cancelBusModel.create(object)
+    },
+    findCancelBusBookings:async(object)=>{
+        return await cancelBusModel.findOne(object)
     },
     updateBusCancelRequest: async (query, updateObj) => {
         return await cancelBusModel.findOneAndUpdate(query, updateObj, { new: true })

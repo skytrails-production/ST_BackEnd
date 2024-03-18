@@ -358,7 +358,7 @@ exports.pefaEventBooking = async (req, res, next) => {
     }
     const result = await createBookingEvent(object);
     const eventname = isEventExist.title;
-    const date = isEventExist.startDate;
+    const date = isEventExist.slot[0].startDate;
     const contactNo = "+91" + mobileNumber;
     const smsFormat = isEventExist.title;
     await sendSMS.sendSMSEventEnquiry(mobileNumber,smsFormat);

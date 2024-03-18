@@ -20,7 +20,7 @@ const { createUserBusBooking, findUserBusBooking, getUserBusBooking, findUserBus
 const { userhotelBookingModelServices } = require('../../services/btocServices/hotelBookingServices');
 const { createUserhotelBookingModel, findUserhotelBookingModel, getUserhotelBookingModel, deleteUserhotelBookingModel, userhotelBookingModelList, updateUserhotelBookingModel, paginateUserhotelBookingModelSearch,countTotalhotelBooking,aggregatePaginateHotelBookingList } = userhotelBookingModelServices
 const { cancelUserBookingServices } = require("../../services/btocServices/cancelBookingServices");
-const {getBusData, createcancelFlightBookings, findAnd,updatecancelFlightBookings, aggregatePaginatecancelFlightBookingsList, countTotalcancelFlightBookings, createHotelCancelRequest, updateHotelCancelRequest, getHotelCancelRequesrByAggregate1, countTotalHotelCancelled, createBusCancelRequest, updateBusCancelRequest, getBusCancelRequestByAggregate1, countTotalBusCancelled } = cancelUserBookingServices;
+const {getBusData, createcancelFlightBookings, findCancelFlightBookings,updatecancelFlightBookings, aggregatePaginatecancelFlightBookingsList, countTotalcancelFlightBookings, createHotelCancelRequest, updateHotelCancelRequest, findCancelHotelBookings,getHotelCancelRequesrByAggregate1, countTotalHotelCancelled, createBusCancelRequest,findCancelBusBookings, updateBusCancelRequest, getBusCancelRequestByAggregate1, countTotalBusCancelled } = cancelUserBookingServices;
 const{pushNotificationServices}=require('../../services/pushNotificationServices');
 const{createPushNotification,findPushNotification,findPushNotificationData,deletePushNotification,updatePushNotification,countPushNotification}=pushNotificationServices;
 
@@ -40,6 +40,10 @@ exports.cancelUserFlightBooking = async (req, res, next) => {
         });
         if (!isBookingExist) {
             return res.status(statusCode.OK).send({ statusCode: statusCode.OK, message: responseMessage.BOOKING_NOT_FOUND });
+        }
+        const isAlreadyRequested=await findCancelFlightBookings({userId:isUserExist._id,flightBookingId:isBookingExist._id});
+        if(isAlreadyRequested){
+            return res.status(statusCode.OK).send({ statusCode: statusCode.Conflict, responseMessage: responseMessage.ALREADY_REQUESTED});
         }
         const object = {
             userId: isUserExist._id,
@@ -121,6 +125,10 @@ exports.cancelUserHotelBooking = async (req, res, next) => {
         if (!isBookingExist) {
             return res.status(statusCode.OK).send({ statusCode: statusCode.OK, message: responseMessage.BOOKING_NOT_FOUND });
         }
+        const isAlreadyRequested=await findCancelHotelBookings({userId:isUserExist._id,hotelBookingId:isBookingExist._id});
+        if(isAlreadyRequested){
+            return res.status(statusCode.OK).send({ statusCode: statusCode.Conflict, responseMessage: responseMessage.ALREADY_REQUESTED});
+        }
         const object = {
             userId: isUserExist._id,
             reason: reason,
@@ -176,6 +184,10 @@ exports.cancelUserBusBooking=async(req,res,next)=>{
         });
         if (!isBookingExist) {
             return res.status(statusCode.OK).send({ statusCode: statusCode.OK, message: responseMessage.BOOKING_NOT_FOUND });
+        }
+        const isAlreadyRequested=await findCancelBusBookings({userId:isUserExist._id,busBookingId:isBookingExist._id});
+        if(isAlreadyRequested){
+            return res.status(statusCode.OK).send({ statusCode: statusCode.Conflict, responseMessage: responseMessage.ALREADY_REQUESTED});
         }
         const object={
             userId:isUserExist._id,

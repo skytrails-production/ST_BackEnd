@@ -278,6 +278,8 @@ const Userb2bSchema =
     },
     referralCode: {type:String}, // Add referral code field
     referrerCode: {type:String},
+    rewardAmount: { type: Number },
+    revenue: { type: Number },
     },
     {
       timestamps: true,

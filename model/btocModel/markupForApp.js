@@ -17,6 +17,9 @@ const markupSchema = new mongoose.Schema({
     holidayPackageMarkup: {
         type: Number,
     },
+    rechargeMarkup: {
+        type: Number,
+    },
     status: {
         type: String,
         enum: [status.ACTIVE, status.BLOCK, status.DELETE],

@@ -53,6 +53,8 @@ const { brbuserServices } = require("../services/btobagentServices");
 const {
   createbrbuser,
   findbrbuser,
+  findbrbData,
+  findOneAgent,
   getbrbuser,
   findbrbuserData,
   updatebrbuser,
@@ -220,7 +222,8 @@ const {
   getBookingEvent,
   getEventPopulate,
 } = eventBookingServices;
-
+const {agentRewardServices}=require("../services/agentRewardServices");
+const {createAgentReward,findAgentReward,deleteAgentReward,AgentRewardList,updateAgentReward,AgentRewardListPaginate}=agentRewardServices;
 //**********Necessary models***********/
 const flightModel = require("../model/flightBookingData.model");
 const hotelBookingModel = require("../model/hotelBooking.model");
@@ -1869,5 +1872,109 @@ exports.getAppVersion=async(req,res,next)=>{
   } catch (error) {
     console.log("error while trying to get version",error);
     return next(error)
+  }
+}
+
+exports.distributeReward=async(req,res,next)=>{
+  try {
+    const {agentId,rewardPercentage}=req.body;
+    const percentage=rewardPercentage||0.05
+    const allAgents=[]
+    const isAgentExist=await findOneAgent({_id:agentId,isApproved:true});
+    if(!isAgentExist){
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
+      });
+    }
+    const result={}
+    result.agentId=isAgentExist._id;
+    result.agentName=isAgentExist.personal_details.first_name+isAgentExist.personal_details.last_name;
+    const agentflightBookings = await flightModel.find({ userId: isAgentExist._id });
+      result.agentflightBookings = agentflightBookings.length;
+      result.agentflightBookingRevenue = agentflightBookings.reduce((acc, curr) => acc + curr.totalAmount, 0);
+      const agenthotelBookings = await hotelBookingModel.find({ userId: isAgentExist._id });
+      result.agenthotelBookings = agenthotelBookings.length;
+      result.agenthotelBookingRevenue = agenthotelBookings.reduce((acc, curr) => acc + curr.amount, 0);
+      const agentbusBookings = await busBookingModel.find({ userId: isAgentExist._id });
+      result.agentbusBookings = agentbusBookings.length;
+      result.agentbusBookingRevenue = agentbusBookings.reduce((acc, curr) => acc + curr.totalAmount, 0);
+      result.totalRevenue = result.agentflightBookingRevenue + result.agenthotelBookingRevenue + result.agentbusBookingRevenue;
+      allAgents.push(result);
+    const findAgentRefferals=await findbrbData({referrerCode:isAgentExist.referralCode});
+    for(const agents of findAgentRefferals){
+      const obj={
+        agentId:agents._id,
+        agentName:agents.personal_details.first_name+agents.personal_details.last_name,
+        flightBookings:0,
+        flightBookingRevenue:0,
+        hotelBookings:0,
+        hotelBookingRevenue:0,
+        busBookings:0,
+        busBookingRevenue:0,
+        totalRevenue:0
+      }
+      const flightBookings = await flightModel.find({ userId: agents._id });
+      obj.flightBookings = flightBookings.length;
+      obj.flightBookingRevenue = flightBookings.reduce((acc, curr) => acc + curr.totalAmount, 0);
+
+      const hotelBookings = await hotelBookingModel.find({ userId: agents._id });
+      obj.hotelBookings = hotelBookings.length;
+      obj.hotelBookingRevenue = hotelBookings.reduce((acc, curr) => acc + curr.amount, 0);
+
+      const busBookings = await busBookingModel.find({ userId: agents._id });
+      obj.busBookings = busBookings.length;
+      obj.busBookingRevenue = busBookings.reduce((acc, curr) => acc + curr.totalAmount, 0);
+
+      obj.totalRevenue = obj.flightBookingRevenue + obj.hotelBookingRevenue + obj.busBookingRevenue;
+
+      allAgents.push(obj)
+    }
+    // Calculate the sum of totalRevenue for all agents
+    const totalRevenueSum = allAgents.reduce((acc, agent) => acc + agent.totalRevenue, 0);
+    if (totalRevenueSum >= 100000) {
+      const rewardAmount = percentage * totalRevenueSum / 100;
+      // Check if the agent already has an entry in the database for rewards
+      const agentReward = await findAgentReward({ agentId: isAgentExist._id });
+      let newObj;
+      if (agentReward) {
+          // If the agent already has an entry, update it
+          const sendReward=rewardAmount-agentReward.rewardAmount;
+          const sendRewarRevenue=totalRevenueSum-agentReward.revenue;
+          if(totalRevenueSum>agentReward.revenue){
+            const updateReward = await updateAgentReward(
+              { _id: agentReward._id },
+              {
+                  $set: { revenue: totalRevenueSum, rewardAmount: rewardAmount },
+                  $push: { rewards: { revenue: sendRewarRevenue, rewardAmount: sendReward } }
+              }
+          );
+          await updatebrbuser({_id:isAgentExist._id},{$set:{revenue: totalRevenueSum, rewardAmount: rewardAmount}});
+          return res.status(statusCode.OK).send({
+              statusCode: statusCode.OK,
+              responseMessage: responseMessage.REWARD_DSTRIBUTED,
+              result: updateReward,
+          });
+          }
+          return res.status(statusCode.OK).send({
+            statusCode: statusCode.Conflict,
+            responseMessage: responseMessage.ALREADY_REWARD_DSTRIBUTED,
+        });
+      } else {
+          // If the agent doesn't have an entry, create a new one
+          const history = { revenue: totalRevenueSum, revardAmount: rewardAmount };
+          newObj = { agentId: isAgentExist._id, rewardAmount: rewardAmount, revenue: totalRevenueSum, rewards: [history] };
+          newObj = await createAgentReward(newObj);
+          return res.status(statusCode.OK).send({
+            statusCode: statusCode.OK,
+            responseMessage: responseMessage.DATA_FOUND,
+            result: createReward,
+        });
+      }
+      
+  }
+  } catch (error) {
+    console.error("error while trying to distribute reward of agent");
+    return next(error);
   }
 }
