@@ -22,5 +22,5 @@ module.exports = function (app) {
     app.post('/skyTrails/api/user/pushNotification',eventBookingControler.sendNotificationAfterBooking);
     app.get('/skyTrails/api/user/getEventBookingStatus',[authJwt.verifcationToken],eventBookingControler.getEventBookingStatus);
     app.put('/skyTrails/api/user/event/sendPassesUpdate',eventBookingControler.sendUpdatePasses);
-    app.put('/skyTrails/api/user/event/getPromoBanner',eventPromoBannerControler.getPromotionalBanner);
+    app.get('/skyTrails/api/user/event/getPromoBanner',eventPromoBannerControler.getPromotionalBanner);
 }
