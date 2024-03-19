@@ -1930,9 +1930,10 @@ exports.distributeReward=async(req,res,next)=>{
 
       allAgents.push(obj)
     }
+    
     // Calculate the sum of totalRevenue for all agents
     const totalRevenueSum = allAgents.reduce((acc, agent) => acc + agent.totalRevenue, 0);
-    if (totalRevenueSum >= 100000) {
+    if (totalRevenueSum > isAgentExist.revenue) {
       const rewardAmount = percentage * totalRevenueSum / 100;
       // Check if the agent already has an entry in the database for rewards
       const agentReward = await findAgentReward({ agentId: isAgentExist._id });
@@ -1941,7 +1942,7 @@ exports.distributeReward=async(req,res,next)=>{
           // If the agent already has an entry, update it
           const sendReward=rewardAmount-agentReward.rewardAmount;
           const sendRewarRevenue=totalRevenueSum-agentReward.revenue;
-          if(totalRevenueSum>agentReward.revenue){
+          // if(totalRevenueSum>agentReward.revenue){
             const updateReward = await updateAgentReward(
               { _id: agentReward._id },
               {
@@ -1955,16 +1956,17 @@ exports.distributeReward=async(req,res,next)=>{
               responseMessage: responseMessage.REWARD_DSTRIBUTED,
               result: updateReward,
           });
-          }
+          // }
           return res.status(statusCode.OK).send({
             statusCode: statusCode.Conflict,
             responseMessage: responseMessage.ALREADY_REWARD_DSTRIBUTED,
         });
       } else {
           // If the agent doesn't have an entry, create a new one
-          const history = { revenue: totalRevenueSum, revardAmount: rewardAmount };
+          const history = { revenue: totalRevenueSum, rewardAmount: rewardAmount };
           newObj = { agentId: isAgentExist._id, rewardAmount: rewardAmount, revenue: totalRevenueSum, rewards: [history] };
-          newObj = await createAgentReward(newObj);
+          createReward = await createAgentReward(newObj);
+          await updatebrbuser({_id:isAgentExist._id},{$set:{revenue: totalRevenueSum, rewardAmount: rewardAmount}});
           return res.status(statusCode.OK).send({
             statusCode: statusCode.OK,
             responseMessage: responseMessage.DATA_FOUND,
@@ -1973,6 +1975,10 @@ exports.distributeReward=async(req,res,next)=>{
       }
       
   }
+  return res.status(statusCode.OK).send({
+    statusCode: statusCode.Conflict,
+    responseMessage: responseMessage.No_REVENUE,
+});
   } catch (error) {
     console.error("error while trying to distribute reward of agent");
     return next(error);

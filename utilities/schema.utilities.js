@@ -282,7 +282,8 @@ const schemas = {
       .string()
       .length(10)
       .pattern(/^(?!.*(\d)(?:\1{5,})).*[1-9]\d*$/)
-      .required(),
+      .optional(),
+      email:joi.string().optional()
   }),
   agetHotelBooking: joi.object().keys({
     page: joi.string().optional(),
@@ -647,6 +648,9 @@ const schemas = {
   }),
   deletPromoEventSchema:joi.object().keys({
     eventId:joi.string().required()
+  }),
+  updateEmailSchema:joi.object().keys({
+    email:joi.string().required()
   })
 };
 

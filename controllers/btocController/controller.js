@@ -56,7 +56,7 @@ exports.login = async (req, res, next) => {
     if (!mobileNumber) {
       return res.status(statusCode.badRequest).json({
         statusCode: statusCode.badRequest,
-        message: responseMessage.INVALID_PHONE_NUMBER,
+        message: responseMessage.INCORRECT_LOGIN,
       });
     }
     const isExist = await findUser({
@@ -794,6 +794,148 @@ console.log(shortid.generate(),"shortReferralLink=============",result);
 return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.LINK_GENERATED,result:result});
   } catch (error) {
     console.log("error while send code",error);
+    return next(error);
+  }
+}
+
+exports.updateEmail=async(req,res,next)=>{
+  try {
+    const {email}=req.body;
+    const isUserExist = await findUserData({
+      _id: req.userId,
+      status: status.ACTIVE,
+    });
+    if (!isUserExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+    const isExistEmail = await findUser({
+      email: email,
+      _id: { $ne: isUserExist._id },
+    });
+    if (isExistEmail) {
+      return res
+        .status(statusCode.Conflict)
+        .send({ message: responseMessage.EMAIL_ALREADY_EXIST });
+    }
+    const updateEmail=await updateUser({_id:isUserExist._id},{$set:{email: email}});
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.NotFound,
+      responseMessage: responseMessage.USERS_NOT_FOUND,
+      result:updateEmail
+    });
+  } catch (error) {
+    console.error("error while trying to update email.",error);
+    return next(error)
+  }
+}
+
+
+exports.loginWithMailMobileLogin=async(req,res,next)=>{
+  try {
+    const { mobileNumber,email } = req.body;
+    console.log("req.body=======================",req.body);
+    const isCredentialExist=await findUser({$or:[{email:email},{'phone.mobile_number':mobileNumber}]});
+    const otp = commonFunction.getOTP();
+    const otpExpireTime = new Date().getTime() + 300000;
+    const obj = {
+      phone: {
+        mobile_number: mobileNumber,
+      },
+      email:email,
+      otp: otp,
+      otpExpireTime: otpExpireTime,
+    };
+    if(email){
+      const emailobj = {
+        email:email,
+        otp: otp,
+        otpExpireTime: otpExpireTime,
+      };
+    }
+   if(!isCredentialExist){
+      
+      if(email){
+        const createUserEntry=await createUser(obj);
+        await commonFunction.sendEmailOtp(email,otp)
+      }else{
+        const createUserEntry=await createUser(obj);
+      const contactNumber = createUserEntry.phone.country_code + createUserEntry.phone.mobile_number;
+        const userName="Dear";
+      const userOtp=`${otp}`
+      await whatsappAPIUrl.sendMessageWhatsApp(contactNumber,userName,userOtp,'loginotp');
+      await sendSMS.sendSMSForOtp(mobileNumber, otp);
+      }
+      token = await commonFunction.getToken({
+        _id: createUserEntry._id,
+        mobile_number: createUserEntry.mobile_number,
+        email:email
+      });
+      const result = {
+        firstTime: createUserEntry.firstTime,
+        _id: createUserEntry._id,
+        phone: createUserEntry.phone,
+        userType: createUserEntry.userType,
+        otpVerified: createUserEntry.otpVerified,
+        email:createUserEntry.email,
+        token: token,
+        
+      };
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        message: responseMessage.LOGIN_SUCCESS,
+        result: result,
+      });
+    }
+    const var1 = isCredentialExist.username === "" ? "Dear" : isCredentialExist.username;
+    const var2=`${otp}`
+    obj.otpVerified = false;
+    if(email){
+      let updatedUserEmail = await updateUser(
+        {_id:isCredentialExist._id, status: status.ACTIVE },
+        emailobj
+      );
+      await commonFunction.sendEmailOtp(email,otp)
+
+    }else{
+      let updatedUser = await updateUser(
+        {_id:isCredentialExist._id, status: status.ACTIVE },
+        obj
+      );
+      const userMobile=updatedUser.phone.country_code + updatedUser.phone.mobile_number;
+       await whatsappAPIUrl.sendMessageWhatsApp(userMobile, var1,var2, 'loginotp');
+    await sendSMS.sendSMSForOtp(mobileNumber, otp);
+    }
+   
+    if (!updatedUser) {
+      return res.status(statusCode.InternalError).json({
+        statusCode: statusCode.InternalError,
+        message: responseMessage.INTERNAL_ERROR,
+      });
+    }
+    token = await commonFunction.getToken({
+      _id: updatedUser._id,
+      mobile_number: updatedUser.phone.mobile_number,
+      email:email
+    });
+    const result = {
+      firstTime: updatedUser.firstTime,
+      _id: updatedUser._id,
+      phone: updatedUser.phone,
+      userType: updatedUser.userType,
+      otpVerified: updatedUser.otpVerified,
+      status: updatedUser.status,
+      token: token,
+    };
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      message: responseMessage.LOGIN_SUCCESS,
+      result: result,
+    });
+  } catch (error) {
+    console.error("error while tryiong to login",error);
     return next(error);
   }
 }

@@ -4497,15 +4497,15 @@ module.exports = {
   },
 
   sendEmailOtp: async (email, otp) => {
-    let transporter = nodemailer.createTransport({
+    var transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: config.get("nodemailer.email"),
-        pass: config.get("nodemailer.password"),
+        user: nodemailerConfig.options.auth.user,
+        pass: nodemailerConfig.options.auth.pass,
       },
     });
     var mailOptions = {
-      from: config.get("nodemailer.email"),
+      from: nodemailerConfig.user,
       to: email,
       subject: "Otp for verication",
       html: otpMail(otp),

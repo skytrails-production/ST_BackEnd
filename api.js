@@ -152,6 +152,9 @@ require("./routes/ssdc.routes")(app);
 
 require("./routes/mihuru.routes")(app);
 
+//grn connect api
+require("./routes/grnconnect.routes")(app);
+
 //Require forum Routes*************
 const forumQueRoutes = require("./routes/forumRoutes/forumQueRoutes");
 forumQueRoutes(app);

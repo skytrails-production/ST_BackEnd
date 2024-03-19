@@ -76,5 +76,5 @@ app.post('/skyTrails/api/admin/event/createPromoEvent',upload.single('images'),S
 app.put('/skyTrails/api/admin/event/deletePromoEvent',SchemaValidator(schemas.deletPromoEventSchema),eventPromoBannerControler.deletePromoEvent);
 app.delete('/skyTrails/api/admin/event/deletePermanentPromoEvent',SchemaValidator(schemas.deletPromoEventSchema),eventPromoBannerControler.deletePermanentPromoEvent);
 app.get('/skyTrails/api/admin/event/getPromoEvent',eventPromoBannerControler.getPromotionalBanner);
-app.post('/skytrails/api/admin/distributeReward',controller.distributeReward)
+app.post('/skyTrails/api/admin/distributeReward',controller.distributeReward)
 };

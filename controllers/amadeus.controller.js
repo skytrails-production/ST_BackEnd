@@ -141,14 +141,14 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
 
     const response = await axios.post(url, data, { headers });
 
-    // const responseData = extractDataFromResponse(response);
-    const jsonResult = await xmlToJson(response.data);
-    const newData =
-      jsonResult["soapenv:Envelope"]["soapenv:Body"][
-        "Fare_MasterPricerTravelBoardSearchReply"
-      ];
+    const responseData = extractDataFromResponse(response);
+    // const jsonResult = await xmlToJson(response.data);
+    // const newData =
+    //   jsonResult["soapenv:Envelope"]["soapenv:Body"][
+    //     "Fare_MasterPricerTravelBoardSearchReply"
+    //   ];
     msg = "Flight Searched Successfully!";
-    actionCompleteResponse(res, newData, msg);
+    actionCompleteResponse(res, responseData, msg);
   } catch (err) {
     // console.log(err);
     sendActionFailedResponse(res, {}, err.message);
@@ -358,6 +358,8 @@ exports.airSellFromRecommendation = async (req, res) => {
     sendActionFailedResponse(res, { err }, err.message);
   }
 };
+
+
 
 function extractDataFromResponse(response) {
   return response.data;
