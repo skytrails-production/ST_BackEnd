@@ -138,8 +138,8 @@ exports.api = {
     "https://api.travelboutiqueonline.com/HotelAPI_V10/HotelService.svc/rest/BlockRoom",
   hotelBookRoomURL:
     "https://booking.travelboutiqueonline.com/HotelAPI_V10/HotelService.svc/rest/Book",
-  // hotelBookingDetailsURL:
-  //   "https://booking.travelboutiqueonline.com/HotelAPI_V10/HotelService.svc/rest/GetBookingDetail",
+  hotelBookingDetailsURL:
+    "https://booking.travelboutiqueonline.com/HotelAPI_V10/HotelService.svc/rest/GetBookingDetail",
   hotelCancelURL:
     "https://booking.travelboutiqueonline.com/HotelAPI_V10/HotelService.svc/rest/SendChangeRequest",
   hotelCancelStatusURL:
