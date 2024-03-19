@@ -82,7 +82,7 @@ const eventBookingServices={
     },
     getEventPopulate: async (body) => {
         const { page, limit, search } = body;
-        let query = {status:status.ACTIVE}
+        let query = {status:status.ACTIVE,}
         if (search) {
             query.$or = [
                 { profession: { $regex: search, $options: 'i' } },
@@ -91,6 +91,8 @@ const eventBookingServices={
                 { 'contactNo.mobile_number': { $regex: search, $options: 'i' } },
             ]
         }
+        const currentDate = new Date().toISOString();
+        query.eventDate = { $gte: currentDate }; 
         let pipeline = [
             {
                 $lookup: {
@@ -138,7 +140,6 @@ const eventBookingServices={
                 isluckyUser: 1,
                 deviceType: 1,
                 eventDate: 1,
-
                 createdAt:1
               },},
               {$sort:{createdAt:-1}}
