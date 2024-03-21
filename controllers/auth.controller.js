@@ -1423,12 +1423,13 @@ exports.getAgentchangeBusRequest = async (req, res, next) => {
 //*************************************create Markup***********************************************/
 exports.createMarkup = async (req, res, next) => {
   try {
-    const { hotelMarkup, flightMarkup, busMarkup, packageMarkup } = req.body;
+    const { hotelMarkup, flightMarkup, busMarkup, packageMarkup,rechargeMarkup } = req.body;
     const object = {
       hotelMarkup: hotelMarkup,
       flightMarkup: flightMarkup,
       busMarkup: busMarkup,
       holidayPackageMarkup: packageMarkup,
+      rechargeMarkup:rechargeMarkup
     };
     const data = await findMarkup({ status: status.ACTIVE });
     console.log("data", data);

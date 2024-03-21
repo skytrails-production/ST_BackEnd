@@ -94,7 +94,7 @@ const lastNotificationSent = new Map();
 // task.start();
 
 // Define and schedule task2 separately
-var taskPromotionalNotification = cron.schedule("0 10 * * *",async () => {
+var taskPromotionalNotification = cron.schedule("11 10 * * *",async () => {
   try {
     // 'phone.mobile_number':'8115199076'
     const users = await userList({
@@ -107,8 +107,11 @@ var taskPromotionalNotification = cron.schedule("0 10 * * *",async () => {
     // const messageBody = `✨Check out our latest promotion! We're offering deals so good, even your coffee will do a double-take! ☕️ Explore your journey with TheSkyTrails pvt ltd✨`;
     for (const user of users) {
       try { 
-      const notificationMessage = `Just Married?🥂👰🏻🤵🏻🕊`;
-      const messageBody = `✨Skytrails offers dream honeymoon packages - explore, relax, and reconnect.🕊♡₊˚ 🦢・₊✧💍`;
+      const notificationMessage = `▶︎ •၊၊||၊|။|||။၊|• 0:10`;
+      const messageBody = `.
+.
+Voice message:Don't delay your plans!
+Book your tickets.🎟️🧳🚀🚌`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
       // const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`
         // Check if a notification has been sent to this user recently
@@ -278,11 +281,14 @@ var taskPlatformNotification = cron.schedule("52 17 * * *",
       for (const user of users) {
         try {
           // Task 2 logic
-          const notificationMessage = `Hey ${user.username}, Great news! 🆕📱`;
-      const messageBody = `We just updated the Skytrails app, and it's amazing🤩! 
-      Now you can find super cool deals on flights✈ and hotels🏨📱 
-      
-      Update your app now and let's get your wanderlust fix!`;
+
+          // const notificationMessage = `Hey ${user.username}, Great news! 🆕📱`;
+          // const messageBody = `We just updated the Skytrails app, and it's amazing🤩! 
+          // Now you can find super cool deals on flights✈ and hotels🏨📱 
+          
+          // Update your app now and let's get your wanderlust fix!`;
+          const notificationMessage = `Abhi nahin toh kab? ${user.username}🤩!`;
+      const messageBody = `Book your tickets🎫 🎟️ with the Skytrails and grab the deal!⋆｡ﾟ☁︎｡✈︎⋆｡ ﾟ☾ ﾟ｡⋆`;
           await pushSimpleNotification(
             user.deviceToken,
             notificationMessage,

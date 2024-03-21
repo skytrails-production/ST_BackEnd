@@ -1,6 +1,6 @@
-const status = require("../enums/status");
+// const status = require("../enums/status");
 const forumQueModel=require("../model/forum/forumQue")
-
+const status=require ('../enums/storyStatus')
 //**************************************WORK BY */
 //**********CHARU YADAV*****************//
 //**********NODE JS DEVELOPER, This is a services which we need mongodb queries to perform operation on db********//
@@ -33,7 +33,7 @@ const forumQueServices={
       }
       let data = filter || ""
       let searchData = [
-        {$match:{status:status.ACTIVE}},
+        {$match:{$or:[{status:status.ACTIVE},{status:status.PENDING}]}},
         {
           $lookup: {
             from: "userBtoC",

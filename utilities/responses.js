@@ -123,4 +123,5 @@ module.exports = {
 	ALREADY_REWARD_DSTRIBUTED:"Already reward distributed for revenue.",
 	No_REVENUE:"No reward generate for this agent.",
 	EMAIL_ALREADY_EXIST: 'This email already exist',
+	INVALID_FORMAT: 'Please provide valid input',
 };

@@ -64,6 +64,6 @@ module.exports = function (app) {
   app.delete("/skyTrails/api/user/deleteProfile",[authJwt.verifcationToken],userController.deleteUserAccount)
 
   app.put("/skytrails/api/user/updateEmail",[authJwt.verifcationToken],SchemaValidator(schemas.updateEmailSchema),userController.updateEmail);
-  app.post("/skytrails/api/user/loginWithMailMobileLogin",SchemaValidator(schemas.btoCuserLoginSchema),userController.loginWithMailMobileLogin)
- 
+  app.post("/skytrails/api/user/loginWithMailMobileLogin",SchemaValidator(schemas.btoCuserLoginSchema),userController.loginWithMailMobileLogin);
+  app.post('/skytrails/api/user/sendOTPOnSMS',userController.sendOtpOnSMS);
 };

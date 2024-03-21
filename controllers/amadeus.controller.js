@@ -89,7 +89,7 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
                     <typeOfUnit>PX</typeOfUnit>
                 </unitNumberDetail>
                 <unitNumberDetail>
-                    <numberOfUnits>10</numberOfUnits>
+                    <numberOfUnits>250</numberOfUnits>
                     <typeOfUnit>RC</typeOfUnit>
                 </unitNumberDetail>
             </numberOfUnit>
@@ -141,14 +141,32 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
 
     const response = await axios.post(url, data, { headers });
 
-    const responseData = extractDataFromResponse(response);
-    // const jsonResult = await xmlToJson(response.data);
-    // const newData =
-    //   jsonResult["soapenv:Envelope"]["soapenv:Body"][
-    //     "Fare_MasterPricerTravelBoardSearchReply"
-    //   ];
+    // const responseData = extractDataFromResponse(response);
+    const jsonResult = await xmlToJson(response.data);
+    const obj =
+      jsonResult["soapenv:Envelope"]["soapenv:Body"][
+        "Fare_MasterPricerTravelBoardSearchReply"
+      ];
+    
+    console.log(obj)
+
+      const recommendationObject=obj.recommendation
+const segNumber=recommendationObject.map((item,index)=>{
+    return item.segmentFlightRef.length || 1 
+})
+const flattenedArray = segNumber.flatMap((item, index) => {
+    const modifiedArray = [];
+    for (let i = 0; i < item; i++) {
+        modifiedArray.push({...obj.flightIndex.groupOfFlights[i], ...recommendationObject[index].paxFareProduct});
+    }
+    return modifiedArray;
+});
+
+// console.log(flattenedArray);
+
+
     msg = "Flight Searched Successfully!";
-    actionCompleteResponse(res, responseData, msg);
+    actionCompleteResponse(res, flattenedArray, msg);
   } catch (err) {
     // console.log(err);
     sendActionFailedResponse(res, {}, err.message);

@@ -56,7 +56,7 @@ exports.login = async (req, res, next) => {
     if (!mobileNumber) {
       return res.status(statusCode.badRequest).json({
         statusCode: statusCode.badRequest,
-        message: responseMessage.INCORRECT_LOGIN,
+        responseMessage: responseMessage.INCORRECT_LOGIN,
       });
     }
     const isExist = await findUser({
@@ -94,7 +94,7 @@ exports.login = async (req, res, next) => {
       };
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
-        message: responseMessage.LOGIN_SUCCESS,
+        responseMessage: responseMessage.LOGIN_SUCCESS,
         result: result,
       });
     }
@@ -128,7 +128,7 @@ exports.login = async (req, res, next) => {
       await whatsappAPIUrl.sendMessageWhatsApp('+919999123232',var1,otp,'loginotp');
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
-        message: responseMessage.LOGIN_SUCCESS,
+        responseMessage: responseMessage.LOGIN_SUCCESS,
         result: result,
       });
     }
@@ -143,7 +143,7 @@ exports.login = async (req, res, next) => {
     if (!updatedUser) {
       return res.status(statusCode.InternalError).json({
         statusCode: statusCode.InternalError,
-        message: responseMessage.INTERNAL_ERROR,
+        responseMessage: responseMessage.INTERNAL_ERROR,
       });
     }
     token = await commonFunction.getToken({
@@ -161,7 +161,7 @@ exports.login = async (req, res, next) => {
     };
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
-      message: responseMessage.LOGIN_SUCCESS,
+      responseMessage: responseMessage.LOGIN_SUCCESS,
       result: result,
     });
   } catch (error) {
@@ -246,7 +246,7 @@ exports.verifyUserOtp = async (req, res, next) => {
         result: result,
       });
     }
-    if (!fullName||!dob) {
+    if (!fullName) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.Forbidden,
         message: responseMessage.FIELD_REQUIRED,
@@ -832,110 +832,168 @@ exports.updateEmail=async(req,res,next)=>{
   }
 }
 
-
 exports.loginWithMailMobileLogin=async(req,res,next)=>{
   try {
-    const { mobileNumber,email } = req.body;
-    console.log("req.body=======================",req.body);
-    const isCredentialExist=await findUser({$or:[{email:email},{'phone.mobile_number':mobileNumber}]});
+    const {email}=req.body;
     const otp = commonFunction.getOTP();
     const otpExpireTime = new Date().getTime() + 300000;
-    const obj = {
-      phone: {
-        mobile_number: mobileNumber,
-      },
-      email:email,
-      otp: otp,
-      otpExpireTime: otpExpireTime,
-    };
-    if(email){
-      const emailobj = {
-        email:email,
-        otp: otp,
-        otpExpireTime: otpExpireTime,
-      };
-    }
-   if(!isCredentialExist){
-      
-      if(email){
-        const createUserEntry=await createUser(obj);
-        await commonFunction.sendEmailOtp(email,otp)
-      }else{
-        const createUserEntry=await createUser(obj);
-      const contactNumber = createUserEntry.phone.country_code + createUserEntry.phone.mobile_number;
-        const userName="Dear";
-      const userOtp=`${otp}`
-      await whatsappAPIUrl.sendMessageWhatsApp(contactNumber,userName,userOtp,'loginotp');
-      await sendSMS.sendSMSForOtp(mobileNumber, otp);
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const mobileRegex = /^(?!0)\d*(\d)(?!\1{4})\d*$/;
+    
+    if (emailRegex.test(email)) {
+      const isExist=await findUser({email:email,status:status.ACTIVE});
+      // Perform actions for login with email
+      if(isExist){
+        const setUnVerified=await updateUser({_id:isExist._id},{$set:{otp:otp,otpExpireTime:otpExpireTime,otpVerified:false}});
+        if (!setUnVerified) {
+          return res.status(statusCode.InternalError).json({
+            statusCode: statusCode.InternalError,
+            responseMessage: responseMessage.INTERNAL_ERROR,
+          });
+        }
+        await commonFunction.sendEmailOtp(isExist.email,otp);
+        const token=await commonFunction.getToken({
+          _id: setUnVerified._id,
+          email:setUnVerified.email
+        });
+        const result={
+          firstTime: setUnVerified.firstTime,
+        _id: setUnVerified._id,
+        email: setUnVerified.email,
+        userType: setUnVerified.userType,
+        otpVerified: setUnVerified.otpVerified,
+        status: setUnVerified.status,
+        token
+        }
+        return res.status(statusCode.OK).send({
+          statusCode: statusCode.OK,
+          responseMessage: responseMessage.LOGIN_SUCCESS,
+          result: result,
+        });
       }
-      token = await commonFunction.getToken({
-        _id: createUserEntry._id,
-        mobile_number: createUserEntry.mobile_number,
-        email:email
+      const obj={
+        email:email,
+        otp:otp,
+        otpExpireTime:otpExpireTime
+      }
+      const createNewUser=await createUser(obj);
+      const token=await commonFunction.getToken({
+        _id: createNewUser._id,
+        email:createNewUser.email
       });
-      const result = {
-        firstTime: createUserEntry.firstTime,
-        _id: createUserEntry._id,
-        phone: createUserEntry.phone,
-        userType: createUserEntry.userType,
-        otpVerified: createUserEntry.otpVerified,
-        email:createUserEntry.email,
-        token: token,
-        
-      };
+      createNewUser.token=token
+      await commonFunction.sendEmailOtp(email,otp);
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
-        message: responseMessage.LOGIN_SUCCESS,
+        responseMessage: responseMessage.LOGIN_SUCCESS,
+        result: createNewUser,
+      });
+    } 
+    // else if (mobileRegex.test(email)) {
+      // Perform actions for login with mobile number
+      const isExist=await findUser({'phone.mobile_number':email});
+      const var1 = isExist && isExist.username !== "" ? isExist.username : "Dear";
+      if(isExist){
+        const setUnVerified=await updateUser({_id:isExist._id},{$set:{otp:otp,otpExpireTime:otpExpireTime,otpVerified:false}});
+        if (!setUnVerified) {
+          return res.status(statusCode.InternalError).json({
+            statusCode: statusCode.InternalError,
+            responseMessage: responseMessage.INTERNAL_ERROR,
+          });
+        }
+        const userMobile1=setUnVerified.phone.country_code + setUnVerified.phone.mobile_number;
+        console.log("userMobile============",userMobile1);
+        const userMobile= isExist.phone.country_code + isExist.phone.mobile_number;
+        const var2=otp;
+        const sent = await whatsappAPIUrl.sendMessageWhatsApp('+918115199076', var1,var2, 'loginotp');    
+        console.log("sent+============",sent)
+        await sendSMS.sendSMSForOtp(email, otp);
+        const token=await commonFunction.getToken({
+          _id: setUnVerified._id,
+          phone:setUnVerified.phone.mobile_number
+        });
+        const result={
+          firstTime: setUnVerified.firstTime,
+        _id: setUnVerified._id,
+        phone:setUnVerified.phone.mobile_number,
+        userType: setUnVerified.userType,
+        otpVerified: setUnVerified.otpVerified,
+        status: setUnVerified.status,
+        token
+        }
+        return res.status(statusCode.OK).send({
+          statusCode: statusCode.OK,
+          responseMessage: responseMessage.LOGIN_SUCCESS,
+          result: result,
+        });
+      }
+      const obj={
+        'phone.mobile_number':email,
+        otp:otp,
+        otpExpireTime:otpExpireTime
+      }
+      const createNewUser=await createUser(obj);
+      const userMobile=createNewUser.phone.country_code + createNewUser.phone.mobile_number;
+      await whatsappAPIUrl.sendMessageWhatsApp(userMobile, var1,otp, 'loginotp');
+        await sendSMS.sendSMSForOtp(createNewUser.phone.mobile_number, otp);
+      const token=await commonFunction.getToken({
+        _id: createNewUser._id,
+        phone:createNewUser.phone.mobile_number
+      });
+      const result={
+        firstTime: createNewUser.firstTime,
+        _id:createNewUser._id,
+        phone: createNewUser.phone.mobile_number,
+        userType: createNewUser.userType,
+        otpVerified: createNewUser.otpVerified,
+        status: createNewUser.ACTIVE,
+        token
+       }
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.LOGIN_SUCCESS,
         result: result,
       });
-    }
-    const var1 = isCredentialExist.username === "" ? "Dear" : isCredentialExist.username;
-    const var2=`${otp}`
-    obj.otpVerified = false;
-    if(email){
-      let updatedUserEmail = await updateUser(
-        {_id:isCredentialExist._id, status: status.ACTIVE },
-        emailobj
-      );
-      await commonFunction.sendEmailOtp(email,otp)
-
-    }else{
-      let updatedUser = await updateUser(
-        {_id:isCredentialExist._id, status: status.ACTIVE },
-        obj
-      );
-      const userMobile=updatedUser.phone.country_code + updatedUser.phone.mobile_number;
-       await whatsappAPIUrl.sendMessageWhatsApp(userMobile, var1,var2, 'loginotp');
-    await sendSMS.sendSMSForOtp(mobileNumber, otp);
-    }
-   
-    if (!updatedUser) {
-      return res.status(statusCode.InternalError).json({
-        statusCode: statusCode.InternalError,
-        message: responseMessage.INTERNAL_ERROR,
-      });
-    }
-    token = await commonFunction.getToken({
-      _id: updatedUser._id,
-      mobile_number: updatedUser.phone.mobile_number,
-      email:email
-    });
-    const result = {
-      firstTime: updatedUser.firstTime,
-      _id: updatedUser._id,
-      phone: updatedUser.phone,
-      userType: updatedUser.userType,
-      otpVerified: updatedUser.otpVerified,
-      status: updatedUser.status,
-      token: token,
-    };
-    return res.status(statusCode.OK).send({
-      statusCode: statusCode.OK,
-      message: responseMessage.LOGIN_SUCCESS,
-      result: result,
-    });
+    // } else {
+    //   return res.status(statusCode.badRequest).json({
+    //     statusCode: statusCode.badRequest,
+    //     responseMessage: responseMessage.INVALID_FORMAT,
+    //   });
+    // }
+    
   } catch (error) {
     console.error("error while tryiong to login",error);
+    return next(error);
+  }
+}
+
+exports.sendOtpOnSMS=async(req,res,next)=>{
+  try {
+    const {mobile}=req.body;
+    const otp=await commonFunction.getOTP();
+    const otpExpireTime = new Date().getTime() + 300000;
+    const isExist=await findUser({'phone.mobile_number':mobile,status:status.ACTIVE});
+    if(!isExist){
+      return res.status(statusCode.OK).json({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.NOT_FOUND,
+      });
+    }
+    const setUnVerified=await updateUser({_id:isExist._id},{$set:{otp:otp,otpExpireTime:otpExpireTime,otpVerified:false}});
+    if (!setUnVerified) {
+      return res.status(statusCode.OK).json({
+        statusCode: statusCode.InternalError,
+        responseMessage: responseMessage.INTERNAL_ERROR,
+      });
+    }
+    const sent=await sendSMS.sendSMSForOtp(mobile, otp);
+    console.log("sent===================",sent);
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.OTP_SEND
+    });
+  } catch (error) {
+    console.error("error while trying to send sms.",error);
     return next(error);
   }
 }

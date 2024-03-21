@@ -388,6 +388,7 @@ const schemas = {
     flightMarkup: joi.number().required(),
     busMarkup: joi.number().required(),
     packageMarkup: joi.number().required(),
+    rechargeMarkup: joi.number().required()
   }),
   offlineQuerySchema: joi.object().keys({
     email: joi.string().required(),

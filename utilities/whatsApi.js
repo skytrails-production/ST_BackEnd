@@ -23,7 +23,7 @@ sdk.auth(process.env.DOUBLE_TICK_API_KEY);
 //   }
 // }
 async function sendMessageWhatsApp(number, var1,var2,temName) {
-  try{
+  try{ 
     const options = {
       method: 'POST',
       url: doubleTick,

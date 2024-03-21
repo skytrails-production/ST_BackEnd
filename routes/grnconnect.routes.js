@@ -12,6 +12,8 @@ module.exports = function (app) {
 
 
 
+    app.get("/skyTrails/grnconnect/getcityList", controller.getCityListData);
+
     app.post("/skyTrails/grnconnect/hotelSearch",controller.hotelSearch);
     app.get("/skyTrails/grnconnect/refetchHotel", controller.refetchHotel);
     app.post("/skyTrails/grnconnect/rateRefetchHotel", controller.rateRefetchHotel);

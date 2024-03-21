@@ -106,3 +106,41 @@ exports.deletePermanentPromoEvent=async(req,res,next)=>{
         console.error();
     }
 }
+
+exports.updatePromotBanner=async(req,res,next)=>{
+    try {
+        const{startDate,endDate,url,isClickAble,content,adminId,postId}=req.body;
+        if (req.file) {
+        const imageFiles = await commonFunction.getImageUrlAWS(req.file);
+        req.body.images=imageFiles
+        if (!imageFiles) {
+            return res.status(statusCode.InternalError).send({ statusCode: statusCode.OK, message: responseMessage.INTERNAL_ERROR });
+        }
+          }
+         
+          const isAdminExist=await adminModel.findOne({_id:adminId});
+          if(!isAdminExist){
+              return res.status(statusCode.OK).send({
+                  statusCode: statusCode.NotFound,
+                  message: responseMessage.ADMIN_NOT_FOUND,
+                });
+          };
+          const isBannerExist=await findPromoEventData({_id:postId});
+          if(!isBannerExist){
+            return res.status(statusCode.OK).send({
+                statusCode: statusCode.NotFound,
+                message: responseMessage.EVENT_NOT_FOUND,
+              });
+          }
+          
+        const updateBanner=await updatePromoEvent({_id:isBannerExist._id},req.body);
+        return res.status(statusCode.OK).send({
+            statusCode: statusCode.OK,
+            message: responseMessage.CREATED_SUCCESS,
+            result: updateBanner,
+          });
+    } catch (error) {
+        console.error("Error while trying to update promobanner",error);
+        return next(error);
+    }
+}
