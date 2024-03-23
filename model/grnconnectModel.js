@@ -6,7 +6,13 @@ const GrnCityListSchema = new mongoose.Schema({
   cityCode: Number,
   cityName: String,
   countryCode: String,
+  countryName:String
 });
+const GrnCountryListSehema = new mongoose.Schema({ 
+countryCode:String,
+countryCode3:String,
+countryName:String
+})
 
 const GrnHotelCityMapSchema = new mongoose.Schema({
   hotelCode: {
@@ -24,10 +30,13 @@ GrnCityListSchema.plugin(mongoosePaginate);
 GrnCityListSchema.plugin(aggregatePaginate);
 GrnHotelCityMapSchema.plugin(mongoosePaginate);
 GrnHotelCityMapSchema.plugin(aggregatePaginate);
+GrnCountryListSehema.plugin(mongoosePaginate);
+GrnCountryListSehema.plugin(aggregatePaginate);
 const GrnCityList = mongoose.model("grnCityList", GrnCityListSchema);
 const GrnHotelCityMap = mongoose.model(
   "grnHotelCityMap",
   GrnHotelCityMapSchema
 );
+const GrnCountryList=mongoose.model("grnCountryList",GrnCountryListSehema)
 
-module.exports = { GrnCityList, GrnHotelCityMap };
+module.exports = { GrnCityList, GrnHotelCityMap,GrnCountryList };

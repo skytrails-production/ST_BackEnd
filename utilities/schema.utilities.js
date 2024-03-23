@@ -384,11 +384,11 @@ const schemas = {
     longitude: joi.string().required(),
   }),
   markupSchema: joi.object().keys({
-    hotelMarkup: joi.number().required(),
-    flightMarkup: joi.number().required(),
-    busMarkup: joi.number().required(),
-    packageMarkup: joi.number().required(),
-    rechargeMarkup: joi.number().required()
+    hotelMarkup: joi.number().optional(),
+    flightMarkup: joi.number().optional(),
+    busMarkup: joi.number().optional(),
+    packageMarkup: joi.number().optional(),
+    rechargeMarkup: joi.number().optional()
   }),
   offlineQuerySchema: joi.object().keys({
     email: joi.string().required(),

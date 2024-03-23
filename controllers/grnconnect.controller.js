@@ -7,7 +7,7 @@ const {
   sendActionFailedResponse,
 } = require("../common/common");
 
-const { GrnCityList, GrnHotelCityMap } = require("../model/grnconnectModel");
+const { GrnCityList, GrnHotelCityMap,GrnCountryList } = require("../model/grnconnectModel");
 const commonFunctions = require("../utilities/commonFunctions");
 
 const s3 = new aws.S3({
@@ -37,6 +37,40 @@ exports.getCityListData= async (req, res) =>{
   // console.log(err);
   sendActionFailedResponse(res, {}, err.message);
 }
+
+}
+
+exports.updateCityListWithCountryNames= async (req, res) =>{
+  try{
+
+   // Retrieve all documents from grnCityList collection
+   const cityDocuments = await GrnCityList.find({});
+
+   // Iterate through each document in grnCityList collection
+   for (const cityDoc of cityDocuments) {
+     // Retrieve corresponding country document from grnCountryList
+     const countryDoc = await GrnCountryList.findOne({ countryCode: cityDoc.countryCode });
+
+     if (countryDoc) {
+       // Update city document with country name
+       await GrnCityList.updateOne(
+         { _id: cityDoc._id },
+         { $set: { countryName: countryDoc.countryName } }
+       );
+       console.log(`Updated city: ${cityDoc.cityName}, ${countryDoc.countryName}`);
+     } else {
+       console.log(`Country not found for city: ${cityDoc.cityName}`);
+     }
+   }
+
+   console.log('All cities updated with country names');
+   res.status(200).send('All cities updated with country names');
+ } catch (error) {
+   console.error('Error:', error);
+   res.status(500).send('Error updating cities with country names');
+ } finally {
+   console.log('Disconnected from MongoDB');
+ }
 
 }
 
