@@ -24,6 +24,8 @@ const headers = {
 };
 const baseurl='https://api-sandbox.grnconnect.com';
 
+//citylist data
+
 exports.getCityListData= async (req, res) =>{
   try{
     const data=req.query.keyword;
@@ -39,6 +41,8 @@ exports.getCityListData= async (req, res) =>{
 }
 
 }
+
+//update cityList with countryName
 
 exports.updateCityListWithCountryNames= async (req, res) =>{
   try{
@@ -74,6 +78,7 @@ exports.updateCityListWithCountryNames= async (req, res) =>{
 
 }
 
+//hotel search
 
 exports.hotelSearch=async (req,res) =>{
     try{
@@ -105,6 +110,7 @@ exports.hotelSearch=async (req,res) =>{
     }
 }
 
+//refetch Hotel
 
 exports.refetchHotel = async (req, res) => {
     try{
@@ -123,6 +129,7 @@ exports.refetchHotel = async (req, res) => {
 }
 
 
+// rate Refetch Hotel
 
 exports.rateRefetchHotel =async (req, res) =>{
     try{
@@ -157,3 +164,43 @@ exports.grnHotelCityMap = async (cityCode) => {
     throw new Error(error.message);
   }
 };
+
+
+//hotel booking
+
+exports.hotelBooking = async (req, res)=>{
+  try {
+    const data={
+      ...req.body
+    };
+    
+    const response=await axios.post(`${baseurl}/api/v3/hotels/bookings`, data, { headers })
+
+    msg = "Hotel Booking Successfully!";
+    actionCompleteResponse(res, response.data, msg);  
+    
+  } catch (err) {
+    sendActionFailedResponse(res, {}, err.message);
+    
+  }
+}
+
+
+
+//hotel Fetch Booking
+
+
+exports.hotelFetchBooking = async (req, res)=>{
+
+  try {
+     const data=req.query.bref;
+    
+    const response=await axios.post(`${baseurl}/api/v3/hotels/bookings/${data}?type=value`, { headers })
+
+    msg = "Hotel Booking Successfully!";
+    actionCompleteResponse(res, response.data, msg); 
+    
+  } catch (err) {
+    sendActionFailedResponse(res, {}, err.message);    
+  }
+}

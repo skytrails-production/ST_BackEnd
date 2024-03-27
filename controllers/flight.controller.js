@@ -976,7 +976,27 @@ exports.returnFlightSort = async (req, res) => {
 
 
 
+//**************************************Combined api of tvo and amadeous***************************************/
+exports.combinerApiForFlight=async(req,res,next)=>{
+  try {
+    const { travoltPayload, emtPayload } = req.body;
+    // Function to handle API requests and return data
+    const makeRequest = async (url, data) => {
+      const response = await axios.post(url, data);
+      return response.data;
+    };
+    const data = {
+      ...req.body,
+    };
 
+    const response = await axios.post(`${api.emiflightSearch}`, travoltPayload);
+    console.log("response===================",response);
+
+  } catch (error) {
+    console.error("error while trying to combined the response for both",error);
+    return next(error)
+  }
+}
 
 
 

@@ -444,9 +444,14 @@ exports.approveAgent = async (req, res, next) => {
       { approveStatus: approveStatus, isApproved: true,is_active:1, reason: reason }
     );
     if (approveStatus === approvestatus.APPROVED) {
+      // await sendSMS.sendSMSAgents(mobile_number, email);
+      // const msg = `Welcome to TheSkyTrails, Admin added you as an agent. Please use the following credentials to login and fill in the mandatory form:\nEmail: ${email}, and Password: ${password} .click here: ${process.env.AGENT_URL}`;
+      // // await whatsappAPIUrl.sendWhatsAppMessage(mobile_number, msg);
+      // await commonFunction.sendAgent(email, password);
       return res
         .status(statusCode.OK)
         .send({ message: responseMessage.APPROVED, result: updateResult });
+       
     } else {
       return res
         .status(statusCode.OK)

@@ -108,8 +108,7 @@ var taskPromotionalNotification = cron.schedule("11 10 * * *",async () => {
     for (const user of users) {
       try { 
       const notificationMessage = `▶︎ •၊၊||၊|။|||။၊|• 0:10`;
-      const messageBody = `.
-.
+      const messageBody = `..
 Voice message:Don't delay your plans!
 Book your tickets.🎟️🧳🚀🚌`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
@@ -157,7 +156,7 @@ Book your tickets.🎟️🧳🚀🚌`;
 taskPromotionalNotification.start(); // Start the task2
 
 // Main task
-const taskEventNotification = cron.schedule("*/3 * * * *",
+const taskEventNotification = cron.schedule("0 22 * * *",
   async () => {
     try {
       // Fetch all users from the database
@@ -185,7 +184,7 @@ const taskEventNotification = cron.schedule("*/3 * * * *",
         ) {
           // Send the notification to the user
           const notifications = `🎉 Excited for Holi, Dear ${user.name} 😎?`;
-          const messageBody1 = `We are pleased to inform you that your booking for Holi Event 2024, is confirmed with TheSkytrails PVT LTD.!🎉🪅🎨🎊🔫.
+          const messageBody1 = `We are pleased to inform you that  Holi Event 2024, is alive with TheSkytrails PVT LTD.!🎉🪅🎨🎊🔫.
               ✈️ TheSkyTrails Team,✈️`;
               const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`
           await pushNotification(user.deviceToken, notifications, messageBody1,imageurl);

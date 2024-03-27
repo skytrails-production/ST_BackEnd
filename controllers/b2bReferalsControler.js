@@ -27,7 +27,7 @@ const { brbuserServices } = require("../services/btobagentServices");
 const {
   createbrbuser,
   findbrbuser,
-  findOne,
+  findOneAgent,
   getbrbuser,
   findbrbuserData,
   findbrbData,
@@ -94,7 +94,7 @@ const aws = require("aws-sdk");
 //**************************************************START CREATE API LOGIC IMPLEMENTATION***********************************/
 exports.shareAgentReferralCode=async(req,res,next)=>{
   try {
-    const isUserExist = await findOne({
+    const isUserExist = await findOneAgent({
       _id: req.params.userId,
     });
     if (!isUserExist) {
@@ -118,7 +118,7 @@ return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage
 
 exports.getReferrals=async(req,res,next)=>{
   try {
-    const isAgentExist=await findOne({_id: req.params.userId});
+    const isAgentExist=await findOneAgent({_id: req.params.userId});
     if (!isAgentExist) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
@@ -139,7 +139,7 @@ exports.getReferalBookings = async (req, res, next) => {
   try {
     const finalResult = [];
     const agents=[];
-    const isAgentExist = await findOne({ _id: req.params.userId,});
+    const isAgentExist = await findOneAgent({ _id: req.params.userId,});
     if (!isAgentExist) {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,
