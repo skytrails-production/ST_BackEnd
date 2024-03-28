@@ -192,6 +192,62 @@ exports.RegisterUser = async (req, res) => {
   });
 };
 
+exports.uploadAgentLogo = async (req, res) => {
+  const userId = req.body.userId; // Assuming userId is sent in the request body
+
+  // Check if userId is provided
+  if (!userId) {
+    return res.status(400).json({ error: 'userId is required' });
+  }
+
+  // Check if logo file exists in the request
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
+
+  try {
+    
+    const agent = await b2bUser.findOne({_id: userId }); 
+    if (!agent) {
+      return res.status(401).json({ error: 'You are not authorized to upload a logo' });
+    }
+
+    // If authorized, proceed with logo upload
+    const logoFile = req.file;
+  
+    const s3Params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: "logo.png", // Set the key as "logo.png" for the logo image
+      Body: logoFile.buffer,
+      ContentType: logoFile.mimetype,
+      ACL: "public-read",
+    };
+
+    // Upload logo image to S3
+    s3.upload(s3Params, async (err, data) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        try {
+          await b2bUser.findOneAndUpdate(
+            { _id:userId }, 
+            { $set: { agentCompanyLogo: data.Location } }, 
+            { new: true }
+          );
+
+          res.json({ success: true, message: 'Logo uploaded successfully' });
+        } catch (err) {
+          console.log(err);
+          res.status(500).send('Error updating logo URL in the database');
+        }
+      }
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send('Error checking user authorization');
+  }
+};
+
 exports.LoginUser = async (req, res) => {
   try {
     const user = await b2bUser.findOne({

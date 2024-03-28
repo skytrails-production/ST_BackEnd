@@ -183,8 +183,9 @@ const taskEventNotification = cron.schedule("0 22 * * *",
           createdAtUser <= current_Date.getTime()
         ) {
           // Send the notification to the user
-          const notifications = `🎉 Excited for Holi, Dear ${user.name} 😎?`;
-          const messageBody1 = `We are pleased to inform you that  Holi Event 2024, is alive with TheSkytrails PVT LTD.!🎉🪅🎨🎊🔫.
+          const notifications = `Exclusive Offer only for you..`;
+          const messageBody1 = `Enjoy our Free Cancellation benefits on Flights.
+          TheSkytrails PVT LTD.!T&Cs apply
               ✈️ TheSkyTrails Team,✈️`;
               const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`
           await pushNotification(user.deviceToken, notifications, messageBody1,imageurl);

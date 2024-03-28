@@ -267,6 +267,10 @@ const Userb2bSchema =
         type: String,
         default: "",
       },
+      agentCompanyLogo:{
+        type:String,
+        default:''
+      },
     isApproved: {
       type: Boolean,
       default: false

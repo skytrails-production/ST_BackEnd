@@ -20,6 +20,7 @@ module.exports = function (app) {
   });
 
   app.post("/skyTrails/b2b/register", upload.single("file"), controller.RegisterUser);
+  app.post("/skyTrails/b2b/agentlogo", upload.single("file"), controller.uploadAgentLogo);
   app.post("/skyTrails/b2b/login", controller.LoginUser);
   app.post("/skyTrails/user/update", controller.UserUpdate);
   app.delete("/skyTrails/user/delete", controller.deleteUser);

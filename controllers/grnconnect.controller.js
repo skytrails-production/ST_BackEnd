@@ -85,8 +85,11 @@ exports.hotelSearch=async (req,res) =>{
         const data={
             ...req.body
         };
-        console.log(data,"data")
+        // console.log(data,"data")
         const hotelCode=await exports.grnHotelCityMap(req.body.cityCode);
+
+         
+
         const searchData={
           rooms:req.body.rooms,
           rates:req.body.rates,
@@ -97,7 +100,7 @@ exports.hotelSearch=async (req,res) =>{
           checkout:req.body.checkout,
           version:req.body.version
         }
-        console.log(searchData,"data")
+        // console.log(searchData,"data")
         // console.log(`${baseurl}/api/v3/hotels/availability`,"console")
         const response = await axios.post(`${baseurl}/api/v3/hotels/availability`, searchData, { headers });   
         
@@ -110,12 +113,54 @@ exports.hotelSearch=async (req,res) =>{
     }
 }
 
+
+//hotel Search with pagination
+
+exports.hotelSearch=async (req,res) =>{
+  try{
+      const data={
+          ...req.body
+      };
+      console.log(data,"data")
+      // const hotelCode=await exports.grnHotelCityMap(req.body.cityCode);
+
+       // Calculate pagination parameters
+       const page = req.query.page ? parseInt(req.query.page) : 1; // Get page number from query parameter, default to 1 if not provided
+       const limit = 100; // Set the limit of hotel codes per page
+
+       // Fetch hotel codes with pagination
+       const hotelCode = await exports.grnHotelCityMap(req.body.cityCode, page, limit);
+      //  console.log(hotelCode,"hotelCode")
+
+      const searchData={
+        rooms:req.body.rooms,
+        rates:req.body.rates,
+        hotel_codes:hotelCode,
+        currency:req.body.currency,
+        client_nationality:req.body.client_nationality,
+        checkin:req.body.checkin,
+        checkout:req.body.checkout,
+        version:req.body.version
+      }
+      // console.log(searchData,"data")
+      // console.log(`${baseurl}/api/v3/hotels/availability`,"console")
+      const response = await axios.post(`${baseurl}/api/v3/hotels/availability`, searchData, { headers });   
+      
+      
+      msg = "Hotel Search Successfully!";
+      actionCompleteResponse(res, response.data, msg);      
+  } catch (err) {
+    // console.log(err);
+    sendActionFailedResponse(res, {}, err.message);
+  }
+}
+
 //refetch Hotel
 
 exports.refetchHotel = async (req, res) => {
     try{
         const data=req.query.searchId;
-        console.log(`${baseurl}/api/v3/hotels/availability/${data}?rates="concise"`,"console")
+        // console.log(`${baseurl}/api/v3/hotels/availability/${data}?rates="concise"`,"console")
 
         const response = await axios.get(`${baseurl}/api/v3/hotels/availability/${data}?rates=concise`,{ headers });   
         
@@ -137,7 +182,7 @@ exports.rateRefetchHotel =async (req, res) =>{
             ...req.body
         };
         const searchId=req.query.searchId;
-        console.log(`${baseurl}api/v3/hotels/availability/<sid>/rates/auto?action=recheck`,"console")
+        // console.log(`${baseurl}api/v3/hotels/availability/<sid>/rates/auto?action=recheck`,"console")
         const response = await axios.post(`${baseurl}/api/v3/hotels/availability/${searchId}/rates/auto?action=recheck`, data, { headers });   
         
         
@@ -152,18 +197,36 @@ exports.rateRefetchHotel =async (req, res) =>{
 
 
 //grnHotelCityMap
+
+
 exports.grnHotelCityMap = async (cityCode) => {
   try {
     // console.log(cityCode,"citycode")
     const hotelCodes = await GrnHotelCityMap.find({'cityCode':cityCode  });
     
     const codedata = hotelCodes.map(item => `${item.hotelCode}`);
-    console.log(codedata)
+    // console.log(codedata)
     return codedata;
   } catch (error) {
     throw new Error(error.message);
   }
 };
+
+
+//grnHotelCityMap with pagination
+
+// exports.grnHotelCityMap = async (cityCode, page , limit) => {
+//   try {
+//       const hotelCodes = await GrnHotelCityMap.find({'cityCode': cityCode})
+//                                              .skip((page - 1) * limit)
+//                                              .limit(limit);
+      
+//       const codedata = hotelCodes.map(item => `${item.hotelCode}`);
+//       return codedata;
+//   } catch (error) {
+//       throw new Error(error.message);
+//   }
+// };
 
 
 //hotel booking
@@ -196,6 +259,26 @@ exports.hotelFetchBooking = async (req, res)=>{
      const data=req.query.bref;
     
     const response=await axios.post(`${baseurl}/api/v3/hotels/bookings/${data}?type=value`, { headers })
+
+    msg = "Hotel Booking Successfully!";
+    actionCompleteResponse(res, response.data, msg); 
+    
+  } catch (err) {
+    sendActionFailedResponse(res, {}, err.message);    
+  }
+}
+
+
+//cancel hotel booking
+
+exports.hotelCancelBooking = async (req, res)=>{
+
+  try {
+     const data={
+      ...req.body
+     };
+    
+    const response=await axios.delete(`${baseurl}/api/v3/hotels/bookings/`, { headers })
 
     msg = "Hotel Booking Successfully!";
     actionCompleteResponse(res, response.data, msg); 

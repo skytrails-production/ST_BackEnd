@@ -578,11 +578,12 @@ exports.countryPackage = async (req, res) => {
 exports.agentPackages = async (req, res) => {
   try {
     let packages=[];
-    const { userId, isActive } = req.query;
-    
+    const { userId, isActive } = req.params;  
     
     if (userId) {
-      const query = isActive ? { is_active: isActive, userId: userId } : { userId: userId };
+      console.log("query");
+      const query = isActive? { is_active: isActive, userId: userId } : { userId: userId };
+      console.log(query,"query");
        packages = await internationl.find(query);
     //  console.log("Vpackages",packages.length);
     }
@@ -595,12 +596,33 @@ exports.agentPackages = async (req, res) => {
 }   
 
 
+exports.agentAllPackage= async (req, res) => {
+  try {
+    let packages=[];
+    // const { userId, isActive } = req.params;
+    const userId = req.params.userId;
+  
+    
+    
+    if (userId) {
+
+       packages = await internationl.find({userId:userId});
+    //  console.log("Vpackages",packages.length);
+    }
+    
+    const msg = packages.length > 0 ? 'Packages found' : 'No packages found';
+    actionCompleteResponse(res, packages, msg);
+  } catch (error) {
+    sendActionFailedResponse(res, {}, error.message);
+  }
+}   
+
 //agent Leads
 
 exports.agentLeads = async (req, res) =>{
 
   try {
-    const agent=req.query;
+    const agent=req.params;
     console.log("agent", agent)
     const agentPackagesData=await internationl.find(agent);
     const filterData = agentPackagesData.map((item) => item._id);
