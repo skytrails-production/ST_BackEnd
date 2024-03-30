@@ -116,12 +116,12 @@ exports.hotelSearch=async (req,res) =>{
 
 //hotel Search with pagination
 
-exports.hotelSearch=async (req,res) =>{
+exports.hotelSearchWithPagination=async (req,res) =>{
   try{
       const data={
           ...req.body
       };
-      console.log(data,"data")
+      // console.log(data,"data")
       // const hotelCode=await exports.grnHotelCityMap(req.body.cityCode);
 
        // Calculate pagination parameters
@@ -129,7 +129,7 @@ exports.hotelSearch=async (req,res) =>{
        const limit = 100; // Set the limit of hotel codes per page
 
        // Fetch hotel codes with pagination
-       const hotelCode = await exports.grnHotelCityMap(req.body.cityCode, page, limit);
+       const hotelCode = await exports.grnHotelCityMapWithPagination(req.body.cityCode, page, limit);
       //  console.log(hotelCode,"hotelCode")
 
       const searchData={
@@ -215,19 +215,37 @@ exports.grnHotelCityMap = async (cityCode) => {
 
 //grnHotelCityMap with pagination
 
-// exports.grnHotelCityMap = async (cityCode, page , limit) => {
-//   try {
-//       const hotelCodes = await GrnHotelCityMap.find({'cityCode': cityCode})
-//                                              .skip((page - 1) * limit)
-//                                              .limit(limit);
+exports.grnHotelCityMapWithPagination = async (cityCode, page , limit) => {
+  try {
+      const hotelCodes = await GrnHotelCityMap.find({'cityCode': cityCode})
+                                             .skip((page - 1) * limit)
+                                             .limit(limit);
       
-//       const codedata = hotelCodes.map(item => `${item.hotelCode}`);
-//       return codedata;
-//   } catch (error) {
-//       throw new Error(error.message);
-//   }
-// };
+      const codedata = hotelCodes.map(item => `${item.hotelCode}`);
+      return codedata;
+  } catch (error) {
+      throw new Error(error.message);
+  }
+};
 
+
+//get hotel Images
+
+exports.hotelImages = async (req, res) =>{
+
+  try {
+    const hotelCode=req.query.hotelCode;
+    const response = await axios.get(`${baseurl}/api/v3/hotels/${hotelCode}/images?version=2.0`, { headers });
+    
+    msg = "Hotel Images Search Successfully!";
+
+        actionCompleteResponse(res, response.data, msg);       
+    
+  } catch (err) {
+    sendActionFailedResponse(res, {}, err.message);    
+  }
+
+}
 
 //hotel booking
 

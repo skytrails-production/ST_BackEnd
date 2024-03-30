@@ -16,8 +16,11 @@ module.exports = function (app) {
     app.get('/skyTrails/updateCities', controller.updateCityListWithCountryNames);
 
     app.post("/skyTrails/grnconnect/hotelSearch",controller.hotelSearch);
+    app.post("/skyTrails/grnconnect/hotelSearchWithPagination",controller.hotelSearchWithPagination);
     app.get("/skyTrails/grnconnect/refetchHotel", controller.refetchHotel);
     app.post("/skyTrails/grnconnect/rateRefetchHotel", controller.rateRefetchHotel);
+
+    app.get("/skyTrails/grnconnect/hotelimages",controller.hotelImages);
 
     app.post("/skyTrails/grnconnect/hotelbooking",controller.hotelBooking);
 

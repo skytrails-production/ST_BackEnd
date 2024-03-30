@@ -10,4 +10,5 @@ module.exports = function (app) {
     app.post("/skyTrails/amadeus/fareInformativePricingWithoutPNR",controller.fareInformativePricingWithoutPNR);
     app.post("/skyTrails/amadeus/airSellFromRecommendation",controller.airSellFromRecommendation);
     app.post("/skyTrails/amadeus/combinedApi",combinedController.combinedAPI);
+    app.post("/skyTrails/amadeus/combineResponse",combinedController.combineTVOAMADEUS);
   }
