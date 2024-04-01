@@ -287,8 +287,8 @@ var taskPlatformNotification = cron.schedule("52 17 * * *",
           // Now you can find super cool deals on flights✈ and hotels🏨📱 
           
           // Update your app now and let's get your wanderlust fix!`;
-          const notificationMessage = `Abhi nahin toh kab? ${user.username}🤩!`;
-      const messageBody = `Book your tickets🎫 🎟️ with the Skytrails and grab the deal!⋆｡ﾟ☁︎｡✈︎⋆｡ ﾟ☾ ﾟ｡⋆`;
+          const notificationMessage = `Relaxation Reminder!`;
+      const messageBody = `Book some "me-time" for your weekend with The Skytrails.!⋆｡ﾟ☁︎｡✈︎⋆｡ ﾟ☾ ﾟ｡⋆`;
           await pushSimpleNotification(
             user.deviceToken,
             notificationMessage,
@@ -345,8 +345,8 @@ var taskEventNotification1 = cron.schedule("30 11 * * *",
       const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`;
       for (const user of users) {
         try {
-          const notificationMessage = `Unlock travel secrets! 🥰👩🏻‍❤️‍💋‍👨🏻`;
-          const messageBody=`Exclusive deals & hidden gems - all on theSkytrails app.⋆꙳⛇⋆☃︎☃️❄️☃️🌨️`
+          const notificationMessage = `Travel Made Easy! 🥰👩🏻‍❤️‍💋‍👨🏻`;
+          const messageBody=`Checkout the latest deals and offers for the upcoming Looong Weekend.`
 //           const messageBody = `FLY
 //    STAY
 //       ENJOY   
