@@ -9,6 +9,7 @@ module.exports = function (app) {
     app.post("/skyTrails/amadeus/fareMasterPricerTravelBoardSearch",controller.fareMasterPricerTravelBoardSearch);
     app.post("/skyTrails/amadeus/fareInformativePricingWithoutPNR",controller.fareInformativePricingWithoutPNR);
     app.post("/skyTrails/amadeus/airSellFromRecommendation",controller.airSellFromRecommendation);
-    app.post("/skyTrails/amadeus/combinedApi",combinedController.combinedAPI);
+    app.post("/skyTrails/api/combinedApi",combinedController.cobinedAsPerPrice);
     app.post("/skyTrails/amadeus/combineResponse",combinedController.combineTVOAMADEUS);
+    app.post("/skytrails/api/combined/combineTVOAMADEUSPriceSort",combinedController.combineTVOAMADEUSPriceSort);
   }

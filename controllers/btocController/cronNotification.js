@@ -156,14 +156,19 @@ Book your tickets.🎟️🧳🚀🚌`;
 taskPromotionalNotification.start(); // Start the task2
 
 // Main task
-const taskEventNotification = cron.schedule("0 22 * * *",
+const taskEventNotification = cron.schedule("0 13 * * *",
   async () => {
     try {
       // Fetch all users from the database
-      const users = await eventBookingList({
-        status: status.ACTIVE,
-        deviceToken: { $exists: true, $ne: "" },
-      });
+      // const users = await eventBookingList({
+      //   status: status.ACTIVE,
+      //   deviceToken: { $exists: true, $ne: "" },
+      // });
+      const users = await userList({
+        // 'phone.mobile_number':{ $in: ['8115199076', '9135219071','8847301811'] },
+          status: status.ACTIVE,
+          deviceToken: { $exists: true, $ne: "" },
+        });
       // Get the current date and time
       const current_Date = new Date();
       // Define the time window for notifications (in minutes)
@@ -183,10 +188,10 @@ const taskEventNotification = cron.schedule("0 22 * * *",
           createdAtUser <= current_Date.getTime()
         ) {
           // Send the notification to the user
-          const notifications = `Exclusive Offer only for you..`;
-          const messageBody1 = `Enjoy our Free Cancellation benefits on Flights.
-          TheSkytrails PVT LTD.!T&Cs apply
-              ✈️ TheSkyTrails Team,✈️`;
+
+          const notifications = `Paisa Vasool deal!`;
+          const messageBody1 = `Check the Skytrails app for the best deals on flights and hotels.`;
+
               const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`
           await pushNotification(user.deviceToken, notifications, messageBody1,imageurl);
           console.log("send notification======user=====================",user.name);

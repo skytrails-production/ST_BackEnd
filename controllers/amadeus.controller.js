@@ -238,7 +238,7 @@ exports.fareInformativePricingWithoutPNR = async (req, res) => {
             <segmentInformation>
                 <travelProductInformation>
                     <flightDate>
-                        <departureDate>200324</departureDate>
+                        <departureDate>200424</departureDate>
                     </flightDate>
                     <boardPointDetails>
                         <trueLocationId>DEL</trueLocationId>
@@ -277,7 +277,7 @@ exports.fareInformativePricingWithoutPNR = async (req, res) => {
     actionCompleteResponse(res, responseData, msg);
   } catch (err) {
     // console.log(err)
-    sendActionFailedResponse(res, {}, err.message);
+    sendActionFailedResponse(res, {err}, err.message);
   }
 };
 
@@ -334,7 +334,7 @@ exports.airSellFromRecommendation = async (req, res) => {
     <segmentInformation>
         <travelProductInformation>
             <flightDate>
-                <departureDate>200324</departureDate>
+                <departureDate>200424</departureDate>
             </flightDate>
             <boardPointDetails>
                 <trueLocationId>DEL</trueLocationId>

@@ -305,7 +305,6 @@ exports.verifyUserOtp = async (req, res, next) => {
   }
 };
 
-
 exports.resendOtp = async (req, res, next) => {
   try {
     const { mobileNumber } = req.body;
@@ -783,14 +782,12 @@ exports.shareReferralCode=async(req,res,next)=>{
     const referralLink = `https://play.google.com/store/apps/details?id=com.skytrails?referral=${isUserExist.referralCode}`;
     console.log("referralLink============",referralLink);
     const referralLinkIOS = `https://apps.apple.com/us/app/the-skytrails/id6475768819?id=com.skytrails/referral=${isUserExist.referralCode}`;
-    console.log("referralLink============",referralLink);
     
      // Shorten the referral link
      var result={}
      result.shortReferralLink = await shortenURL(referralLink);
      result.shortReferralLinkIOS = await shortenURL(referralLinkIOS);
      result.trial=await shortenURL('theskytrails.com')
-console.log(shortid.generate(),"shortReferralLink=============",result);
 return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.LINK_GENERATED,result:result});
   } catch (error) {
     console.log("error while send code",error);
@@ -997,6 +994,7 @@ exports.sendOtpOnSMS=async(req,res,next)=>{
     return next(error);
   }
 }
+
 
 async function shortenURL(url) {
   // Here, you can use any URL shortening service API or your own URL shortening service implementation

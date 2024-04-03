@@ -7,7 +7,7 @@ const {
   sendActionFailedResponse,
 } = require("../common/common");
 
-const { GrnCityList, GrnHotelCityMap,GrnCountryList } = require("../model/grnconnectModel");
+const { GrnCityList, GrnHotelCityMap,GrnCountryList,GrnHotelBooking } = require("../model/grnconnectModel");
 const commonFunctions = require("../utilities/commonFunctions");
 
 const s3 = new aws.S3({
@@ -196,6 +196,8 @@ exports.rateRefetchHotel =async (req, res) =>{
 }
 
 
+
+
 //grnHotelCityMap
 
 
@@ -244,6 +246,28 @@ exports.hotelImages = async (req, res) =>{
   } catch (err) {
     sendActionFailedResponse(res, {}, err.message);    
   }
+
+}
+
+
+//bundledRates
+
+exports.bundledRates=async (req, res)=>{
+  try{
+    const data=req.query.searchId;
+    const payload={
+      ...req.body
+    };
+
+    const response = await axios.post(`${baseurl}/api/v3/hotels/availability/${data}/rates/?action=recheck`,payload,{ headers });   
+    
+    
+    msg = "bunled Rates fetch Successfully!";
+    actionCompleteResponse(res, response.data, msg);      
+} catch (err) {
+  // console.log(err);
+  sendActionFailedResponse(res, {}, err.message);
+}   
 
 }
 
@@ -304,4 +328,24 @@ exports.hotelCancelBooking = async (req, res)=>{
   } catch (err) {
     sendActionFailedResponse(res, {}, err.message);    
   }
+}
+
+
+exports.addHotelBooking=async (req, res) =>{
+
+ try {
+  const data={
+    ...req.body
+  }
+  const response=await GrnHotelBooking.create(data);
+
+  msg = "Hotel Booking Save Successfully in Data Base !";
+    actionCompleteResponse(res, response, msg); 
+  
+ } catch (err) {
+  sendActionFailedResponse(res, {}, err.message);
+  
+ }
+
+
 }

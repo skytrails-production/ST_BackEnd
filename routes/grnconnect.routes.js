@@ -20,6 +20,8 @@ module.exports = function (app) {
     app.get("/skyTrails/grnconnect/refetchHotel", controller.refetchHotel);
     app.post("/skyTrails/grnconnect/rateRefetchHotel", controller.rateRefetchHotel);
 
+    app.post("/skyTrails/grnconnect/bundledrates", controller.bundledRates);
+
     app.get("/skyTrails/grnconnect/hotelimages",controller.hotelImages);
 
     app.post("/skyTrails/grnconnect/hotelbooking",controller.hotelBooking);
@@ -28,5 +30,7 @@ module.exports = function (app) {
 
 
     app.delete("/skyTrails/grnconnect/hotelcancelbooking",controller.hotelCancelBooking);
+
+    app.post("/skyTrails/grnconnect/addhotelBooking", controller.addHotelBooking);
     
 }

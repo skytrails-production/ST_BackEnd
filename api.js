@@ -25,7 +25,7 @@ var admin=require('firebase-admin');
 //   projectId: 'potion-for-creators',
 // });
 const server = http.createServer(app);
-
+const commonFunction=require('./utilities/commonFunctions')
 
 
 
@@ -266,3 +266,8 @@ const { v4: uuidv4 } = require('uuid');
 const messageId = uuidv4();
 
 console.log('Message ID:', messageId);
+
+
+
+const refeerralCode=commonFunction.generateReferralCode();
+console.log("refeerralCode============",refeerralCode);
