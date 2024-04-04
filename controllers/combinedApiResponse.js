@@ -23,7 +23,6 @@ const moment = require("moment");
 const { values } = require("pdf-lib");
 const streamLength = 8;
 const randomBytes = generateRandomBytes(streamLength);
-
 // Function to convert bytes to base64
 function bytesToBase64(bytes) {
   console.log(
@@ -96,6 +95,7 @@ exports.combinedAPI1 = async (req, res, next) => {
     } else {
       tvoArray = [];
     }
+    console.log("amadeusResponse.data==============",amadeusResponse.data)
     let jsonResult = {};
     if (amadeusResponse.status == 200) {
       jsonResult = await xmlToJson(amadeusResponse.data);
@@ -103,6 +103,7 @@ exports.combinedAPI1 = async (req, res, next) => {
         jsonResult["soapenv:Envelope"]["soapenv:Body"][
           "Fare_MasterPricerTravelBoardSearchReply"
         ];
+        console.log("obj=================",obj)
       const recommendationObject = await obj.recommendation;
       const segNumber = recommendationObject.map((item, index) => {
         return item.segmentFlightRef.length || 1;
@@ -133,7 +134,7 @@ exports.combinedAPI1 = async (req, res, next) => {
 exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
   try {
     const data = req.body;
-    data.formattedDate = await moment(
+    data.formattedDate =  moment(
       data.Segments[0].PreferredDepartureTime,
       "DD MMM, YY"
     ).format("DDMMYY"); // Format the date as "DDMMYY"
@@ -155,11 +156,6 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
         }),
     ]);
     var tvoArray = [];
-    console.log(
-      "tvoResponse.data.Response============",
-      tvoResponse.data.Response
-    );
-    console.log("amadeusResponse==========", amadeusResponse);
     if (tvoResponse.data.Response.ResponseStatus === 1) {
       tvoArray = tvoResponse.data.Response.Results[0];
     } else {
@@ -183,6 +179,7 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
           modifiedArray.push({
             ...obj.flightIndex.groupOfFlights[j],
             ...recommendationObject[i].paxFareProduct,
+            ...obj.recommendation[i].recPriceInfo
           });
         }
         flattenedArray.push(...modifiedArray);
@@ -193,26 +190,47 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
     if (tvoArray.length > 0) {
       selectedArray = await tvoArray.filter((value) => value.IsLCC === true);
       if (selectedArray.length > 0) {
-        finalResult = await selectedArray.concat(flattenedArray);
+        finalResult = await flattenedArray.concat(selectedArray);
       } else if (flattenedArray.length <= 0) {
         finalResult = [...tvoArray];
       }
     } else {
       finalResult = [...flattenedArray];
     }
-
     const length = {
       flattenedArray: flattenedArray.length,
       tvoArray: tvoArray.length,
       finalResult: finalResult.length,
       selectedArray: selectedArray.length,
     };
+    for (const finalRep of finalResult) {
+    let totalPublishFare = 0;
+      if (finalRep.propFlightGrDetail) {
+        // Iterate over each key and calculate totalAmount separately
+        // for (const key of Object.keys(finalRep)) {
+        //   const obj = finalRep[key];
+        //   // if (obj.hasOwnProperty("paxFareDetail")) {
+            const totalFare = parseInt(finalRep.monetaryDetail[0].amount);
+            const totalTax = parseInt(finalRep.monetaryDetail[1].amount);
+            const totalAmount = totalFare + totalTax;
+            // finalRep.totalAmount = totalAmount;
+            totalPublishFare += totalAmount;
+        //   // }
+        // }
 
+        finalRep.TotalPublishFare = totalPublishFare;
+      } else if (finalRep.Segments) {
+        const totalPublishFare = finalRep.Fare.PublishedFare;
+        finalRep.TotalPublishFare = totalPublishFare;
+        
+      }
+    }
+const sortedData=finalResult.sort((a,b)=> a.TotalPublishFare - b.TotalPublishFare);
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.DATA_FOUND,
-      result: finalResult,
-      amadeusResponse: flattenedArray,
+      // amadeusResponse: amadeusResponse.data,
+      result: sortedData,
       length: length,
     });
   } catch (error) {
@@ -605,13 +623,11 @@ const generateAmadeusRequest = (data) => {
   const NONCE = bytesToBase64(generateRandomBytes(streamLength));
   const TIMESTAMP = new Date().toISOString();
   const CLEARPASSWORD = process.env.AMADAPASS;
-  console.log("data.px===========", data.px);
   const buffer = Buffer.concat([
     Buffer.from(NONCE, "base64"),
     Buffer.from(TIMESTAMP),
     nodeCrypto.createHash("sha1").update(Buffer.from(CLEARPASSWORD)).digest(),
   ]);
-  console.log("data.totalPassenger========", data.totalPassenger);
   const hashedPassword = nodeCrypto
     .createHash("sha1")
     .update(buffer)
@@ -679,7 +695,7 @@ const generateAmadeusRequest = (data) => {
     }
     soapRequest += `</paxReference>`;
   }
-  
+
   if (data.InfantCount > 0) {
     for (let i = 0; i < data.InfantCount; i++) {
       soapRequest += `<paxReference xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A">
@@ -726,6 +742,5 @@ const generateAmadeusRequest = (data) => {
           </Fare_MasterPricerTravelBoardSearch>
       </soapenv:Body>
   </soapenv:Envelope>`;
-  console.log("soapRequest=============", soapRequest);
   return soapRequest;
 };

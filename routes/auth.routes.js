@@ -34,6 +34,7 @@ module.exports = function (app) {
   app.put("/skytrails/api/admin/editprofile",upload.single('images'),[authJwt.verifcationToken],controller.editProfile)
   app.get("/skytrails/api/admin/getAgents", controller.getAgents);
   app.get("/skytrails/api/admin/getAllHotelBookingList",controller.getAllHotelBookingList);
+  app.get("/skytrails/api/admin/getAllGrnHotelBookingList",controller.getAllGrnHotelBookingList);
   app.get("/skytrails/api/admin/getAllFlightBookingList",controller.getAllFlightBookingList);
   app.get("/skytrails/api/admin/adminDashBoard",controller.adminDashBoard);
   app.get("/skytrails/api/admin/getAllBusBookingList",controller.getAllBusBookingList);
@@ -77,5 +78,7 @@ app.put('/skyTrails/api/admin/event/deletePromoEvent',SchemaValidator(schemas.de
 app.delete('/skyTrails/api/admin/event/deletePermanentPromoEvent',SchemaValidator(schemas.deletPromoEventSchema),eventPromoBannerControler.deletePermanentPromoEvent);
 app.get('/skyTrails/api/admin/event/getPromoEvent',eventPromoBannerControler.getPromotionalBanner);
 app.post('/skyTrails/api/admin/distributeReward',controller.distributeReward);
-app.put('/skyTrails/api/admin/event/updatePromotBanner',upload.single('images'),eventPromoBannerControler.updatePromotBanner)
+app.put('/skyTrails/api/admin/event/updatePromotBanner',upload.single('images'),eventPromoBannerControler.updatePromotBanner);
+app.post('/skyTrails/api/admin/refferral/createReferralAmount',controller.createReferralAmount);
+app.get('/skyTrails/api/admin/reward/getReward',controller.getReferralAmount);
 };

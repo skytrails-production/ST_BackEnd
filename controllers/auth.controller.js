@@ -23,6 +23,7 @@ const { hotelBookingServicess } = require("../services/hotelBookingServices");
 const {
   aggregatePaginateHotelBookingList,
   aggregatePaginateHotelBookingList1,
+  aggregatePaginateGrnHotelBookingList,
   findhotelBooking,
   findhotelBookingData,
   deletehotelBooking,
@@ -224,6 +225,9 @@ const {
 } = eventBookingServices;
 const {agentRewardServices}=require("../services/agentRewardServices");
 const {createAgentReward,findAgentReward,deleteAgentReward,AgentRewardList,updateAgentReward,AgentRewardListPaginate}=agentRewardServices;
+const{referralAmountServices}=require('../services/referralAmountServices')
+const {createReferralAmount,findReferralAmount,deleteReferralAmount,referralAmountList,updateReferralAmount,referralAmountListPaginate}=referralAmountServices;
+
 //**********Necessary models***********/
 const flightModel = require("../model/flightBookingData.model");
 const hotelBookingModel = require("../model/hotelBooking.model");
@@ -233,6 +237,8 @@ const userFlightBookingModel = require("../model/btocModel/flightBookingModel");
 const userhotelBookingModel = require("../model/btocModel/hotelBookingModel");
 const userbusBookingModel = require("../model/btocModel/busBookingModel");
 const bookingStatus = require("../enums/bookingStatus");
+const { actionCompleteResponse, sendActionFailedResponse } = require("../common/common");
+const { GrnHotelBooking } = require("../model/grnconnectModel");
 
 // exports.signup = (req, res) => {
 //   const user = new User({
@@ -652,6 +658,57 @@ exports.getAllHotelBookingList = async (req, res, next) => {
     return next(error);
   }
 };
+
+
+//************GET ALL GRN HOTEL BOOKING LIST ***************/
+exports.getAllGrnHotelBookingList = async (req, res, next) => {
+  try {
+    let { page, limit, search, fromDate } = req.query;
+
+    // Set default values for pagination
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 10;
+
+    // Construct the query based on search criteria
+    let query = {};
+    if (search) {
+      query.$or = [
+        { "hotel.name": { $regex: search, $options: "i" } },
+        { "holder.name": { $regex: search, $options: "i" } },
+        { "holder.email": { $regex: search, $options: "i" } },
+        { "destination": { $regex: search, $options: "i" } },
+        { "night": parseInt(search) || 0 }, // Handle numeric search
+        { "room": parseInt(search) || 0 }, // Handle numeric search
+        { "bookingStatus": { $regex: search, $options: "i" } }
+      ];
+    }
+    if (fromDate) {
+      query.checkin = { $eq: new Date(fromDate) };
+    }
+
+    // Perform pagination using Mongoose paginate method
+    const options = {
+      page: page,
+      limit: limit,
+      sort: { createdAt: -1 } // Sorting by createdAt in descending order
+    };
+    const result = await GrnHotelBooking.paginate(query, options);
+
+    // Send response
+    const responseData = {
+      totalItems: result.totalDocs,
+      totalPages: result.totalPages,
+      currentPage: result.page,
+      itemsPerPage: result.limit,
+      data: result.docs
+    };
+    const msg = "Hotel Bookings fetched successfully!"; // Use let instead of const here
+    actionCompleteResponse(res, responseData, msg); // Use let instead of const here
+  } catch (err) {
+    sendActionFailedResponse(res, {}, err.message); // Use let instead of const here
+  }
+};
+
 //**************GET ALL FLIGHT BOOKING LIST*************/
 exports.getAllFlightBookingList = async (req, res, next) => {
   try {
@@ -1987,6 +2044,67 @@ exports.distributeReward=async(req,res,next)=>{
 });
   } catch (error) {
     console.error("error while trying to distribute reward of agent");
+    return next(error);
+  }
+}
+
+
+exports.createReferralAmount = async (req, res, next) => {
+  try {
+    const { refereeAmount, referrerAmount } = req.body;
+
+    // Check if there are any existing referral amounts
+    const existingReferralAmount = await referralAmountList();
+    
+    // Create an object with the referral amount and/or referrer amount
+    const obj = {};
+    if (refereeAmount) {
+      obj.refereeAmount = refereeAmount;
+    }
+    if (referrerAmount) {
+      obj.referrerAmount = referrerAmount;
+    }
+
+    // If there are existing referral amounts, update the first one found
+    if (existingReferralAmount.length > 0) {
+      const update = await updateReferralAmount({}, obj); // Update the first referral amount found
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.UPDATE_SUCCESS,
+        result: update,
+      });
+    }
+
+    // If no existing referral amounts, create a new one
+    const result = await createReferralAmount(req.body);
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.CREATED_SUCCESS,
+      result: result,
+    });
+  } catch (error) {
+    console.log("Error while trying to add or update referral amount:", error);
+    return next(error);
+  }
+};
+
+exports.getReferralAmount=async(req,res,next)=>{
+  try {
+    const result=await findReferralAmount({});
+    if(!result){
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
+        result: result,
+      });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
+  } catch (error) {
+    console.log("error while trying to get amount",error);
     return next(error);
   }
 }

@@ -46,7 +46,11 @@ const {
   getBookingEvent,
 } = eventBookingServices;
 const{pushNotificationServices}=require('../../services/pushNotificationServices');
+// const referralCodes=require('referral-codes');
 const{createPushNotification,findPushNotification,findPushNotificationData,deletePushNotification,updatePushNotification,countPushNotification}=pushNotificationServices;
+const{referralAmountServices}=require('../../services/referralAmountServices')
+const {createReferralAmount,findReferralAmount,deleteReferralAmount,referralAmountList,updateReferralAmount,referralAmountListPaginate}=referralAmountServices;
+
 //******************************************User SignUp api*************************/
 
 
@@ -265,17 +269,17 @@ exports.verifyUserOtp = async (req, res, next) => {
           message: responseMessage.INCORRECT_REFERRAL,
         });
       }
+      const checkReward=await findReferralAmount({});
       await updateUser(
         { _id: updateData._id },
-        { referrerCode:referrerCode,$inc:{balance:50},
+        { referrerCode:referrerCode,$inc:{balance:checkReward.refereeAmount},
           referredBy:isRefererExist._id
         }
       );
      const data= await updateUser(
         { referralCode:referrerCode,_id:isRefererExist._id},
-        {$inc:{balance:21}}
+        {$inc:{balance:checkReward.referrerAmount}}
       );
-      console.log("data=======",data);
     }
     const token = await commonFunction.getToken({
       _id: updation._id,
