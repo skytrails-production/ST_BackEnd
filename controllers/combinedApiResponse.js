@@ -131,7 +131,7 @@ exports.combinedAPI1 = async (req, res, next) => {
   }
 };
 
-exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
+exports.combineTVOAMADEUSPriceSort = async (req, res, next) => { 
   try {
     const data = req.body;
     data.formattedDate =  moment(
@@ -190,9 +190,12 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
     if (tvoArray.length > 0) {
       selectedArray = await tvoArray.filter((value) => value.IsLCC === true);
       if (selectedArray.length > 0) {
+
         finalResult = await flattenedArray.concat(selectedArray);
       } else if (flattenedArray.length <= 0) {
         finalResult = [...tvoArray];
+      }else{
+        finalResult = [...flattenedArray];
       }
     } else {
       finalResult = [...flattenedArray];
@@ -614,7 +617,7 @@ const generateAmadeusRequest1 = (data) => {
   console.log("soapRequest=============", soapRequest);
   return soapRequest;
 };
-
+ 
 const generateAmadeusRequest = (data) => {
   // Generate the SOAP request XML based on the provided data
   // Generate new values for messageId, uniqueId, NONCE, TIMESTAMP, and hashedPassword

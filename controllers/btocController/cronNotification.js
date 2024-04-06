@@ -108,9 +108,8 @@ var taskPromotionalNotification = cron.schedule("11 10 * * *",async () => {
     for (const user of users) {
       try { 
       const notificationMessage = `▶︎ •၊၊||၊|။|||။၊|• 0:10`;
-      const messageBody = `..
-Voice message:Don't delay your plans!
-Book your tickets.🎟️🧳🚀🚌`;
+      const messageBody = `Time and Lowest Prices wait for no one!
+      Checkout the Skytrails app now 🎟️🧳🚀🚌`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
       // const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`
         // Check if a notification has been sent to this user recently
@@ -189,8 +188,8 @@ const taskEventNotification = cron.schedule("0 13 * * *",
         ) {
           // Send the notification to the user
 
-          const notifications = `Paisa Vasool deal!`;
-          const messageBody1 = `Check the Skytrails app for the best deals on flights and hotels.`;
+          const notifications = `Plan Early-Before it's too late!`;
+          const messageBody1 = `Unlock upto 10% off on your first booking with the Skytrails.`;
 
               const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`
           await pushNotification(user.deviceToken, notifications, messageBody1,imageurl);
@@ -217,7 +216,7 @@ taskEventNotification.start(); // Start the task
 // Define a map to store the timestamp of the last notification sent to each user
 
 // Modify your cron job logic
-var taskEventNotification1 = cron.schedule("0 14 * * *",
+var taskEventNotification1 = cron.schedule("0 18 * * *",
   async () => {
     try {
       const users = await eventBookingList({
@@ -226,8 +225,8 @@ var taskEventNotification1 = cron.schedule("0 14 * * *",
         deviceToken: { $exists: true, $ne: "" },
       });
       console.log("=======================", users.length);
-      const notificationMessage = `✨Love is in the air!🥰`;
-      const messageBody = `Find your perfect paradise - beaches, mountains, or charming cities!🏖️`;
+      const notificationMessage = `Missing out!`;
+      const messageBody = `Checkout the Skytrails app and claim your best offer before it's too late.`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
       for (const user of users) {
         try {

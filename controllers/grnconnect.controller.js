@@ -92,7 +92,7 @@ exports.hotelSearch=async (req,res) =>{
 
         const searchData={
           rooms:req.body.rooms,
-          rates:req.body.rates,
+          rates: req.body.rates,
           hotel_codes:hotelCode,
           currency:req.body.currency,
           client_nationality:req.body.client_nationality,
@@ -159,10 +159,11 @@ exports.hotelSearchWithPagination=async (req,res) =>{
 
 exports.refetchHotel = async (req, res) => {
     try{
-        const data=req.query.searchId;
+        const SearchId=req.query.searchId;
+        const hcode=req.query.hcode;
         // console.log(`${baseurl}/api/v3/hotels/availability/${data}?rates="concise"`,"console")
 
-        const response = await axios.get(`${baseurl}/api/v3/hotels/availability/${data}?rates=concise`,{ headers });   
+        const response = await axios.get(`${baseurl}/api/v3/hotels/availability/${SearchId}?hcode=${hcode}&bundled=true`,{ headers });   
         
         
         msg = "Hotel Refetch Successfully!";
