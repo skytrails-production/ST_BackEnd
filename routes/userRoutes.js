@@ -66,10 +66,6 @@ module.exports = function (app) {
   app.put("/skytrails/api/user/updateEmail",[authJwt.verifcationToken],SchemaValidator(schemas.updateEmailSchema),userController.updateEmail);
   app.post("/skytrails/api/user/loginWithMailMobileLogin",SchemaValidator(schemas.btoCuserLoginSchema),userController.loginWithMailMobileLogin);
   app.post('/skytrails/api/user/sendOTPOnSMS',userController.sendOtpOnSMS);
-  app.put(
-    "/skytrails/api/user/verifyUserOtp1",
-    SchemaValidator(schemas.userVerifySchema),
-    [authJwt.verifcationToken],
-    userController.verifyUserOtpMailMobile
-  );
+  app.put("/skytrails/api/user/verifyUserOtp1",SchemaValidator(schemas.userVerifySchema),[authJwt.verifcationToken],userController.verifyUserOtpMailMobile);
+  app.put("/skytrails/api/user/resendOtp1",SchemaValidator(schemas.btoCuserLoginSchema),userController.resendOtpMailMobile);
 };

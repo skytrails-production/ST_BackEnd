@@ -24,7 +24,7 @@ const usersSchema = new Schema({
         type: String,
         default: "+91",
       },
-      mobile_number: { type: String },
+    mobile_number: { type: String },
     },
     firstName: {
       type: String,
