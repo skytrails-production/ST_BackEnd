@@ -182,6 +182,7 @@ require("./routes/visaRoutes/documentType")(app)
 require("./routes/visaRoutes/visaCategoryRoutes")(app)
 require("./routes/visaRoutes/createRequireDocumentRoutes")(app)
 require("./routes/createCouponRoutes")(app)
+require("./routes/packageBannerRoutes")(app)
 mongoose
   .connect(configs.mongoUrl.DEVELOPMENT, {
     useNewUrlParser: true,

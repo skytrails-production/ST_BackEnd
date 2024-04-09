@@ -81,4 +81,7 @@ app.post('/skyTrails/api/admin/distributeReward',controller.distributeReward);
 app.put('/skyTrails/api/admin/event/updatePromotBanner',upload.single('images'),eventPromoBannerControler.updatePromotBanner);
 app.post('/skyTrails/api/admin/refferral/createReferralAmount',controller.createReferralAmount);
 app.get('/skyTrails/api/admin/reward/getReward',controller.getReferralAmount);
+app.post('/skyTrails/api/admin/createPackaegBanner',upload.single('images'),controller.createPackageBanner);
+app.post('/skyTrails/api/admin/createPopularDestination',upload.single('images'),controller.createPopularDestination);
+   
 };

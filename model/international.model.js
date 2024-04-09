@@ -1,9 +1,12 @@
 const { required } = require("joi");
 const mongoose = require("mongoose");
 const { activeStatus } = require("../common/const");
-const internationl = mongoose.model(
-  "internationls",
-  mongoose.Schema(
+const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
+const mongoosePaginate = require("mongoose-paginate-v2");
+
+const internationlSchema = mongoose.Schema(
+
+
     {
 
       userId: {
@@ -97,8 +100,10 @@ const internationl = mongoose.model(
     {
       timestamps: true,
     }
-  )
+
 );
+internationlSchema.plugin(mongoosePaginate);
+const internationl = mongoose.model("internationls", internationlSchema);
 
 // ==========================================> package booking Schema <========================================//
 

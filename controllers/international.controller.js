@@ -986,5 +986,94 @@ exports.packageFilterAmount = async (req, res) => {
   }
 }
 
+exports.beachesPackagesCategory = async (req, res, next) => {
+  try {
+    const { page , limit , keyword } = req.query;
+    let queryObj = {};
+    // Constructing the query based on the provided keyword
+    if (keyword) {
+      queryObj[`insclusions.${keyword}`] = "true";
+    }
+    queryObj.is_active = 1;
+    const options = {
+      page: Number(page)||1,
+      limit: Number(limit)||5,
+      sort: { createdAt: -1 }
+    };
+
+    const result = await internationl.paginate(queryObj, options);
+    if (result.docs.length === 0) {
+      return res.status(statusCode.OK).json({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
+      });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
+  } catch (error) {
+    console.error("Error while trying to fetch beach packages:", error);
+    return next(error);
+  }
+};
 
 
+// exports.p
+//   try {
+//     const { page, limit, keyword } = req.query;
+//     console.log("req.query==============",req.query)
+//     let queryObj = {};
+//     queryObj[`insclusions.${keyword}`] = "true";
+//     if(keyword){
+//       console.log("============");
+//       queryObj.$or=[
+//         { $and: [{ is_active: 1 },queryObj] }
+//       ]
+//       console.log("============",queryObj);
+//     }
+//     let options = {
+//       page: Number(page) || 1,
+//       limit: Number(limit) || 5,
+//       sort: { createdAt: -1 },
+//   };
+//   const result=await internationl.paginate(queryObj, options);
+//   console.log("result=================",result);
+//   if(result.docs.length==0){
+//     return res.status(statusCode.OK).send({
+//     statusCode: statusCode.OK,
+//     responseMessage: responseMessage.DATA_FOUND,
+//     result: result,
+//   });
+//   }
+  
+//     // const data = req.query.keyword;
+//     // let query = {};
+//   //  console.log(data,"datqa")
+//     // for (var key in data) {
+//       // if (Object.hasOwnProperty.call(data, key)) {
+//         // var value = data[key];
+
+//         // query[`insclusions.${data}`] = "true";
+//       // }
+//     // }
+//     // console.log('Generated Query:', query);
+//     // const parameter=[{ $and: [{ is_active: 1 }, query] }]
+   
+
+//     // const packages = await internationl.find({ $and: [{ is_active: 1 }, query] });
+
+//     // if (packages.length > 0) {
+//     //   const msg =
+//     //     "Successfully retrieved packages through the 'inclusions' category search.";
+//     //   actionCompleteResponse(res, packages, msg);
+//     // } else {
+//     //   const msg = "No data found";
+//     //   actionCompleteResponse(res, [], msg);
+//     // }
+//   } catch (error) {
+//     console.log("error while trying to get amount",error);
+//     return next(error);
+//   }
+// };

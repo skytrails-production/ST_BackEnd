@@ -225,9 +225,12 @@ const {
 } = eventBookingServices;
 const {agentRewardServices}=require("../services/agentRewardServices");
 const {createAgentReward,findAgentReward,deleteAgentReward,AgentRewardList,updateAgentReward,AgentRewardListPaginate}=agentRewardServices;
-const{referralAmountServices}=require('../services/referralAmountServices')
+const{referralAmountServices}=require('../services/referralAmountServices');
 const {createReferralAmount,findReferralAmount,deleteReferralAmount,referralAmountList,updateReferralAmount,referralAmountListPaginate}=referralAmountServices;
-
+const {packageBannerServices}=require('../services/packageBannerServices');
+const {createPackageBanner,findPackageBanner,findPackageBannerData,deletePackageBanner,updatePackageBanner}=packageBannerServices;
+const{popularDestinationServices}=require('../services/popularDestinationServices');
+const{createPopularDestination,findPopularDestination,findPopularDestinationData,deletePopularDestination,updatePopularDestination}=popularDestinationServices;
 //**********Necessary models***********/
 const flightModel = require("../model/flightBookingData.model");
 const hotelBookingModel = require("../model/hotelBooking.model");
@@ -2105,6 +2108,76 @@ exports.getReferralAmount=async(req,res,next)=>{
     });
   } catch (error) {
     console.log("error while trying to get amount",error);
+    return next(error);
+  }
+}
+
+exports.createPackageBanner=async(req,res,next)=>{
+  try {
+    const {packageType,packageImage,packageTitle,packageDiscount,uniqueId}=req.body;
+    // const isAdminExist = await adminModel.findOne({ _id: uniqueId });
+    // if (!isAdminExist) {
+    //   return res.status(statusCode.NotFound).send({
+    //     statusCode: statusCode.NotFound,
+    //     responseMessage: responseMessage.ADMIN_NOT_FOUND,
+    //   });
+    // }
+    const imageUrl = await commonFunction.getImageUrlAWS(req.file);
+    if (!imageUrl) {
+      return res.status(statusCode.InternalError).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.INTERNAL_ERROR,
+      });
+    }
+    const obj={
+      packageType:packageType,
+      packageImage:imageUrl,
+      packageTitle:packageTitle,
+      packageDiscount:packageDiscount
+    }
+    const result=await createPackageBanner(obj);
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.CREATED_SUCCESS,
+      result: result,
+    });
+  } catch (error) {
+    console.log("Error while trying to create package banner", error);
+    return next(error);
+  }
+}
+
+exports.createPopularDestination=async(req,res,next)=>{
+  try {
+    const {city,images,description,discount,uniqueId}=req.body;
+    // const isAdminExist = await adminModel.findOne({ _id: uniqueId });
+    // if (!isAdminExist) {
+    //   return res.status(statusCode.NotFound).send({
+    //     statusCode: statusCode.NotFound,
+    //     responseMessage: responseMessage.ADMIN_NOT_FOUND,
+    //   });
+    // }
+    const imageUrl = await commonFunction.getImageUrlAWS(req.file);
+    if (!imageUrl) {
+      return res.status(statusCode.InternalError).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.INTERNAL_ERROR,
+      });
+    }
+    const obj={
+      city:city,
+      images:imageUrl,
+      description:description,
+      discount:discount
+    }
+    const result=await createPopularDestination(obj);
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.CREATED_SUCCESS,
+      result: result,
+    });
+  } catch (error) {
+    console.log("Error while trying to create package banner", error);
     return next(error);
   }
 }

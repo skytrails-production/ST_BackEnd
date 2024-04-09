@@ -652,7 +652,8 @@ const schemas = {
   }),
   updateEmailSchema:joi.object().keys({
     email:joi.string().required()
-  })
+  }),
+
 };
 
 module.exports = schemas;

@@ -83,5 +83,6 @@ module.exports = function (app) {
   //get filter packages based on the amount
 
   app.get("/skyTrails/package/packagefilterAmount", controller.packageFilterAmount);
+  app.get("/skyTrails/api/packages/categoriesPackages", controller.beachesPackagesCategory);
 
 };
