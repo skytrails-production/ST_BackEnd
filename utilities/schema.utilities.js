@@ -653,7 +653,14 @@ const schemas = {
   updateEmailSchema:joi.object().keys({
     email:joi.string().required()
   }),
-
+  updatePackBannerSchema:joi.object().keys({
+    status:joi.string().required(),
+    bannerId:joi.string().required()
+  }),
+  updateDestinationSchema:joi.object().keys({
+    status:joi.string().required(),
+    destinationId:joi.string().required()
+  }),
 };
 
 module.exports = schemas;

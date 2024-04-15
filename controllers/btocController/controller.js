@@ -1391,7 +1391,6 @@ exports.resendOtpMailMobile = async (req, res, next) => {
       [contactMethod]: userIdentifier,
       userType: updateData.userType,
       otpVerified: updateData.otpVerified,
-      otp,
       status: updateData.status,
       token,
     };

@@ -112,6 +112,7 @@ const {
 } = require("../common/common");
 const { log } = require("console");
 const { internationl } = require("../model/international.model");
+const { logger } = require("../config/nodeConfig");
 
 // console.log(process.env.AWS_ACCESS_KEY_ID, process.env.AWS_SECRET_ACCESS_KEY);
 
@@ -1787,6 +1788,53 @@ exports.checkReferralCode=async(req,res,next)=>{
     return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage:responseMessage.REFERRALCODE_APPLIED,result:isCodeValid });
   } catch (error) {
     console.error("error while trying to check ",error);
-    return next(error)
+    return next(error);
+  }
+}
+
+// exports.checkIsExits=async(req,res,next)=>{
+//   try {
+//     const {agencyName}=req.body;
+// console.log("regex");
+
+//    console.log("====================",);
+//     // Construct a case-insensitive regular expression for matching variations of the agency name
+//     const regex = new RegExp(agencyName.replace(/\s+/g, '\\s*'), 'i');
+// console.log("regex============",regex);
+//     const isAgentExist=await b2bUser.findOne({'agency_details.agency_name':regex});
+    
+//     if(!isAgentExist){   
+//       return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage:responseMessage.AGENT_NOT_FOUND });
+//   }
+//   return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage:responseMessage.LOGIN_SUCCESS ,result:isAgentExist});
+   
+//   } catch (error) {
+//     console.error("error while trying to check ",error);
+//     return next(error);
+//   }
+// }
+
+
+exports.checkIsExits = async (req, res, next) => {
+  try {
+    const { agencyName } = req.body;
+    
+    // Construct a regex pattern to match substrings of the normalized search query
+    const regexPattern = new RegExp(agencyName.replace(/\s+/g, ''), 'i');
+    console.log("regexPattern===========",regexPattern);
+    // Find if any agency name matches the regex pattern
+    const isAgentExist = await b2bUser.find({
+      'agency_details.agency_name': { $regex: regexPattern }
+    });
+
+    if (!isAgentExist) {   
+      return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.AGENT_NOT_FOUND });
+    }
+
+    return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage:true, result: isAgentExist });
+   
+  } catch (error) {
+    console.error("error while trying to check ", error);
+    return next(error);
   }
 }

@@ -231,6 +231,9 @@ const {packageBannerServices}=require('../services/packageBannerServices');
 const {createPackageBanner,findPackageBanner,findPackageBannerData,deletePackageBanner,updatePackageBanner}=packageBannerServices;
 const{popularDestinationServices}=require('../services/popularDestinationServices');
 const{createPopularDestination,findPopularDestination,findPopularDestinationData,deletePopularDestination,updatePopularDestination}=popularDestinationServices;
+const {packageCategoryServices}=require('../services/packageCategoryServices');
+const {createPackageCategory,findPackageCategory,findPackageCategoryData,deletePackageCategory,updatePackageCategory}=packageCategoryServices;
+
 //**********Necessary models***********/
 const flightModel = require("../model/flightBookingData.model");
 const hotelBookingModel = require("../model/hotelBooking.model");
@@ -2180,4 +2183,71 @@ exports.createPopularDestination=async(req,res,next)=>{
     console.log("Error while trying to create package banner", error);
     return next(error);
   }
+}
+
+exports.updateStatusBanner=async(req,res,next)=>{
+  try {
+    const {status,bannerId}=req.body;
+    const isBannerExist=await findPackageBanner({_id:bannerId});
+    if(!isBannerExist){
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.BAD_REQUEST,
+      });
+    }
+    const result=await updatePackageBanner({_id:isBannerExist._id},{status:status});
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.UPDATE_SUCCESS,
+      result: result,
+    });
+  } catch (error) {
+    console.log("Error while trying to create package banner", error);
+    return next(error);
+  }
+}
+exports.updatePopularDestination=async(req,res,next)=>{
+  try {
+    const {status,destinationId}=req.body;
+    const isdestinationExist=await findPopularDestination({_id:destinationId});
+    if(!isdestinationExist){
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.BAD_REQUEST,
+      });
+    }
+    const result=await updatePopularDestination({_id:isdestinationExist._id},{status:status});
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.UPDATE_SUCCESS,
+      result: result,
+    });
+  } catch (error) {
+    console.log("Error while trying to create package banner", error);
+    return next(error);
+  }
+}
+
+exports.createPackageCategory=async(req,res,next)=>{
+  try {
+    const {inclusion,colorCode,headingCode}=req.body;
+    const imageUrl = await commonFunction.getImageUrlAWS(req.file);
+    if (!imageUrl) {
+      return res.status(statusCode.InternalError).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.INTERNAL_ERROR,
+      });
+    }
+  const obj={inclusion,images:imageUrl,colorCode,headingCode}
+  const result=await createPackageCategory(obj);
+  return res.status(statusCode.OK).send({
+    statusCode: statusCode.OK,
+    responseMessage: responseMessage.CREATED_SUCCESS,
+    result: result,
+  });
+  } catch (error) {
+    console.log("Error while trying to create package category", error);
+    return next(error);
+  }
+  
 }

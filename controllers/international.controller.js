@@ -23,7 +23,9 @@ const s3 = new aws.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 });
-
+//*************************Services****************************************/
+const {packageCategoryServices}=require('../services/packageCategoryServices');
+const {createPackageCategory,findPackageCategory,findPackageCategoryData,deletePackageCategory,updatePackageCategory}=packageCategoryServices;
 // exports.internationalCreate = async (req, res) => {
 //   const reqData = JSON.parse(req.body.data);
 //   const file = req?.file;
@@ -1019,61 +1021,88 @@ exports.beachesPackagesCategory = async (req, res, next) => {
   }
 };
 
+exports.beachesPackagesCategoryArr = async (req, res, next) => {
+  try {
+    const { page, limit,seeAll,keyword } = req.query;
+    let queryObj = {};
+    if(seeAll=="true"){
+      // for (const key of keywordsArray) {
+        queryObj = {
+          [`insclusions.${keyword}`]: "true",
+          is_active: 1
+        };
+      // }
+        const results=await internationl.find(queryObj);
+        return res.status(statusCode.OK).send({
+          statusCode: statusCode.OK,
+          responseMessage: responseMessage.DATA_FOUND,
+          results: results,
+          resultsl:results.length
+        });
+    }
+    const categoryArray=await findPackageCategoryData({});
+     // Check if keyword exists and is an array
+     if (categoryArray.length > 0) {
+      const finalRes=[]
+      const results = {};
+      // Iterate over each keyword
+      for (const key of categoryArray) {
+        queryObj = {
+          [`insclusions.${key.inclusion}`]: "true",
+          is_active: 1
+        };
+        const options = {
+          page: Number(page) || 1,
+          limit: Number(limit) || 5,
+          sort: { createdAt: -1 }
+        };
+        // Perform pagination query
+        const result = await internationl.paginate(queryObj, options);
+        results[key.inclusion] = result;
+      // Push result along with additional information to finalRes array
+      finalRes.push({
+        inclusion: key.inclusion,
+        result: result,
+        colorCode: key.colorCode,
+        Icon: key.images,
+        headingCode:key.headingCode
+      });
 
-// exports.p
-//   try {
-//     const { page, limit, keyword } = req.query;
-//     console.log("req.query==============",req.query)
-//     let queryObj = {};
-//     queryObj[`insclusions.${keyword}`] = "true";
-//     if(keyword){
-//       console.log("============");
-//       queryObj.$or=[
-//         { $and: [{ is_active: 1 },queryObj] }
-//       ]
-//       console.log("============",queryObj);
-//     }
-//     let options = {
-//       page: Number(page) || 1,
-//       limit: Number(limit) || 5,
-//       sort: { createdAt: -1 },
-//   };
-//   const result=await internationl.paginate(queryObj, options);
-//   console.log("result=================",result);
-//   if(result.docs.length==0){
-//     return res.status(statusCode.OK).send({
-//     statusCode: statusCode.OK,
-//     responseMessage: responseMessage.DATA_FOUND,
-//     result: result,
-//   });
-//   }
-  
-//     // const data = req.query.keyword;
-//     // let query = {};
-//   //  console.log(data,"datqa")
-//     // for (var key in data) {
-//       // if (Object.hasOwnProperty.call(data, key)) {
-//         // var value = data[key];
+      }
+      
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.DATA_FOUND,
+        results: finalRes,
+      });
+    } 
+  } catch (error) {
+    console.error("Error while trying to fetch beach packages:", error);
+    return next(error);
+  }
+};
 
-//         // query[`insclusions.${data}`] = "true";
-//       // }
-//     // }
-//     // console.log('Generated Query:', query);
-//     // const parameter=[{ $and: [{ is_active: 1 }, query] }]
-   
-
-//     // const packages = await internationl.find({ $and: [{ is_active: 1 }, query] });
-
-//     // if (packages.length > 0) {
-//     //   const msg =
-//     //     "Successfully retrieved packages through the 'inclusions' category search.";
-//     //   actionCompleteResponse(res, packages, msg);
-//     // } else {
-//     //   const msg = "No data found";
-//     //   actionCompleteResponse(res, [], msg);
-//     // }
-//   } catch (error) {
-//     console.log("error while trying to get amount",error);
-//     return next(error);
-//   }
-// };
+exports.getPackageByCategory=async(req,res,next)=>{
+  try {
+    const data = req.query.keyword;
+    const modified=data.replace(/\s+/g, '').toLowerCase();
+   let query={};
+   query[`select_tags.${modified}`] = "true";
+   const result = await internationl.find({ $and: [{ is_active: 1 }, query] });
+   if(result.length==0){
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.NotFound,
+      responseMessage: responseMessage.DATA_NOT_FOUND,
+      // result: result,
+    });
+   }
+   return res.status(statusCode.OK).send({
+    statusCode: statusCode.OK,
+    responseMessage: responseMessage.DATA_FOUND,
+    result: result,
+  });
+  } catch (error) {
+    console.error("Error while trying to fetch beach packages:", error);
+    return next(error);
+  }
+}
