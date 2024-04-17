@@ -35,7 +35,7 @@ const brbuserServices = {
         return await brbuserModel.find(query).select('-otp -location -isOnline -coinBalance -isChange -otpExpireTime -firstTime -approveStatus -socialLinks -confirmPassword -password  -isApprove -createdAt -updatedAt');
     },
     updatebrbuser: async (query, updateObj) => {
-        return await brbuserModel.findOneAndUpdate(query, updateObj, { new: true }).select('-otp');
+        return await brbuserModel.findOneAndUpdate(query, updateObj, { new: true });
     },
 
     paginatebrbuserSearch: async (body) => {

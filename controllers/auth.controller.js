@@ -2125,6 +2125,7 @@ exports.createPackageBanner=async(req,res,next)=>{
     //     responseMessage: responseMessage.ADMIN_NOT_FOUND,
     //   });
     // }
+    
     const imageUrl = await commonFunction.getImageUrlAWS(req.file);
     if (!imageUrl) {
       return res.status(statusCode.InternalError).send({
@@ -2135,7 +2136,7 @@ exports.createPackageBanner=async(req,res,next)=>{
     const obj={
       packageType:packageType,
       packageImage:imageUrl,
-      packageTitle:packageTitle,
+      packageTitle:packageTitle.toLowerCase(),
       packageDiscount:packageDiscount
     }
     const result=await createPackageBanner(obj);

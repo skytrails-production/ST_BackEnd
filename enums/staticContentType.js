@@ -19,5 +19,7 @@ module.exports = Object.freeze({
     BOOKINGPOLICY:'BOOKINGPOLICY',
     CORPORATETRAVEL:'CORPORATETRAVEL',
     QUESTION:'QUESTION',
-    CONTACTUS:'CONTACTUS'
+    CONTACTUS:'CONTACTUS',
+    CancellationsPaymentPolicy:'Cancellations & Payment Policy',
+    DISCLAIMER:'Disclaimer'
 })

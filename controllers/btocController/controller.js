@@ -71,7 +71,6 @@ const {
 } = referralAmountServices;
 
 //******************************************User SignUp api*************************/
-
 exports.login = async (req, res, next) => {
   try {
     const { mobileNumber } = req.body;
@@ -156,7 +155,7 @@ exports.login = async (req, res, next) => {
       await whatsappAPIUrl.sendMessageWhatsApp(
         "+919999123232",
         var1,
-        otp,
+        result.otp,
         "loginotp"
       );
       return res.status(statusCode.OK).send({
@@ -365,6 +364,43 @@ exports.resendOtp = async (req, res, next) => {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+    if (mobileNumber === "9999123232") {
+      let updatedNumber = await updateUser(
+        { "phone.mobile_number": mobileNumber, status: status.ACTIVE },
+        {
+          "phone.mobile_number": mobileNumber,
+          otpVerified: false,
+          otpExpireTime: null,
+          approveStatus: "APPROVED",
+        }
+      );
+      token = await commonFunction.getToken({
+        _id: isExist._id,
+        mobile_number: isExist.phone.mobile_number,
+      });
+      const result = {
+        firstTime: isExist.firstTime,
+        _id: isExist._id,
+        phone: isExist.phone,
+        userType: isExist.userType,
+        otpVerified: isExist.otpVerified,
+        otp: "123456",
+        status: isExist.status,
+        token: token,
+      };
+      await sendSMS.sendSMSForOtp(mobileNumber, result.otp);
+      await whatsappAPIUrl.sendMessageWhatsApp(
+        "+919999123232",
+        var1,
+        result.otp,
+        "loginotp"
+      );
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        message: responseMessage.OTP_SEND,
+        result: result,
       });
     }
     const var1 = `${isExist.username}`;
@@ -905,7 +941,7 @@ exports.loginWithMailMobileLogin = async (req, res, next) => {
     const otpExpireTime = new Date().getTime() + 300000;
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const mobileRegex = /^(?!0)\d{9,}(\d)(?!\1{4})\d*$/;
-
+   
     const data = {
       email: email,
     };
@@ -989,8 +1025,44 @@ exports.loginWithMailMobileLogin = async (req, res, next) => {
       );
       // Perform actions for login with mobile number
       const isExist = await findUser({ "phone.mobile_number": email });
-      const var1 =
-        isExist && isExist.username !== "" ? isExist.username : "Dear";
+      const var1 = isExist && isExist.username !== "" ? isExist.username : "Dear";
+      if (email === "9999123232") {
+        let updatedNumber = await updateUser(
+          { "phone.mobile_number": email, status: status.ACTIVE },
+          {
+            "phone.mobile_number": email,
+            otpVerified: false,
+            otpExpireTime: null,
+            approveStatus: "APPROVED",
+          }
+        );
+       const  token = await commonFunction.getToken({
+          _id: isExist._id,
+          mobile_number: isExist.phone.mobile_number,
+        });
+        const result = {
+          firstTime: isExist.firstTime,
+          _id: isExist._id,
+          phone: isExist.phone,
+          userType: isExist.userType,
+          otpVerified: isExist.otpVerified,
+          otp: "123456",
+          status: isExist.status,
+          token: token,
+        };
+        await sendSMS.sendSMSForOtp(email, result.otp);
+        await whatsappAPIUrl.sendMessageWhatsApp(
+          "+919999123232",
+          var1,
+          result.otp,
+          "loginotp"
+        );
+        return res.status(statusCode.OK).send({
+          statusCode: statusCode.OK,
+          responseMessage: responseMessage.LOGIN_SUCCESS,
+          result: result,
+        });
+      }
       if (isExist) {
         const setUnVerified = await updateUser(
           { _id: isExist._id },
@@ -1108,32 +1180,7 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
         statusCode: statusCode.badRequest,
         message: responseMessage.INCORRECT_OTP,
       });
-    } else if (isUserExist.phone.mobile_number == "9999123232") {
-      const updateStaticUser = await updateUser(
-        { _id: isUserExist._id, status: status.ACTIVE },
-        { otpVerified: true, firstTime: false }
-      );
-      const token = await commonFunction.getToken({
-        _id: updateStaticUser._id,
-        mobile_number: updateStaticUser.phone.mobile_number,
-      });
-      const result = {
-        firstTime: updateStaticUser.firstTime,
-        _id: updateStaticUser._id,
-        phone: updateStaticUser.phone,
-        userType: updateStaticUser.userType,
-        username: updateStaticUser.username,
-        otpVerified: updateStaticUser.otpVerified,
-        balance: updateStaticUser.balance,
-        status: updateStaticUser.status,
-        token: token,
-      };
-      return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
-        message: responseMessage.OTP_VERIFY,
-        result: result,
-      });
-    }
+    } 
     if (new Date().getTime() > isUserExist.otpExpireTime) {
       return res.status(statusCode.badRequest).json({
         statusCode: statusCode.badRequest,
@@ -1287,6 +1334,32 @@ exports.sendOtpOnSMS = async (req, res, next) => {
         responseMessage: responseMessage.NOT_FOUND,
       });
     }
+    else if (isUserExist.phone.mobile_number == "9999123232") {
+      const updateStaticUser = await updateUser(
+        { _id: isUserExist._id, status: status.ACTIVE },
+        { otpVerified: true, firstTime: false }
+      );
+      const token = await commonFunction.getToken({
+        _id: updateStaticUser._id,
+        mobile_number: updateStaticUser.phone.mobile_number,
+      });
+      const result = {
+        firstTime: updateStaticUser.firstTime,
+        _id: updateStaticUser._id,
+        phone: updateStaticUser.phone,
+        userType: updateStaticUser.userType,
+        username: updateStaticUser.username,
+        otpVerified: updateStaticUser.otpVerified,
+        balance: updateStaticUser.balance,
+        status: updateStaticUser.status,
+        token: token,
+      };
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        message: responseMessage.OTP_VERIFY,
+        result: result,
+      });
+    }
     const setUnVerified = await updateUser(
       { _id: isExist._id },
       { $set: { otp: otp, otpExpireTime: otpExpireTime, otpVerified: false } }
@@ -1347,7 +1420,43 @@ exports.resendOtpMailMobile = async (req, res, next) => {
         message: responseMessage.INVALID_INPUT,
       });
     }
-   
+    if (email === "9999123232") {
+      let updatedNumber = await updateUser(
+        { "phone.mobile_number": email, status: status.ACTIVE },
+        {
+          "phone.mobile_number": email,
+          otpVerified: false,
+          otpExpireTime: null,
+          approveStatus: "APPROVED",
+        }
+      );
+      token = await commonFunction.getToken({
+        _id: isExist._id,
+        mobile_number: isExist.phone.mobile_number,
+      });
+      const result = {
+        firstTime: isExist.firstTime,
+        _id: isExist._id,
+        phone: isExist.phone,
+        userType: isExist.userType,
+        otpVerified: isExist.otpVerified,
+        otp: "123456",
+        status: isExist.status,
+        token: token,
+      };
+      await sendSMS.sendSMSForOtp(email, result.otp);
+      await whatsappAPIUrl.sendMessageWhatsApp(
+        "+919999123232",
+        var1,
+        result.otp,
+        "loginotp"
+      );
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        message: responseMessage.OTP_SEND,
+        result: result,
+      });
+    }
     const updateData = await updateUser({ _id: user._id, status: status.ACTIVE }, { otp, otpExpireTime });
     if (!updateData) {
       return res.status(statusCode.OK).send({

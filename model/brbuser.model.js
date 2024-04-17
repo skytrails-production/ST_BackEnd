@@ -284,6 +284,12 @@ const Userb2bSchema =
     referrerCode: {type:String},
     rewardAmount: { type: Number },
     revenue: { type: Number },
+    socialId:{
+      instaId:{type:String},
+      facebookId:{type:String},
+      googleId:{type:String},
+      linkedinId:{type:String},
+    }
     },
     {
       timestamps: true,

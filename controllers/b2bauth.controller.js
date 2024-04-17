@@ -100,6 +100,9 @@ const {
   aggregatePaginatechangeBusRequestList,
   countTotalchangeBusRequest,
 } = changeBusRequestServices;
+
+const {agentStaticContentServices}=require('../services/agentStaticServices');
+const {createAgentStaticContent,findAgentStaticContent,findAgentStaticContentData,deleteAgentStaticContentStatic,updateAgentStaticContentStatic}=agentStaticContentServices;
 //**********Necessary models***********/
 const flightModel = require("../model/flightBookingData.model");
 const hotelBookingModel = require("../model/hotelBooking.model");
@@ -1835,6 +1838,38 @@ exports.checkIsExits = async (req, res, next) => {
    
   } catch (error) {
     console.error("error while trying to check ", error);
+    return next(error);
+  }
+}
+
+//****************************for update socialID***********************************/
+exports.updatePersonalProfile=async(req,res,next)=>{
+  try {
+    const {agentId,instaId,facebookId,googleId,linkedinId}=req.body;
+    const isAgentExist=await findbrbuser({_id:agentId}) ;
+    if(!isAgentExist){
+      return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage:responseMessage.AGENT_NOT_FOUND });
+    }
+    var imageUrl;
+    if(req.file){
+       imageUrl = await commonFunction.getImageUrlAWS(req.file);
+      if (!imageUrl) {
+        return res.status(statusCode.InternalError).send({
+          statusCode: statusCode.OK,
+          responseMessage: responseMessage.INTERNAL_ERROR,
+        });
+      }
+    }
+    const object={
+      agentCompanyLogo:imageUrl,
+      socialId:{
+        instaId,facebookId,googleId,linkedinId
+      }
+    }
+    const result=await updatebrbuser({_id:isAgentExist._id},object);
+    return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage:responseMessage.UPDATE_SUCCESS ,result:result});
+  } catch (error) {
+    console.error("error while trying to update profile ",error);
     return next(error);
   }
 }
