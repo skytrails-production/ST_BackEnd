@@ -14,6 +14,7 @@ module.exports = function (app) {
 
     app.get("/skyTrails/grnconnect/getcityList", controller.getCityListData);
     app.get('/skyTrails/updateCities', controller.updateCityListWithCountryNames);
+    app.get('/skyTrails/grnconnect/getcountrylist',controller.getCountryList);
 
     app.post("/skyTrails/grnconnect/hotelSearch",controller.hotelSearch);
     app.post("/skyTrails/grnconnect/hotelSearchWithPagination",controller.hotelSearchWithPagination);

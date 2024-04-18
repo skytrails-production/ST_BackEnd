@@ -94,7 +94,7 @@ const lastNotificationSent = new Map();
 // task.start();
 
 // Define and schedule task2 separately
-var taskPromotionalNotification = cron.schedule("11 10 * * *",async () => {
+var taskPromotionalNotification = cron.schedule("40 11 * * *",async () => {
   try {
     // 'phone.mobile_number':'8115199076'
     const users = await userList({
@@ -107,8 +107,9 @@ var taskPromotionalNotification = cron.schedule("11 10 * * *",async () => {
     // const messageBody = `✨Check out our latest promotion! We're offering deals so good, even your coffee will do a double-take! ☕️ Explore your journey with TheSkyTrails pvt ltd✨`;
     for (const user of users) {
       try { 
-      const notificationMessage = `⌛⏱️⩇⩇:⩇⩇, Time's Up`;
-      const messageBody = ``;
+      const notificationMessage = `Hey, Ab to ♡𝙥𝒶𝙥𝒶 𝓚𝓲 𝙥𝒶ℛꭵ♡ 🧚🏻‍♀️ bhi udney lagi 🧚‍♀️`;
+      const messageBody = `aap kb Udoge ✈️, get 𝖚𝖕𝖙𝖔 𝟏𝟎 % 𝙤𝙛𝙛 on your 1𝙨𝙩 Booking 
+with The SkyTrails`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
       // const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`
         // Check if a notification has been sent to this user recently
@@ -121,11 +122,11 @@ var taskPromotionalNotification = cron.schedule("11 10 * * *",async () => {
           );
           continue; // Skip sending notification
         }
-        await pushNotification(
+        await pushSimpleNotification(
           user.deviceToken,
           notificationMessage,
           messageBody,
-          imageurl
+          // imageurl
         );
 
         // Update the last notification sent time for this user
@@ -255,12 +256,12 @@ taskPromotionalNotification.start(); // Start the task2
 // taskEventNotification1.start(); // Start the task2
 
 // Define and schedule task2 separately
-var taskPlatformNotification = cron.schedule("16 12 * * *",
+var taskPlatformNotification = cron.schedule("30 12 * * *",
   async () => {
     try {
       // 'contactNo.mobile_number': { $in: ['8115199076', '9135219071'] },
       const users = await userList({
-        // 'phone.mobile_number': { $in: ['8115199076','9135219071','8384082560'] },
+        'phone.mobile_number': { $in: ['8115199076','9135219071','8384082560'] },
         status: status.ACTIVE,
         deviceToken: { $exists: true, $ne: "" },
       });
@@ -275,9 +276,10 @@ var taskPlatformNotification = cron.schedule("16 12 * * *",
           // Now you can find super cool deals on flights✈ and hotels🏨📱 
           
           // Update your app now and let's get your wanderlust fix!`;
-          const notificationMessage = `🚩🌟 Jinka nam Ram hai, 🚩 AYODHYA jinka dham hai🌟🚩`;
-      const messageBody = `꧁🚩जयश्री राम🚩꧂, 
-🎉 explore this Ramnavami at Ayodhya Ram ki nagri 🏰 with The Skytrails pvt ltd 🛫 જ⁀➴ 🛕`;
+          const notificationMessage = `In 𝓔𝓡𝓐 of webseries🎞️ and social media📱 `;
+      const messageBody = `I got the 𝐬𝐤𝐲𝐓𝐫𝐚𝐢𝐥𝐬, Best Travel partner to complete your travel plans
+🛫🗺🚗🏘🌉
+`;
           await pushSimpleNotification(
             user.deviceToken,
             notificationMessage,

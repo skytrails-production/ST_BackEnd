@@ -4,6 +4,7 @@ const issuedType = require("../enums/issuedType");
 const authType = require("../enums/authType");
 const queryType = require("../enums/offerType");
 const visaType = require("../enums/visaType");
+const staticType = require("../enums/staticContentType");
 // const bookingType=require("../enums/")
 const schemas = {
   flightBookingSchema: joi.object().keys({
@@ -283,7 +284,7 @@ const schemas = {
       .length(10)
       .pattern(/^(?!.*(\d)(?:\1{5,})).*[1-9]\d*$/)
       .optional(),
-      email:joi.string().optional()
+    email: joi.string().optional(),
   }),
   agetHotelBooking: joi.object().keys({
     page: joi.string().optional(),
@@ -388,7 +389,7 @@ const schemas = {
     flightMarkup: joi.number().optional(),
     busMarkup: joi.number().optional(),
     packageMarkup: joi.number().optional(),
-    rechargeMarkup: joi.number().optional()
+    rechargeMarkup: joi.number().optional(),
   }),
   offlineQuerySchema: joi.object().keys({
     email: joi.string().required(),
@@ -437,7 +438,7 @@ const schemas = {
   paymentSchema: joi.object().keys({
     amount: joi.number().required(),
     paymentId: joi.string().required(),
-    easeBuzzPayId:joi.string().optional(),
+    easeBuzzPayId: joi.string().optional(),
     bookingType: joi
       .string()
       .valid(...Object.values(queryType))
@@ -473,7 +474,6 @@ const schemas = {
     mobile_number: joi.string().required(),
     agency_name: joi.string().required(),
     password: joi.string().required(),
-    
   }),
   sendPDFSchema: joi.object().keys({
     ticketId: joi.string().required(),
@@ -532,7 +532,7 @@ const schemas = {
     noOfMember: joi.number().required(),
     registrationRequired: joi.boolean().required(),
     eventCountry: joi.string().optional(),
-    forCouple:joi.boolean().optional()
+    forCouple: joi.boolean().optional(),
   }),
   eventBookingSchema: joi.object().keys({
     price: joi.number().optional(),
@@ -550,10 +550,8 @@ const schemas = {
     city: joi.string().required(),
     deviceToken: joi.string().optional(),
     profession: joi.string().optional(),
-    deviceType:joi.string().optional(),
+    deviceType: joi.string().optional(),
   }),
-
-  
 
   webAddSchema: joi.object().keys({
     title: joi.string().required(),
@@ -626,40 +624,54 @@ const schemas = {
     flightMarkup: joi.number().optional(),
     busMarkup: joi.number().optional(),
     holidayPackageMarkup: joi.number().optional(),
-    markupId:joi.string().required()
+    markupId: joi.string().required(),
   }),
   applyCouponSchema: joi.object().keys({
     couponCode: joi.string().required(),
   }),
-  refundSchema:joi.object().keys({
-    orderId:joi.string().required(),
-    amount:joi.number().required(),
-    refund_id:joi.string().optional(),
-    refund_speed:joi.string().required()
+  refundSchema: joi.object().keys({
+    orderId: joi.string().required(),
+    amount: joi.number().required(),
+    refund_id: joi.string().optional(),
+    refund_speed: joi.string().required(),
   }),
-  promoEventSchema:joi.object().keys({
-    adminId:joi.string().required(),
-    image:joi.string().optional(),
-    url:joi.string().optional(),
-    content:joi.string().required(),
-    startDate:joi.string().required(),
-    endDate:joi.string().required(),
-    isClickAble:joi.boolean().required(),
-    
+  promoEventSchema: joi.object().keys({
+    adminId: joi.string().required(),
+    image: joi.string().optional(),
+    url: joi.string().optional(),
+    content: joi.string().required(),
+    startDate: joi.string().required(),
+    endDate: joi.string().required(),
+    isClickAble: joi.boolean().required(),
   }),
-  deletPromoEventSchema:joi.object().keys({
-    eventId:joi.string().required()
+  deletPromoEventSchema: joi.object().keys({
+    eventId: joi.string().required(),
   }),
-  updateEmailSchema:joi.object().keys({
-    email:joi.string().required()
+  updateEmailSchema: joi.object().keys({
+    email: joi.string().required(),
   }),
-  updatePackBannerSchema:joi.object().keys({
-    status:joi.string().required(),
-    bannerId:joi.string().required()
+  updatePackBannerSchema: joi.object().keys({
+    status: joi.string().required(),
+    bannerId: joi.string().required(),
   }),
-  updateDestinationSchema:joi.object().keys({
-    status:joi.string().required(),
-    destinationId:joi.string().required()
+  updateDestinationSchema: joi.object().keys({
+    status: joi.string().required(),
+    destinationId: joi.string().required(),
+  }),
+  getStaticContentSchema: joi.object().keys({
+    type: joi.valid(...Object.values(staticType)).required(),
+  }),
+  updateAgentStaticContentSchema: joi.object().keys({
+    agentId: joi.string().required(),
+    title: joi.string().allow(" ").optional(),
+    description: joi.string().allow(" ").optional(),
+    type: joi.valid(...Object.values(staticType)).allow(" ").optional(),
+    contactNumber: joi.string().allow(" ").optional(),
+    email: joi.string().allow(" ").optional(),
+    OperationalAddress: joi.string().allow(" ").optional(),
+    RegisteredAddress: joi.string().allow(" ").optional(),
+    latitude: joi.string().allow(" ").optional(),
+    longitude: joi.string().allow(" ").optional(),
   }),
 };
 

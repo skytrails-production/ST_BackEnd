@@ -42,6 +42,21 @@ exports.getCityListData= async (req, res) =>{
 
 }
 
+//get country list data
+
+exports.getCountryList= async (req, res) =>{
+
+  try{
+    const response = await GrnCountryList.find().select('-_id'); 
+    msg = "Country List Search Successfully!";
+    actionCompleteResponse(res, response, msg);      
+} catch (err) {
+  // console.log(err);
+  sendActionFailedResponse(res, {}, err.message);
+}
+
+}
+
 //update cityList with countryName
 
 exports.updateCityListWithCountryNames= async (req, res) =>{

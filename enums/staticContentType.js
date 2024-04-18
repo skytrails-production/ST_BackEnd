@@ -20,6 +20,6 @@ module.exports = Object.freeze({
     CORPORATETRAVEL:'CORPORATETRAVEL',
     QUESTION:'QUESTION',
     CONTACTUS:'CONTACTUS',
-    CancellationsPaymentPolicy:'Cancellations & Payment Policy',
-    DISCLAIMER:'Disclaimer'
+    CancellationsPaymentPolicy:'CancellationsPaymentPolicy',
+    DISCLAIMER:'DISCLAIMER'
 })

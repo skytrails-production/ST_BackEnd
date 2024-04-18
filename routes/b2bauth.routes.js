@@ -167,5 +167,9 @@ module.exports = function (app) {
   );
   app.post("/skyTrails/agent/checkIsAgentExist", controller.checkIsExits);
   app.put("/skyTrails/agent/updatePersonalProfile",upload.single("images"),controller.updatePersonalProfile);
-  app.put("/skyTrails/agent/updateStaticContent",agentStaticController.updateAgentStaticContent);
+  app.post("/skyTrails/agent/staticContent/updateStaticContent",SchemaValidator(schemas.updateAgentStaticContentSchema),agentStaticController.updateAgentStaticContent);
+  app.get("/skyTrails/agent/staticContent/getAgentStaticContent",agentStaticController.getAgentStaticContent);
+  app.get("/skyTrails/agent/staticContent/getAllAgentStaticContent",agentStaticController.getAllAgentStaticContent);
+
+
 };
