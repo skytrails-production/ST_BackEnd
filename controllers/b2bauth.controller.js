@@ -1757,8 +1757,9 @@ exports.agentProfilePage = async (req, res) =>{
     if (!agentPackages) {
       return sendActionFailedResponse(res, {}, "Error fetching agent packages");
     }
+    const agentStaticContent=await findAgentStaticContentData({agentId:userProfile._id});
 
-    actionCompleteResponse(res, { userProfile, agentPackages }, "Agent profile and packages fetched successfully");
+    actionCompleteResponse(res, { userProfile, agentPackages,agentStaticContent }, "Agent profile and packages fetched successfully");
 
     
   } catch (error) {

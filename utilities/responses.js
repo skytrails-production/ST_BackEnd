@@ -124,4 +124,5 @@ module.exports = {
 	No_REVENUE:"No reward generate for this agent.",
 	EMAIL_ALREADY_EXIST: 'This email already exist',
 	INVALID_FORMAT: 'Please provide valid input',
+	PACKAGE_BOOKING_SUCCESS:"Booking Confirmed. Thank you!"
 };

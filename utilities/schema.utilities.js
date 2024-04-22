@@ -673,6 +673,21 @@ const schemas = {
     latitude: joi.string().allow(" ").optional(),
     longitude: joi.string().allow(" ").optional(),
   }),
+  packageBookNowSchema: joi.object().keys({
+    packageId: joi.string().required(),
+    email: joi.string().required(),
+    fullName: joi.string().required(),
+    countryCode: joi.string().optional(),
+    phone: joi.string().required(),
+    departureCity: joi.string().required(),
+    adults: joi.number().required(),
+    child: joi.number().required(),
+    packageType: joi.string().required(),
+    departureDate: joi.string().required(),
+    packageAmount: joi.number().required(),
+    totalAmount: joi.number().required(),
+    transactionId: joi.string().required(),
+  }),
 };
 
 module.exports = schemas;

@@ -85,4 +85,6 @@ module.exports = function (app) {
     app.get("/skyTrails/api/user/getUrl/:mobileNumber",Controller.getAppLink);
     app.put("/skyTrails/api/user/updateDeviceToken",[authJwt.verifcationToken],Controller.updateDeviceToken);
     app.get("/skyTrails/api/user/shareReferral/shareReferralCode",[authJwt.verifcationToken],Controller.shareReferralCode);
+    app.post("/skyTrails/api/user/packageBookNow",[authJwt.verifcationToken],SchemaValidator(schemas.packageBookNowSchema),packageController.packageBookNow);
+    app.get("/skyTrails/api/user/getPackageBookNow",[authJwt.verifcationToken],packageController.getUserPackageBooking)
 }
