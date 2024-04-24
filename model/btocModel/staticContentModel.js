@@ -35,12 +35,10 @@ const staticContentSchema = new mongoose.Schema(
         staticContentsType.TRAINS,
         staticContentsType.TRAVELINSURENCE,
         staticContentsType.QUESTION,
+        staticContentsType.REFFAQ
       ],
     },
-    // staticContentType: {
-    //   type: String,
-    //   enum:[subStaticContentType.ABOUTUS,subStaticContentType.BOOKINGPOLICY,subStaticContentType.CORPORATETRAVEL,subStaticContentType.RETURNPOLICY,subStaticContentType.TNC,subStaticContentType.PRIVACYPOLICY]
-    // },
+   faq:[{type:Object}],
     status: {
       type: String,
       enum:[status.ACTIVE,status.BLOCK,status.BLOCK],
@@ -50,82 +48,82 @@ const staticContentSchema = new mongoose.Schema(
   { timestamps: true }
 );
 staticContentSchema.plugin(mongoosePaginate);
-module.exports = mongoose.model("AppStaticContent", staticContentSchema);
+module.exports = mongoose.model("appStaticContent", staticContentSchema);
 
-mongoose
-  .model("staticContent", staticContentSchema)
-  .find({}, async (err, result) => {
-    if (err) {
-      console.log("DEFAULT Static content ERROR", err);
-    } else if (result.length != 0) {
-      console.log("Default static content already created.");
-    } else {
-      var obj1 = {
-        type: staticContentsType.TNC,
-        title: "Terms & Conditions",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus sapien nunc eget",
-      };
-      var obj2 = {
-        type: staticContentsType.PRIVACYPOLICY,
-        title: "Privacy Policy - TheSkytrails",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus sapien nunc eget.",
-      };
-      var obj3 = {
-        type: staticContentsType.ABOUTUS,
-        title: "About Us",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus sapien nunc eget.",
-      };
-      var obj4 = {
-        type: staticContentsType.ABOUTTHESITE,
-        title: "About Site",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus sapien nunc eget.",
-      };
-      var obj5 = {
-        type: staticContentsType.IMPORTANTLINKS,
-        title: "IMPORTANT LINKS",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus sapien nunc eget.",
-      };
-      var obj6 = {
-        type: staticContentsType.QUICKLINKS,
-        title: "QUICK LINKS",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus sapien nunc eget.",
-      };
-      var obj7 = {
-        type: staticContentsType.PRODUCTOFFERING,
-        title: "PRODUCT OFFERING",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus sapien nunc eget.",
-      };
-      var obj8 = {
-        type: staticContentsType.QUESTION,
-        title: "How to find booking ID?",
-        description:
-          "You can find your booking ID in your registered email, SMS sent to mobile no. used for booking or in ‘My Trips’ section.",
-      };
-      mongoose
-        .model("staticContent", staticContentSchema)
-        .create(
-          obj1,
-          obj2,
-          obj3,
-          obj4,
-          obj5,
-          obj6,
-          obj7,
-          obj8,
-          (staticErr, staticResult) => {
-            if (staticErr) {
-              console.log("Static content error.", staticErr);
-            } else {
-              console.log("Static content created.", staticResult);
-            }
-          }
-        );
-    }
-  });
+// mongoose
+//   .model("staticContent", staticContentSchema)
+//   .find({}, async (err, result) => {
+//     if (err) {
+//       console.log("DEFAULT Static content ERROR", err);
+//     } else if (result.length != 0) {
+//       console.log("Default static content already created.");
+//     } else {
+//       var obj1 = {
+//         type: staticContentsType.TNC,
+//         title: "Terms & Conditions",
+//         description:
+//           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus sapien nunc eget",
+//       };
+//       var obj2 = {
+//         type: staticContentsType.PRIVACYPOLICY,
+//         title: "Privacy Policy - TheSkytrails",
+//         description:
+//           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus sapien nunc eget.",
+//       };
+//       var obj3 = {
+//         type: staticContentsType.ABOUTUS,
+//         title: "About Us",
+//         description:
+//           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus sapien nunc eget.",
+//       };
+//       var obj4 = {
+//         type: staticContentsType.ABOUTTHESITE,
+//         title: "About Site",
+//         description:
+//           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus sapien nunc eget.",
+//       };
+//       var obj5 = {
+//         type: staticContentsType.IMPORTANTLINKS,
+//         title: "IMPORTANT LINKS",
+//         description:
+//           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus sapien nunc eget.",
+//       };
+//       var obj6 = {
+//         type: staticContentsType.QUICKLINKS,
+//         title: "QUICK LINKS",
+//         description:
+//           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus sapien nunc eget.",
+//       };
+//       var obj7 = {
+//         type: staticContentsType.PRODUCTOFFERING,
+//         title: "PRODUCT OFFERING",
+//         description:
+//           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus sapien nunc eget.",
+//       };
+//       var obj8 = {
+//         type: staticContentsType.QUESTION,
+//         title: "How to find booking ID?",
+//         description:
+//           "You can find your booking ID in your registered email, SMS sent to mobile no. used for booking or in ‘My Trips’ section.",
+//       };
+//       mongoose
+//         .model("staticContent", staticContentSchema)
+//         .create(
+//           obj1,
+//           obj2,
+//           obj3,
+//           obj4,
+//           obj5,
+//           obj6,
+//           obj7,
+//           obj8,
+//           (staticErr, staticResult) => {
+//             if (staticErr) {
+//               console.log("Static content error.", staticErr);
+//             } else {
+//               console.log("Static content created.", staticResult);
+//             }
+//           }
+//         );
+//     }
+//   });

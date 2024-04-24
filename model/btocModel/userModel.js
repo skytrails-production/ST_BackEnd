@@ -7,6 +7,7 @@ const userType=require("../../enums/userType")
 const approveStatus = require("../../enums/approveStatus");
 const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 const mongoosePaginate = require("mongoose-paginate-v2");
+const { number } = require("joi");
 mongoose.pluralize(null);
 
 const usersSchema = new Schema({
@@ -142,7 +143,26 @@ const usersSchema = new Schema({
     },
     referralCode: {type:String}, // Add referral code field
     referrerCode: {type:String},
-    referredBy:{type: Schema.Types.ObjectId, ref: 'userBtoC'}
+    referredBy:{type: Schema.Types.ObjectId, ref: 'userBtoC'},
+    walletHistory: [{
+      _id: false,
+      amount: {
+      type: Number,
+      required: true,
+    },
+    details: {
+      type: String,
+      default: "",
+    },
+    transactionType: {
+      type: String,
+      enum: ["credit", "debit"],
+      required: true,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    }}], // Array of wallet history objects
   },
   {
     timestamps: true,

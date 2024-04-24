@@ -32,7 +32,7 @@ exports.userInquiriesEntry=async(req,res,next)=>{
         return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.SUCCESS,result:result});
 
     } catch (error) {
-        console.log("error whiel trying to mentain entry==",error);
+        console.log("error while trying to mentain entry==",error);
         return next(error);
 
     }

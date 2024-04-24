@@ -86,4 +86,6 @@ app.post('/skyTrails/api/admin/createPopularDestination',upload.single('images')
 app.put('/skyTrails/api/admin/updatePackageBanner',SchemaValidator(schemas.updatePackBannerSchema),controller.updateStatusBanner);
 app.put('/skyTrails/api/admin/updatePopularDestination',SchemaValidator(schemas.updateDestinationSchema),controller.updatePopularDestination);
 app.post('/skyTrails/api/admin/createPackageCategory',upload.single('images'),controller.createPackageCategory);
+app.post('/skyTrails/api/admin/createDailyQuiz',controller.createDailyQuiz);
+app.put('/skyTrails/api/admin/updateQuizStatus',controller.dailyQuizStatus)
 };

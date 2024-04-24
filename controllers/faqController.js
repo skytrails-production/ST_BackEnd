@@ -10,8 +10,8 @@ const {
     actionCompleteResponse,
     sendActionFailedResponse,
 } = require("../common/common");
-
-const staticContentType = require('../enums/staticContentType')
+// const {appStaticContentServices}=require("../services/faqServices")
+// const staticContentType = require('../enums/staticContentType')
 
 exports.createfaqs = async (req, res, next) => {
     try {
@@ -53,11 +53,12 @@ exports.createfaqs = async (req, res, next) => {
 exports.listfaqs = async (req, res, next) => {
     try {
         const { staticContentTypeId } = req.query;
-        const isExist = await findstaticContent({ _id: staticContentTypeId, status: status.ACTIVE });
-        if (!isExist) {
-            sendActionFailedResponse(res, {}, 'No Data Found');
-        }
-        const result = await findfaqData({ type: isExist.type, status: status.ACTIVE });
+        // const isExist = await findstaticContent({type: staticContentTypeId});
+        // console.log("isExist===============",isExist);
+        // if (!isExist) {
+        //     sendActionFailedResponse(res, {}, 'No Data Found');
+        // }
+        const result = await findfaqData({ category: staticContentTypeId, status: status.ACTIVE });
         if (!result) {
             sendActionFailedResponse(res, {}, 'No Data Found');
         }
@@ -78,7 +79,7 @@ exports.updatefaqs = async (req, res, next) => {
     try {
         const validatedBody = await validationSchema.validateAsync(req.body);
         const { faqId } = validatedBody;
-        const isAdmin = await findUser({ _id: req.userId });
+        // const isAdmin = await findUser({ _id: req.userId });
         // if(!isAdmin){
         //     sendActionFailedResponse(res,{},'Unauthorised user');
         // }
@@ -98,7 +99,7 @@ exports.deletefaqs = async (req, res, next) => {
     try {
         const validatedBody = await validationSchema.validateAsync(req.body);
         const { faqId } = validatedBody;
-        const isAdmin = await findUser({ _id: req.userId });
+        // const isAdmin = await findUser({ _id: req.userId });
         // if(!isAdmin){
         //     sendActionFailedResponse(res,{},'Unauthorised user');
         // }

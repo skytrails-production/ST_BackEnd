@@ -144,7 +144,11 @@ module.exports = function (app) {
     controller.easebuzzPayment
   );
   app.post("/skyTrails/successVerifyApi", controller.paymentSuccess);
+  
   app.post("/skyTrails/paymentFailure", controller.paymentFailure);
+
+  //agent verify payment
+  app.post("/skyTrails/successVerifyApiAgent",controller.paymentSuccessAgent);
 
   //agentProfilePage with packages
 

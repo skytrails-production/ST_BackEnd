@@ -1537,6 +1537,39 @@ exports.paymentSuccess = async (req, res, next) => {
   }
 };
 
+
+//payment success 
+
+exports.paymentSuccessAgent = async (req, res, next) => {
+  try {
+    // console.log("successVerifyApi==",req.body.easepayid);
+    const { merchantTransactionId } = req.query;
+    const isTransactionExist = await agentWallets.find({
+      paymentId: merchantTransactionId,
+    });
+    //  console.log("isTransactionExist==",isTransactionExist)
+    if (isTransactionExist) {
+      // console.log("isTransactionExist=========",isTransactionExist);
+      const result = await agentWallets.findOneAndUpdate(
+        { _id: isTransactionExist[0]._id },
+        { $set: { transactionStatus: "SUCCESS",easepayid: req.body.easepayid  } },
+        { new: true }
+      );
+
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.PAYMENT_SUCCESS,
+        result: result,
+      });
+
+     
+    }
+  } catch (error) {
+    console.log("error ==========", error);
+    return next(error);
+  }
+};
+
 //failed response********************************************************
 exports.paymentFailure = async (req, res, next) => {
   try {
@@ -1862,7 +1895,7 @@ exports.updatePersonalProfile=async(req,res,next)=>{
       }
     }
     const object={
-      agentCompanyLogo:imageUrl,
+      agentProfileBanner:imageUrl,
       socialId:{
         instaId,facebookId,googleId,linkedinId
       }
@@ -1874,3 +1907,5 @@ exports.updatePersonalProfile=async(req,res,next)=>{
     return next(error);
   }
 }
+
+//***********************for agent profile banner************************************/

@@ -61,6 +61,7 @@ const {
 const {
   referralAmountServices,
 } = require("../../services/referralAmountServices");
+const { date } = require("joi");
 const {
   createReferralAmount,
   findReferralAmount,
@@ -69,6 +70,7 @@ const {
   updateReferralAmount,
   referralAmountListPaginate,
 } = referralAmountServices;
+
 
 //******************************************User SignUp api*************************/
 exports.login = async (req, res, next) => {
@@ -875,21 +877,23 @@ exports.shareReferralCode = async (req, res, next) => {
       });
     }
 
-    const referralLink = `https://play.google.com/store/apps/details?id=com.skytrails?referral=${isUserExist.referralCode}`;
-    console.log("referralLink============", referralLink);
-    const referralLinkIOS = `https://apps.apple.com/us/app/the-skytrails/id6475768819?id=com.skytrails/referral=${isUserExist.referralCode}`;
+    const referralLink = `https://play.google.com/store/apps/details?id=com.skytrails`;
+    const referralLinkIOS = `https://apps.apple.com/us/app/the-skytrails/id6475768819?id=com.skytrails`;
 
     // Shorten the referral link
     var result = {};
-    result.shortReferralLink = await shortenURL(referralLink);
-    result.shortReferralLinkIOS = await shortenURL(referralLinkIOS);
-    result.trial = await shortenURL("theskytrails.com");
+    result.referralLinkIOS=referralLinkIOS;
+    result.referralLink=referralLink;
+    // result.shortReferralLink = await shortenURL(referralLink);
+    // result.shortReferralLinkIOS = await shortenURL(referralLinkIOS);
+    // result.trial = await shortenURL("theskytrails.com");
     return res
       .status(statusCode.OK)
       .send({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.LINK_GENERATED,
         result: result,
+        referralCode:isUserExist.referralCode
       });
   } catch (error) {
     console.log("error while send code", error);
@@ -1252,12 +1256,10 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
       });
     }
     const refeerralCode = commonFunction.generateReferralCode();
+    console.log("mobileRegex.test(phoneNumber)=============",mobileRegex.test(phoneNumber));
     var obj = {};
+    var updateData={};
     if (emailRegex.test(phoneNumber)) {
-      console.log(
-        "emailRegex.test(phoneNumber)==========",
-        emailRegex.test(phoneNumber)
-      );
       const isNumberExist = await findUser({ email: email });
       if (isNumberExist) {
         return res.status(statusCode.OK).send({
@@ -1270,15 +1272,12 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
         dob: dob,
         email: email,
         otp: "",
+        otpExpireTime:"",
         firstTime: false,
         referralCode: refeerralCode,
       };
+      updateData = await updateUser({ _id: updation._id }, obj);
     } else if (mobileRegex.test(phoneNumber)) {
-      console.log(
-        "mobileRegex.test(phoneNumber)=============",
-        mobileRegex.test(phoneNumber)
-      );
-
       const isNumberExist = await findUser({ "phone.mobile_number": email });
       if (isNumberExist) {
         return res.status(statusCode.OK).send({
@@ -1294,8 +1293,9 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
         firstTime: false,
         referralCode: refeerralCode,
       };
+      updateData = await updateUser({ _id: updation._id }, obj);
     }
-    const updateData = await updateUser({ _id: updation._id }, obj);
+     updateData = await updateUser({ _id: updation._id }, obj);
     if (referrerCode) {
       const isRefererExist = await findUser({ referralCode: referrerCode });
       if (!isRefererExist) {
@@ -1305,17 +1305,30 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
         });
       }
       const checkReward = await findReferralAmount({});
+      const walletObj={
+        amount:checkReward.refereeAmount,
+        details:'Referral reward',
+        transactionType:'credit',
+        createdAt: date.now
+      }
       await updateUser(
         { _id: updateData._id },
         {
           referrerCode: referrerCode,
           $inc: { balance: checkReward.refereeAmount },
           referredBy: isRefererExist._id,
+          $push:{walletHistory:walletObj}
         }
       );
+      const walletObj1={
+        amount:checkReward.referrerAmount,
+        details:'Referee reward',
+        transactionType:'credit',
+        createdAt: date.now
+      }
       const data = await updateUser(
         { referralCode: referrerCode, _id: isRefererExist._id },
-        { $inc: { balance: checkReward.referrerAmount } }
+        { $inc: { balance: checkReward.referrerAmount },$push:{walletHistory:walletObj1} }
       );
     }
     const token = await commonFunction.getToken({

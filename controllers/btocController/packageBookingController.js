@@ -350,7 +350,7 @@ exports.getUserPackageBooking=async(req,res,next)=>{
     const pastJourneys = [];
     const upcomingJourneys = [];
      userBookings.forEach((journey)=>{
-      const departureDate = moment(booking.departureDate, 'DD-MM-YYYY');
+      const departureDate = moment(journey.departureDate, 'DD-MM-YYYY');
       if (departureDate.isAfter(currentDate)) {
         pastJourneys.push(journey);
       } else {

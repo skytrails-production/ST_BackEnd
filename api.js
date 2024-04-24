@@ -183,6 +183,8 @@ require("./routes/visaRoutes/visaCategoryRoutes")(app)
 require("./routes/visaRoutes/createRequireDocumentRoutes")(app)
 require("./routes/createCouponRoutes")(app)
 require("./routes/packageBannerRoutes")(app)
+const quizRoute=require("./routes/btocRoutes/quizRoutes");
+quizRoute(app)
 mongoose
   .connect(configs.mongoUrl.DEVELOPMENT, {
     useNewUrlParser: true,
@@ -261,14 +263,15 @@ process.on("unhandledRejection", (err) => {
 // const uuid = uuidv4();
 
 // console.log("uuid===",uuid);
-const { v4: uuidv4 } = require('uuid');
+// const { v4: uuidv4 } = require('uuid');
 
-// Generate a random UUID v4
-const messageId = uuidv4();
+// // Generate a random UUID v4
+// const messageId = uuidv4();
 
-console.log('Message ID:', messageId);
+// console.log('Message ID:', messageId);
 
 
 
 const refeerralCode=commonFunction.generateReferralCode();
 console.log("refeerralCode============",refeerralCode);
+

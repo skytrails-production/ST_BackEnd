@@ -289,8 +289,10 @@ const Userb2bSchema =
       facebookId:{type:String},
       googleId:{type:String},
       linkedinId:{type:String},
-    }
     },
+    agentProfileBanner: {type:String},
+    companyDomain:{type:String},
+    },    
     {
       timestamps: true,
     }

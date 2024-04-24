@@ -14,8 +14,14 @@ const responseMessage = require("../utilities/responses");
 const sendSMS = require("../utilities/sendSms");
 const whatsappAPIUrl = require("../utilities/whatsApi");
 //************SERVICES*************** */
-const {appVersionServices}=require("../services/appVersionServices")
-const {createappVersion,findappVersion,deleteappVersion,appVersionList,updateappVersion}=appVersionServices;
+const { appVersionServices } = require("../services/appVersionServices");
+const {
+  createappVersion,
+  findappVersion,
+  deleteappVersion,
+  appVersionList,
+  updateappVersion,
+} = appVersionServices;
 const { userServices } = require("../services/userServices");
 const userType = require("../enums/userType");
 const status = require("../enums/status");
@@ -223,16 +229,67 @@ const {
   getBookingEvent,
   getEventPopulate,
 } = eventBookingServices;
-const {agentRewardServices}=require("../services/agentRewardServices");
-const {createAgentReward,findAgentReward,deleteAgentReward,AgentRewardList,updateAgentReward,AgentRewardListPaginate}=agentRewardServices;
-const{referralAmountServices}=require('../services/referralAmountServices');
-const {createReferralAmount,findReferralAmount,deleteReferralAmount,referralAmountList,updateReferralAmount,referralAmountListPaginate}=referralAmountServices;
-const {packageBannerServices}=require('../services/packageBannerServices');
-const {createPackageBanner,findPackageBanner,findPackageBannerData,deletePackageBanner,updatePackageBanner}=packageBannerServices;
-const{popularDestinationServices}=require('../services/popularDestinationServices');
-const{createPopularDestination,findPopularDestination,findPopularDestinationData,deletePopularDestination,updatePopularDestination}=popularDestinationServices;
-const {packageCategoryServices}=require('../services/packageCategoryServices');
-const {createPackageCategory,findPackageCategory,findPackageCategoryData,deletePackageCategory,updatePackageCategory}=packageCategoryServices;
+const { agentRewardServices } = require("../services/agentRewardServices");
+const {
+  createAgentReward,
+  findAgentReward,
+  deleteAgentReward,
+  AgentRewardList,
+  updateAgentReward,
+  AgentRewardListPaginate,
+} = agentRewardServices;
+const {
+  referralAmountServices,
+} = require("../services/referralAmountServices");
+const {
+  createReferralAmount,
+  findReferralAmount,
+  deleteReferralAmount,
+  referralAmountList,
+  updateReferralAmount,
+  referralAmountListPaginate,
+} = referralAmountServices;
+const { packageBannerServices } = require("../services/packageBannerServices");
+const {
+  createPackageBanner,
+  findPackageBanner,
+  findPackageBannerData,
+  deletePackageBanner,
+  updatePackageBanner,
+} = packageBannerServices;
+const {
+  popularDestinationServices,
+} = require("../services/popularDestinationServices");
+const {
+  createPopularDestination,
+  findPopularDestination,
+  findPopularDestinationData,
+  deletePopularDestination,
+  updatePopularDestination,
+} = popularDestinationServices;
+const {
+  packageCategoryServices,
+} = require("../services/packageCategoryServices");
+const {
+  createPackageCategory,
+  findPackageCategory,
+  findPackageCategoryData,
+  deletePackageCategory,
+  updatePackageCategory,
+} = packageCategoryServices;
+const { quizServices } = require("../services/btocServices/quizServices");
+const {
+  createQuizContent,
+  findQuizContent,
+  findQuizData,
+  deleteQuiz,
+  updateQuiz,
+  createQuizResponseContent,
+  findQuizResponseContent,
+  findQuizResponseData,
+  deleteQuizResponse,
+  updateQuizResponse,
+} = quizServices;
 
 //**********Necessary models***********/
 const flightModel = require("../model/flightBookingData.model");
@@ -243,7 +300,10 @@ const userFlightBookingModel = require("../model/btocModel/flightBookingModel");
 const userhotelBookingModel = require("../model/btocModel/hotelBookingModel");
 const userbusBookingModel = require("../model/btocModel/busBookingModel");
 const bookingStatus = require("../enums/bookingStatus");
-const { actionCompleteResponse, sendActionFailedResponse } = require("../common/common");
+const {
+  actionCompleteResponse,
+  sendActionFailedResponse,
+} = require("../common/common");
 const { GrnHotelBooking } = require("../model/grnconnectModel");
 
 // exports.signup = (req, res) => {
@@ -398,12 +458,10 @@ exports.socialLogin = async (req, res, next) => {
         password: hashedPass || "",
       };
       // const result = await User.create(data)
-      return res
-        .status(200)
-        .send({
-          message: "Your account created successfully.",
-          result: result,
-        });
+      return res.status(200).send({
+        message: "Your account created successfully.",
+        result: result,
+      });
     }
     let token = await commonFunction.getToken({
       id: userInfo._id,
@@ -453,7 +511,12 @@ exports.approveAgent = async (req, res, next) => {
     }
     let updateResult = await updatebrbuser(
       { _id: iUserExist._id },
-      { approveStatus: approveStatus, isApproved: true,is_active:1, reason: reason }
+      {
+        approveStatus: approveStatus,
+        isApproved: true,
+        is_active: 1,
+        reason: reason,
+      }
     );
     if (approveStatus === approvestatus.APPROVED) {
       // await sendSMS.sendSMSAgents(mobile_number, email);
@@ -463,7 +526,6 @@ exports.approveAgent = async (req, res, next) => {
       return res
         .status(statusCode.OK)
         .send({ message: responseMessage.APPROVED, result: updateResult });
-       
     } else {
       return res
         .status(statusCode.OK)
@@ -665,7 +727,6 @@ exports.getAllHotelBookingList = async (req, res, next) => {
   }
 };
 
-
 //************GET ALL GRN HOTEL BOOKING LIST ***************/
 exports.getAllGrnHotelBookingList = async (req, res, next) => {
   try {
@@ -682,10 +743,10 @@ exports.getAllGrnHotelBookingList = async (req, res, next) => {
         { "hotel.name": { $regex: search, $options: "i" } },
         { "holder.name": { $regex: search, $options: "i" } },
         { "holder.email": { $regex: search, $options: "i" } },
-        { "destination": { $regex: search, $options: "i" } },
-        { "night": parseInt(search) || 0 }, // Handle numeric search
-        { "room": parseInt(search) || 0 }, // Handle numeric search
-        { "bookingStatus": { $regex: search, $options: "i" } }
+        { destination: { $regex: search, $options: "i" } },
+        { night: parseInt(search) || 0 }, // Handle numeric search
+        { room: parseInt(search) || 0 }, // Handle numeric search
+        { bookingStatus: { $regex: search, $options: "i" } },
       ];
     }
     if (fromDate) {
@@ -696,7 +757,7 @@ exports.getAllGrnHotelBookingList = async (req, res, next) => {
     const options = {
       page: page,
       limit: limit,
-      sort: { createdAt: -1 } // Sorting by createdAt in descending order
+      sort: { createdAt: -1 }, // Sorting by createdAt in descending order
     };
     const result = await GrnHotelBooking.paginate(query, options);
 
@@ -706,7 +767,7 @@ exports.getAllGrnHotelBookingList = async (req, res, next) => {
       totalPages: result.totalPages,
       currentPage: result.page,
       itemsPerPage: result.limit,
-      data: result.docs
+      data: result.docs,
     };
     const msg = "Hotel Bookings fetched successfully!"; // Use let instead of const here
     actionCompleteResponse(res, responseData, msg); // Use let instead of const here
@@ -863,7 +924,9 @@ exports.adminDashBoard = async (req, res, next) => {
       userChangeBusBookingCount +
       userChangeHotelBookingCount +
       userChangeFlightBookingCount;
-      result.TotalEventBooking = await countTotalBookingEvent({ status: status.ACTIVE });
+    result.TotalEventBooking = await countTotalBookingEvent({
+      status: status.ACTIVE,
+    });
     return res
       .status(statusCode.OK)
       .send({ message: responseMessage.DATA_FOUND, result: result });
@@ -1295,20 +1358,16 @@ exports.getCancelUserFlightBooking = async (req, res, next) => {
     const query = { page, limit, search, fromDate };
     const result = await aggregatePaginatecancelFlightBookingsList1(req.query);
     if (!result) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          responseMessage: responseMessage.DATA_NOT_FOUND,
-        });
-    }
-    return res
-      .status(statusCode.OK)
-      .send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.DATA_FOUND,
-        result: result,
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
       });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
   } catch (error) {
     console.log("error to get cancel flight", error);
     return next(error);
@@ -1319,20 +1378,16 @@ exports.getCancelUserHotelBooking = async (req, res, next) => {
     const { page, limit, search, fromDate } = req.query;
     const result = await getHotelCancelRequesrByAggregate(req.query);
     if (!result) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          responseMessage: responseMessage.DATA_NOT_FOUND,
-        });
-    }
-    return res
-      .status(statusCode.OK)
-      .send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.DATA_FOUND,
-        result: result,
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
       });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
   } catch (error) {
     console.log("error to get cancel flight", error);
     return next(error);
@@ -1343,20 +1398,16 @@ exports.getCancelUserBusBooking = async (req, res, next) => {
     const { page, limit, search, fromDate } = req.query;
     const result = await getBusCancelRequestByAggregate(req.query);
     if (!result) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          responseMessage: responseMessage.DATA_NOT_FOUND,
-        });
-    }
-    return res
-      .status(statusCode.OK)
-      .send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.DATA_FOUND,
-        result: result,
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
       });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
   } catch (error) {
     console.log("error", error);
     return next(error);
@@ -1429,12 +1480,10 @@ exports.getAgentchangeFlightRequest = async (req, res, next) => {
     const { page, limit, search, fromDate, toDate } = req.query;
     const result = await aggregatePaginatechangeRequestList(req.query);
     if (!result) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          message: responseMessage.BOOKING_NOT_FOUND,
-        });
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.BOOKING_NOT_FOUND,
+      });
     }
     return res
       .status(statusCode.OK)
@@ -1451,12 +1500,10 @@ exports.getAgentchangeHotelRequest = async (req, res, next) => {
 
     const result = await aggregatePaginatechangeHotelRequestList(req.query);
     if (!result) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          message: responseMessage.BOOKING_NOT_FOUND,
-        });
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.BOOKING_NOT_FOUND,
+      });
     }
     return res
       .status(statusCode.OK)
@@ -1473,12 +1520,10 @@ exports.getAgentchangeBusRequest = async (req, res, next) => {
     const result = await aggregatePaginatechangeBusRequestList(req.query);
     // console.log(result);
     if (!result) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          message: responseMessage.BOOKING_NOT_FOUND,
-        });
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.BOOKING_NOT_FOUND,
+      });
     }
     return res
       .status(statusCode.OK)
@@ -1491,50 +1536,48 @@ exports.getAgentchangeBusRequest = async (req, res, next) => {
 //*************************************create Markup***********************************************/
 exports.createMarkup = async (req, res, next) => {
   try {
-    const { hotelMarkup, flightMarkup, busMarkup, packageMarkup,rechargeMarkup } = req.body;
+    const {
+      hotelMarkup,
+      flightMarkup,
+      busMarkup,
+      packageMarkup,
+      rechargeMarkup,
+    } = req.body;
     const object = {
       hotelMarkup: hotelMarkup,
       flightMarkup: flightMarkup,
       busMarkup: busMarkup,
       holidayPackageMarkup: packageMarkup,
-      rechargeMarkup:rechargeMarkup
+      rechargeMarkup: rechargeMarkup,
     };
     const data = await findMarkup({ status: status.ACTIVE });
     console.log("data", data);
     if (data) {
       const resultData = await updateMarkup({ _id: data._id }, object);
       if (!resultData) {
-        return res
-          .status(statusCode.NotFound)
-          .send({
-            statusCode: statusCode.NotFound,
-            message: responseMessage.ADMIN_NOT_FOUND,
-          });
-      }
-      return res
-        .status(statusCode.OK)
-        .send({
-          statusCode: statusCode.OK,
-          responseMessage: responseMessage.CREATED_SUCCESS,
-          result: resultData,
+        return res.status(statusCode.NotFound).send({
+          statusCode: statusCode.NotFound,
+          message: responseMessage.ADMIN_NOT_FOUND,
         });
+      }
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.CREATED_SUCCESS,
+        result: resultData,
+      });
     } else {
       const result = await createMarkup(object);
       if (!result) {
-        return res
-          .status(statusCode.NotFound)
-          .send({
-            statusCode: statusCode.NotFound,
-            message: responseMessage.ADMIN_NOT_FOUND,
-          });
-      }
-      return res
-        .status(statusCode.OK)
-        .send({
-          statusCode: statusCode.OK,
-          responseMessage: responseMessage.CREATED_SUCCESS,
-          result: result,
+        return res.status(statusCode.NotFound).send({
+          statusCode: statusCode.NotFound,
+          message: responseMessage.ADMIN_NOT_FOUND,
         });
+      }
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.CREATED_SUCCESS,
+        result: result,
+      });
     }
   } catch (error) {
     console.log("Error creating markup", error);
@@ -1546,20 +1589,16 @@ exports.getMarkup = async (req, res, next) => {
   try {
     const result = await markupList({});
     if (!result) {
-      return res
-        .status(statusCode.InternalError)
-        .send({
-          status: statusCode.InternalError,
-          responseMessage: responseMessage.InternalError,
-        });
-    }
-    return res
-      .status(statusCode.OK)
-      .send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.DATA_FOUND,
-        result: result,
+      return res.status(statusCode.InternalError).send({
+        status: statusCode.InternalError,
+        responseMessage: responseMessage.InternalError,
       });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
   } catch (error) {
     console.log("Error: " + error);
     return next(error);
@@ -1577,20 +1616,16 @@ exports.getCancelAgentFlightBooking = async (req, res, next) => {
     const { page, limit, search, fromDate, toDate } = req.query;
     const result = await aggregatecancelFlightBookingsList(req.query);
     if (!result) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          responseMessage: responseMessage.DATA_NOT_FOUND,
-        });
-    }
-    return res
-      .status(statusCode.OK)
-      .send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.DATA_FOUND,
-        result: result,
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
       });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
   } catch (error) {
     console.log("error to get cancel flight", error);
     return next(error);
@@ -1601,20 +1636,16 @@ exports.getCancelAgentHotelBooking = async (req, res, next) => {
     const { page, limit, search, fromDate } = req.query;
     const result = await getAgentHotelCancelRequesrByAggregate(req.query);
     if (!result) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          responseMessage: responseMessage.DATA_NOT_FOUND,
-        });
-    }
-    return res
-      .status(statusCode.OK)
-      .send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.DATA_FOUND,
-        result: result,
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
       });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
   } catch (error) {
     console.log("error to get cancel flight", error);
     return next(error);
@@ -1625,20 +1656,16 @@ exports.getCancelAgentBusBooking = async (req, res, next) => {
     const { page, limit, search, fromDate } = req.query;
     const result = await getBusCancellationAgent(req.query);
     if (!result) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          responseMessage: responseMessage.DATA_NOT_FOUND,
-        });
-    }
-    return res
-      .status(statusCode.OK)
-      .send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.DATA_FOUND,
-        result: result,
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
       });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
   } catch (error) {
     console.log("error", error);
     return next(error);
@@ -1650,12 +1677,10 @@ exports.getUserchangeFlightRequest = async (req, res, next) => {
     const { page, limit, search, fromDate, toDate } = req.query;
     const result = await flightchangeRequestUserList(req.query);
     if (!result) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          message: responseMessage.BOOKING_NOT_FOUND,
-        });
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.BOOKING_NOT_FOUND,
+      });
     }
     return res
       .status(statusCode.OK)
@@ -1672,12 +1697,10 @@ exports.getUserchangeHotelRequest = async (req, res, next) => {
 
     const result = await hotelchangeRequestUserList(req.query);
     if (!result) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          message: responseMessage.BOOKING_NOT_FOUND,
-        });
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.BOOKING_NOT_FOUND,
+      });
     }
     return res
       .status(statusCode.OK)
@@ -1694,12 +1717,10 @@ exports.getUserchangeBusRequest = async (req, res, next) => {
     const result = await buschangeRequestUserList(req.query);
     // console.log(result);
     if (!result) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          message: responseMessage.BOOKING_NOT_FOUND,
-        });
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.BOOKING_NOT_FOUND,
+      });
     }
     return res
       .status(statusCode.OK)
@@ -1715,12 +1736,10 @@ exports.getSearchHistory = async (req, res, next) => {
   try {
     const result = await userSearchList({});
     if (!result) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          message: responseMessage.BOOKING_NOT_FOUND,
-        });
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.BOOKING_NOT_FOUND,
+      });
     }
     return res
       .status(statusCode.OK)
@@ -1734,22 +1753,30 @@ exports.getSearchHistory = async (req, res, next) => {
 //**********************************************CREATE AGENTS********************************/
 exports.createAgent = async (req, res, next) => {
   try {
-    const { email, mobile_number, password, panNumber,agency_name,firstName,lastName } = req.body;
+    const {
+      email,
+      mobile_number,
+      password,
+      panNumber,
+      agency_name,
+      firstName,
+      lastName,
+    } = req.body;
     // Check if pan_number is provided and not an empty string
     if (!panNumber || panNumber.trim() === "") {
       return res.status(statusCode.badRequest).send({
         statusCode: statusCode.badRequest,
-        responseMessage: "PAN Number is required and cannot be empty.",
+        responseMessage: responseMessage.PAN_NOT_EMPTY,
       });
     }
     // Hash the password
     const hashPass = bcrypt.hashSync(password, 10);
-    const code=commonFunction.generateReferralCode();
+    const code = commonFunction.generateReferralCode();
     // Create the object with personal_details and agency_details including pan_number
     const object = {
       personal_details: {
-        first_name:firstName,
-        last_name:lastName,
+        first_name: firstName,
+        last_name: lastName,
         email: email,
         mobile: {
           mobile_number: mobile_number,
@@ -1758,12 +1785,12 @@ exports.createAgent = async (req, res, next) => {
       },
       agency_details: {
         pan_number: panNumber.trim(),
-        agency_name:agency_name
+        agency_name: agency_name,
       },
       approveStatus: "APPROVED",
-      isApproved:true,
+      isApproved: true,
       is_active: 1,
-      referralCode:code
+      referralCode: code,
     };
 
     // Check if the user already exists based on email
@@ -1807,20 +1834,16 @@ exports.getAllUsers = async (req, res, next) => {
     // req.query.userType==="USER"
     const result = await paginateUserSearch(req.query);
     if (!result || result.length <= 0) {
-      res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          responseMessage: responseMessage.DATA_NOT_FOUND,
-        });
-    }
-    res
-      .status(statusCode.OK)
-      .send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.DATA_FOUND,
-        result: result,
+      res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
       });
+    }
+    res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
   } catch (error) {
     console.log("error in getting all users", error);
     return next(error);
@@ -1834,19 +1857,22 @@ exports.statusChange = async (req, res, next) => {
       _id: userId,
     });
     if (!iSubAdminExist) {
-      return res
-        .status(statusCode.NotFound)
-        .send({
-          statusCode: statusCode.NotFound,
-          responseMessage: responseMessage.SUBADMIN_NOT_EXIST,
-        });
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.SUBADMIN_NOT_EXIST,
+      });
     }
     const updateData = await updateSubAdmin(
       { _id: iSubAdminExist._id },
       { status: approveStatus }
     );
-      return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.SUBADMIN_UPDATED,result: updateData});
-    
+    return res
+      .status(statusCode.OK)
+      .send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.SUBADMIN_UPDATED,
+        result: updateData,
+      });
   } catch (error) {
     console.log("error in changeing subadmin status", error);
     return next(error);
@@ -1870,13 +1896,11 @@ exports.updateMarkup = async (req, res, next) => {
     // }
     const result = await updateMarkup({ _id: markupId }, req.body);
     if (result) {
-      return res
-        .status(statusCode.OK)
-        .send({
-          statusCode: statusCode.OK,
-          responseMessage: responseMessage.CREATED_SUCCESS,
-          result: result,
-        });
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.CREATED_SUCCESS,
+        result: result,
+      });
     }
   } catch (error) {
     console.log("error while change markup", error);
@@ -1884,49 +1908,57 @@ exports.updateMarkup = async (req, res, next) => {
   }
 };
 
-exports.getAllEventBookings=async(req,res,next)=>{
+exports.getAllEventBookings = async (req, res, next) => {
   try {
     const { page, limit, search } = req.query;
-    const result=await getEventPopulate(req.query);
-    if(!result){
-      return res.status(statusCode.OK).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND});
+    const result = await getEventPopulate(req.query);
+    if (!result) {
+      return res
+        .status(statusCode.OK)
+        .send({
+          statusCode: statusCode.NotFound,
+          responseMessage: responseMessage.DATA_NOT_FOUND,
+        });
     }
-    return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result: result});
+    return res
+      .status(statusCode.OK)
+      .send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.DATA_FOUND,
+        result: result,
+      });
   } catch (error) {
-    console.log("error while trying to get all event booking list",error);
+    console.log("error while trying to get all event booking list", error);
     return next(error);
   }
-}
+};
 
-exports.createAppVersion=async(req,res,next)=>{
+exports.createAppVersion = async (req, res, next) => {
   try {
-    const {iosVersion,androidVersion}=req.body;
-    const obj={
-      iosVersion:iosVersion,
-      androidVersion:androidVersion
+    const { iosVersion, androidVersion } = req.body;
+    const obj = {
+      iosVersion: iosVersion,
+      androidVersion: androidVersion,
+    };
+    const isVersionExist = await findappVersion({});
+    if (isVersionExist) {
+      const result = await updateappVersion({ _id: isVersionExist._id }, obj);
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.UPDATE_SUCCESS,
+        result: result,
+      });
     }
-    const isVersionExist=await findappVersion({});
-    if(isVersionExist){
-      const result=await updateappVersion({_id:isVersionExist._id},obj);
-    return res.status(statusCode.OK).send({
-      statusCode: statusCode.OK,
-      responseMessage: responseMessage.UPDATE_SUCCESS,
-      result: result,
-    });
-    }
-      
-    
-    
   } catch (error) {
-    console.log("error while trying to add app version",error);
+    console.log("error while trying to add app version", error);
     return next(error);
   }
-}
+};
 
-exports.getAppVersion=async(req,res,next)=>{
+exports.getAppVersion = async (req, res, next) => {
   try {
-    const result=await findappVersion({});
-    if(!result){
+    const result = await findappVersion({});
+    if (!result) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
@@ -1939,121 +1971,176 @@ exports.getAppVersion=async(req,res,next)=>{
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to get version",error);
-    return next(error)
+    console.log("error while trying to get version", error);
+    return next(error);
   }
-}
+};
 
-exports.distributeReward=async(req,res,next)=>{
+exports.distributeReward = async (req, res, next) => {
   try {
-    const {agentId,rewardPercentage}=req.body;
-    const percentage=rewardPercentage||0.05
-    const allAgents=[]
-    const isAgentExist=await findOneAgent({_id:agentId,isApproved:true});
-    if(!isAgentExist){
+    const { agentId, rewardPercentage } = req.body;
+    const percentage = rewardPercentage || 0.05;
+    const allAgents = [];
+    const isAgentExist = await findOneAgent({ _id: agentId, isApproved: true });
+    if (!isAgentExist) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });
     }
-    const result={}
-    result.agentId=isAgentExist._id;
-    result.agentName=isAgentExist.personal_details.first_name+isAgentExist.personal_details.last_name;
-    const agentflightBookings = await flightModel.find({ userId: isAgentExist._id });
-      result.agentflightBookings = agentflightBookings.length;
-      result.agentflightBookingRevenue = agentflightBookings.reduce((acc, curr) => acc + curr.totalAmount, 0);
-      const agenthotelBookings = await hotelBookingModel.find({ userId: isAgentExist._id });
-      result.agenthotelBookings = agenthotelBookings.length;
-      result.agenthotelBookingRevenue = agenthotelBookings.reduce((acc, curr) => acc + curr.amount, 0);
-      const agentbusBookings = await busBookingModel.find({ userId: isAgentExist._id });
-      result.agentbusBookings = agentbusBookings.length;
-      result.agentbusBookingRevenue = agentbusBookings.reduce((acc, curr) => acc + curr.totalAmount, 0);
-      result.totalRevenue = result.agentflightBookingRevenue + result.agenthotelBookingRevenue + result.agentbusBookingRevenue;
-      allAgents.push(result);
-    const findAgentRefferals=await findbrbData({referrerCode:isAgentExist.referralCode});
-    for(const agents of findAgentRefferals){
-      const obj={
-        agentId:agents._id,
-        agentName:agents.personal_details.first_name+agents.personal_details.last_name,
-        flightBookings:0,
-        flightBookingRevenue:0,
-        hotelBookings:0,
-        hotelBookingRevenue:0,
-        busBookings:0,
-        busBookingRevenue:0,
-        totalRevenue:0
-      }
+    const result = {};
+    result.agentId = isAgentExist._id;
+    result.agentName =
+      isAgentExist.personal_details.first_name +
+      isAgentExist.personal_details.last_name;
+    const agentflightBookings = await flightModel.find({
+      userId: isAgentExist._id,
+    });
+    result.agentflightBookings = agentflightBookings.length;
+    result.agentflightBookingRevenue = agentflightBookings.reduce(
+      (acc, curr) => acc + curr.totalAmount,
+      0
+    );
+    const agenthotelBookings = await hotelBookingModel.find({
+      userId: isAgentExist._id,
+    });
+    result.agenthotelBookings = agenthotelBookings.length;
+    result.agenthotelBookingRevenue = agenthotelBookings.reduce(
+      (acc, curr) => acc + curr.amount,
+      0
+    );
+    const agentbusBookings = await busBookingModel.find({
+      userId: isAgentExist._id,
+    });
+    result.agentbusBookings = agentbusBookings.length;
+    result.agentbusBookingRevenue = agentbusBookings.reduce(
+      (acc, curr) => acc + curr.totalAmount,
+      0
+    );
+    result.totalRevenue =
+      result.agentflightBookingRevenue +
+      result.agenthotelBookingRevenue +
+      result.agentbusBookingRevenue;
+    allAgents.push(result);
+    const findAgentRefferals = await findbrbData({
+      referrerCode: isAgentExist.referralCode,
+    });
+    for (const agents of findAgentRefferals) {
+      const obj = {
+        agentId: agents._id,
+        agentName:
+          agents.personal_details.first_name +
+          agents.personal_details.last_name,
+        flightBookings: 0,
+        flightBookingRevenue: 0,
+        hotelBookings: 0,
+        hotelBookingRevenue: 0,
+        busBookings: 0,
+        busBookingRevenue: 0,
+        totalRevenue: 0,
+      };
       const flightBookings = await flightModel.find({ userId: agents._id });
       obj.flightBookings = flightBookings.length;
-      obj.flightBookingRevenue = flightBookings.reduce((acc, curr) => acc + curr.totalAmount, 0);
+      obj.flightBookingRevenue = flightBookings.reduce(
+        (acc, curr) => acc + curr.totalAmount,
+        0
+      );
 
-      const hotelBookings = await hotelBookingModel.find({ userId: agents._id });
+      const hotelBookings = await hotelBookingModel.find({
+        userId: agents._id,
+      });
       obj.hotelBookings = hotelBookings.length;
-      obj.hotelBookingRevenue = hotelBookings.reduce((acc, curr) => acc + curr.amount, 0);
+      obj.hotelBookingRevenue = hotelBookings.reduce(
+        (acc, curr) => acc + curr.amount,
+        0
+      );
 
       const busBookings = await busBookingModel.find({ userId: agents._id });
       obj.busBookings = busBookings.length;
-      obj.busBookingRevenue = busBookings.reduce((acc, curr) => acc + curr.totalAmount, 0);
+      obj.busBookingRevenue = busBookings.reduce(
+        (acc, curr) => acc + curr.totalAmount,
+        0
+      );
 
-      obj.totalRevenue = obj.flightBookingRevenue + obj.hotelBookingRevenue + obj.busBookingRevenue;
+      obj.totalRevenue =
+        obj.flightBookingRevenue +
+        obj.hotelBookingRevenue +
+        obj.busBookingRevenue;
 
-      allAgents.push(obj)
+      allAgents.push(obj);
     }
-    
+
     // Calculate the sum of totalRevenue for all agents
-    const totalRevenueSum = allAgents.reduce((acc, agent) => acc + agent.totalRevenue, 0);
+    const totalRevenueSum = allAgents.reduce(
+      (acc, agent) => acc + agent.totalRevenue,
+      0
+    );
     if (totalRevenueSum > isAgentExist.revenue) {
-      const rewardAmount = percentage * totalRevenueSum / 100;
+      const rewardAmount = (percentage * totalRevenueSum) / 100;
       // Check if the agent already has an entry in the database for rewards
       const agentReward = await findAgentReward({ agentId: isAgentExist._id });
       let newObj;
       if (agentReward) {
-          // If the agent already has an entry, update it
-          const sendReward=rewardAmount-agentReward.rewardAmount;
-          const sendRewarRevenue=totalRevenueSum-agentReward.revenue;
-          // if(totalRevenueSum>agentReward.revenue){
-            const updateReward = await updateAgentReward(
-              { _id: agentReward._id },
-              {
-                  $set: { revenue: totalRevenueSum, rewardAmount: rewardAmount },
-                  $push: { rewards: { revenue: sendRewarRevenue, rewardAmount: sendReward } }
-              }
-          );
-          await updatebrbuser({_id:isAgentExist._id},{$set:{revenue: totalRevenueSum, rewardAmount: rewardAmount}});
-          return res.status(statusCode.OK).send({
-              statusCode: statusCode.OK,
-              responseMessage: responseMessage.REWARD_DSTRIBUTED,
-              result: updateReward,
-          });
-          // }
-          return res.status(statusCode.OK).send({
-            statusCode: statusCode.Conflict,
-            responseMessage: responseMessage.ALREADY_REWARD_DSTRIBUTED,
+        // If the agent already has an entry, update it
+        const sendReward = rewardAmount - agentReward.rewardAmount;
+        const sendRewarRevenue = totalRevenueSum - agentReward.revenue;
+        // if(totalRevenueSum>agentReward.revenue){
+        const updateReward = await updateAgentReward(
+          { _id: agentReward._id },
+          {
+            $set: { revenue: totalRevenueSum, rewardAmount: rewardAmount },
+            $push: {
+              rewards: { revenue: sendRewarRevenue, rewardAmount: sendReward },
+            },
+          }
+        );
+        await updatebrbuser(
+          { _id: isAgentExist._id },
+          { $set: { revenue: totalRevenueSum, rewardAmount: rewardAmount } }
+        );
+        return res.status(statusCode.OK).send({
+          statusCode: statusCode.OK,
+          responseMessage: responseMessage.REWARD_DSTRIBUTED,
+          result: updateReward,
+        });
+        // }
+        return res.status(statusCode.OK).send({
+          statusCode: statusCode.Conflict,
+          responseMessage: responseMessage.ALREADY_REWARD_DSTRIBUTED,
         });
       } else {
-          // If the agent doesn't have an entry, create a new one
-          const history = { revenue: totalRevenueSum, rewardAmount: rewardAmount };
-          newObj = { agentId: isAgentExist._id, rewardAmount: rewardAmount, revenue: totalRevenueSum, rewards: [history] };
-          createReward = await createAgentReward(newObj);
-          await updatebrbuser({_id:isAgentExist._id},{$set:{revenue: totalRevenueSum, rewardAmount: rewardAmount}});
-          return res.status(statusCode.OK).send({
-            statusCode: statusCode.OK,
-            responseMessage: responseMessage.DATA_FOUND,
-            result: createReward,
+        // If the agent doesn't have an entry, create a new one
+        const history = {
+          revenue: totalRevenueSum,
+          rewardAmount: rewardAmount,
+        };
+        newObj = {
+          agentId: isAgentExist._id,
+          rewardAmount: rewardAmount,
+          revenue: totalRevenueSum,
+          rewards: [history],
+        };
+        createReward = await createAgentReward(newObj);
+        await updatebrbuser(
+          { _id: isAgentExist._id },
+          { $set: { revenue: totalRevenueSum, rewardAmount: rewardAmount } }
+        );
+        return res.status(statusCode.OK).send({
+          statusCode: statusCode.OK,
+          responseMessage: responseMessage.DATA_FOUND,
+          result: createReward,
         });
       }
-      
-  }
-  return res.status(statusCode.OK).send({
-    statusCode: statusCode.Conflict,
-    responseMessage: responseMessage.No_REVENUE,
-});
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.Conflict,
+      responseMessage: responseMessage.No_REVENUE,
+    });
   } catch (error) {
     console.error("error while trying to distribute reward of agent");
     return next(error);
   }
-}
-
+};
 
 exports.createReferralAmount = async (req, res, next) => {
   try {
@@ -2061,7 +2148,7 @@ exports.createReferralAmount = async (req, res, next) => {
 
     // Check if there are any existing referral amounts
     const existingReferralAmount = await referralAmountList();
-    
+
     // Create an object with the referral amount and/or referrer amount
     const obj = {};
     if (refereeAmount) {
@@ -2094,10 +2181,10 @@ exports.createReferralAmount = async (req, res, next) => {
   }
 };
 
-exports.getReferralAmount=async(req,res,next)=>{
+exports.getReferralAmount = async (req, res, next) => {
   try {
-    const result=await findReferralAmount({});
-    if(!result){
+    const result = await findReferralAmount({});
+    if (!result) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
@@ -2110,14 +2197,20 @@ exports.getReferralAmount=async(req,res,next)=>{
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to get amount",error);
+    console.log("error while trying to get amount", error);
     return next(error);
   }
-}
+};
 
-exports.createPackageBanner=async(req,res,next)=>{
+exports.createPackageBanner = async (req, res, next) => {
   try {
-    const {packageType,packageImage,packageTitle,packageDiscount,uniqueId}=req.body;
+    const {
+      packageType,
+      packageImage,
+      packageTitle,
+      packageDiscount,
+      uniqueId,
+    } = req.body;
     // const isAdminExist = await adminModel.findOne({ _id: uniqueId });
     // if (!isAdminExist) {
     //   return res.status(statusCode.NotFound).send({
@@ -2125,7 +2218,7 @@ exports.createPackageBanner=async(req,res,next)=>{
     //     responseMessage: responseMessage.ADMIN_NOT_FOUND,
     //   });
     // }
-    
+
     const imageUrl = await commonFunction.getImageUrlAWS(req.file);
     if (!imageUrl) {
       return res.status(statusCode.InternalError).send({
@@ -2133,13 +2226,13 @@ exports.createPackageBanner=async(req,res,next)=>{
         responseMessage: responseMessage.INTERNAL_ERROR,
       });
     }
-    const obj={
-      packageType:packageType,
-      packageImage:imageUrl,
-      packageTitle:packageTitle.toLowerCase(),
-      packageDiscount:packageDiscount
-    }
-    const result=await createPackageBanner(obj);
+    const obj = {
+      packageType: packageType,
+      packageImage: imageUrl,
+      packageTitle: packageTitle.toLowerCase(),
+      packageDiscount: packageDiscount,
+    };
+    const result = await createPackageBanner(obj);
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.CREATED_SUCCESS,
@@ -2149,11 +2242,11 @@ exports.createPackageBanner=async(req,res,next)=>{
     console.log("Error while trying to create package banner", error);
     return next(error);
   }
-}
+};
 
-exports.createPopularDestination=async(req,res,next)=>{
+exports.createPopularDestination = async (req, res, next) => {
   try {
-    const {city,images,description,discount,uniqueId}=req.body;
+    const { city, images, description, discount, uniqueId } = req.body;
     // const isAdminExist = await adminModel.findOne({ _id: uniqueId });
     // if (!isAdminExist) {
     //   return res.status(statusCode.NotFound).send({
@@ -2168,13 +2261,13 @@ exports.createPopularDestination=async(req,res,next)=>{
         responseMessage: responseMessage.INTERNAL_ERROR,
       });
     }
-    const obj={
-      city:city,
-      images:imageUrl,
-      description:description,
-      discount:discount
-    }
-    const result=await createPopularDestination(obj);
+    const obj = {
+      city: city,
+      images: imageUrl,
+      description: description,
+      discount: discount,
+    };
+    const result = await createPopularDestination(obj);
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.CREATED_SUCCESS,
@@ -2184,19 +2277,22 @@ exports.createPopularDestination=async(req,res,next)=>{
     console.log("Error while trying to create package banner", error);
     return next(error);
   }
-}
+};
 
-exports.updateStatusBanner=async(req,res,next)=>{
+exports.updateStatusBanner = async (req, res, next) => {
   try {
-    const {status,bannerId}=req.body;
-    const isBannerExist=await findPackageBanner({_id:bannerId});
-    if(!isBannerExist){
+    const { status, bannerId } = req.body;
+    const isBannerExist = await findPackageBanner({ _id: bannerId });
+    if (!isBannerExist) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.BAD_REQUEST,
       });
     }
-    const result=await updatePackageBanner({_id:isBannerExist._id},{status:status});
+    const result = await updatePackageBanner(
+      { _id: isBannerExist._id },
+      { status: status }
+    );
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.UPDATE_SUCCESS,
@@ -2206,18 +2302,23 @@ exports.updateStatusBanner=async(req,res,next)=>{
     console.log("Error while trying to create package banner", error);
     return next(error);
   }
-}
-exports.updatePopularDestination=async(req,res,next)=>{
+};
+exports.updatePopularDestination = async (req, res, next) => {
   try {
-    const {status,destinationId}=req.body;
-    const isdestinationExist=await findPopularDestination({_id:destinationId});
-    if(!isdestinationExist){
+    const { status, destinationId } = req.body;
+    const isdestinationExist = await findPopularDestination({
+      _id: destinationId,
+    });
+    if (!isdestinationExist) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.BAD_REQUEST,
       });
     }
-    const result=await updatePopularDestination({_id:isdestinationExist._id},{status:status});
+    const result = await updatePopularDestination(
+      { _id: isdestinationExist._id },
+      { status: status }
+    );
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.UPDATE_SUCCESS,
@@ -2227,11 +2328,11 @@ exports.updatePopularDestination=async(req,res,next)=>{
     console.log("Error while trying to create package banner", error);
     return next(error);
   }
-}
+};
 
-exports.createPackageCategory=async(req,res,next)=>{
+exports.createPackageCategory = async (req, res, next) => {
   try {
-    const {inclusion,colorCode,headingCode}=req.body;
+    const { inclusion, colorCode, headingCode } = req.body;
     const imageUrl = await commonFunction.getImageUrlAWS(req.file);
     if (!imageUrl) {
       return res.status(statusCode.InternalError).send({
@@ -2239,16 +2340,67 @@ exports.createPackageCategory=async(req,res,next)=>{
         responseMessage: responseMessage.INTERNAL_ERROR,
       });
     }
-  const obj={inclusion,images:imageUrl,colorCode,headingCode}
-  const result=await createPackageCategory(obj);
-  return res.status(statusCode.OK).send({
-    statusCode: statusCode.OK,
-    responseMessage: responseMessage.CREATED_SUCCESS,
-    result: result,
-  });
+    const obj = { inclusion, images: imageUrl, colorCode, headingCode };
+    const result = await createPackageCategory(obj);
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.CREATED_SUCCESS,
+      result: result,
+    });
   } catch (error) {
     console.log("Error while trying to create package category", error);
     return next(error);
   }
-  
+};
+
+exports.createDailyQuiz = async (req, res, next) => {
+  try {
+    const { question, answer, opt1, opt2, opt3, opt4, adminId } = req.body;
+    // const isAdminExist = await adminModel.findOne({ _id: adminId });
+    // if (!isAdminExist) {
+    //   return res.status(statusCode.NotFound).send({
+    //     statusCode: statusCode.NotFound,
+    //     responseMessage: responseMessage.ADMIN_NOT_FOUND,
+    //   });
+    // }
+    const object = {
+      question,
+      answer,
+      options: {
+        opt1,
+        opt2,
+        opt3,
+        opt4,
+      },
+    };
+    const result = await createQuizContent(object);
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.CREATED_SUCCESS,
+      result: result,
+    });
+  } catch (error) {
+    console.log("error while trying to create daily quiz", error);
+    return next(error);
+  }
+};
+
+exports.dailyQuizStatus=async(req,res,next)=>{
+  try {
+    const {status,quizId}=req.body;
+     const updateData = await updateQuiz(
+      { _id: quizId },
+      { status: status }
+    );
+    return res
+      .status(statusCode.OK)
+      .send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.UPDATE_SUCCESS,
+        result: updateData,
+      });
+  } catch (error) {
+    console.log("Error while trying to update quiz status", error);
+    return next(error);
+  }
 }
