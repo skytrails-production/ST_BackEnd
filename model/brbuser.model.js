@@ -291,7 +291,9 @@ const Userb2bSchema =
       linkedinId:{type:String},
     },
     agentProfileBanner: {type:String},
-    companyDomain:{type:String},
+    companyDomain:{type:String,
+      default:"",
+    },
     },    
     {
       timestamps: true,

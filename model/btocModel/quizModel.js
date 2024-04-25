@@ -6,6 +6,7 @@ const approveStatus = require("../../enums/approveStatus");
 const errorType=require("../../enums/errorType")
 const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 const mongoosePaginate = require("mongoose-paginate-v2");
+const { date } = require("joi");
 mongoose.pluralize(null);
 
 const QuizSchema = new mongoose.Schema({
@@ -25,6 +26,10 @@ const QuizSchema = new mongoose.Schema({
         type:String,
         enum:[status.ACTIVE,status.BLOCK,status.DELETE],
         default:status.ACTIVE
+    },
+    quizDate:{
+        type:Date,
+        default:Date.now()
     }
 },{timestamps:true})
 

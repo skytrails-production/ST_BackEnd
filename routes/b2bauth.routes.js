@@ -152,7 +152,7 @@ module.exports = function (app) {
 
   //agentProfilePage with packages
 
-  app.get("/skyTrails/agent/:first_name", controller.agentProfilePage);
+  app.post("/skyTrails/agent/profile", controller.agentProfilePage);
   app.get(
     "/skyTrails/agent/inviteAgent/:userId",
     agentDashboardController.shareAgentReferralCode

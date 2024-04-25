@@ -29,16 +29,7 @@ const {
   countTotalUser,
 } = userServices;
 
-// exports.createDailyQuiz=async(req,res,next)=>{
-//     try {
-//         const {question,answer,options}=req.body;
-        
-
-//     } catch (error) {
-//         console.log("error while trying to create daily quiz",error);
-//         return next(error);
-//     }
-// }
+//**********************************API***********************************************/
 
 exports.getDailyQuiz=async(req,res,next)=>{
     try {
@@ -48,7 +39,7 @@ exports.getDailyQuiz=async(req,res,next)=>{
         }
         return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.RESPONSE_SUBMIT,result:result});
     } catch (error) {
-        console.log("error while trying to create daily quiz",error);
+        console.log("error while trying to get daily quiz",error);
         return next(error);
     }
 };
@@ -92,3 +83,16 @@ exports.submitDailyQuizResponse=async(req,res,next)=>{
     }
 };
 
+exports.getAllQuizQustion=async(req,res,next)=>{
+    try {
+        const result=await findQuizData({});
+        if(result.length==0){
+            return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND});
+            }
+            return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.RESPONSE_SUBMIT,result:result});
+       
+    } catch (error) {
+        console.log("error while trying to get daily quiz",error);
+        return next(error);
+    }
+}

@@ -1774,10 +1774,10 @@ function generateSHA512Hash(input) {
 
 exports.agentProfilePage = async (req, res) =>{
 
-  const firstName = req.params.first_name;
+  const companyDomain = req.body.companyDomain;
 
   try {
-    const userProfile=await  b2bUser.findOne({'personal_details.first_name':firstName});
+    const userProfile=await  b2bUser.findOne({'companyDomain':companyDomain});
     // 65dda9fb34beb2ee7992f2d7
     // const userProfile=await  b2bUser.findOne({'_id':'65dda9fb34beb2ee7992f2d7'});
 

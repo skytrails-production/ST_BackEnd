@@ -367,7 +367,7 @@ exports.airSellFromRecommendation = async (req, res) => {
     // console.log("data", data);
 
       const response = await axios.post(url,data,{headers} );
-    //   console.log("api call");
+    //   console.log("api hcall");
 
        const responseData = extractDataFromResponse(response);
     msg = "Flight Searched Successfully!";
@@ -376,6 +376,66 @@ exports.airSellFromRecommendation = async (req, res) => {
     sendActionFailedResponse(res, { err }, err.message);
   }
 };
+
+
+
+
+exports.airSell =async (req, res) =>{
+    const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
+
+    try {
+        const data=`<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+        xmlns:sec="http://xml.amadeus.com/2010/06/Security_v1"
+        xmlns:typ="http://xml.amadeus.com/2010/06/Types_v1"
+        xmlns:iat="http://www.iata.org/IATA/2007/00/IATA2010.1"
+        xmlns:app="http://xml.amadeus.com/2010/06/AppMdw_CommonTypes_v3"
+        xmlns:ses="http://xml.amadeus.com/2010/06/Session_v3">
+    <soap:Header xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+    <ses:Session
+            xmlns:ses="http://xml.amadeus.com/2010/06/Session_v3" TransactionStatusCode="Start" />
+        <add:MessageID xmlns:add="http://www.w3.org/2005/08/addressing">${messageId}</add:MessageID>
+        <add:Action xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/ITAREQ_05_2_IA</add:Action>
+        <add:To xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0</add:To>
+        <link:TransactionFlowLink xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
+            <link:Consumer>
+                <link:UniqueID>${uniqueId}</link:UniqueID>
+            </link:Consumer>
+        </link:TransactionFlowLink>
+        <oas:Security xmlns:oas="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
+            <oas:UsernameToken xmlns:oas1="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" oas1:Id="UsernameToken-1">
+                <oas:Username>WSSP0THE</oas:Username>
+                <oas:Nonce EncodingType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary">${NONCE}</oas:Nonce>
+                <oas:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordDigest">${hashedPassword}</oas:Password>
+                <oas1:Created>${TIMESTAMP}</oas1:Created>
+            </oas:UsernameToken>
+        </oas:Security>
+        <AMA_SecurityHostedUser xmlns="http://xml.amadeus.com/2010/06/Security_v1">
+            <UserID POS_Type="1" PseudoCityCode="DELVS38UE" AgentSign="SU" RequestorType="U" />
+        </AMA_SecurityHostedUser>
+    </soap:Header>​        ​
+    <soapenv:Body>
+    ${req.body}
+    </soapenv:Body>
+    </soapenv:Envelope>`;
+        const headers = {
+            "Content-Type": "text/xml;charset=UTF-8",
+            SOAPAction: "http://webservices.amadeus.com/ITAREQ_05_2_IA",
+          };
+          // console.log("data", data);
+      
+            const response = await axios.post(url,data,{headers} );
+          //   console.log("api call");
+      
+             const responseData = extractDataFromResponse(response);
+          msg = "Flight Searched Successfully!";
+          actionCompleteResponse(res, responseData, msg);
+        
+    } catch (err) {
+        sendActionFailedResponse(res, { err }, err.message);        
+    }
+
+}
+
 
 
 

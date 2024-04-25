@@ -11,5 +11,11 @@ module.exports = function (app) {
     app.post("/skyTrails/amadeus/airSellFromRecommendation",controller.airSellFromRecommendation);
     app.post("/skyTrails/api/combinedApi",combinedController.cobinedAsPerPrice);
     app.post("/skyTrails/amadeus/combineResponse",combinedController.combineTVOAMADEUS);
-    app.post("/skytrails/api/combined/combineTVOAMADEUSPriceSort",combinedController.combineTVOAMADEUSPriceSort);
+    app.post("/skytrails/api/combined/combineTVOAMADEUSPriceSort",combinedController.combineTVOAMADEUSPriceSort);   
+
+    //new routes 
+    app.post("/skyTrails/amadeus/airsell",controller.airSell);
+
+
+  
   }

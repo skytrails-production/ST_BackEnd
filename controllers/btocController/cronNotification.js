@@ -5,6 +5,20 @@ const sendSMS = require("../../utilities/sendSms");
 
 
 
+const { quizServices } = require("../../services/btocServices/quizServices");
+const {
+  createQuizContent,
+  findQuizContent,
+  findQuizData,
+  deleteQuiz,
+  updateQuiz,
+  createQuizResponseContent,
+  findQuizResponseContent,
+  findQuizResponseData,
+  deleteQuizResponse,
+  updateQuizResponse,
+} = quizServices;
+
 
 const {
   pushNotification,
@@ -94,7 +108,7 @@ const lastNotificationSent = new Map();
 // task.start();
 
 // Define and schedule task2 separately
-var taskPromotionalNotification = cron.schedule("05 13 * * *",async () => {
+var taskPromotionalNotification = cron.schedule("25 11 * * *",async () => {
   try {
     // 'phone.mobile_number':'8115199076'
     const users = await userList({
@@ -107,8 +121,8 @@ var taskPromotionalNotification = cron.schedule("05 13 * * *",async () => {
     // const messageBody = `✨Check out our latest promotion! We're offering deals so good, even your coffee will do a double-take! ☕️ Explore your journey with TheSkyTrails pvt ltd✨`;
     for (const user of users) {
       try { 
-      const notificationMessage = `You & 248 other people have shown interest in Bali Package🏝🥰`;
-      const messageBody = `Grab the package before it's gone🤩`;
+        const notificationMessage = `Missing pahadon wali maggi🍜?`;
+        const messageBody = `Let The 𝐬𝐤𝐲𝐓𝐫𝐚𝐢𝐥𝐬 take you to Manali! 🚌⛰`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
       // const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`
         // Check if a notification has been sent to this user recently
@@ -281,7 +295,7 @@ var taskPlatformNotification = cron.schedule("30 12 * * *",
             user.deviceToken,
             notificationMessage,
             messageBody,
-            imageurl
+            // imageurl
           );
           console.log(
             "Notification cron job executed successfully.TASK 2",
@@ -388,3 +402,17 @@ taskPlatformNotification.start();
 // );
 
 // taskEventNotification1.start(); // Start the task2
+
+
+var expireQuiz=cron.schedule("30 12 * * *",async()=>{
+  try {
+    const currentDate=new Date();
+    console.log("currentDate");
+    const getQuizQue=await findQuizData({status:status.ACTIVE});
+
+    // Stop the cron job after execution
+    taskPlatformNotification.stop();
+  } catch (error) {
+    console.log("error when running task expireQuiz", error);
+  }
+})

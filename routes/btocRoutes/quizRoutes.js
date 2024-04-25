@@ -18,6 +18,6 @@ module.exports = function (app) {
     });
     app.get('/skyTrails/api/user/quiz/getDailyQuiz',quizController.getDailyQuiz);
     app.post('/skyTrails/api/user/quiz/submitQuizResponse',[authJwt.verifcationToken],quizController.submitDailyQuizResponse)
-    // app.put('/skyTrails/api/user/event/sendPassesUpdate',eventBookingControler.sendUpdatePasses);
+    app.get('/skyTrails/api/user/quiz/getAllQuiz',quizController.getAllQuizQustion);
     // app.get('/skyTrails/api/user/event/getPromoBanner',eventPromoBannerControler.getPromotionalBanner);
 }
