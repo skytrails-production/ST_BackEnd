@@ -2353,7 +2353,7 @@ exports.createPackageCategory = async (req, res, next) => {
   }
 };
 
-exports.createDailyQuiz = async (req, res, next) => {
+exports.createDailyQuiz = async (req, res, next) => { 
   try {
     const { question, answer, opt1, opt2, opt3, opt4, adminId } = req.body;
     // const isAdminExist = await adminModel.findOne({ _id: adminId });
@@ -2404,3 +2404,4 @@ exports.dailyQuizStatus=async(req,res,next)=>{
     return next(error);
   }
 }
+

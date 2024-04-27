@@ -127,5 +127,6 @@ module.exports = {
 	PACKAGE_BOOKING_SUCCESS:"Booking Confirmed. Thank you!",
 	PAN_NOT_EMPTY:"PAN Number is required and cannot be empty.",
 	RESPONSE_SUBMIT:"Thank you for your response!We will announce the lucky winner soon.",
-	ALREADY_RESPOND:"You have already submitted your response. Multiple submissions are not allowed."
+	ALREADY_RESPOND:"You have already submitted your response. Multiple submissions are not allowed.",
+	RATING_SUCCESS:"Thanks for your feedback,your feedback help to improve our self🥰"
 };

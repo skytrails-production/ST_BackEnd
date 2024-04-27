@@ -723,27 +723,6 @@ exports.editProfile = async (req, res, next) => {
   }
 };
 
-//******************************************DELETE Account of User**********************************************************/
-
-// exports.deleteUserAccount=async(req,res,next)=>{
-// try {
-//   const isUserExist = await findUserData({_id:req.userId,status: status.ACTIVE,});
-//   if (!isUserExist) {
-//     return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,message: responseMessage.USERS_NOT_FOUND});
-//   }
-//   const deleteUser=await updateUser({_id:isUserExist._id},{status:status.DELETE});
-//   console.log("dekechjdjodopdodpodojfufbkdk=======",deleteUser)
-//   const result={
-//     status:deleteUser.status
-//   }
-//   if(deleteUser){
-//     return res.status(statusCode.OK).send({statusCode: statusCode.OK,message: responseMessage.DELETE_SUCCESS,result:result});
-//   }
-// } catch (error) {
-//   console.log("Error while delete account..!",error);
-//   return next(error)
-// }
-// }
 
 exports.deleteUserAccount = async (req, res, next) => {
   try {
@@ -1084,16 +1063,14 @@ exports.loginWithMailMobileLogin = async (req, res, next) => {
             responseMessage: responseMessage.INTERNAL_ERROR,
           });
         }
-        const userMobile1 =
-          setUnVerified.phone.country_code + setUnVerified.phone.mobile_number;
-        console.log("userMobile============", userMobile1);
+        
         const userMobile =
           isExist.phone.country_code + isExist.phone.mobile_number;
-        const var2 = otp;
+
         const sent = await whatsappAPIUrl.sendMessageWhatsApp(
           userMobile,
-          var1,
-          var2,
+          isExist.username,
+          otp,
           "loginotp"
         );
         console.log("sent+============", sent);

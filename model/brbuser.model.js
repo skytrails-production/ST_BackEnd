@@ -245,6 +245,24 @@ const Userb2bSchema =
           default: 50,
          },
        },
+       myCommission:{
+        bus:{
+          type: Number,
+          default: 50,
+         },
+         hotel:{
+          type: Number,
+          default: 50,
+         },
+         flight:{
+          type: Number,
+          default: 100,
+         },
+         holiday:{
+          type: Number,
+          default: 500,
+         },
+       },
       walletid: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "wallet",

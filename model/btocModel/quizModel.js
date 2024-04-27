@@ -36,9 +36,6 @@ const QuizSchema = new mongoose.Schema({
 QuizSchema.plugin(mongoosePaginate);
   
   QuizSchema.plugin(aggregatePaginate);
-  const quiz = mongoose.model(
-    "quiz",
-    QuizSchema
-  );
+  const quiz = mongoose.model("quiz",QuizSchema);
   
   module.exports = quiz;

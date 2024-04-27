@@ -2,7 +2,7 @@ const cron = require("node-cron");
 const status = require("../../enums/status");
 const whatsappAPIUrl = require("../../utilities/whatsApi");
 const sendSMS = require("../../utilities/sendSms");
-
+const moment = require('moment');
 
 
 const { quizServices } = require("../../services/btocServices/quizServices");
@@ -404,15 +404,28 @@ taskPlatformNotification.start();
 // taskEventNotification1.start(); // Start the task2
 
 
-var expireQuiz=cron.schedule("30 12 * * *",async()=>{
-  try {
-    const currentDate=new Date();
-    console.log("currentDate");
-    const getQuizQue=await findQuizData({status:status.ACTIVE});
 
-    // Stop the cron job after execution
-    taskPlatformNotification.stop();
-  } catch (error) {
-    console.log("error when running task expireQuiz", error);
-  }
-})
+// const expireQuiz = cron.schedule("34 18 * * *", async () => {
+//   try {
+//     const currentDate = moment().startOf('day'); // Get the current date with time set to 00:00:00
+//     console.log("currentDate", currentDate.format("YYYY-MM-DD"),currentDate);
+// const curr1=currentDate.format("YYYY-MM-DD")
+//     const getQuizQue = await findQuizData({ status: status.ACTIVE });
+//     // console.log("getQuizQue", getQuizQue);
+
+//     for (const que of getQuizQue) {
+//       const quizDate = moment(que.quizDate).startOf('day'); // Get the date part of quizDate with time set to 00:00:00
+//       console.log("quizDate", quizDate.format("YYYY-MM-DD"),quizDate.isBefore(currentDate),quizDate);
+// const a=quizDate.format("YYYY-MM-DD")
+//       if (a.isBefore(curr1)) {
+//         const updateData = await updateQuiz({ _id: que._id }, { status: status.BLOCK });
+//         console.log("updateData====", updateData);
+//       }
+//     }
+
+//     // Stop the cron job after execution
+//     expireQuiz.stop();
+//   } catch (error) {
+//     console.log("error when running task expireQuiz", error);
+//   }
+// });

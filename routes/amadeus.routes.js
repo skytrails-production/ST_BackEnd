@@ -15,6 +15,15 @@ module.exports = function (app) {
 
     //new routes 
     app.post("/skyTrails/amadeus/airsell",controller.airSell);
+    app.post("/skyTrails/amadeus/pnraddmultielements", controller.pnrAddMultiElements);
+    app.post("/skyTrails/amadeus/farepricepnrwithbookingclass", controller.farePricePnrWithBookingClass);
+    app.post("/skyTrails/amadeus/ticketcreatetstfrompricing", controller.ticketCreateTSTFromPricing);
+    app.post("/skyTrails/amadeus/savepnr",controller.savePnrAddMultiElements);
+
+
+
+    //sign out route
+    app.post("/skyTrails/amadeus/signout",controller.signOut);
 
 
   

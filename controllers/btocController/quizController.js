@@ -96,3 +96,12 @@ exports.getAllQuizQustion=async(req,res,next)=>{
         return next(error);
     }
 }
+
+exports.getWinner=async(req,res,next)=>{
+    try {
+        
+    } catch (error) {
+        console.log("error while trying to get daily quiz winner",error);
+        return next(error);
+    }
+}

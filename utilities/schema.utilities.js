@@ -688,6 +688,10 @@ const schemas = {
     totalAmount: joi.number().required(),
     transactionId: joi.string().required(),
   }),
+  ratingSchema:joi.object().keys({
+    rate: joi.number().required(),
+    comments: joi.string().optional()
+  })
 };
 
 module.exports = schemas;

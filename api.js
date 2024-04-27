@@ -71,6 +71,7 @@ wsServer.on('request', (request) => {
  */
 
 app.use(bodyparser.json({ limit: '10mb' }));
+app.use(bodyparser.text({ type: 'text/xml' }));
 // app.use(bodyparser.urlencoded({ extended: true }));
 app.use(bodyparser.urlencoded({ limit: '20mb', extended: true }));
 app.use(cookieParser());
@@ -185,6 +186,7 @@ require("./routes/createCouponRoutes")(app)
 require("./routes/packageBannerRoutes")(app)
 const quizRoute=require("./routes/btocRoutes/quizRoutes");
 quizRoute(app)
+require("./routes/ratingRoutes")(app)
 mongoose
   .connect(configs.mongoUrl.DEVELOPMENT, {
     useNewUrlParser: true,
@@ -258,11 +260,11 @@ process.on("unhandledRejection", (err) => {
 
 
 
-// const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require('uuid');
 
-// const uuid = uuidv4();
+const uuid = uuidv4();
 
-// console.log("uuid===",uuid);
+console.log("uuid===",uuid);
 // const { v4: uuidv4 } = require('uuid');
 
 // // Generate a random UUID v4

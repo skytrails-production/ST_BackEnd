@@ -380,10 +380,12 @@ exports.airSellFromRecommendation = async (req, res) => {
 
 
 
-exports.airSell =async (req, res) =>{
+exports.airSell =async (req, res,next) =>{
     const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
 
     try {
+
+        const requestBody = req.body;
         const data=`<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
         xmlns:sec="http://xml.amadeus.com/2010/06/Security_v1"
         xmlns:typ="http://xml.amadeus.com/2010/06/Types_v1"
@@ -414,30 +416,412 @@ exports.airSell =async (req, res) =>{
         </AMA_SecurityHostedUser>
     </soap:Header>​        ​
     <soapenv:Body>
-    ${req.body}
+    ${requestBody}
     </soapenv:Body>
     </soapenv:Envelope>`;
+
+    // console.log(data,"data")
         const headers = {
             "Content-Type": "text/xml;charset=UTF-8",
             SOAPAction: "http://webservices.amadeus.com/ITAREQ_05_2_IA",
           };
-          // console.log("data", data);
+        //   console.log("data", data);
       
             const response = await axios.post(url,data,{headers} );
           //   console.log("api call");
       
-             const responseData = extractDataFromResponse(response);
+            //  const responseData = extractDataFromResponse(response);
+            //  console.log(response.data,"data")
+
+             const xmlResponse = response.data;
+        const parser = new xml2js.Parser({ explicitArray: false, trim: true });
+        const parsedResponse = await parser.parseStringPromise(xmlResponse);
+
+        // Extract required fields
+        const extractedData = {
+            MessageID: parsedResponse['soapenv:Envelope']['soapenv:Header']['wsa:MessageID'],
+            UniqueID: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsl:TransactionFlowLink']['awsl:Consumer']['awsl:UniqueID'],
+            ServerID: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsl:TransactionFlowLink']['awsl:Receiver']['awsl:ServerID'],
+            SessionId: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SessionId'],
+            SequenceNumber: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SequenceNumber'],
+            SecurityToken: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SecurityToken']
+        };
           msg = "Flight Searched Successfully!";
-          actionCompleteResponse(res, responseData, msg);
-        
+          actionCompleteResponse(res, extractedData, msg);
+       
     } catch (err) {
-        sendActionFailedResponse(res, { err }, err.message);        
+        sendActionFailedResponse(res, { err }, err.message);
+        next(err);        
     }
 
 }
 
 
 
+
+//pnr AddMulti Elements
+
+exports.pnrAddMultiElements = async (req, res) =>{
+    try {
+
+        const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
+
+        const data=`<soapenv:Envelope
+        xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+        xmlns:sec="http://xml.amadeus.com/2010/06/Security_v1"
+        xmlns:typ="http://xml.amadeus.com/2010/06/Types_v1"
+        xmlns:iat="http://www.iata.org/IATA/2007/00/IATA2010.1"
+        xmlns:app="http://xml.amadeus.com/2010/06/AppMdw_CommonTypes_v3"
+        xmlns:ses="http://xml.amadeus.com/2010/06/Session_v3">
+        <soap:Header
+            xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+            <awsse:Session
+                xmlns:awsse="http://xml.amadeus.com/2010/06/Session_v3" TransactionStatusCode="InSeries">
+                <awsse:SessionId>00PM08SU32</awsse:SessionId>
+                <awsse:SequenceNumber>4</awsse:SequenceNumber>
+                <awsse:SecurityToken>1VA5UQMBNNFSVIRJY5TRD10V9</awsse:SecurityToken>
+            </awsse:Session>
+            <add:MessageID
+                xmlns:add="http://www.w3.org/2005/08/addressing">ba637e79-901-281-7c79-be6731f50bf
+            </add:MessageID>
+            <add:Action
+                xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/PNRADD_21_1_1A
+            </add:Action>
+            <add:To
+                xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0
+            </add:To>
+            <link:TransactionFlowLink
+                xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
+                <link:Consumer>
+                    <link:UniqueID>e276340a-ab12-8cbe-2210-5dba6548325a</link:UniqueID>
+                </link:Consumer>
+            </link:TransactionFlowLink>
+            <AMA_SecurityHostedUser
+                xmlns="http://xml.amadeus.com/2010/06/Security_v1" />
+            </soap:Header>
+            <soapenv:Body></soapenv:Body>
+        </soapenv:Envelope>`;
+
+
+        const headers = {
+            "Content-Type": "text/xml;charset=UTF-8",
+            SOAPAction: "http://webservices.amadeus.com/PNRADD_21_1_1A",
+          };
+
+          const response = await axios.post(url,data,{headers} );
+
+          msg = "Add Passenger details Successfully!";
+          actionCompleteResponse(res, response.data, msg);
+        
+    } catch (err) {
+        sendActionFailedResponse(res, { err }, err.message);        
+    }
+}
+
+
+
+
+//farePriceWithBookingClass
+
+exports.farePricePnrWithBookingClass = async (req, res) =>{
+    try {
+
+        const { 
+            amadeusMessageID,
+            amadeusUniqueID,
+            amadeusSessionID,
+            amadeusSequenceNumber,
+            amadeusSecurityToken
+          } = req.body;
+
+        const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
+
+        const data=`<soapenv:Envelope
+        xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+        xmlns:sec="http://xml.amadeus.com/2010/06/Security_v1"
+        xmlns:typ="http://xml.amadeus.com/2010/06/Types_v1"
+        xmlns:iat="http://www.iata.org/IATA/2007/00/IATA2010.1"
+        xmlns:app="http://xml.amadeus.com/2010/06/AppMdw_CommonTypes_v3"
+        xmlns:ses="http://xml.amadeus.com/2010/06/Session_v3">
+        <soap:Header
+            xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+            <awsse:Session
+                xmlns:awsse="http://xml.amadeus.com/2010/06/Session_v3" TransactionStatusCode="InSeries">
+                <awsse:SessionId>${amadeusSessionID}</awsse:SessionId>
+                <awsse:SequenceNumber>${Number(amadeusSequenceNumber)+1}</awsse:SequenceNumber>
+                <awsse:SecurityToken>${amadeusSecurityToken}</awsse:SecurityToken>
+            </awsse:Session>
+            <add:MessageID
+                xmlns:add="http://www.w3.org/2005/08/addressing">${amadeusMessageID}</add:MessageID>
+            <add:Action
+                xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/TPCBRQ_23_2_1A</add:Action>            <add:To
+                xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0</add:To>
+            <link:TransactionFlowLink
+                xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
+                <link:Consumer>
+                    <link:UniqueID>${amadeusUniqueID}</link:UniqueID>
+                </link:Consumer>
+            </link:TransactionFlowLink>
+            <AMA_SecurityHostedUser
+                xmlns="http://xml.amadeus.com/2010/06/Security_v1" />
+            </soap:Header>
+            <soapenv:Body>
+                <Fare_PricePNRWithBookingClass
+                    xmlns="http://xml.amadeus.com/TPCBRQ_18_1_1A">
+                    <pricingOptionGroup>
+                        <pricingOptionKey>
+                            <pricingOptionKey>VC</pricingOptionKey>
+                        </pricingOptionKey>
+                        <carrierInformation>
+                            <companyIdentification>
+                                <otherCompany>AI</otherCompany>
+                            </companyIdentification>
+                        </carrierInformation>
+                    </pricingOptionGroup>
+                    <pricingOptionGroup>
+                        <pricingOptionKey>
+                            <pricingOptionKey>RP</pricingOptionKey>
+                        </pricingOptionKey>
+                    </pricingOptionGroup>
+                    <pricingOptionGroup>
+                        <pricingOptionKey>
+                            <pricingOptionKey>RU</pricingOptionKey>
+                        </pricingOptionKey>
+                    </pricingOptionGroup>
+                    <pricingOptionGroup>
+                        <pricingOptionKey>
+                            <pricingOptionKey>RLO</pricingOptionKey>
+                        </pricingOptionKey>
+                    </pricingOptionGroup>
+                </Fare_PricePNRWithBookingClass>
+            </soapenv:Body>
+        </soapenv:Envelope>`;
+        const headers = {
+            "Content-Type": "text/xml;charset=UTF-8",
+            SOAPAction: "http://webservices.amadeus.com/TPCBRQ_23_2_1A",
+          };
+
+          const response = await axios.post(url,data,{headers} );
+
+          msg = "Fare Price Pnr Successfully!";
+          actionCompleteResponse(res, response.data, msg);
+        
+    } catch (err) {
+        sendActionFailedResponse(res, { err }, err.message);        
+    }
+}
+
+//ticketCreateTSTFromPricing
+
+
+exports.ticketCreateTSTFromPricing = async (req, res) =>{
+    try {
+
+        const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
+
+        const data=`<soapenv:Envelope
+        xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+        xmlns:sec="http://xml.amadeus.com/2010/06/Security_v1"
+        xmlns:typ="http://xml.amadeus.com/2010/06/Types_v1"
+        xmlns:iat="http://www.iata.org/IATA/2007/00/IATA2010.1"
+        xmlns:app="http://xml.amadeus.com/2010/06/AppMdw_CommonTypes_v3"
+        xmlns:ses="http://xml.amadeus.com/2010/06/Session_v3">
+        <soap:Header
+            xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+            <awsse:Session
+                xmlns:awsse="http://xml.amadeus.com/2010/06/Session_v3" TransactionStatusCode="InSeries">
+                <awsse:SessionId>00PM08SU32</awsse:SessionId>
+                <awsse:SequenceNumber>6</awsse:SequenceNumber>
+                <awsse:SecurityToken>1VA5UQMBNNFSVIRJY5TRD10V9</awsse:SecurityToken>
+            </awsse:Session>
+            <add:MessageID
+                xmlns:add="http://www.w3.org/2005/08/addressing">ba637e79-901-281-7c79-be6731f50bf
+            
+            </add:MessageID>
+            <add:Action
+                xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/TAUTCQ_04_1_1A
+            
+            </add:Action>
+            <add:To
+                xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0
+            
+            </add:To>
+            <link:TransactionFlowLink
+                xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
+                <link:Consumer>
+                    <link:UniqueID>e276340a-ab12-8cbe-2210-5dba6548325a</link:UniqueID>
+                </link:Consumer>
+            </link:TransactionFlowLink>
+            <AMA_SecurityHostedUser
+                xmlns="http://xml.amadeus.com/2010/06/Security_v1" />
+            </soap:Header>
+            <soapenv:Body>
+                <Ticket_CreateTSTFromPricing
+                    xmlns="http://xml.amadeus.com/TAUTCQ_04_1_1A">
+                    <psaList>
+                        <itemReference>
+                            <referenceType>TST</referenceType>
+                            <uniqueReference>1</uniqueReference>
+                        </itemReference>
+                    </psaList>
+                </Ticket_CreateTSTFromPricing>
+            </soapenv:Body>
+        </soapenv:Envelope>`;
+
+
+        const headers = {
+            "Content-Type": "text/xml;charset=UTF-8",
+            SOAPAction: "http://webservices.amadeus.com/TAUTCQ_04_1_1A",
+          };
+
+
+          const response = await axios.post(url,data,{headers} );
+
+          msg = "Ticket Create Successfully!";
+          actionCompleteResponse(res, response.data, msg);
+        
+    } catch (err) {
+        sendActionFailedResponse(res, { err }, err.message);        
+    }
+}
+
+
+//savePnrAddMultiElements
+
+exports.savePnrAddMultiElements = async (req, res) =>{
+    try {
+
+        const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
+
+        const data=`<soapenv:Envelope
+        xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+        xmlns:sec="http://xml.amadeus.com/2010/06/Security_v1"
+        xmlns:typ="http://xml.amadeus.com/2010/06/Types_v1"
+        xmlns:iat="http://www.iata.org/IATA/2007/00/IATA2010.1"
+        xmlns:app="http://xml.amadeus.com/2010/06/AppMdw_CommonTypes_v3"
+        xmlns:ses="http://xml.amadeus.com/2010/06/Session_v3">
+        <soap:Header
+            xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+            <awsse:Session
+                xmlns:awsse="http://xml.amadeus.com/2010/06/Session_v3" TransactionStatusCode="InSeries">
+                <awsse:SessionId>00PM08SU32</awsse:SessionId>
+                <awsse:SequenceNumber>7</awsse:SequenceNumber>
+                <awsse:SecurityToken>1VA5UQMBNNFSVIRJY5TRD10V9</awsse:SecurityToken>
+            </awsse:Session>
+            <add:MessageID
+                xmlns:add="http://www.w3.org/2005/08/addressing">ba637e79-901-281-7c79-be6731f50bf
+            </add:MessageID>
+            <add:Action
+                xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/PNRADD_21_1_1A
+            </add:Action>
+            <add:To
+                xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0
+            </add:To>
+            <link:TransactionFlowLink
+                xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
+                <link:Consumer>
+                    <link:UniqueID>e276340a-ab12-8cbe-2210-5dba6548325a</link:UniqueID>
+                </link:Consumer>
+            </link:TransactionFlowLink>
+            <AMA_SecurityHostedUser
+                xmlns="http://xml.amadeus.com/2010/06/Security_v1" />
+            </soap:Header>
+            <soapenv:Body>
+                <PNR_AddMultiElements
+                    xmlns="http://xml.amadeus.com/PNRADD_17_1_1A">
+                    <pnrActions>
+                        <optionCode>11</optionCode>
+                    </pnrActions>
+                    <dataElementsMaster>
+                        <marker1 />
+                        <dataElementsIndiv>
+                            <elementManagementData>
+                                <segmentName>RF</segmentName>
+                            </elementManagementData>
+                            <freetextData>
+                                <freetextDetail>
+                                    <subjectQualifier>3</subjectQualifier>
+                                    <type>P22</type>
+                                </freetextDetail>
+                                <longFreetext>Legend</longFreetext>
+                            </freetextData>
+                        </dataElementsIndiv>
+                    </dataElementsMaster>
+                </PNR_AddMultiElements>
+            </soapenv:Body>
+        </soapenv:Envelope>`;
+
+
+        const headers = {
+            "Content-Type": "text/xml;charset=UTF-8",
+            SOAPAction: "http://webservices.amadeus.com/PNRADD_21_1_1A",
+          };
+
+          const response = await axios.post(url,data,{headers} );
+
+          msg = "Save Pnr Successfully!";
+          actionCompleteResponse(res, response.data, msg);
+        
+    } catch (err) {
+        sendActionFailedResponse(res, { err }, err.message);        
+    }
+}
+
+
+//signOut
+
+
+exports.signOut = async (req, res) =>{
+    try {
+
+        const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
+
+        const data=`<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+        xmlns:sec="http://xml.amadeus.com/2010/06/Security_v1"
+        xmlns:typ="http://xml.amadeus.com/2010/06/Types_v1"
+        xmlns:iat="http://www.iata.org/IATA/2007/00/IATA2010.1"
+        xmlns:app="http://xml.amadeus.com/2010/06/AppMdw_CommonTypes_v3"
+        xmlns:ses="http://xml.amadeus.com/2010/06/Session_v3">
+        <soap:Header xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+        <awsse:Session xmlns:awsse="http://xml.amadeus.com/2010/06/Session_v3" TransactionStatusCode="End">
+          <awsse:SessionId>${sessionId}</awsse:SessionId>
+          <awsse:SequenceNumber>${sequenceNumber}</awsse:SequenceNumber>
+          <awsse:SecurityToken>${securityToken}</awsse:SecurityToken>
+        </awsse:Session>
+        <add:MessageID xmlns:add="http://www.w3.org/2005/08/addressing">${messageId}</add:MessageID>
+        <add:Action xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/VLSSOQ_04_1_1A</add:Action>
+        <add:To xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0</add:To>
+        <link:TransactionFlowLink xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
+          <link:Consumer>
+            <link:UniqueID>${uniqueId}</link:UniqueID>
+          </link:Consumer>
+        </link:TransactionFlowLink>
+        <AMA_SecurityHostedUser xmlns="http://xml.amadeus.com/2010/06/Security_v1" />
+      </soap:Header>​        ​
+    <soapenv:Body>
+    <Security_SignOut xmlns="http://xml.amadeus.com/VLSSOQ_04_1_1A" />
+    </soapenv:Body>
+    </soapenv:Envelope>`;
+
+    // console.log(data,"data")
+        const headers = {
+            "Content-Type": "text/xml;charset=UTF-8",
+            SOAPAction: "http://webservices.amadeus.com/VLSSOQ_04_1_1A",
+          };
+        //   console.log("data", data);
+      
+            const response = await axios.post(url,data,{headers} );
+          //   console.log("api call");
+
+        // Extract required fields
+        
+          msg = "Flight Searched Successfully!";
+          actionCompleteResponse(res, response.data, msg);
+        
+    } catch (err) {
+        
+    }
+}
 
 function extractDataFromResponse(response) {
   return response.data;

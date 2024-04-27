@@ -1,14 +1,6 @@
-var jwt = require("jsonwebtoken");
-var bcrypt = require("bcryptjs");
-const { userInfo } = require("os");
-const commonFunction = require("../utilities/commonFunctions");
-const approvestatus = require("../enums/approveStatus");
 //require responsemessage and statusCode
 const statusCode = require("../utilities/responceCode");
 const responseMessage = require("../utilities/responses");
-const sendSMS = require("../utilities/sendSms");
-const whatsappAPIUrl = require("../utilities/whatsApi");
-const userType = require("../enums/userType");
 const status = require("../enums/status");
 const Moment = require("moment");
 //************SERVICES*************** */
