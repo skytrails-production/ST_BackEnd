@@ -1,12 +1,9 @@
 const mongoose = require("mongoose");
 const status = require("../../enums/status");
 const mongoosePaginate = require("mongoose-paginate-v2");
-const issuedType = require("../../enums/issuedType");
 const userType=require("../../enums/userType");
-const authType=require("../../enums/authType");
-const { object } = require("joi");
 mongoose.pluralize(null);
-const subAdminSchema = new mongoose.Schema(
+const relManagerSchema = new mongoose.Schema(
   {
     reportingManager:{
         type: mongoose.Schema.Types.ObjectId,
@@ -42,10 +39,14 @@ const subAdminSchema = new mongoose.Schema(
         enum:[userType.RM],
         default:userType.RM
     },
-    city:{type: String},
-    
+    addressDetails:{
+        city:{type: String},
+        pincode:{type: String},
+        state:{type: String},
+        country:{type: String}
+    }
   },
   { timestamps: true }
 );
-subAdminSchema.plugin(mongoosePaginate);
-module.exports = mongoose.model("subAdmins", subAdminSchema);
+relManagerSchema.plugin(mongoosePaginate);
+module.exports = mongoose.model("relationshipManagers", relManagerSchema);

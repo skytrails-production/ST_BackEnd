@@ -153,6 +153,16 @@ module.exports = function (app) {
   //agentProfilePage with packages
 
   app.post("/skyTrails/agent/profile", controller.agentProfilePage);
+
+  //agent commission route
+  app.post("/skyTrails/agent/agentcommisson",controller.agentCommission);
+
+  //add commission balance in agent wallet
+
+  app.post("/skyTrails/agent/addagentcommission",controller.addAgentCommission);
+
+
+
   app.get(
     "/skyTrails/agent/inviteAgent/:userId",
     agentDashboardController.shareAgentReferralCode

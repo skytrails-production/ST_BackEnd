@@ -691,6 +691,23 @@ const schemas = {
   ratingSchema:joi.object().keys({
     rate: joi.number().required(),
     comments: joi.string().optional()
+  }),
+  rmSchema:joi.object().keys({
+    userName: joi.string().required(),
+    firstName: joi.string().required(),
+    lastName: joi.string().optional(),
+    email: joi.string().required(),
+    profilePic: joi.string().optional(),
+    contactNumber: joi.string().required(),
+    password: joi.string().required(),
+    city: joi.string().required(),
+    pincode: joi.string().required(),
+    state: joi.string().required(),
+    country: joi.string().required(),
+  }),
+  rmLoginSchema:joi.object().keys({
+    email: joi.string().required(),
+    password: joi.string().required()
   })
 };
 

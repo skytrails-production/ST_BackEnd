@@ -186,7 +186,8 @@ require("./routes/createCouponRoutes")(app)
 require("./routes/packageBannerRoutes")(app)
 const quizRoute=require("./routes/btocRoutes/quizRoutes");
 quizRoute(app)
-require("./routes/ratingRoutes")(app)
+require("./routes/ratingRoutes")(app);
+require("./routes/relationshipManagerRoutes")(app)
 mongoose
   .connect(configs.mongoUrl.DEVELOPMENT, {
     useNewUrlParser: true,

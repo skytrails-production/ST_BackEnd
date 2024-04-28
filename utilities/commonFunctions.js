@@ -4530,7 +4530,25 @@ module.exports = {
     };
     return await transporter.sendMail(mailOptions);
   },
-
+  sendRMCredential: async (to, userName, password) => {
+    console.log("to, userName, password=============",to, userName, password)
+    var transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: nodemailerConfig.options.auth.user,
+        pass: nodemailerConfig.options.auth.pass,
+      },
+    });
+    
+    var mailOptions = {
+      from: nodemailerConfig.user,
+      to: to,
+      subject: "Congratulations,you are become member of theSkyTrais, ",
+      html: welcomeMail(to, userName, password),
+    };
+    return await transporter.sendMail(mailOptions);
+  },
+  
   senConfirmationQuery: async (to) => {
     let html = `<!DOCTYPE html>
     <html lang="en">

@@ -15,7 +15,6 @@ const Moment = require("moment");
 const{userServices}=require("../services/userServices");
 const {createUser,findUser,getUser,findUserData,deleteUser,userList,updateUser,countTotalUser,aggregatePaginateUser,aggregatePaginateUserList}=userServices;
 const {ratingServices}=require("../services/ratingServices");
-const { log } = require("console");
 const {createRating,findRating,findRatingData,deleteRating,ratingList,updateRating,paginateRatingSearch,countTotalRating}=ratingServices;
 
 exports.rateOurApp=async(req,res,next)=>{

@@ -145,7 +145,48 @@ async function sendWhatsAppMsgAdminPackage(number,var1,temName) {
     console.log("erorr while send whatsapp=====>>>>>>",err.response)
   }
 }
-module.exports = {sendMessageWhatsApp,sendWhatsAppMsgAdmin,sendWhatsAppMsgAdminPackage };
+async function sendWhatsAppMsgRM(number,to,email,pass,temName) {
+  try{
+    const options = {
+      method: 'POST',
+      url: doubleTick,
+      headers: {
+        accept: 'application/json',
+        'content-type': 'application/json',
+        Authorization: apiKey
+      },
+      data: {
+        messages: [
+          {
+            content: {
+              language: 'en',
+              templateData: {
+                header: {
+                  type: 'TEXT',
+                  placeholder: 'Header text',
+                  mediaUrl: 'https://example.com/image.png',
+                  filename: 'Document caption'
+                },
+                body: {placeholders: [to,email,pass]}
+              },
+              templateName: temName
+            },
+            from: doubleTickNumber,
+            to: number,
+          }
+        ]
+      }
+    };
+    const response= await axios.request(options);
+    if(response.data.messages[0]){
+      return response.data.messages[0];
+    }
+  }
+  catch(err){
+    console.log("erorr while send whatsapp=====>>>>>>",err.response)
+  }
+}
+module.exports = {sendMessageWhatsApp,sendWhatsAppMsgAdmin,sendWhatsAppMsgAdminPackage,sendWhatsAppMsgRM };
 
 // const axios = require('axios');
 

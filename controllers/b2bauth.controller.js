@@ -1802,6 +1802,61 @@ exports.agentProfilePage = async (req, res) =>{
 
 
 
+//agentCommission
+
+exports.agentCommission = async (req, res) => {
+  const agentId = req.body.agentId;
+
+  try {
+    // Find the agent profile
+    const userProfile = await b2bUser.findOne({ _id: agentId });
+
+    // If agent profile not found, 
+    if (!userProfile) {
+      return actionCompleteResponse(res, "data not found", "Invalid Agent");
+    }
+
+    // Update commission settings for the agent
+    userProfile.myCommission = req.body.myCommission; // Assuming req.body.myCommission contains updated commission data
+    await userProfile.save();
+
+    // Send success response
+    actionCompleteResponse(res, userProfile, "Agent commission updated successfully");
+  } catch (error) {
+    // Handle errors
+    sendActionFailedResponse(res, {}, "Internal server error");
+  }
+};
+
+
+
+//addAgentCommission
+
+exports.addAgentCommission =async (req, res) =>{
+
+  const {agentId, addAmount}=req.body;
+
+  // console.log(req.body)
+
+  try {
+    const userProfile = await b2bUser.findOne({ _id: agentId });
+
+    // If agent profile not found, 
+    if (!userProfile) {
+      return actionCompleteResponse(res, "data not found", "Invalid Agent");
+    }
+
+    const newBalance = Number(userProfile.balance) + Number(addAmount);
+    // Update the balance in the userProfile document
+   const response= await b2bUser.updateOne({ _id: agentId }, { $set: { balance: newBalance } });
+
+    actionCompleteResponse(res,  { balance: newBalance } , "Balance updated successfully");
+    
+  } catch (err) {
+    sendActionFailedResponse(res, {}, "Internal server error");
+    
+  }
+}
 
 //agent packages
 exports.agentPackagesHelper = async (userId) => {

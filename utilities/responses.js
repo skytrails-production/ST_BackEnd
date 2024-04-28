@@ -128,5 +128,6 @@ module.exports = {
 	PAN_NOT_EMPTY:"PAN Number is required and cannot be empty.",
 	RESPONSE_SUBMIT:"Thank you for your response!We will announce the lucky winner soon.",
 	ALREADY_RESPOND:"You have already submitted your response. Multiple submissions are not allowed.",
-	RATING_SUCCESS:"Thanks for your feedback,your feedback help to improve our self🥰"
+	RATING_SUCCESS:"Thanks for your feedback,your feedback help to improve our self🥰",
+	RM_LOGIN_SUCCESS:"You are loged in successfull😊"
 };

@@ -2,6 +2,7 @@ const { verifySignUp } = require("../middleware");
 const controller = require("../controllers/auth.controller");
 const agentChangeReqController = require("../controllers/b2bauth.controller");
 const subAdminController = require("../controllers/subAdminController");
+const rmController=require("../controllers/relationshipManagerController")
 const { authJwt } = require("../middleware");
 const SchemaValidator = require("../utilities/validations.utilities");
 const schemas = require("../utilities/schema.utilities");
@@ -149,4 +150,13 @@ module.exports = function (app) {
   app.put('/skyTrails/api/admin/approvePost',subAdminController.approveStory);
   app.get('/skyTrails/api/admin/forumPost/getPost', subAdminController.getPost);
   app.put('/skyTrails/api/admin/addOnTrending',subAdminController.addTrending);
+  app.post(
+    "/skyTrails/api/subAdmin/createRM",
+    [authJwt.verifcationSubAdminToken],
+    SchemaValidator(schemas.rmSchema),
+    rmController.createRelationShipManage
+  );
+  app.get("/skyTrails/api/subAdmin/getAllRM",
+  [authJwt.verifcationSubAdminToken],
+  rmController.getRelationShipManagers)
 };
