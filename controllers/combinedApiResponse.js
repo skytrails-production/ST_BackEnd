@@ -25,10 +25,10 @@ const streamLength = 8;
 const randomBytes = generateRandomBytes(streamLength);
 // Function to convert bytes to base64
 function bytesToBase64(bytes) {
-  console.log(
-    "Buffer.from(bytes).toStringbase64=",
-    Buffer.from(bytes).toString("base64")
-  );
+  // console.log(
+  //   "Buffer.from(bytes).toStringbase64=",
+  //   Buffer.from(bytes).toString("base64")
+  // );
   return Buffer.from(bytes).toString("base64");
 }
 const commonUrl = require("../common/const");

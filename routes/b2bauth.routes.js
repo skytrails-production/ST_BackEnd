@@ -161,6 +161,10 @@ module.exports = function (app) {
 
   app.post("/skyTrails/agent/addagentcommission",controller.addAgentCommission);
 
+  //update company domain
+
+  app.put("/skyTrails/agent/updatedomain",controller.updateCompanyDomain);
+
 
 
   app.get(

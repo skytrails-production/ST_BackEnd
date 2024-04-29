@@ -9,6 +9,7 @@ const responseMessage = require("../utilities/responses");
 const sendSMS = require("../utilities/sendSms");
 const whatsappAPIUrl = require("../utilities/whatsApi");
 const userType = require("../enums/userType");
+// const authType=require("../enums/authType")
 const status = require("../enums/status");
 const Moment = require("moment");
 //************SERVICES*************** */
@@ -143,6 +144,7 @@ exports.getRelationShipManagers = async (req, res, next) => {
     const isSubAdmin = await findSubAdminData({
       _id: req.userId,
       userType: userType.SUBADMIN,
+    //   authType:[authType.BOOKING_MANAGER,authType.AGENT_MANAGER]
     });
     if (!isSubAdmin) {
       return res.status(statusCode.OK).send({
@@ -289,3 +291,6 @@ exports.getAgentListOfRM = async (req, res, next) => {
     return next(error);
   }
 };
+
+
+// exports.getAgentBookings

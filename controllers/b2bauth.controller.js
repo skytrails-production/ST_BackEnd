@@ -1858,6 +1858,31 @@ exports.addAgentCommission =async (req, res) =>{
   }
 }
 
+
+
+// updateCompanyDomain
+
+exports.updateCompanyDomain =async (req, res) =>{
+
+  const { agentId, companyDomain } = req.body;
+
+  try {
+
+    const agent = await b2bUser.findByIdAndUpdate(agentId, { companyDomain }, { new: true });
+
+    if (!agent) {
+      return actionCompleteResponse(res, "data not found", "Invalid Agent");
+    }
+   
+    actionCompleteResponse(res, {companyDomain}, "Domain update Successfully");
+    
+  } catch (err) {
+
+    sendActionFailedResponse(res, {}, "Internal server error");
+    
+  }
+}
+
 //agent packages
 exports.agentPackagesHelper = async (userId) => {
   try {

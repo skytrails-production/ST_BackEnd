@@ -337,7 +337,7 @@ exports.getComments = async (req, res, next) => {
 };
 
 //like posy which user give on post*********************************************
-exports.likePost = async (req, res, next) => {
+exports.likePost1 = async (req, res, next) => {
   try {
     const {postId} = req.body;
     const isUser = await findUserData({
@@ -350,6 +350,7 @@ exports.likePost = async (req, res, next) => {
         message: responseMessage.USERS_NOT_FOUND,
       });
     }
+    
     const isPostExist = await findforumQue({
       _id: postId,
       status: status.ACTIVE,
@@ -402,6 +403,90 @@ exports.likePost = async (req, res, next) => {
         result: updateResult,
       }); 
     }
+  } catch (error) {
+    console.log("error========>>>>>>", error);
+    return next(error);
+  }
+};
+
+exports.likePost = async (req, res, next) => {
+  try {
+    const { postId } = req.body;
+    const isUser = await findUserData({
+      _id: req.userId,
+      status: status.ACTIVE,
+    });
+    if (!isUser) {
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+
+    for (const post of postId) {
+      console.log("post========",post)
+      const isPostExist = await findforumQue({
+        _id: post,
+        status: status.ACTIVE,
+      });
+      if (!isPostExist) {
+        console.log("isPostExist=======",isPostExist)
+        return res.status(statusCode.NotFound).send({
+          statusCode: statusCode.NotFound,
+          message: responseMessage.DATA_NOT_FOUND,
+        });
+      }
+
+      const isAlreadyLiked = await findPostlikes({
+        postId: isPostExist._id,
+      });
+
+      if (!isAlreadyLiked) {
+        const newLike = {
+          postId: post,
+          likes: [isUser._id],
+          status: "ACTIVE",
+        };
+        const savedLike = await createPostlikes(newLike);
+        await updateforumQue(
+          { _id: isPostExist._id },
+          { $inc: { likesCount: 1 }, $push: { likes: isUser._id } }
+        );
+        console.log(`Post ${post} liked`);
+      } else {
+        if (isAlreadyLiked.likes.includes(isUser._id)) {
+          if (isPostExist.likesCount > 0) {
+            const updateResult = await updatePostlikes(
+              { postId: isPostExist._id, status: status.ACTIVE },
+              { $pull: { likes: isUser._id } }
+            );
+            await updateforumQue(
+              { _id: isPostExist._id },
+              {
+                $inc: { likesCount: -1 },
+                $pull: { likes: isUser._id },
+              }
+            );
+            console.log(`Like removed from Post ${post}`);
+          }
+        } else {
+          const updateResult = await updatePostlikes(
+            { postId: isPostExist._id, status: status.ACTIVE },
+            { $push: { likes: isUser._id } }
+          );
+          await updateforumQue(
+            { _id: isPostExist._id },
+            { $inc: { likesCount: 1 }, $push: { likes: isUser._id } }
+          );
+          console.log(`Post ${post} liked`);
+        }
+      }
+    }
+
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.POST_LIKED,
+    });
   } catch (error) {
     console.log("error========>>>>>>", error);
     return next(error);

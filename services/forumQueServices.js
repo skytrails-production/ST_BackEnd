@@ -33,7 +33,7 @@ const forumQueServices={
       }
       let data = filter || ""
       let searchData = [
-        {$match:{$or:[{status:status.ACTIVE},{status:status.PENDING}]}},
+        {$match:{status:status.ACTIVE}},
         {
           $lookup: {
             from: "userBtoC",
