@@ -708,6 +708,14 @@ const schemas = {
   rmLoginSchema:joi.object().keys({
     email: joi.string().required(),
     password: joi.string().required()
+  }),
+  rmgetAgentBooking:joi.object().keys({
+    agentId: joi.string().required(),
+    bookingType: joi.string().required()
+  }),
+  rmgetAgentCancelReq:joi.object().keys({
+    agentId: joi.string().required(),
+    searchType: joi.string().required()
   })
 };
 

@@ -217,13 +217,13 @@ exports.uploadAgentLogo = async (req, res) => {
     }
 
     // If authorized, proceed with logo upload
-    const logoFile = req.file;
+    const file = req.file;
   
     const s3Params = {
       Bucket: process.env.AWS_BUCKET_NAME,
-      Key: "logo.png", // Set the key as "logo.png" for the logo image
-      Body: logoFile.buffer,
-      ContentType: logoFile.mimetype,
+      Key: file.originalname, // Set the key as "logo.png" for the logo image
+      Body: file.buffer,
+      ContentType: file.mimetype,
       ACL: "public-read",
     };
 
@@ -233,7 +233,7 @@ exports.uploadAgentLogo = async (req, res) => {
         res.status(500).send(err);
       } else {
         try {
-          await b2bUser.findOneAndUpdate(
+         const response= await b2bUser.findOneAndUpdate(
             { _id:userId }, 
             { $set: { agentCompanyLogo: data.Location } }, 
             { new: true }

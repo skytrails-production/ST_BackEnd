@@ -12,6 +12,10 @@ const userType = require("../enums/userType");
 // const authType=require("../enums/authType")
 const status = require("../enums/status");
 const Moment = require("moment");
+//********************MODELS**********************/
+const flightModel = require("../model/flightBookingData.model");
+const hotelBookingModel = require("../model/hotelBooking.model");
+const busBookingModel = require("../model/busBookingData.model");
 //************SERVICES*************** */
 const { userServices } = require("../services/userServices");
 const {
@@ -67,6 +71,10 @@ const {
   paginatebrbuserSearch,
   countTotalbrbUser,
 } = brbuserServices;
+/**********************************SERVICES********************************** */
+const { cancelBookingServices } = require("../services/cancelServices");
+const { createcancelFlightBookings,findAnd, findCancelFlightBookings,updatecancelFlightBookings,findHotelCancelRequest,findBusCancelRequest, aggregatePaginatecancelFlightBookingsList, countTotalcancelFlightBookings,findCancelHotelBookings, createHotelCancelRequest, updateHotelCancelRequest, getHotelCancelRequesrByAggregate, countTotalHotelCancelled, createBusCancelRequest, updateBusCancelRequest, findCancelBusBookings,getBusCancelRequestByAggregate, countTotalBusCancelled,getBusCancellation } = cancelBookingServices;
+
 //************************************************API************************************************
 
 exports.createRelationShipManage = async (req, res, next) => {
@@ -293,4 +301,146 @@ exports.getAgentListOfRM = async (req, res, next) => {
 };
 
 
-// exports.getAgentBookings
+exports.getAgentList=async(req,res,next)=>{
+    try {
+        // const {agentId}=req.query;
+        const isRMExist = await findRelationShipManager({
+            _id:req.userId,
+           });
+           if (!isRMExist) {
+             return res.status(statusCode.OK).send({
+               statusCode: statusCode.NotFound,
+               responseMessage: responseMessage.SUBADMIN_NOT_EXIST,
+             });
+           }
+           let agentIdArray=[];
+           const agentsArray = await findbrbData({$or:[{ 'personal_details.address_details.city': isRMExist.addressDetails.city },{'personal_details.address_details.state': isRMExist.addressDetails.state}]});
+           for(let agent of agentsArray){
+            const obj={
+                agentId:agent._id,
+                agentName: agent.personal_details.first_name+agent.personal_details.last_name
+            }
+            agentIdArray.push(obj);
+           }
+           return res.status(statusCode.OK).send({
+            statusCode: statusCode.OK,
+            responseMessage: responseMessage.DATA_FOUND,
+            result:agentIdArray
+          });
+    } catch (error) {
+        console.log("Error while trying to get RM agent Bookings",error);
+        return next(error)
+    }
+}
+
+exports.getAgentBooking=async(req,res,next)=>{
+    try {
+        let {agentId,bookingType}=req.body;
+        if(req.body.bookingType){
+            req.body.bookingType=req.body.bookingType.toLowerCase();
+        }
+        const isRMExist = await findRelationShipManager({
+            _id:req.userId,
+           });
+           if (!isRMExist) {
+             return res.status(statusCode.OK).send({
+               statusCode: statusCode.NotFound,
+               responseMessage: responseMessage.SUBADMIN_NOT_EXIST,
+             });
+           }
+        let result = {};
+        const isAgentExist=await findOneAgent({_id:agentId});
+        if(!isAgentExist){
+            return res.status(statusCode.OK).send({
+                statusCode: statusCode.NotFound,
+                responseMessage: responseMessage.AGENT_NOT_FOUND,
+              });
+        }
+        if(req.body.bookingType==="flight"){
+            console.log("=====================",bookingType);
+            result.flightBooking=await flightModel.find({userId:isAgentExist._id});
+        }else if(req.body.bookingType==="bus"){
+            console.log("=====================",req.body.bookingType);
+            result.busBooking=await busBookingModel.find({userId:isAgentExist._id});
+        } if(req.body.bookingType==="hotel"){
+            console.log("=====================",req.body.bookingType);
+            result.hotelBooking=await hotelBookingModel.find({userId:isAgentExist._id});
+        }else if(req.body.bookingType==="all"){
+            console.log("req.body.bookingType============",req.body.bookingType);
+            result.flightBooking=await flightModel.find({userId:isAgentExist._id});
+            result.busBooking=await busBookingModel.find({userId:isAgentExist._id});
+            result.hotelBooking=await hotelBookingModel.find({userId:isAgentExist._id});
+        }
+        if(result.length<1){
+            return res.status(statusCode.OK).send({
+                statusCode: statusCode.NotFound,
+                responseMessage: responseMessage.DATA_NOT_FOUND,
+              });
+        }
+
+        return res.status(statusCode.OK).send({
+            statusCode: statusCode.OK,
+            responseMessage: responseMessage.DATA_FOUND,
+            result:result
+          });
+    } catch (error) {
+        console.log("error while trying to get booking of agnet who assosisate with rm",error);
+        return next(error);
+    }
+}
+
+exports.getAgentCancelRequest=async(req,res,next)=>{
+    try {
+        const {agentId,searchType}=req.body;
+if(req.body.searchType){
+    req.body.searchType=req.body.searchType.toLowerCase();
+}
+let result = {};
+        const isRMExist = await findRelationShipManager({
+            _id:req.userId,
+           });
+           if (!isRMExist) {
+             return res.status(statusCode.OK).send({
+               statusCode: statusCode.NotFound,
+               responseMessage: responseMessage.SUBADMIN_NOT_EXIST,
+             });
+           }
+           const isAgentExist=await findOneAgent({_id:agentId});
+           if(!isAgentExist){
+               return res.status(statusCode.OK).send({
+                   statusCode: statusCode.NotFound,
+                   responseMessage: responseMessage.AGENT_NOT_FOUND,
+                 });
+           }
+           if (req.body.searchType === "flight" || req.body.searchType === "all") {
+            result.flightCancelReq = await findAnd({ userId: isAgentExist._id });
+        }
+        if (req.body.searchType === "bus" || req.body.searchType === "all") {
+            result.busCancelReq = await findBusCancelRequest({ userId: isAgentExist._id });
+        }
+        if (req.body.searchType === "hotel" || req.body.searchType === "all") {
+            result.hotelCancelReq = await findHotelCancelRequest({ userId: isAgentExist._id });
+        }
+        const resultKeys = Object.keys(result);
+        let totalCount = 0;
+        for (const key of resultKeys) {
+            totalCount += result[key].length;
+        }
+        result.totalCount = totalCount;
+        console.log("result============",result)
+        if (totalCount < 1) {
+            return res.status(statusCode.OK).send({
+                statusCode: statusCode.NotFound,
+                responseMessage: responseMessage.DATA_NOT_FOUND,
+            });
+        }
+        return res.status(statusCode.OK).send({
+            statusCode: statusCode.OK,
+            responseMessage: responseMessage.DATA_FOUND,
+            result: result
+        });
+    } catch (error) {
+        console.log("Error while trying to get agentCancelRequest",error);
+        return next(error);
+    }
+}

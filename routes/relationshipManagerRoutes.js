@@ -11,5 +11,9 @@ module.exports = function (app) {
 app.post("/skyTrails/api/relationShipManager/login",SchemaValidator(schemas.rmLoginSchema),relationshipManagerController.loginRM);
 app.get("/skyTrails/api/relationShipManager/getAllRMOfAGENT",[authJwt.verificationTokenOfRM],relationshipManagerController.getAgentListOfRM);
 app.get("/skyTrails/api/relationShipManager/getRelationShipManagerById",relationshipManagerController.getRelationShipManagerById);
+app.post("/skyTrails/api/relationShipManager/getAgentBookings",[authJwt.verificationTokenOfRM],SchemaValidator(schemas.rmgetAgentBooking),relationshipManagerController.getAgentBooking);
+app.get("/skyTrails/api/relationShipManager/getAgentId",[authJwt.verificationTokenOfRM],relationshipManagerController.getAgentList);
+app.post("/skyTrails/api/relationShipManager/getAgentCancelReq",[authJwt.verificationTokenOfRM],SchemaValidator(schemas.rmgetAgentCancelReq),relationshipManagerController.getAgentCancelRequest);
+
 
 };
