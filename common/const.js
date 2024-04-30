@@ -1,23 +1,39 @@
+// exports.tokenGenerator = {
+//   ClientId: "ApiIntegrationNew",
+//   UserName: "Theskytrails12",
+//   Password: "Skytrails@1234",
+//   TokenAgencyId: 57537,
+//   TokenMemberId: 57679,
+// };
+
 exports.tokenGenerator = {
-  ClientId: "ApiIntegrationNew",
-  UserName: "Theskytrails12",
-  Password: "Skytrails@1234",
-  TokenAgencyId: 57537,
-  TokenMemberId: 57679,
+  ClientId: "tboprod",
+  UserName: "DELT2196",
+  Password: "#Trav@sky657",
+  TokenAgencyId: 93124,
+  TokenMemberId: 115872,
 };
 
 exports.api = {
   //Common Token ,Agencybalance and Logout API's
+  // tokenURL:
+  //   "http://api.tektravels.com/SharedServices/SharedData.svc/rest/Authenticate",
+//   logoutURL:
+//   "http://api.tektravels.com/SharedServices/SharedData.svc/rest/Logout",
+// agencyBalanceURL:
+//   "http://api.tektravels.com/SharedServices/SharedData.svc/rest/GetAgencyBalance",
   tokenURL:
-    "http://api.tektravels.com/SharedServices/SharedData.svc/rest/Authenticate",
+    "https://api.travelboutiqueonline.com/SharedAPI/SharedData.svc/rest/Authenticate",
   logoutURL:
-    "http://api.tektravels.com/SharedServices/SharedData.svc/rest/Logout",
+    "https://api.travelboutiqueonline.com/SharedAPI/SharedData.svc/rest/Logout",
   agencyBalanceURL:
-    "http://api.tektravels.com/SharedServices/SharedData.svc/rest/GetAgencyBalance",
+    "https://api.travelboutiqueonline.com/SharedAPI/SharedData.svc/rest/GetAgencyBalance",
 
   //Flight API's
+  // flightSearchURL:
+  //   "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/Search",
   flightSearchURL:
-    "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/Search",
+  "https://tboapi.travelboutiqueonline.com/AirAPI_V10/AirService.svc/rest/Search",
 
   //easemyTrip Api----------------START------------------//
   emiflightSearch:
@@ -25,12 +41,19 @@ exports.api = {
 
   //easemyTrip Api----------------END------------------//
 
-  flightFareRuleURL:
-    "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/FareRule",
+  // flightFareRuleURL:
+  //   "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/FareRule",
+  // flightFareQuoteURL:
+  //   "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/FareQuote",
+  // flightBookingURL:
+  //   "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/Book",
+
+    flightFareRuleURL:
+    "https://tboapi.travelboutiqueonline.com/AirAPI_V10/AirService.svc/rest/FareRule",
   flightFareQuoteURL:
-    "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/FareQuote",
+    "https://tboapi.travelboutiqueonline.com/AirAPI_V10/AirService.svc/rest/FareQuote",
   flightBookingURL:
-    "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/Book",
+    "https://booking.travelboutiqueonline.com/AirAPI_V10/AirService.svc/rest/Book",
 
   //----------------EMT-----------------
 
@@ -46,38 +69,81 @@ exports.api = {
 
   //---------------------END----------
 
+  // flightTicketLCCURL:
+  //   "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/Ticket",
   flightTicketLCCURL:
-    "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/Ticket",
-  flightTicketNonLCCURL:
-    "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/Ticket",
+  "https://booking.travelboutiqueonline.com/AirAPI_V10/AirService.svc/rest/Ticket",
+   
+  // flightTicketNonLCCURL:
+  //   "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/Ticket",
+    flightTicketNonLCCURL:
+    "https://booking.travelboutiqueonline.com/AirAPI_V10/AirService.svc/rest/Ticket",
   flightBookingDetailsURL:
     "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/GetBookingDetails",
+  //   releasePNRRequestURL:
+  //   "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/ReleasePNRRequest",
+  // sendChangeRequestURL:
+  //   "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/SendChangeRequest",
+  // getChangeRequestStatusURL:
+  //   "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/GetChangeRequestStatus",
+  // getCancellationChargesURL:
+  //   "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/GetCancellationCharges",
+
+  // flightBookingDetailsURL:
+  // "https://booking.travelboutiqueonline.com/AirAPI_V10/AirService.svc/rest/GetBookingDetails",
   releasePNRRequestURL:
-    "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/ReleasePNRRequest",
+    "https://booking.travelboutiqueonline.com/AirAPI_V10/AirService.svc/rest/ReleasePNRRequest",
   sendChangeRequestURL:
-    "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/SendChangeRequest",
+    "https://booking.travelboutiqueonline.com/AirAPI_V10/AirService.svc/rest/SendChangeRequest",
   getChangeRequestStatusURL:
-    "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/GetChangeRequestStatus",
+    "https://booking.travelboutiqueonline.com/AirAPI_V10/AirService.svc/rest/GetChangeRequestStatus",
   getCancellationChargesURL:
-    "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/GetCancellationCharges",
+    "https://booking.travelboutiqueonline.com/AirAPI_V10/AirService.svc/rest/GetCancellationCharges",
+
+  //Hotel API's
+  // hotelSearchURL:
+  //   "http://api.tektravels.com/BookingEngineService_Hotel/hotelservice.svc/rest/GetHotelResult/",
+  // hotelInfoSearchURL:
+  //   "http://api.tektravels.com/BookingEngineService_Hotel/hotelservice.svc/rest/GetHotelInfo",
+  // hotelRoomURL:
+  //   "http://api.tektravels.com/BookingEngineService_Hotel/hotelservice.svc/rest/GetHotelRoom",
+  // hotelBlockRoomURL:
+  //   "http://api.tektravels.com/BookingEngineService_Hotel/hotelservice.svc/rest/BlockRoom",
+  // hotelBookRoomURL:
+  //   "http://api.tektravels.com/BookingEngineService_Hotel/hotelservice.svc/rest/Book",
+  // hotelBookingDetailsURL:
+  //   "http://api.tektravels.com/BookingEngineService_Hotel/HotelService.svc/rest/GetBookingDetail",
+  // hotelCancelURL:
+  //   "http://api.tektravels.com/BookingEngineService_Hotel/hotelservice.svc/rest/SendChangeRequest",
+  // hotelCancelStatusURL:
+  //   "http://api.tektravels.com/BookingEngineService_Hotel/hotelservice.svc/rest/GetChangeRequestStatus/",
+  // hotelGetCountryListURL:
+  //   "http://api.tektravels.com/SharedServices/SharedData.svc/rest/CountryList",
+  // hotelGetDestinationCityListURL:
+  //   "http://api.tektravels.com/SharedServices/StaticData.svc/rest/GetDestinationSearchStaticData",
+  // hotelGetTopDestinationListURL:
+  //   "http://api.tektravels.com/SharedServices/SharedData.svc/rest/TopDestinationList",
+  // hotelGetVoucherURL:
+  //   "http://api.tektravels.com/BookingEngineService_Hotel/hotelservice.svc/rest/GenerateVoucher",
+
 
   //Hotel API's
   hotelSearchURL:
-    "http://api.tektravels.com/BookingEngineService_Hotel/hotelservice.svc/rest/GetHotelResult/",
+    "https://api.travelboutiqueonline.com/HotelAPI_V10/HotelService.svc/rest/GetHotelResult",
   hotelInfoSearchURL:
-    "http://api.tektravels.com/BookingEngineService_Hotel/hotelservice.svc/rest/GetHotelInfo",
+    "https://api.travelboutiqueonline.com/HotelAPI_V10/HotelService.svc/rest/GetHotelInfo",
   hotelRoomURL:
-    "http://api.tektravels.com/BookingEngineService_Hotel/hotelservice.svc/rest/GetHotelRoom",
+    "https://api.travelboutiqueonline.com/HotelAPI_V10/HotelService.svc/rest/GetHotelRoom",
   hotelBlockRoomURL:
-    "http://api.tektravels.com/BookingEngineService_Hotel/hotelservice.svc/rest/BlockRoom",
+    "https://api.travelboutiqueonline.com/HotelAPI_V10/HotelService.svc/rest/BlockRoom",
   hotelBookRoomURL:
-    "http://api.tektravels.com/BookingEngineService_Hotel/hotelservice.svc/rest/Book",
+    "https://booking.travelboutiqueonline.com/HotelAPI_V10/HotelService.svc/rest/Book",
   hotelBookingDetailsURL:
-    "http://api.tektravels.com/BookingEngineService_Hotel/HotelService.svc/rest/GetBookingDetail",
+    "https://booking.travelboutiqueonline.com/HotelAPI_V10/HotelService.svc/rest/GetBookingDetail",
   hotelCancelURL:
-    "http://api.tektravels.com/BookingEngineService_Hotel/hotelservice.svc/rest/SendChangeRequest",
+    "https://booking.travelboutiqueonline.com/HotelAPI_V10/HotelService.svc/rest/SendChangeRequest",
   hotelCancelStatusURL:
-    "http://api.tektravels.com/BookingEngineService_Hotel/hotelservice.svc/rest/GetChangeRequestStatus/",
+    "https://booking.travelboutiqueonline.com/HotelAPI_V10/HotelService.svc/rest/GetChangeRequestStatus/",
   hotelGetCountryListURL:
     "http://api.tektravels.com/SharedServices/SharedData.svc/rest/CountryList",
   hotelGetDestinationCityListURL:
@@ -88,22 +154,42 @@ exports.api = {
     "http://api.tektravels.com/BookingEngineService_Hotel/hotelservice.svc/rest/GenerateVoucher",
 
   //Bus API's
+  // busCityURL:
+  //   "http://api.tektravels.com/SharedServices/StaticData.svc/rest/GetBusCityList",
+  // busSearchURL:
+  //   "http://api.tektravels.com/BookingEngineService_Bus/Busservice.svc/rest/Search",
+  // busSeatLayoutURL:
+  //   "http://api.tektravels.com/BookingEngineService_Bus/Busservice.svc/rest/GetBusSeatLayOut",
+  // busBoardingPointURL:
+  //   "http://api.tektravels.com/BookingEngineService_Bus/Busservice.svc/rest/GetBoardingPointDetails",
+  // busBlockURL:
+  //   "http://api.tektravels.com/BookingEngineService_Bus/Busservice.svc/rest/Block",
+  // busBookURL:
+  //   "http://api.tektravels.com/BookingEngineService_Bus/Busservice.svc/rest/Book",
+  // busBookingDetailsURL:
+  //   "http://api.tektravels.com/BookingEngineService_Bus/Busservice.svc/rest/GetBookingDetail",
+  // busCancelURL:
+  //   "http://api.tektravels.com/BookingEngineService_Bus/Busservice.svc/rest/SendChangeRequest",
+
+
+
+    //Bus production API's
   busCityURL:
-    "http://api.tektravels.com/SharedServices/StaticData.svc/rest/GetBusCityList",
-  busSearchURL:
-    "http://api.tektravels.com/BookingEngineService_Bus/Busservice.svc/rest/Search",
-  busSeatLayoutURL:
-    "http://api.tektravels.com/BookingEngineService_Bus/Busservice.svc/rest/GetBusSeatLayOut",
-  busBoardingPointURL:
-    "http://api.tektravels.com/BookingEngineService_Bus/Busservice.svc/rest/GetBoardingPointDetails",
-  busBlockURL:
-    "http://api.tektravels.com/BookingEngineService_Bus/Busservice.svc/rest/Block",
-  busBookURL:
-    "http://api.tektravels.com/BookingEngineService_Bus/Busservice.svc/rest/Book",
-  busBookingDetailsURL:
-    "http://api.tektravels.com/BookingEngineService_Bus/Busservice.svc/rest/GetBookingDetail",
-  busCancelURL:
-    "http://api.tektravels.com/BookingEngineService_Bus/Busservice.svc/rest/SendChangeRequest",
+  "https://api.travelboutiqueonline.com/SharedAPI/StaticData.svc/rest/GetBusCityList",
+busSearchURL:
+  "https://api.travelboutiqueonline.com/BusAPI_V10/BusService.svc/rest/Search/",
+busSeatLayoutURL:
+  "https://api.travelboutiqueonline.com/BusAPI_V10/BusService.svc/rest/GetBusSeatLayOut/",
+busBoardingPointURL:
+  "https://api.travelboutiqueonline.com/BusAPI_V10/BusService.svc/rest/GetBoardingPointDetails/",
+busBlockURL:
+  "https://api.travelboutiqueonline.com/BusAPI_V10/BusService.svc/rest/Block",
+busBookURL:
+  "https://api.travelboutiqueonline.com/BusAPI_V10/BusService.svc/rest/Book",
+busBookingDetailsURL:
+  "https://api.travelboutiqueonline.com/BusAPI_V10/BusService.svc/rest/GetBookingDetail",
+busCancelURL:
+  "https://api.travelboutiqueonline.com/BusAPI_V10/BusService.svc/rest/SendChangeRequest/",
 
   //===================================>  Sightsettings API <===============================================//
 
@@ -218,7 +304,6 @@ exports.api = {
     "https://uat.partners.mihuru.com/api/assistmodule/v1/confirmpersonaldetails",
     applicationStatus:
     "https://uat.partners.mihuru.com/api/application/status"
-
 };
 exports.responseFlags = {
   ACTION_COMPLETE: 200,
