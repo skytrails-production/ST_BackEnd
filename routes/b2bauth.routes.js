@@ -155,7 +155,7 @@ module.exports = function (app) {
   app.post("/skyTrails/agent/profile", controller.agentProfilePage);
 
   //agent commission route
-  app.post("/skyTrails/agent/agentcommisson",controller.agentCommission);
+  app.patch("/skyTrails/agent/agentcommisson",controller.agentCommission);
 
   //add commission balance in agent wallet
 

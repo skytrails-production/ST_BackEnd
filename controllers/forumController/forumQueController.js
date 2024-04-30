@@ -60,7 +60,7 @@ const {
 
 exports.createPost = async (req, res, next) => {
   try {
-    const { content } = req.body;
+    const { content,location } = req.body;
     const isUser = await findUser({ _id: req.userId, status: status.ACTIVE });
     if (!isUser) {
       return res.status(statusCode.NotFound).send({
@@ -75,6 +75,7 @@ exports.createPost = async (req, res, next) => {
     const obj = {
       userId: isUser._id,
       content: content,
+      location:location,
       image: req.body.image,
     };
     const result = await createforumQue(obj);
@@ -132,14 +133,14 @@ exports.getPost = async (req, res, next) => {
 
 exports.updatePost = async (req, res, next) => {
   try {
-    const { content } = req.body;
+    const { content,location } = req.body;
     const isUser = await findUser({ _id: req.userId });
     if (!isUser) {
       return sendActionFailedResponse(res, {}, "User not found");
     }
     const result = await updateforumQue(
       { userID: isUser._id },
-      { content: content }
+      { content: content,location:location }
     );
     return actionCompleteResponse(res, result, "Post edited successfully.");
   } catch (error) {

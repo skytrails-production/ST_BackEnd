@@ -20,7 +20,7 @@ const changeBusRequestServices = {
     },
 
     findchangeBusRequestData: async (query) => {
-        return await changeBusRequestModel.findOne(query).select('-createdAt -updatedAt ');
+        return await changeBusRequestModel.find(query);
     },
 
     deletechangeBusRequest: async (query) => {

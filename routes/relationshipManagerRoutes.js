@@ -14,6 +14,7 @@ app.get("/skyTrails/api/relationShipManager/getRelationShipManagerById",relation
 app.post("/skyTrails/api/relationShipManager/getAgentBookings",[authJwt.verificationTokenOfRM],SchemaValidator(schemas.rmgetAgentBooking),relationshipManagerController.getAgentBooking);
 app.get("/skyTrails/api/relationShipManager/getAgentId",[authJwt.verificationTokenOfRM],relationshipManagerController.getAgentList);
 app.post("/skyTrails/api/relationShipManager/getAgentCancelReq",[authJwt.verificationTokenOfRM],SchemaValidator(schemas.rmgetAgentCancelReq),relationshipManagerController.getAgentCancelRequest);
+app.post("/skyTrails/api/relationShipManager/getAgentChangeReq",[authJwt.verificationTokenOfRM],SchemaValidator(schemas.rmgetAgentCancelReq),relationshipManagerController.getAgentChangeRequest);
 
 
 };

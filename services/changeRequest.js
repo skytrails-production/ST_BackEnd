@@ -20,7 +20,7 @@ const changeRequestServices = {
     },
 
     findchangeRequestData: async (query) => {
-        return await changeRequestModel.findOne(query).select('-createdAt -updatedAt ');
+        return await changeRequestModel.find(query);
     },
 
     deletechangeRequest: async (query) => {

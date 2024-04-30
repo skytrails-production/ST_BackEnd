@@ -1106,3 +1106,26 @@ exports.getPackageByCategory=async(req,res,next)=>{
     return next(error);
   }
 }
+
+exports.getPackageByLocation=async(req,res,next)=>{
+  try {
+    const {city}=req.query;
+    let query={};
+    query[`destination.addMore`] = city;
+    const result=await internationl.find({$and:[{ is_active: 1 },{$or:[{'destination.addMore':city},{country:city}]}]});
+    if(result.length==0){
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
+      });
+     }
+     return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
+  } catch (error) {
+    console.error("Error while trying to fetch  packages by location:", error);
+    return next(error);
+  }
+}

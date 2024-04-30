@@ -20,7 +20,7 @@ const changeHotelRequestServices = {
     },
 
     findchangeHotelRequestData: async (query) => {
-        return await changeHotelRequestModel.findOne(query).select('-createdAt -updatedAt ');
+        return await changeHotelRequestModel.find(query);
     },
 
     deletechangeHotelRequest: async (query) => {

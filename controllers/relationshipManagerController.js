@@ -74,6 +74,46 @@ const {
 /**********************************SERVICES********************************** */
 const { cancelBookingServices } = require("../services/cancelServices");
 const { createcancelFlightBookings,findAnd, findCancelFlightBookings,updatecancelFlightBookings,findHotelCancelRequest,findBusCancelRequest, aggregatePaginatecancelFlightBookingsList, countTotalcancelFlightBookings,findCancelHotelBookings, createHotelCancelRequest, updateHotelCancelRequest, getHotelCancelRequesrByAggregate, countTotalHotelCancelled, createBusCancelRequest, updateBusCancelRequest, findCancelBusBookings,getBusCancelRequestByAggregate, countTotalBusCancelled,getBusCancellation } = cancelBookingServices;
+const { changeRequestServices } = require("../services/changeRequest");
+const {
+  createchangeRequest,
+  findchangeRequest,
+  findchangeRequestData,
+  deletechangeRequest,
+  changeRequestList,
+  updatechangeRequest,
+  paginatechangeRequestSearch,
+  aggregatePaginatechangeRequestList,
+  countTotalchangeRequest,
+} = changeRequestServices;
+const {
+  changeHotelRequestServices,
+} = require("../services/changeHotelRequestServices");
+const {
+  createchangeHotelRequest,
+  findchangeHotelRequest,
+  findchangeHotelRequestData,
+  getchangeHotelRequest,
+  deletechangeHotelRequest,
+  changeHotelRequestList,
+  updatechangeHotelRequest,
+  paginatechangeHotelRequestSearch,
+  aggregatePaginatechangeHotelRequestList,
+  countTotalchangeHotelRequest,
+} = changeHotelRequestServices;
+const { changeBusRequestServices } = require("../services/changeBusRequest");
+const {
+  createchangeBusRequest,
+  findchangeBusRequest,
+  findchangeBusRequestData,
+  getchangeBusRequest,
+  deletechangeBusRequest,
+  changeBusRequestList,
+  updatechangeBusRequest,
+  paginatechangeBusRequestSearch,
+  aggregatePaginatechangeBusRequestList,
+  countTotalchangeBusRequest,
+} = changeBusRequestServices;
 
 //************************************************API************************************************
 
@@ -444,3 +484,60 @@ let result = {};
         return next(error);
     }
 }
+
+exports.getAgentChangeRequest=async(req,res,next)=>{
+  try {
+      const {agentId,searchType}=req.body;
+if(req.body.searchType){
+  req.body.searchType=req.body.searchType.toLowerCase();
+}
+let result = {};
+      const isRMExist = await findRelationShipManager({
+          _id:req.userId,
+         });
+         if (!isRMExist) {
+           return res.status(statusCode.OK).send({
+             statusCode: statusCode.NotFound,
+             responseMessage: responseMessage.SUBADMIN_NOT_EXIST,
+           });
+         }
+         const isAgentExist=await findOneAgent({_id:agentId});
+         if(!isAgentExist){
+             return res.status(statusCode.OK).send({
+                 statusCode: statusCode.NotFound,
+                 responseMessage: responseMessage.AGENT_NOT_FOUND,
+               });
+         }
+         if (req.body.searchType === "flight" || req.body.searchType === "all") {
+          result.flightCancelReq = await findchangeRequestData({ agentId: isAgentExist._id });
+      }
+      if (req.body.searchType === "bus" || req.body.searchType === "all") {
+          result.busCancelReq = await findchangeBusRequestData({ agentId: isAgentExist._id });
+      }
+      if (req.body.searchType === "hotel" || req.body.searchType === "all") {
+          result.hotelCancelReq = await findchangeHotelRequestData({ agentId: isAgentExist._id });
+      }
+      const resultKeys = Object.keys(result);
+      let totalCount = 0;
+      for (const key of resultKeys) {
+          totalCount += result[key].length;
+      }
+      result.totalCount = totalCount;
+      console.log("result============",result)
+      if (totalCount < 1) {
+          return res.status(statusCode.OK).send({
+              statusCode: statusCode.NotFound,
+              responseMessage: responseMessage.DATA_NOT_FOUND,
+          });
+      }
+      return res.status(statusCode.OK).send({
+          statusCode: statusCode.OK,
+          responseMessage: responseMessage.DATA_FOUND,
+          result: result
+      });
+  } catch (error) {
+      console.log("Error while trying to get agentCancelRequest",error);
+      return next(error);
+  }
+}
+

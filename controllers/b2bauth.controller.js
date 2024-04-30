@@ -1429,14 +1429,49 @@ exports.easebuzzPayment = async (req, res, next) => {
       furl,
     } = req.body;
 
+    // const txnId = "T" + Date.now();
+    // const hashComponents = [
+    //   configEaseBuzz.key,
+    //   txnId,
+    //   amount,
+    //   productinfo,
+    //   firstname,
+    //   email,
+    // ];
+    // const hashString = hashComponents.join("|");
+    // const inputString = `${hashString}|||||||||||${configEaseBuzz.salt}`;
+    // const sha512Hash = generateSHA512Hash(inputString);
+    // const encodedParams = new URLSearchParams();
+    // encodedParams.set("key", configEaseBuzz.key);
+    // encodedParams.set("txnid", txnId);
+    // encodedParams.set("amount", amount);
+    // encodedParams.set("productinfo", productinfo);
+    // encodedParams.set("firstname", firstname);
+    // encodedParams.set("phone", phone);
+    // encodedParams.set("email", email);
+    // encodedParams.set("surl", `${surl}${txnId}`);
+    // encodedParams.set("furl", `${furl}${txnId}`);
+    // encodedParams.set("hash", sha512Hash);
+
+    // Remove leading and trailing white spaces from string values
+    const trimmedFirstName = firstname.trim();
+    const trimmedPhone = phone.trim();
+    const trimmedEmail = email.trim();
+    const trimmedAmount = amount.trim();
+    const trimmedProductInfo = productinfo.trim();
+    const trimmedBookingType = bookingType.trim();
+    const trimmedSurl = surl.trim();
+    const trimmedFurl = furl.trim();
+
+
     const txnId = "T" + Date.now();
     const hashComponents = [
       configEaseBuzz.key,
       txnId,
-      amount,
-      productinfo,
-      firstname,
-      email,
+      trimmedAmount,
+      trimmedProductInfo,
+      trimmedFirstName,
+      trimmedEmail,
     ];
     const hashString = hashComponents.join("|");
     const inputString = `${hashString}|||||||||||${configEaseBuzz.salt}`;
@@ -1444,11 +1479,11 @@ exports.easebuzzPayment = async (req, res, next) => {
     const encodedParams = new URLSearchParams();
     encodedParams.set("key", configEaseBuzz.key);
     encodedParams.set("txnid", txnId);
-    encodedParams.set("amount", amount);
-    encodedParams.set("productinfo", productinfo);
-    encodedParams.set("firstname", firstname);
+    encodedParams.set("amount", trimmedAmount);
+    encodedParams.set("productinfo", trimmedBookingType);
+    encodedParams.set("firstname", trimmedFirstName);
     encodedParams.set("phone", phone);
-    encodedParams.set("email", email);
+    encodedParams.set("email", trimmedEmail);
     encodedParams.set("surl", `${surl}${txnId}`);
     encodedParams.set("furl", `${furl}${txnId}`);
     encodedParams.set("hash", sha512Hash);
@@ -1806,18 +1841,25 @@ exports.agentProfilePage = async (req, res) =>{
 
 exports.agentCommission = async (req, res) => {
   const agentId = req.body.agentId;
+  const updatedCommissionData = req.body.myCommission;
 
   try {
     // Find the agent profile
     const userProfile = await b2bUser.findOne({ _id: agentId });
 
-    // If agent profile not found, 
+    // If agent profile not found
     if (!userProfile) {
       return actionCompleteResponse(res, "data not found", "Invalid Agent");
     }
 
-    // Update commission settings for the agent
-    userProfile.myCommission = req.body.myCommission; // Assuming req.body.myCommission contains updated commission data
+    // Update only the specified commission types
+    Object.keys(updatedCommissionData).forEach(key => {
+      if (userProfile.myCommission.hasOwnProperty(key)) {
+        userProfile.myCommission[key] = updatedCommissionData[key];
+      }
+    });
+
+    // Save the updated commission data
     await userProfile.save();
 
     // Send success response
@@ -1827,6 +1869,7 @@ exports.agentCommission = async (req, res) => {
     sendActionFailedResponse(res, {}, "Internal server error");
   }
 };
+
 
 
 

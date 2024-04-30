@@ -57,6 +57,12 @@ const forumQueSchema = new mongoose.Schema({
         type:Boolean,
         default:false
     },
+    location:{
+        type:String, 
+    },
+    multLocation:{
+        type:String
+    },
     status:{
         type:String,
         default:status.PENDING
