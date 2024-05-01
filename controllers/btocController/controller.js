@@ -1399,7 +1399,6 @@ exports.sendOtpOnSMS = async (req, res, next) => {
   }
 };
 
-
 exports.resendOtpMailMobile = async (req, res, next) => {
   try {
     const { email } = req.body;
@@ -1529,6 +1528,48 @@ exports.resendOtpMailMobile = async (req, res, next) => {
 
   } catch (error) {
     console.log("Error while trying to resend OTP: ", error);
+    return next(error);
+  }
+};
+
+
+exports.shareReferralCodeSMSWHTSAPP = async (req, res, next) => {
+  try {
+    const {countryCode,contactNumber}=req.body;
+    const isUserExist = await findUserData({
+      _id: req.userId,
+      status: status.ACTIVE,
+    });
+    if (!isUserExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+    const checkReward = await findReferralAmount({});
+    const referralLink = `https://play.google.com/store/apps/details?id=com.skytrails`;
+    const referralLinkIOS = `https://apps.apple.com/us/app/the-skytrails/id6475768819?id=com.skytrails`;
+const contact=countryCode+contactNumber;
+    // Shorten the referral link
+    var result = {};
+    result.referralLinkIOS=referralLinkIOS;
+    result.referralLink=referralLink;
+    const combineReferral=`Andriod=${referralLink} and IOS=${referralLinkIOS}`
+    // result.shortReferralLink = await shortenURL(referralLink);
+    // result.shortReferralLinkIOS = await shortenURL(referralLinkIOS);
+    // result.trial = await shortenURL("theskytrails.com");
+    
+   const data= await whatsappAPIUrl.sendWhatsAppMsgRM(contact,isUserExist.referralCode,checkReward.refereeAmount,combineReferral,'sharerefcode');
+    return res
+      .status(statusCode.OK)
+      .send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.LINK_GENERATED,
+        result: result,
+        referralCode:isUserExist.referralCode
+      });
+  } catch (error) {
+    console.log("error while send code", error);
     return next(error);
   }
 };

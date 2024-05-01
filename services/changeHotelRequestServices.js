@@ -20,7 +20,7 @@ const changeHotelRequestServices = {
     },
 
     findchangeHotelRequestData: async (query) => {
-        return await changeHotelRequestModel.find(query);
+        return await changeHotelRequestModel.find(query).populate('agentId',).populate('hotelBookingId');
     },
 
     deletechangeHotelRequest: async (query) => {

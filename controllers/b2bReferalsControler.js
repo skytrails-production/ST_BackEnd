@@ -134,7 +134,6 @@ exports.getReferrals=async(req,res,next)=>{
   }
 }
 
-
 exports.getReferalBookings = async (req, res, next) => {
   try {
     const finalResult = [];
@@ -195,7 +194,6 @@ exports.getReferalBookings = async (req, res, next) => {
     return next(error);
   }
 };
-
 
 async function shortenURL(url) {
   // Here, you can use any URL shortening service API or your own URL shortening service implementation

@@ -5808,4 +5808,46 @@ module.exports = {
       console.log("Email sent: " + info.response);
       return info;
   },
+
+  sendResetPassMail: async (to, link) => {
+    let html = `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <title></title>
+    </head>
+    <body>
+        <div class="card" style=" box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            transition: 0.3s;
+            width: 100%; margin: auto; min-height:15em;margin-top: 25px;">
+            <div class="main" style="background-image: url('');">
+                <div class="main-container" style="text-align: center;">
+                    <!-- <h1 style="padding-top: 30px;"> <strong> GFMI </strong></h1> -->
+                    <img src="https://travvolt.s3.amazonaws.com/ST-Main-LogoPdf.png" alt="logo" style="width:25%;margin-top: -10px; align="center" />
+    
+                    <div style="width: 90%;margin: auto; text-align: left;">
+                        <br><br>
+                        <p style="color: #333030;font-size: 18px;margin-top: 0px;"> Dear User,
+                           please <a href='${link}'>click here</a> to reset your password.
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    </body>
+    </html>`;
+    var transporter = nodemailerConfig.createTransport({
+      service: nodemailerConfig.service,
+      auth: {
+        user: nodemailerConfig.user,
+        pass: nodemailerConfig.pass,
+      },
+    });
+    var mailOptions = {
+      from: nodemailerConfig.user,
+      to: to,
+      subject: "Verification Mail",
+      html: html,
+    };
+    return await transporter.sendMail(mailOptions);
+  },
 };

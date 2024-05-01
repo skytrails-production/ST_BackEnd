@@ -383,6 +383,13 @@ exports.airSellFromRecommendation = async (req, res) => {
 exports.airSell =async (req, res,next) =>{
     const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
 
+    // console.log("messageId", messageId);
+    // console.log("uniqueId", uniqueId);
+    // console.log("NONCE", NONCE);
+    // console.log("TIMESTAMP", TIMESTAMP);
+    // console.log("hashedPassword", hashedPassword);
+    // console.log("url", url);
+
     try {
 
         const requestBody = req.body;
@@ -439,9 +446,9 @@ exports.airSell =async (req, res,next) =>{
 
         // Extract required fields
         const extractedData = {
-            MessageID: parsedResponse['soapenv:Envelope']['soapenv:Header']['wsa:MessageID'],
+            MessageID: parsedResponse['soapenv:Envelope']['soapenv:Header']['wsa:RelatesTo']._,
             UniqueID: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsl:TransactionFlowLink']['awsl:Consumer']['awsl:UniqueID'],
-            ServerID: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsl:TransactionFlowLink']['awsl:Receiver']['awsl:ServerID'],
+            // ServerID: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsl:TransactionFlowLink']['awsl:Receiver']['awsl:ServerID'],
             SessionId: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SessionId'],
             SequenceNumber: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SequenceNumber'],
             SecurityToken: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SecurityToken']
@@ -462,7 +469,13 @@ exports.airSell =async (req, res,next) =>{
 //pnr AddMulti Elements
 
 exports.pnrAddMultiElements = async (req, res) =>{
+    //  const {amadeusmessageid,amadeusuniqueid,amadeussessionid,amadeussequencenumber,amadeussecuritytoken}=req.headers;
     try {
+
+        // const requestBody = req.body;
+
+        // console.log(req.headers.amadeusuniqueid);
+        // return;
 
         const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
 
@@ -473,35 +486,172 @@ exports.pnrAddMultiElements = async (req, res) =>{
         xmlns:iat="http://www.iata.org/IATA/2007/00/IATA2010.1"
         xmlns:app="http://xml.amadeus.com/2010/06/AppMdw_CommonTypes_v3"
         xmlns:ses="http://xml.amadeus.com/2010/06/Session_v3">
-        <soap:Header
-            xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-            <awsse:Session
-                xmlns:awsse="http://xml.amadeus.com/2010/06/Session_v3" TransactionStatusCode="InSeries">
-                <awsse:SessionId>00PM08SU32</awsse:SessionId>
-                <awsse:SequenceNumber>4</awsse:SequenceNumber>
-                <awsse:SecurityToken>1VA5UQMBNNFSVIRJY5TRD10V9</awsse:SecurityToken>
-            </awsse:Session>
-            <add:MessageID
-                xmlns:add="http://www.w3.org/2005/08/addressing">ba637e79-901-281-7c79-be6731f50bf
-            </add:MessageID>
-            <add:Action
-                xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/PNRADD_21_1_1A
-            </add:Action>
-            <add:To
-                xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0
-            </add:To>
-            <link:TransactionFlowLink
-                xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
-                <link:Consumer>
-                    <link:UniqueID>e276340a-ab12-8cbe-2210-5dba6548325a</link:UniqueID>
-                </link:Consumer>
-            </link:TransactionFlowLink>
-            <AMA_SecurityHostedUser
-                xmlns="http://xml.amadeus.com/2010/06/Security_v1" />
-            </soap:Header>
-            <soapenv:Body></soapenv:Body>
+        <soap:Header xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <awsse:Session xmlns:awsse="http://xml.amadeus.com/2010/06/Session_v3" TransactionStatusCode="InSeries">
+    <awsse:SessionId>${req.headers.amadeussessionid}</awsse:SessionId>
+    <awsse:SequenceNumber>${Number(req.headers.amadeussequencenumber)+1}</awsse:SequenceNumber>
+    <awsse:SecurityToken>${req.headers.amadeussecuritytoken}</awsse:SecurityToken>
+  </awsse:Session>
+  <add:MessageID xmlns:add="http://www.w3.org/2005/08/addressing">${req.headers.amadeusmessageid}</add:MessageID>
+  <add:Action xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/PNRADD_21_1_1A</add:Action>
+  <add:To xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0</add:To>
+  <link:TransactionFlowLink xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
+    <link:Consumer>
+      <link:UniqueID>${req.headers.amadeusuniqueid}</link:UniqueID>
+    </link:Consumer>
+  </link:TransactionFlowLink>
+  <AMA_SecurityHostedUser xmlns="http://xml.amadeus.com/2010/06/Security_v1" />
+</soap:Header>        
+            <soapenv:Body><PNR_AddMultiElements
+            xmlns="http://xml.amadeus.com/PNRADD_17_1_1A">
+            <pnrActions>
+                <optionCode>0</optionCode>
+            </pnrActions>
+            <travellerInfo>
+                <elementManagementPassenger>
+                    <reference>
+                        <qualifier>PR</qualifier>
+                        <number>1</number>
+                    </reference>
+                    <segmentName>NM</segmentName>
+                </elementManagementPassenger>
+                <passengerData>
+                    <travellerInformation>
+                        <traveller>
+                            <surname>Joshi</surname>
+                            <quantity>1</quantity>
+                        </traveller>
+                        <passenger>
+                            <firstName>Mohit MR</firstName>
+                            <type>ADT</type>
+                        </passenger>
+                    </travellerInformation>
+                </passengerData>
+            </travellerInfo>
+            <dataElementsMaster>
+                <marker1 />
+                <dataElementsIndiv>
+                    <elementManagementData>
+                        <reference>
+                            <qualifier>OT</qualifier>
+                            <number>1</number>
+                        </reference>
+                        <segmentName>AP</segmentName>
+                    </elementManagementData>
+                    <freetextData>
+                        <freetextDetail>
+                            <subjectQualifier>3</subjectQualifier>
+                            <type>P02</type>
+                        </freetextDetail>
+                        <longFreetext>mohitjoshi101@gmail.com</longFreetext>
+                    </freetextData>
+                    <referenceForDataElement>
+                        <reference>
+                            <qualifier>PR</qualifier>
+                            <number>1</number>
+                        </reference>
+                    </referenceForDataElement>
+                </dataElementsIndiv>
+                <dataElementsIndiv>
+                    <elementManagementData>
+                        <reference>
+                            <qualifier>OT</qualifier>
+                            <number>2</number>
+                        </reference>
+                        <segmentName>AP</segmentName>
+                    </elementManagementData>
+                    <freetextData>
+                        <freetextDetail>
+                            <subjectQualifier>5</subjectQualifier>
+                            <type>N</type>
+                        </freetextDetail>
+                        <longFreetext>E+certportal@trav.net/F</longFreetext>
+                    </freetextData>
+                    <referenceForDataElement>
+                        <reference>
+                            <qualifier>PT</qualifier>
+                            <number>2</number>
+                        </reference>
+                    </referenceForDataElement>
+                </dataElementsIndiv>
+                <dataElementsIndiv>
+                    <elementManagementData>
+                        <reference>
+                            <qualifier>OT</qualifier>
+                            <number>1</number>
+                        </reference>
+                        <segmentName>AP</segmentName>
+                    </elementManagementData>
+                    <freetextData>
+                        <freetextDetail>
+                            <subjectQualifier>3</subjectQualifier>
+                            <type>7</type>
+                            <status>A</status>
+                        </freetextDetail>
+                        <longFreetext>9627466902</longFreetext>
+                    </freetextData>
+                    <referenceForDataElement>
+                        <reference>
+                            <qualifier>PR</qualifier>
+                            <number>1</number>
+                        </reference>
+                    </referenceForDataElement>
+                </dataElementsIndiv>
+                <dataElementsIndiv>
+                    <elementManagementData>
+                        <reference>
+                            <qualifier>OT</qualifier>
+                            <number>1</number>
+                        </reference>
+                        <segmentName>TK</segmentName>
+                    </elementManagementData>
+                    <ticketElement>
+                        <passengerType>PAX</passengerType>
+                        <ticket>
+                            <indicator>OK</indicator>
+                        </ticket>
+                    </ticketElement>
+                </dataElementsIndiv>
+                <dataElementsIndiv>
+                    <elementManagementData>
+                        <segmentName>FP</segmentName>
+                    </elementManagementData>
+                    <formOfPayment>
+                        <fop>
+                            <identification>CA</identification>
+                        </fop>
+                    </formOfPayment>
+                </dataElementsIndiv>
+                <dataElementsIndiv>
+                    <elementManagementData>
+                        <segmentName>RF</segmentName>
+                    </elementManagementData>
+                    <freetextData>
+                        <freetextDetail>
+                            <subjectQualifier>3</subjectQualifier>
+                            <type>P22</type>
+                        </freetextDetail>
+                        <longFreetext>10612</longFreetext>
+                    </freetextData>
+                </dataElementsIndiv>
+                <dataElementsIndiv>
+                    <elementManagementData>
+                        <segmentName>OS</segmentName>
+                    </elementManagementData>
+                    <freetextData>
+                        <freetextDetail>
+                            <subjectQualifier>3</subjectQualifier>
+                            <type>P27</type>
+                            <companyId>UK</companyId>
+                        </freetextDetail>
+                        <longFreetext>PAX CTCM 9627466902</longFreetext>
+                    </freetextData>
+                </dataElementsIndiv>
+            </dataElementsMaster>
+        </PNR_AddMultiElements></soapenv:Body>
         </soapenv:Envelope>`;
 
+        console.log(data,"data")
 
         const headers = {
             "Content-Type": "text/xml;charset=UTF-8",
@@ -574,7 +724,7 @@ exports.farePricePnrWithBookingClass = async (req, res) =>{
                         </pricingOptionKey>
                         <carrierInformation>
                             <companyIdentification>
-                                <otherCompany>AI</otherCompany>
+                                <otherCompany>UK</otherCompany>
                             </companyIdentification>
                         </carrierInformation>
                     </pricingOptionGroup>
@@ -616,6 +766,8 @@ exports.farePricePnrWithBookingClass = async (req, res) =>{
 
 exports.ticketCreateTSTFromPricing = async (req, res) =>{
     try {
+        const {amadeusMessageID,amadeusUniqueID,amadeusSessionID,amadeusSequenceNumber,amadeusSecurityToken} =req.body;
+
 
         const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
 
@@ -630,26 +782,20 @@ exports.ticketCreateTSTFromPricing = async (req, res) =>{
             xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
             <awsse:Session
                 xmlns:awsse="http://xml.amadeus.com/2010/06/Session_v3" TransactionStatusCode="InSeries">
-                <awsse:SessionId>00PM08SU32</awsse:SessionId>
-                <awsse:SequenceNumber>6</awsse:SequenceNumber>
-                <awsse:SecurityToken>1VA5UQMBNNFSVIRJY5TRD10V9</awsse:SecurityToken>
+                <awsse:SessionId>${amadeusSessionID}</awsse:SessionId>
+                <awsse:SequenceNumber>${Number(amadeusSequenceNumber)+1}</awsse:SequenceNumber>
+                <awsse:SecurityToken>${amadeusSecurityToken}</awsse:SecurityToken>
             </awsse:Session>
             <add:MessageID
-                xmlns:add="http://www.w3.org/2005/08/addressing">ba637e79-901-281-7c79-be6731f50bf
-            
-            </add:MessageID>
+                xmlns:add="http://www.w3.org/2005/08/addressing">${amadeusMessageID}</add:MessageID>
             <add:Action
-                xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/TAUTCQ_04_1_1A
-            
-            </add:Action>
+                xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/TAUTCQ_04_1_1A</add:Action>
             <add:To
-                xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0
-            
-            </add:To>
+                xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0</add:To>
             <link:TransactionFlowLink
                 xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
                 <link:Consumer>
-                    <link:UniqueID>e276340a-ab12-8cbe-2210-5dba6548325a</link:UniqueID>
+                    <link:UniqueID>${amadeusUniqueID}</link:UniqueID>
                 </link:Consumer>
             </link:TransactionFlowLink>
             <AMA_SecurityHostedUser
@@ -668,13 +814,15 @@ exports.ticketCreateTSTFromPricing = async (req, res) =>{
             </soapenv:Body>
         </soapenv:Envelope>`;
 
+        // console.log(data,"data")
+
 
         const headers = {
             "Content-Type": "text/xml;charset=UTF-8",
             SOAPAction: "http://webservices.amadeus.com/TAUTCQ_04_1_1A",
           };
 
-
+             console.log(res);
           const response = await axios.post(url,data,{headers} );
 
           msg = "Ticket Create Successfully!";
@@ -689,6 +837,10 @@ exports.ticketCreateTSTFromPricing = async (req, res) =>{
 //savePnrAddMultiElements
 
 exports.savePnrAddMultiElements = async (req, res) =>{
+
+    const {amadeusMessageID,amadeusUniqueID,amadeusSessionID,amadeusSequenceNumber,amadeusSecurityToken} =req.body;
+
+
     try {
 
         const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
@@ -700,56 +852,47 @@ exports.savePnrAddMultiElements = async (req, res) =>{
         xmlns:iat="http://www.iata.org/IATA/2007/00/IATA2010.1"
         xmlns:app="http://xml.amadeus.com/2010/06/AppMdw_CommonTypes_v3"
         xmlns:ses="http://xml.amadeus.com/2010/06/Session_v3">
-        <soap:Header
-            xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-            <awsse:Session
-                xmlns:awsse="http://xml.amadeus.com/2010/06/Session_v3" TransactionStatusCode="InSeries">
-                <awsse:SessionId>00PM08SU32</awsse:SessionId>
-                <awsse:SequenceNumber>7</awsse:SequenceNumber>
-                <awsse:SecurityToken>1VA5UQMBNNFSVIRJY5TRD10V9</awsse:SecurityToken>
-            </awsse:Session>
-            <add:MessageID
-                xmlns:add="http://www.w3.org/2005/08/addressing">ba637e79-901-281-7c79-be6731f50bf
-            </add:MessageID>
-            <add:Action
-                xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/PNRADD_21_1_1A
-            </add:Action>
-            <add:To
-                xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0
-            </add:To>
-            <link:TransactionFlowLink
-                xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
-                <link:Consumer>
-                    <link:UniqueID>e276340a-ab12-8cbe-2210-5dba6548325a</link:UniqueID>
-                </link:Consumer>
-            </link:TransactionFlowLink>
-            <AMA_SecurityHostedUser
-                xmlns="http://xml.amadeus.com/2010/06/Security_v1" />
-            </soap:Header>
+        <soap:Header xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <awsse:Session xmlns:awsse="http://xml.amadeus.com/2010/06/Session_v3" TransactionStatusCode="InSeries">
+    <awsse:SessionId>${amadeusSessionID}</awsse:SessionId>
+    <awsse:SequenceNumber>${Number(amadeusSequenceNumber)+1}</awsse:SequenceNumber>
+    <awsse:SecurityToken>${amadeusSecurityToken}</awsse:SecurityToken>
+  </awsse:Session>
+  <add:MessageID xmlns:add="http://www.w3.org/2005/08/addressing">${amadeusMessageID}</add:MessageID>
+  <add:Action xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/PNRADD_21_1_1A</add:Action>
+  <add:To xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0</add:To>
+  <link:TransactionFlowLink xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
+    <link:Consumer>
+      <link:UniqueID>${amadeusUniqueID}</link:UniqueID>
+    </link:Consumer>
+  </link:TransactionFlowLink>
+  <AMA_SecurityHostedUser xmlns="http://xml.amadeus.com/2010/06/Security_v1" />
+</soap:Header>
             <soapenv:Body>
-                <PNR_AddMultiElements
-                    xmlns="http://xml.amadeus.com/PNRADD_17_1_1A">
-                    <pnrActions>
-                        <optionCode>11</optionCode>
-                    </pnrActions>
-                    <dataElementsMaster>
-                        <marker1 />
-                        <dataElementsIndiv>
-                            <elementManagementData>
-                                <segmentName>RF</segmentName>
-                            </elementManagementData>
-                            <freetextData>
-                                <freetextDetail>
-                                    <subjectQualifier>3</subjectQualifier>
-                                    <type>P22</type>
-                                </freetextDetail>
-                                <longFreetext>Legend</longFreetext>
-                            </freetextData>
-                        </dataElementsIndiv>
-                    </dataElementsMaster>
-                </PNR_AddMultiElements>
+            <PNR_AddMultiElements xmlns="http://xml.amadeus.com/PNRADD_17_1_1A">
+              <pnrActions>
+                  <optionCode>11</optionCode>
+              </pnrActions>
+              <dataElementsMaster>
+                  <marker1 />
+                  <dataElementsIndiv>
+                      <elementManagementData>
+                          <segmentName>RF</segmentName>
+                      </elementManagementData>
+                      <freetextData>
+                          <freetextDetail>
+                              <subjectQualifier>3</subjectQualifier>
+                              <type>P22</type>
+                          </freetextDetail>
+                          <longFreetext>Legend</longFreetext>
+                      </freetextData>
+                  </dataElementsIndiv>
+              </dataElementsMaster>
+          </PNR_AddMultiElements>
             </soapenv:Body>
         </soapenv:Envelope>`;
+
+        // console.log(data,"data");
 
 
         const headers = {

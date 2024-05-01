@@ -129,5 +129,6 @@ module.exports = {
 	RESPONSE_SUBMIT:"Thank you for your response!We will announce the lucky winner soon.",
 	ALREADY_RESPOND:"You have already submitted your response. Multiple submissions are not allowed.",
 	RATING_SUCCESS:"Thanks for your feedback,your feedback help to improve our self🥰",
-	RM_LOGIN_SUCCESS:"You are loged in successfull😊"
+	RM_LOGIN_SUCCESS:"You are loged in successfull😊",
+	EMAIL_SENT:"Reset password link sent on your mail."
 };

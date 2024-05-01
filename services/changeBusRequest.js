@@ -20,7 +20,7 @@ const changeBusRequestServices = {
     },
 
     findchangeBusRequestData: async (query) => {
-        return await changeBusRequestModel.find(query);
+        return await changeBusRequestModel.find(query).populate('agentId').populate('busBookingId');
     },
 
     deletechangeBusRequest: async (query) => {

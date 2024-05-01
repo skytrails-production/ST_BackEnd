@@ -178,6 +178,7 @@ async function sendWhatsAppMsgRM(number,to,email,pass,temName) {
       }
     };
     const response= await axios.request(options);
+    console.log("response=============",response);
     if(response.data.messages[0]){
       return response.data.messages[0];
     }

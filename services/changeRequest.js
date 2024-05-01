@@ -20,7 +20,7 @@ const changeRequestServices = {
     },
 
     findchangeRequestData: async (query) => {
-        return await changeRequestModel.find(query);
+        return await changeRequestModel.find(query).populate('agentId').populate('flightBookingId');
     },
 
     deletechangeRequest: async (query) => {
