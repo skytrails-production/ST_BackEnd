@@ -70,7 +70,17 @@ const {
   updateReferralAmount,
   referralAmountListPaginate,
 } = referralAmountServices;
-
+const {
+  userWalletHistoryServices,
+} = require("../../services/btocServices/userWalletHistoryServices");
+const {
+  createUserWalletHistory,
+  findUserWalletHistory,
+  deleteUserWalletHistory,
+  userWalletHistoryList,
+  updateUserWalletHistory,
+  countTotalUserWalletHistory,
+} = userWalletHistoryServices;
 
 //******************************************User SignUp api*************************/
 exports.login = async (req, res, next) => {
@@ -723,7 +733,6 @@ exports.editProfile = async (req, res, next) => {
   }
 };
 
-
 exports.deleteUserAccount = async (req, res, next) => {
   try {
     const isUserExist = await findUser({
@@ -861,19 +870,17 @@ exports.shareReferralCode = async (req, res, next) => {
 
     // Shorten the referral link
     var result = {};
-    result.referralLinkIOS=referralLinkIOS;
-    result.referralLink=referralLink;
+    result.referralLinkIOS = referralLinkIOS;
+    result.referralLink = referralLink;
     // result.shortReferralLink = await shortenURL(referralLink);
     // result.shortReferralLinkIOS = await shortenURL(referralLinkIOS);
     // result.trial = await shortenURL("theskytrails.com");
-    return res
-      .status(statusCode.OK)
-      .send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.LINK_GENERATED,
-        result: result,
-        referralCode:isUserExist.referralCode
-      });
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.LINK_GENERATED,
+      result: result,
+      referralCode: isUserExist.referralCode,
+    });
   } catch (error) {
     console.log("error while send code", error);
     return next(error);
@@ -924,7 +931,7 @@ exports.loginWithMailMobileLogin = async (req, res, next) => {
     const otpExpireTime = new Date().getTime() + 300000;
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const mobileRegex = /^(?!0)\d{9,}(\d)(?!\1{4})\d*$/;
-   
+
     const data = {
       email: email,
     };
@@ -1008,7 +1015,8 @@ exports.loginWithMailMobileLogin = async (req, res, next) => {
       );
       // Perform actions for login with mobile number
       const isExist = await findUser({ "phone.mobile_number": email });
-      const var1 = isExist && isExist.username !== "" ? isExist.username : "Dear";
+      const var1 =
+        isExist && isExist.username !== "" ? isExist.username : "Dear";
       if (email === "9999123232") {
         let updatedNumber = await updateUser(
           { "phone.mobile_number": email, status: status.ACTIVE },
@@ -1019,7 +1027,7 @@ exports.loginWithMailMobileLogin = async (req, res, next) => {
             approveStatus: "APPROVED",
           }
         );
-       const  token = await commonFunction.getToken({
+        const token = await commonFunction.getToken({
           _id: isExist._id,
           mobile_number: isExist.phone.mobile_number,
         });
@@ -1063,7 +1071,7 @@ exports.loginWithMailMobileLogin = async (req, res, next) => {
             responseMessage: responseMessage.INTERNAL_ERROR,
           });
         }
-        
+
         const userMobile =
           isExist.phone.country_code + isExist.phone.mobile_number;
 
@@ -1182,13 +1190,13 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
         message: responseMessage.USERS_NOT_FOUND,
       });
     }
-    
+
     if (isUserExist.otp !== otp) {
       return res.status(statusCode.badRequest).json({
         statusCode: statusCode.badRequest,
         message: responseMessage.INCORRECT_OTP,
       });
-    } 
+    }
     if (new Date().getTime() > isUserExist.otpExpireTime) {
       return res.status(statusCode.badRequest).json({
         statusCode: statusCode.badRequest,
@@ -1233,9 +1241,12 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
       });
     }
     const refeerralCode = commonFunction.generateReferralCode();
-    console.log("mobileRegex.test(phoneNumber)=============",mobileRegex.test(phoneNumber));
+    console.log(
+      "mobileRegex.test(phoneNumber)=============",
+      mobileRegex.test(phoneNumber)
+    );
     var obj = {};
-    var updateData={};
+    var updateData = {};
     if (emailRegex.test(phoneNumber)) {
       const isNumberExist = await findUser({ email: email });
       if (isNumberExist) {
@@ -1249,7 +1260,7 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
         dob: dob,
         email: email,
         otp: "",
-        otpExpireTime:"",
+        otpExpireTime: "",
         firstTime: false,
         referralCode: refeerralCode,
       };
@@ -1272,7 +1283,7 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
       };
       updateData = await updateUser({ _id: updation._id }, obj);
     }
-     updateData = await updateUser({ _id: updation._id }, obj);
+    updateData = await updateUser({ _id: updation._id }, obj);
     if (referrerCode) {
       const isRefererExist = await findUser({ referralCode: referrerCode });
       if (!isRefererExist) {
@@ -1282,30 +1293,33 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
         });
       }
       const checkReward = await findReferralAmount({});
-      const walletObj={
-        amount:checkReward.refereeAmount,
-        details:'Referral reward',
-        transactionType:'credit',
-        createdAt: date.now
-      }
+      const walletObj = {
+        amount: checkReward.refereeAmount,
+        details: "Referral reward",
+        transactionType: "credit",
+        createdAt: date.now,
+      };
       await updateUser(
         { _id: updateData._id },
         {
           referrerCode: referrerCode,
           $inc: { balance: checkReward.refereeAmount },
           referredBy: isRefererExist._id,
-          $push:{walletHistory:walletObj}
+          $push: { walletHistory: walletObj },
         }
       );
-      const walletObj1={
-        amount:checkReward.referrerAmount,
-        details:'Referee reward',
-        transactionType:'credit',
-        createdAt: date.now
-      }
+      const walletObj1 = {
+        amount: checkReward.referrerAmount,
+        details: "Referee reward",
+        transactionType: "credit",
+        createdAt: date.now,
+      };
       const data = await updateUser(
         { referralCode: referrerCode, _id: isRefererExist._id },
-        { $inc: { balance: checkReward.referrerAmount },$push:{walletHistory:walletObj1} }
+        {
+          $inc: { balance: checkReward.referrerAmount },
+          $push: { walletHistory: walletObj1 },
+        }
       );
     }
     const token = await commonFunction.getToken({
@@ -1350,8 +1364,7 @@ exports.sendOtpOnSMS = async (req, res, next) => {
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.NOT_FOUND,
       });
-    }
-    else if (isUserExist.phone.mobile_number == "9999123232") {
+    } else if (isUserExist.phone.mobile_number == "9999123232") {
       const updateStaticUser = await updateUser(
         { _id: isUserExist._id, status: status.ACTIVE },
         { otpVerified: true, firstTime: false }
@@ -1417,18 +1430,21 @@ exports.resendOtpMailMobile = async (req, res, next) => {
           message: responseMessage.USERS_NOT_FOUND,
         });
       }
-      contactMethod = 'email';
+      contactMethod = "email";
       userIdentifier = user.email;
     } else if (mobileRegex.test(email)) {
-      console.log("email========",email);
-      user = await findUser({ "phone.mobile_number": email, status: status.ACTIVE });
+      console.log("email========", email);
+      user = await findUser({
+        "phone.mobile_number": email,
+        status: status.ACTIVE,
+      });
       if (!user) {
         return res.status(statusCode.OK).send({
           statusCode: statusCode.NotFound,
           message: responseMessage.USERS_NOT_FOUND,
         });
       }
-      contactMethod = 'mobile';
+      contactMethod = "mobile";
       userIdentifier = user.phone.country_code + user.phone.mobile_number;
     } else {
       return res.status(statusCode.OK).send({
@@ -1473,20 +1489,23 @@ exports.resendOtpMailMobile = async (req, res, next) => {
         result: result,
       });
     }
-    const updateData = await updateUser({ _id: user._id, status: status.ACTIVE }, { otp, otpExpireTime });
+    const updateData = await updateUser(
+      { _id: user._id, status: status.ACTIVE },
+      { otp, otpExpireTime }
+    );
     if (!updateData) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.InternalError,
         message: responseMessage.INTERNAL_ERROR,
       });
     }
-    if (contactMethod === 'email') {
+    if (contactMethod === "email") {
       console.log("==============email");
       await commonFunction.sendEmailOtp(userIdentifier, otp);
-    } else if (contactMethod === 'mobile') {
-      console.log("==================mobile",userIdentifier);
-      const username = `${updateData.username}`||'Dear';
-      const sent=await whatsappAPIUrl.sendMessageWhatsApp(
+    } else if (contactMethod === "mobile") {
+      console.log("==================mobile", userIdentifier);
+      const username = `${updateData.username}` || "Dear";
+      const sent = await whatsappAPIUrl.sendMessageWhatsApp(
         userIdentifier,
         username,
         otp,
@@ -1498,13 +1517,12 @@ exports.resendOtpMailMobile = async (req, res, next) => {
         otp,
         "loginotp"
       );
-      const sent1=await sendSMS.sendSMSForOtp(email, otp);
-      
-      // const sent=await whatsappAPIUrl.sendMessageWhatsApp(userIdentifier, username, otp, "loginotp");
-      console.log("sent============",sent);
-      // const sent1=await sendSMS.sendSMSForOtp(userIdentifier, otp);
-      console.log("sent============",sent1);
+      const sent1 = await sendSMS.sendSMSForOtp(email, otp);
 
+      // const sent=await whatsappAPIUrl.sendMessageWhatsApp(userIdentifier, username, otp, "loginotp");
+      console.log("sent============", sent);
+      // const sent1=await sendSMS.sendSMSForOtp(userIdentifier, otp);
+      console.log("sent============", sent1);
     }
     const token = await commonFunction.getToken({
       _id: updateData._id,
@@ -1525,17 +1543,15 @@ exports.resendOtpMailMobile = async (req, res, next) => {
       message: responseMessage.OTP_SEND,
       result,
     });
-
   } catch (error) {
     console.log("Error while trying to resend OTP: ", error);
     return next(error);
   }
 };
 
-
 exports.shareReferralCodeSMSWHTSAPP = async (req, res, next) => {
   try {
-    const {countryCode,contactNumber}=req.body;
+    const { countryCode, contactNumber } = req.body;
     const isUserExist = await findUserData({
       _id: req.userId,
       status: status.ACTIVE,
@@ -1549,32 +1565,126 @@ exports.shareReferralCodeSMSWHTSAPP = async (req, res, next) => {
     const checkReward = await findReferralAmount({});
     const referralLink = `https://play.google.com/store/apps/details?id=com.skytrails`;
     const referralLinkIOS = `https://apps.apple.com/us/app/the-skytrails/id6475768819?id=com.skytrails`;
-const contact=countryCode+contactNumber;
+    const contact = countryCode + contactNumber;
     // Shorten the referral link
     var result = {};
-    result.referralLinkIOS=referralLinkIOS;
-    result.referralLink=referralLink;
-    const combineReferral=`Andriod=${referralLink} and IOS=${referralLinkIOS}`
+    result.referralLinkIOS = referralLinkIOS;
+    result.referralLink = referralLink;
+    const combineReferral = `Andriod=${referralLink} and IOS=${referralLinkIOS}`;
     // result.shortReferralLink = await shortenURL(referralLink);
     // result.shortReferralLinkIOS = await shortenURL(referralLinkIOS);
     // result.trial = await shortenURL("theskytrails.com");
-    
-   const data= await whatsappAPIUrl.sendWhatsAppMsgRM(contact,isUserExist.referralCode,checkReward.refereeAmount,combineReferral,'sharerefcode');
-    return res
-      .status(statusCode.OK)
-      .send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.LINK_GENERATED,
-        result: result,
-        referralCode:isUserExist.referralCode
-      });
+
+    const data = await whatsappAPIUrl.sendWhatsAppMsgRM(
+      contact,
+      isUserExist.referralCode,
+      checkReward.refereeAmount,
+      combineReferral,
+      "sharerefcode"
+    );
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.LINK_GENERATED,
+      result: result,
+      referralCode: isUserExist.referralCode,
+    });
   } catch (error) {
     console.log("error while send code", error);
     return next(error);
   }
 };
 
+exports.getValueOfCoin = async (req, res, next) => {
+  try {
+    // const isUserExist = await findUserData({
+    //   _id: req.userId,
+    //   status: status.ACTIVE,
+    // });
+    // if (!isUserExist) {
+    //   return res.status(statusCode.OK).send({
+    //     statusCode: statusCode.NotFound,
+    //     responseMessage: responseMessage.USERS_NOT_FOUND,
+    //   });
+    // }
+    const result = await findReferralAmount({});
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
+  } catch (error) {
+    console.log("error while trying to get coin value", error);
+    return next(error);
+  }
+};
 
+exports.getWalletHistory = async (req, res, next) => {
+  try {
+    const isUserExist = await findUserData({
+      _id: req.userId,
+      status: status.ACTIVE,
+    });
+    if (!isUserExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+    let result = {};
+    result.Earned = isUserExist.walletHistory;
+    result.Redeemed = await userWalletHistoryList({ userId: isUserExist._id });
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.WALLET_HISTORY_GET,
+      result: result,
+    });
+  } catch (error) {
+    console.log("error while trying to get Wallet history", error);
+    return next(error);
+  }
+};
+
+exports.redeemCoin = async (req, res, next) => {
+  try {
+    const { redeemCoin, source, details } = req.body;
+    let result = {};
+    const isUserExist = await findUserData({
+      _id: req.userId,
+      status: status.ACTIVE,
+    });
+    if (!isUserExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+    const coinDiff = isUserExist.balance - redeemCoin;
+    // Ensure the user's balance never becomes less than 1000
+    if (isUserExist.balance - redeemCoin < 1000) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.badRequest,
+        responseMessage: `${responseMessage.REDEEM_NOT_ALLOW} 1000`,
+      });
+    }
+    const obj = {
+      userId: isUserExist._id,
+      source: source,
+      amount: redeemCoin,
+      details: details,
+      transactionType: "Debit",
+    };
+    result.wallHistory = await createUserWalletHistory(obj);
+    result.redableCoin = coinDiff - 1000;
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.CREATED_SUCCESS,
+      result: result,
+    });
+  } catch (error) {
+    console.log("error while trying to redeemCoin", error);
+    return next(error);
+  }
+};
 async function shortenURL(url) {
   // Here, you can use any URL shortening service API or your own URL shortening service implementation
   // For demonstration, let's use a simple method with shortid

@@ -73,7 +73,7 @@ const forumQueServices={
       }
       let data = filter || ""
       let searchData = [
-        {$match:{userId:userId,status:status.ACTIVE}},
+        {$match:{userId:userId,status:[status.ACTIVE,status.PENDING]}},
         {
           $lookup: {
             from: "userBtoC",
@@ -257,6 +257,9 @@ const forumQueServices={
         // const info = await forumQueModel.aggregatePaginate(aggregate, options);
         return info;
       },
+      forumQueDataList: async (query) => {
+        return await forumQueModel.find(query).sort({createdAt:-1}).populate('userId');
+    },
 }
 
 module.exports={forumQueServices}

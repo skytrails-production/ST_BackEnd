@@ -22,6 +22,18 @@ const QuizRespSchema = new mongoose.Schema({
       },
       answer:{
         type:String
+      },
+      isWinner:{
+        type:Boolean,
+        default:false
+      },
+      isFirstResponse:{
+        type:Boolean,
+        default:false
+      },
+      reultDate:{
+        type:Date,
+        // default:new Date()
       }
 },{timestamps:true})
 

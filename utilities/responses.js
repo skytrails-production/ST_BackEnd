@@ -130,5 +130,12 @@ module.exports = {
 	ALREADY_RESPOND:"You have already submitted your response. Multiple submissions are not allowed.",
 	RATING_SUCCESS:"Thanks for your feedback,your feedback help to improve our self🥰",
 	RM_LOGIN_SUCCESS:"You are loged in successfull😊",
-	EMAIL_SENT:"Reset password link sent on your mail."
+	EMAIL_SENT:"Reset password link sent on your mail.",
+	QUIZ_GET:"Quiz question get successfully!",
+	INCORRECT_ANS:"OOPS! 😣 Incorrect answer,please try again tommorrow!😊",
+	WIINER_GOT:"Here is our winner of last day quiz!☺️😊",
+	ALREADY_LIKE:"Already like this post.",
+	WALLET_HISTORY_GET:"Wallet history get successfully.",
+	REDEEM_NOT_ALLOW:"Reedem not allow,SkyCoins must be greater than",
+	ALLOWED_BALANCE:"Your current withdrawable balance is"
 };

@@ -187,7 +187,41 @@ async function sendWhatsAppMsgRM(number,to,email,pass,temName) {
     console.log("erorr while send whatsapp=====>>>>>>",err.response)
   }
 }
-module.exports = {sendMessageWhatsApp,sendWhatsAppMsgAdmin,sendWhatsAppMsgAdminPackage,sendWhatsAppMsgRM };
+
+async function sendWhtsAppAISensy(){
+  try {
+let data = {  "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Zjk4M2ZmZTMxNWI1NDVjZDQ1Nzk3ZSIsIm5hbWUiOiJ0aGVza3l0cmFpbCA4NDEzIiwiYXBwTmFtZSI6IkFpU2Vuc3kiLCJjbGllbnRJZCI6IjY1Zjk4M2ZmZTMxNWI1NDVjZDQ1Nzk3NCIsImFjdGl2ZVBsYW4iOiJCQVNJQ19NT05USExZIiwiaWF0IjoxNzEwODUxMDcxfQ.XnS_3uclP8c0J6drYjBCAQmbE6bHxGuD2IAGPaS4N9Y",    
+"campaignName": "Document Quataion",    
+"destination": "+918115199076",    
+"userName": "theskytrail 8413",   
+"templateParams" : [],
+"source": "new-landing-page form",
+  "media": {
+    "url": "https://whatsapp-media-library.s3.ap-south-1.amazonaws.com/FILE/6353da2e153a147b991dd812/6932541_Evolve%203.O%20AiSensy%20%20Slides.pdf",
+    "filename": "sample_media"
+  },
+  "buttons": [],
+  "carouselCards": [],
+  "location": {}
+};
+
+let config = {
+  method: 'post',
+  maxBodyLength: Infinity,
+  url: 'https://backend.aisensy.com/campaign/t1/api/v2',
+  headers: { },
+  data : data
+};
+
+const response=await axios.request(config)
+  console.log("=======================",JSON.stringify(response.data),response);
+  return response.data;
+
+  } catch (error) {
+    console.log("erorr while send whatsapp=====>>>>>>",err.response)
+  }
+}
+module.exports = {sendMessageWhatsApp,sendWhatsAppMsgAdmin,sendWhatsAppMsgAdminPackage,sendWhatsAppMsgRM,sendWhtsAppAISensy };
 
 // const axios = require('axios');
 

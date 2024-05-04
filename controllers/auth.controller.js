@@ -2,6 +2,7 @@ const config = require("../config/auth.config");
 const db = require("../model");
 const User = db.user;
 const b2bUser = require("../model/brbuser.model");
+const moment = require('moment');
 const Role = db.role;
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
@@ -2144,8 +2145,7 @@ exports.distributeReward = async (req, res, next) => {
 
 exports.createReferralAmount = async (req, res, next) => {
   try {
-    const { refereeAmount, referrerAmount } = req.body;
-
+    const { refereeAmount, referrerAmount,coinValue,likeCoins,flightBookingCoin,busBookingCoin,hotelBookingCoin,packageBookingCoin,coinQuantity } = req.body;
     // Check if there are any existing referral amounts
     const existingReferralAmount = await referralAmountList();
 
@@ -2157,7 +2157,27 @@ exports.createReferralAmount = async (req, res, next) => {
     if (referrerAmount) {
       obj.referrerAmount = referrerAmount;
     }
-
+    if(coinValue){
+      obj.coinValue = coinValue;
+    }
+    if(likeCoins){
+      obj.likeCoins = likeCoins;
+    }
+    if(flightBookingCoin){
+      obj.flightBookingCoin = flightBookingCoin;
+    }
+    if(busBookingCoin){
+      obj.busBookingCoin = busBookingCoin;
+    }
+    if(hotelBookingCoin){
+      obj.hotelBookingCoin = hotelBookingCoin;
+    }
+    if(packageBookingCoin){
+      obj.packageBookingCoin = packageBookingCoin;
+    }
+    if(coinQuantity){
+      obj.coinQuantity=coinQuantity;
+    }
     // If there are existing referral amounts, update the first one found
     if (existingReferralAmount.length > 0) {
       const update = await updateReferralAmount({}, obj); // Update the first referral amount found
@@ -2167,7 +2187,6 @@ exports.createReferralAmount = async (req, res, next) => {
         result: update,
       });
     }
-
     // If no existing referral amounts, create a new one
     const result = await createReferralAmount(req.body);
     return res.status(statusCode.OK).send({
@@ -2355,7 +2374,7 @@ exports.createPackageCategory = async (req, res, next) => {
 
 exports.createDailyQuiz = async (req, res, next) => { 
   try {
-    const { question, answer, opt1, opt2, opt3, opt4, adminId } = req.body;
+    const { question, answer, opt1, opt2, opt3, opt4, adminId,quizDate } = req.body;
     // const isAdminExist = await adminModel.findOne({ _id: adminId });
     // if (!isAdminExist) {
     //   return res.status(statusCode.NotFound).send({
@@ -2363,6 +2382,10 @@ exports.createDailyQuiz = async (req, res, next) => {
     //     responseMessage: responseMessage.ADMIN_NOT_FOUND,
     //   });
     // }
+    const createdDate = moment(quizDate);
+    
+    // Calculate the expiration time as 24 hours after the creation time
+    const expirationDate = createdDate.add(24, 'hours');
     const object = {
       question,
       answer,
@@ -2372,6 +2395,8 @@ exports.createDailyQuiz = async (req, res, next) => {
         opt3,
         opt4,
       },
+      quizExpiration:expirationDate,
+      quizDate:quizDate
     };
     const result = await createQuizContent(object);
     return res.status(statusCode.OK).send({

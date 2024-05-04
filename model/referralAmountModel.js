@@ -5,7 +5,15 @@ mongoose.pluralize(null);
 
 const referallAmountSchema = new Schema({
     refereeAmount: Number,
-    referrerAmount: Number
+    referrerAmount: Number,
+    likeCoins:Number,
+    coinValue:Number,
+    currency:String,
+    flightBookingCoin:Number,
+    busBookingCoin:Number,
+    hotelBookingCoin:Number,
+    packageBookingCoin:Number,
+    coinDetail:String,
 }, { timestamps: true }); // Moved timestamps option to the schema options object
 
 referallAmountSchema.plugin(mongoosePaginate);

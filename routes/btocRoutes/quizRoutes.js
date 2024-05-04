@@ -19,5 +19,5 @@ module.exports = function (app) {
     app.get('/skyTrails/api/user/quiz/getDailyQuiz',quizController.getDailyQuiz);
     app.post('/skyTrails/api/user/quiz/submitQuizResponse',[authJwt.verifcationToken],quizController.submitDailyQuizResponse)
     app.get('/skyTrails/api/user/quiz/getAllQuiz',quizController.getAllQuizQustion);
-    // app.get('/skyTrails/api/user/event/getPromoBanner',eventPromoBannerControler.getPromotionalBanner);
+    app.get('/skyTrails/api/user/quiz/getQuizWinnerToday',quizController.getWinnerOfQuiz);
 }

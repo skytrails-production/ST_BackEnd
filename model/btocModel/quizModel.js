@@ -29,7 +29,9 @@ const QuizSchema = new mongoose.Schema({
     },
     quizDate:{
         type:Date,
-        default:Date.now()
+    },
+    quizExpiration:{
+        type:Date
     }
 },{timestamps:true})
 

@@ -68,4 +68,5 @@ module.exports = function (app) {
   app.post('/skytrails/api/user/sendOTPOnSMS',userController.sendOtpOnSMS);
   app.put("/skytrails/api/user/verifyUserOtp1",SchemaValidator(schemas.userVerifySchema),[authJwt.verifcationToken],userController.verifyUserOtpMailMobile);
   app.put("/skytrails/api/user/resendOtp1",SchemaValidator(schemas.btoCuserLoginSchema),userController.resendOtpMailMobile);
+  app.get("/skyTrails/api/user/getValueOfCoin",userController.getValueOfCoin);
 };

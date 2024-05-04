@@ -121,8 +121,8 @@ var taskPromotionalNotification = cron.schedule("25 11 * * *",async () => {
     // const messageBody = `✨Check out our latest promotion! We're offering deals so good, even your coffee will do a double-take! ☕️ Explore your journey with TheSkyTrails pvt ltd✨`;
     for (const user of users) {
       try { 
-        const notificationMessage = `Missing pahadon wali maggi🍜?`;
-        const messageBody = `Let The 𝐬𝐤𝐲𝐓𝐫𝐚𝐢𝐥𝐬 take you to Manali! 🚌⛰`;
+        const notificationMessage = `Dhyaan se suno! 🌟`;
+        const messageBody = `✅Abhi book karo, aur pao 10% tak ka discount💰! The Skytrails ke sabhi services par✈aur karein badi bachat!`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
       // const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`
         // Check if a notification has been sent to this user recently
@@ -289,8 +289,8 @@ var taskPlatformNotification = cron.schedule("30 12 * * *",
           // Now you can find super cool deals on flights✈ and hotels🏨📱 
           
           // Update your app now and let's get your wanderlust fix!`;
-          const notificationMessage = `Don't suffer😐 just safar🥳🏝`;
-      const messageBody = `With The 𝐬𝐤𝐲𝐓𝐫𝐚𝐢𝐥𝐬, 🛫🗺🚗🏘🌉`;
+          const notificationMessage = `Travel Now, Pay Later Offer`;
+      const messageBody = `Budget ki chinta chhodo💵, abhi travel karo🏖, baad mein pay karo! The Skytrails lekar aaya hai naya offer😊. Travel karna hua aur bhi aasan🌍!`;
           await pushSimpleNotification(
             user.deviceToken,
             notificationMessage,
@@ -429,3 +429,59 @@ taskPlatformNotification.start();
 //     console.log("error when running task expireQuiz", error);
 //   }
 // });
+
+
+var taskPlatformNotification = cron.schedule("0 18 * * *",
+  async () => {
+    try {
+      // 'contactNo.mobile_number': { $in: ['8115199076', '9135219071'] },
+      const users = await userList({
+        // 'phone.mobile_number': { $in: ['8115199076','9135219071','8384082560'] },
+        status: status.ACTIVE,
+        deviceToken: { $exists: true, $ne: "" },
+      });
+      
+    const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
+      for (const user of users) {
+        try {
+          // Task 2 logic
+
+          // const notificationMessage = `Hey ${user.username}, Great news! 🆕📱`;
+          // const messageBody = `We just updated the Skytrails app, and it's amazing🤩! 
+          // Now you can find super cool deals on flights✈ and hotels🏨📱 
+          
+          // Update your app now and let's get your wanderlust fix!`;
+          const notificationMessage = '6 missed calls from your friend 📞';
+      const messageBody = `Regarding your next trip with TheSkyTrails✈️🛩️`;
+          await pushSimpleNotification(
+            user.deviceToken,
+            notificationMessage,
+            messageBody,
+            // imageurl
+          );
+          console.log(
+            "Notification cron job executed successfully.TASK 2",
+            user.username
+          );
+        } catch (pushError) {
+          // Handle if any user is not registered
+          console.error(
+            "Error while sending push notification to user:",
+            pushError
+          );
+          // continue to the next user even if one fails
+          continue;
+        }
+      }
+      // Stop the cron job after execution
+      taskPlatformNotification.stop();
+    } catch (error) {
+      console.log("error when running task2", error);
+    }
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Kolkata", // Timezone setting
+  }
+);
+taskPlatformNotification.start();
