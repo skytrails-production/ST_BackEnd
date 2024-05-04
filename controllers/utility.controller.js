@@ -223,3 +223,38 @@ exports.rechageRequest = async (req, res) => {
   }
 };
 //-------------------------Recharge API -----------END--------
+
+
+
+
+//----------------------------Billing Api --------------Start-----
+
+
+exports.getBillService = async (req, res) => {
+  try {
+    const { data } = req.body;
+    let params = { header: header, data: data };
+    console.log(data,"data");
+
+
+    const response = await axios.post(`https://utilitywebapi.bisplindia.in/api/Bill/GetBillService`, params, {
+      headers: {
+        "Content-Type": "application/json",
+        token: "QVBJQWNjZXNzQVBJQDEyMw==", // Replace with your actual token
+      },
+    });
+    msg = "Transaction Success!";
+
+    // console.log(response,"response");
+
+    actionCompleteResponse(res, response.data, msg);
+  } catch (err) {
+    console.log(err);
+    sendActionFailedResponse(res, {}, err.message);
+  }
+};
+
+
+
+
+//----------------------------Billing Api --------------End-----

@@ -22,4 +22,11 @@ module.exports = function (app) {
   );
 
   app.post("/skyTrails/api/Recharge/Recharge/", controller.rechageRequest);
+
+
+
+
+  //billign api
+
+  app.post("/skyTrails/api/bill/getbillservice", controller.getBillService);
 };
