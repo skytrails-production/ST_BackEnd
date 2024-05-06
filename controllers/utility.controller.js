@@ -230,11 +230,13 @@ exports.rechageRequest = async (req, res) => {
 //----------------------------Billing Api --------------Start-----
 
 
+//get bill service
+
 exports.getBillService = async (req, res) => {
   try {
-    const { data } = req.body;
+    const  data = req.body;
     let params = { header: header, data: data };
-    console.log(data,"data");
+    // console.log(data,"data");
 
 
     const response = await axios.post(`https://utilitywebapi.bisplindia.in/api/Bill/GetBillService`, params, {
@@ -255,6 +257,32 @@ exports.getBillService = async (req, res) => {
 };
 
 
+//GetBillServiceParamemter
 
+exports.getBillServiceParamemter = async (req, res) =>{
+
+  try {
+    const  data = req.body;
+    let params = { header: header, data: data };
+    // console.log(data,"data");
+
+
+    const response = await axios.post(`https://utilitywebapi.bisplindia.in/api/Bill/GetBillServiceParamemter`, params, {
+      headers: {
+        "Content-Type": "application/json",
+        token: "QVBJQWNjZXNzQVBJQDEyMw==", // Replace with your actual token
+      },
+    });
+    msg = "Transaction Success!";
+
+    // console.log(response,"response");
+
+    actionCompleteResponse(res, response.data, msg);
+  } catch (err) {
+    console.log(err);
+    sendActionFailedResponse(res, {}, err.message);
+  }
+
+}
 
 //----------------------------Billing Api --------------End-----

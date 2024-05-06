@@ -29,4 +29,5 @@ module.exports = function (app) {
   //billign api
 
   app.post("/skyTrails/api/bill/getbillservice", controller.getBillService);
+  app.post("/skyTrails/api/bill/getbillserviceparamemter", controller.getBillServiceParamemter);
 };

@@ -19,8 +19,8 @@ const s3 = new aws.S3({
 exports.partnerAuthentication =async (req,res) =>{
     try{
         const data={            
-                // partnerId: process.env.MIHURUPARTNERID,
-                // apiKey: process.env.MIHURUAPIKEY              
+                partnerId: process.env.MIHURUPARTNERID,
+                apiKey: process.env.MIHURUAPIKEY              
         };
         const response = await axios.post(`${api.partnerAuthentication}`, data);
         // console.log(response.data,"response");
@@ -32,6 +32,13 @@ exports.partnerAuthentication =async (req,res) =>{
       // console.log(err);
       sendActionFailedResponse(res, {}, err.message);
     }
+}
+
+
+//signUp 
+
+exports.signUp = async (req, res) => {
+  
 }
 
 

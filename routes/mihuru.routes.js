@@ -10,7 +10,8 @@ module.exports = function (app) {
       next();
     });
 
-    app.post("/skyTrails/mihuru/partnerauthentication",controller.partnerAuthentication);
+    app.get("/skyTrails/mihuru/partnerauthentication",controller.partnerAuthentication);
+    app.post("skyTrails/mihuru/signup",controller.signUp);
     app.post("/skyTrails/mihuru/travelplangenerator", controller.travelPlanGenerator);
     
 }

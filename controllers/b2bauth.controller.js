@@ -1429,49 +1429,14 @@ exports.easebuzzPayment = async (req, res, next) => {
       furl,
     } = req.body;
 
-    // const txnId = "T" + Date.now();
-    // const hashComponents = [
-    //   configEaseBuzz.key,
-    //   txnId,
-    //   amount,
-    //   productinfo,
-    //   firstname,
-    //   email,
-    // ];
-    // const hashString = hashComponents.join("|");
-    // const inputString = `${hashString}|||||||||||${configEaseBuzz.salt}`;
-    // const sha512Hash = generateSHA512Hash(inputString);
-    // const encodedParams = new URLSearchParams();
-    // encodedParams.set("key", configEaseBuzz.key);
-    // encodedParams.set("txnid", txnId);
-    // encodedParams.set("amount", amount);
-    // encodedParams.set("productinfo", productinfo);
-    // encodedParams.set("firstname", firstname);
-    // encodedParams.set("phone", phone);
-    // encodedParams.set("email", email);
-    // encodedParams.set("surl", `${surl}${txnId}`);
-    // encodedParams.set("furl", `${furl}${txnId}`);
-    // encodedParams.set("hash", sha512Hash);
-
-    // Remove leading and trailing white spaces from string values
-    const trimmedFirstName = firstname.trim();
-    const trimmedPhone = phone.trim();
-    const trimmedEmail = email.trim();
-    const trimmedAmount = amount.trim();
-    const trimmedProductInfo = productinfo.trim();
-    const trimmedBookingType = bookingType.trim();
-    const trimmedSurl = surl.trim();
-    const trimmedFurl = furl.trim();
-
-
     const txnId = "T" + Date.now();
     const hashComponents = [
       configEaseBuzz.key,
       txnId,
-      trimmedAmount,
-      trimmedProductInfo,
-      trimmedFirstName,
-      trimmedEmail,
+      amount,
+      productinfo,
+      firstname,
+      email,
     ];
     const hashString = hashComponents.join("|");
     const inputString = `${hashString}|||||||||||${configEaseBuzz.salt}`;
@@ -1479,14 +1444,16 @@ exports.easebuzzPayment = async (req, res, next) => {
     const encodedParams = new URLSearchParams();
     encodedParams.set("key", configEaseBuzz.key);
     encodedParams.set("txnid", txnId);
-    encodedParams.set("amount", trimmedAmount);
-    encodedParams.set("productinfo", trimmedBookingType);
-    encodedParams.set("firstname", trimmedFirstName);
+    encodedParams.set("amount", amount);
+    encodedParams.set("productinfo", productinfo);
+    encodedParams.set("firstname", firstname.trim());
     encodedParams.set("phone", phone);
-    encodedParams.set("email", trimmedEmail);
+    encodedParams.set("email", email);
     encodedParams.set("surl", `${surl}${txnId}`);
     encodedParams.set("furl", `${furl}${txnId}`);
     encodedParams.set("hash", sha512Hash);
+
+
     const options = {
       method: "POST",
       url: "https://pay.easebuzz.in/payment/initiateLink",
