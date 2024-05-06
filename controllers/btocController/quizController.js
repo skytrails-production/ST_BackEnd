@@ -35,13 +35,15 @@ const {
 exports.getDailyQuiz=async(req,res,next)=>{
     try {
         const currentDate=new Date();
-        const result=await findQuizContent({status:status.ACTIVE,quizDate:{$gte:currentDate}});
+        // quizDate:{$gte:currentDate}
+        const result=await findQuizContent({status:status.ACTIVE});
+        // console.log(currentDate,"result==========",result.quizDate);
         if(!result){
         return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND});
         }
         const getDate=moment(currentDate).format("YYYY-MM-DD")
         const getDateExp=moment(result.quizExpiration).format("YYYY-MM-DD");
-        if(getDateExp==getDate){
+        if(getDateExp>getDate){
             return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.QUIZ_GET,result:result});
         }else{
             const result=await findQuizContent({status:status.ACTIVE,quizDate:{$gte:currentDate}});

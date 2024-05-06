@@ -1552,6 +1552,7 @@ exports.resendOtpMailMobile = async (req, res, next) => {
 exports.shareReferralCodeSMSWHTSAPP = async (req, res, next) => {
   try {
     const { countryCode, contactNumber } = req.body;
+    const userContact=`+${countryCode}${contactNumber}`
     const isUserExist = await findUserData({
       _id: req.userId,
       status: status.ACTIVE,
@@ -1566,6 +1567,7 @@ exports.shareReferralCodeSMSWHTSAPP = async (req, res, next) => {
     const referralLink = `https://play.google.com/store/apps/details?id=com.skytrails`;
     const referralLinkIOS = `https://apps.apple.com/us/app/the-skytrails/id6475768819?id=com.skytrails`;
     const contact = countryCode + contactNumber;
+    console.log("contact--------------------",contact);
     // Shorten the referral link
     var result = {};
     result.referralLinkIOS = referralLinkIOS;
@@ -1582,6 +1584,9 @@ exports.shareReferralCodeSMSWHTSAPP = async (req, res, next) => {
       combineReferral,
       "sharerefcode"
     );
+    console.log("data=============",data);
+    const sendWhats=await whatsappAPIUrl.sendWhtsAppAISensy(contact,"campaignName");
+    console.log("sendWhats===================",sendWhats);
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.LINK_GENERATED,

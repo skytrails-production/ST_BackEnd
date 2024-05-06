@@ -139,7 +139,7 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
       SOAPAction: "http://webservices.amadeus.com/FMPTBQ_23_4_1A",
     };
 
-    // console.log("data", data);
+    console.log("data", data);
 
     const response = await axios.post(url, data, { headers });
 
@@ -262,7 +262,7 @@ exports.fareInformativePricingWithoutPNR = async (req, res) => {
       SOAPAction: "http://webservices.amadeus.com/TIPNRQ_23_1_1A",
     };
 
-    //   console.log("data", data);
+      console.log("data", data);
 
     const response = await axios.post(url, data, { headers });
     // console.log("response",response)
@@ -449,7 +449,7 @@ exports.airSell =async (req, res,next) =>{
     </soapenv:Body>
     </soapenv:Envelope>`;
 
-    // console.log(data,"data");
+    console.log(data,"data");
         const headers = {
             "Content-Type": "text/xml;charset=UTF-8",
             SOAPAction: "http://webservices.amadeus.com/ITAREQ_05_2_IA",
@@ -524,7 +524,7 @@ exports.pnrAddMultiElements = async (req, res) =>{
             <soapenv:Body>${requestBody}</soapenv:Body>
         </soapenv:Envelope>`;
 
-        // console.log(data,"data");
+        console.log(data,"data");
 
         const headers = {
             "Content-Type": "text/xml;charset=UTF-8",
@@ -639,7 +639,7 @@ exports.farePricePnrWithBookingClass = async (req, res) =>{
             SOAPAction: "http://webservices.amadeus.com/TPCBRQ_23_2_1A",
           };
 
-        //   console.log(data,"Data");
+          console.log(data,"Data");
 
           const response = await axios.post(url,data,{headers} );
 
@@ -711,6 +711,12 @@ exports.ticketCreateTSTFromPricing = async (req, res) =>{
                         <itemReference>
                             <referenceType>TST</referenceType>
                             <uniqueReference>1</uniqueReference>
+                        </itemReference>
+                    </psaList>
+                    <psaList>
+                        <itemReference>
+                            <referenceType>TST</referenceType>
+                            <uniqueReference>2</uniqueReference>
                         </itemReference>
                     </psaList>
                 </Ticket_CreateTSTFromPricing>

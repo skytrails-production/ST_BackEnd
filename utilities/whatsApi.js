@@ -172,7 +172,7 @@ async function sendWhatsAppMsgRM(number,to,email,pass,temName) {
               templateName: temName
             },
             from: doubleTickNumber,
-            to: number,
+            to: '918115199076',
           }
         ]
       }
@@ -188,16 +188,16 @@ async function sendWhatsAppMsgRM(number,to,email,pass,temName) {
   }
 }
 
-async function sendWhtsAppAISensy(){
+async function sendWhtsAppAISensy(to){
   try {
-let data = {  "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Zjk4M2ZmZTMxNWI1NDVjZDQ1Nzk3ZSIsIm5hbWUiOiJ0aGVza3l0cmFpbCA4NDEzIiwiYXBwTmFtZSI6IkFpU2Vuc3kiLCJjbGllbnRJZCI6IjY1Zjk4M2ZmZTMxNWI1NDVjZDQ1Nzk3NCIsImFjdGl2ZVBsYW4iOiJCQVNJQ19NT05USExZIiwiaWF0IjoxNzEwODUxMDcxfQ.XnS_3uclP8c0J6drYjBCAQmbE6bHxGuD2IAGPaS4N9Y",    
+let data = {  "apiKey": process.env.AISENSYAPIKEY,    
 "campaignName": "Document Quataion",    
 "destination": "+918115199076",    
-"userName": "theskytrail 8413",   
+"userName":  process.env.AISENSYUSERNAME,   
 "templateParams" : [],
 "source": "new-landing-page form",
   "media": {
-    "url": "https://whatsapp-media-library.s3.ap-south-1.amazonaws.com/FILE/6353da2e153a147b991dd812/6932541_Evolve%203.O%20AiSensy%20%20Slides.pdf",
+    "url":  process.env.AISENSYURL,
     "filename": "sample_media"
   },
   "buttons": [],
@@ -214,7 +214,7 @@ let config = {
 };
 
 const response=await axios.request(config)
-  console.log("=======================",JSON.stringify(response.data),response);
+  // console.log("=======================",JSON.stringify(response.data),response);
   return response.data;
 
   } catch (error) {

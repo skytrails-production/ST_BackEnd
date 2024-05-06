@@ -38,6 +38,14 @@ exports.partnerAuthentication =async (req,res) =>{
 //signUp 
 
 exports.signUp = async (req, res) => {
+  try {
+    
+    msg = "user signUp successfully!";
+  actionCompleteResponse(res, response.data, msg); 
+
+  } catch (err) {
+    sendActionFailedResponse(res, {}, err.message);    
+  }
   
 }
 
