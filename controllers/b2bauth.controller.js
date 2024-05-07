@@ -189,7 +189,7 @@ exports.RegisterUser = async (req, res) => {
         }
         const response = await user.save();
         msg = "Data Saved Successfully";
-        await sendSMS.sendSMSAgents(reqData.agency_details.agency_mobile.mobile_number, response.personal_details.email);
+        await sendSMS.sendSMSAgents(response.personal_details.mobile.mobile_number, response.personal_details.email);
         // const msg = `Welcome to TheSkyTrails, Admin added you as an agent. Please use the following credentials to login and fill in the mandatory form:\nEmail: ${email}, and Password: ${password} .click here: ${process.env.AGENT_URL}`;
         // await whatsappAPIUrl.sendWhatsAppMessage(mobile_number, msg);
         // await whatsappAPIUrl.sendMessageWhatsApp(number,to,email,pass,temName)
