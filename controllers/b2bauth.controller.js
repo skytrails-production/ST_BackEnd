@@ -25,6 +25,8 @@ const approvestatus = require("../enums/approveStatus");
 const statusCode = require("../utilities/responceCode");
 const responseMessage = require("../utilities/responses");
 const bookingStatus = require("../enums/bookingStatus");
+const sendSMS = require("../utilities/sendSms");
+const whatsappAPIUrl = require("../utilities/whatsApi");
 //************SERVICES*************** */
 
 const { brbuserServices } = require("../services/btobagentServices");
@@ -115,7 +117,7 @@ const {
 } = require("../common/common");
 const { log } = require("console");
 const { internationl } = require("../model/international.model");
-const { logger } = require("../config/nodeConfig");
+const { logger, sendMail } = require("../config/nodeConfig");
 
 // console.log(process.env.AWS_ACCESS_KEY_ID, process.env.AWS_SECRET_ACCESS_KEY);
 
@@ -187,7 +189,13 @@ exports.RegisterUser = async (req, res) => {
         }
         const response = await user.save();
         msg = "Data Saved Successfully";
+        await sendSMS.sendSMSAgents(reqData.agency_details.agency_mobile.mobile_number, response.personal_details.email);
+        // const msg = `Welcome to TheSkyTrails, Admin added you as an agent. Please use the following credentials to login and fill in the mandatory form:\nEmail: ${email}, and Password: ${password} .click here: ${process.env.AGENT_URL}`;
+        // await whatsappAPIUrl.sendWhatsAppMessage(mobile_number, msg);
+        // await whatsappAPIUrl.sendMessageWhatsApp(number,to,email,pass,temName)
+        await commonFunction.sendAgent(response.personal_details.email, reqData.personal_details.password);
         actionCompleteResponse(res, response, msg);
+      
       } catch (err) {
         console.log(err);
         sendActionFailedResponse(res, {}, err.message);

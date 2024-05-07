@@ -20,9 +20,10 @@ const headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
     'Accept-Encoding': 'application/gzip',
-    'api-key': 'b3df547f1c1a2a3989c234bcf2aacaed',
+    'api-key': 'b79e47991faefb0c7d091b9b6ddc9ea4',
 };
-const baseurl='https://api-sandbox.grnconnect.com';
+// const baseurl='https://api-sandbox.grnconnect.com';
+const baseurl =" https://v4-api.grnconnect.com";
 
 //citylist data
 
@@ -136,16 +137,15 @@ exports.hotelSearchWithPagination=async (req,res) =>{
       const data={
           ...req.body
       };
-      // console.log(data,"data")
-      // const hotelCode=await exports.grnHotelCityMap(req.body.cityCode);
 
        // Calculate pagination parameters
        const page = req.query.page ? parseInt(req.query.page) : 1; // Get page number from query parameter, default to 1 if not provided
        const limit = 100; // Set the limit of hotel codes per page
+      //  console.log(page,"page");
 
        // Fetch hotel codes with pagination
        const hotelCode = await exports.grnHotelCityMapWithPagination(req.body.cityCode, page, limit);
-      //  console.log(hotelCode,"hotelCode")
+      //  console.log(hotelCode,"hotelCode");
 
       const searchData={
         rooms:req.body.rooms,
@@ -158,7 +158,7 @@ exports.hotelSearchWithPagination=async (req,res) =>{
         version:req.body.version
       }
       // console.log(searchData,"data")
-      // console.log(`${baseurl}/api/v3/hotels/availability`,"console")
+      console.log(`${baseurl}/api/v3/hotels/availability`,"console")
       const response = await axios.post(`${baseurl}/api/v3/hotels/availability`, searchData, { headers });   
       
       

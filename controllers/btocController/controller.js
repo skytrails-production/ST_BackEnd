@@ -1576,7 +1576,7 @@ exports.shareReferralCodeSMSWHTSAPP = async (req, res, next) => {
     // result.shortReferralLink = await shortenURL(referralLink);
     // result.shortReferralLinkIOS = await shortenURL(referralLinkIOS);
     // result.trial = await shortenURL("theskytrails.com");
-
+const var3=`IOS=${referralLinkIOS} and Andriod=${referralLink}`
     const data = await whatsappAPIUrl.sendWhatsAppMsgRM(
       contact,
       isUserExist.referralCode,
@@ -1585,7 +1585,7 @@ exports.shareReferralCodeSMSWHTSAPP = async (req, res, next) => {
       "sharerefcode"
     );
     console.log("data=============",data);
-    const sendWhats=await whatsappAPIUrl.sendWhtsAppAISensy(contact,"campaignName");
+    const sendWhats=await whatsappAPIUrl.sendWhtsAppAISensy(contact,isUserExist.referralCode,checkReward.refereeAmount,var3,"shareReferral");
     console.log("sendWhats===================",sendWhats);
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,

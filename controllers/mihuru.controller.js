@@ -1,4 +1,3 @@
-const aws = require("aws-sdk");
 const axios = require("axios");
 const { api } = require("../common/const");
 
@@ -9,10 +8,6 @@ const {
 
 const commonFunctions = require("../utilities/commonFunctions");
 
-const s3 = new aws.S3({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-});
 
 
 
@@ -39,6 +34,29 @@ exports.partnerAuthentication =async (req,res) =>{
 
 exports.signUp = async (req, res) => {
   try {
+    const requestBody=req.body;
+
+    const data={...requestBody,
+      partnerTransactionId: "emt1049",
+      travelAgentName: "Deepika Padukone",
+      travelBrandName: "WDS",
+      travelAgentEmailId: "abc@gmail.com",
+      travelAgentMobile: "9999999999"
+    };
+    // console.log(data,"data");
+
+    // return;
+
+    const apiToken=req.headers.mihirutoken;
+    // console.log(req.headers,"token")
+
+
+
+    const response = await axios.post(`${api.customerSignUp}`, data,{
+      headers: {
+        'Authorization': `Bearer ${apiToken}`
+      }
+    });
     
     msg = "user signUp successfully!";
   actionCompleteResponse(res, response.data, msg); 
@@ -49,35 +67,68 @@ exports.signUp = async (req, res) => {
   
 }
 
+//submitOtp
+
+
+exports.submitOtp = async (req, res) =>{
+
+  try {
+    const data=req.body;
+
+    // console.log(requestBody,"data");
+
+
+
+    const apiToken=req.headers.mihirutoken;
+    // console.log(apiToken,"token");
+        // return;
+
+
+
+    const response = await axios.post(`${api.submitOtp}`, data,{
+      headers: {
+        'Authorization': `Bearer ${apiToken}`
+      }
+    });
+    
+    msg = "submit otp successfully!";
+  actionCompleteResponse(res, response.data, msg); 
+
+  } catch (err) {
+    sendActionFailedResponse(res, {}, err.message);    
+  }
+
+}
 
 exports.travelPlanGenerator = async (req, res) =>{
 
   try{
-    const data={            
-      
+    const requestBody=req.body;
+    const data={ 
+      ...requestBody,     
         confirmPersonalDetails: true,
-        panid: "CTLPJ9569B",
-        pincode: "263655",
-        dob: "2000-06-08",
         navigateToMihuruUrlForDocsUpload: true,
         partnerCallbackUrl: "https://theskytrails.com/"
                 
     };
-    const token ="eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJtb2hpdGpvc2hpNzg3ODk4QGdtYWlsLmNvbSIsIkVtYWlsIjoibW9oaXRqb3NoaTc4Nzg5OEBnbWFpbC5jb20iLCJBcHBVc2VySWQiOiI1NjE5Y2Q4OC0xNmNiLTQ0YjEtYTk4Zi1jODIzMmYyYWZhNTAiLCJBcHBsaWNhdGlvbklkIjoiMTIzMTciLCJuYmYiOjE3MTAzOTk4NzMsImV4cCI6MTcxMTAwNDY3MywiaWF0IjoxNzEwMzk5ODczfQ.a-0LTBgJob1P9FjSAfemwgf3FHhzAFP63R-ulIaN4goX0z65YTM4xDHTbUkLycDmCU-k0ClLjIrgX4M5aZjUmA";
+
+    const apiToken=req.headers.mihirutoken;
+    console.log(apiToken,"data");
+    
     const response = await axios.post(`${api.travelPlanGenerator}`, data,
     {
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${apiToken}`
       }
     }
     );
-    // console.log(response.data,"response");
+    // console.log(response,"response");
     // console.log(data,"data")
 
     msg = "submit Otp Successfully!";
     actionCompleteResponse(res, response.data, msg);      
 } catch (err) {
-  // console.log(err);
+  console.log(err);
   sendActionFailedResponse(res, {}, err.message);
 }
 

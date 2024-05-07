@@ -172,7 +172,7 @@ async function sendWhatsAppMsgRM(number,to,email,pass,temName) {
               templateName: temName
             },
             from: doubleTickNumber,
-            to: '918115199076',
+            to: number,
           }
         ]
       }
@@ -188,28 +188,27 @@ async function sendWhatsAppMsgRM(number,to,email,pass,temName) {
   }
 }
 
-async function sendWhtsAppAISensy(to){
+async function sendWhtsAppAISensy(to,var1,var2,var3,compaignName){
+  console.log("to,var1,var2,var3,compaignName",to,var1,var2,var3,compaignName);
+  console.log("`${var1}`,`${var2}`,`${var3}`===========",String(var1),String(var2),String(var3));
   try {
 let data = {  "apiKey": process.env.AISENSYAPIKEY,    
-"campaignName": "Document Quataion",    
-"destination": "+918115199076",    
+"campaignName": compaignName,    
+"destination": to,    
 "userName":  process.env.AISENSYUSERNAME,   
-"templateParams" : [],
+"templateParams" : [String(var1),String(var2),String(var3)],
 "source": "new-landing-page form",
-  "media": {
-    "url":  process.env.AISENSYURL,
-    "filename": "sample_media"
-  },
+  "media": {},
   "buttons": [],
   "carouselCards": [],
-  "location": {}
+  // "location": {}
 };
 
 let config = {
   method: 'post',
   maxBodyLength: Infinity,
   url: 'https://backend.aisensy.com/campaign/t1/api/v2',
-  headers: { },
+  headers: {},
   data : data
 };
 
@@ -218,7 +217,7 @@ const response=await axios.request(config)
   return response.data;
 
   } catch (error) {
-    console.log("erorr while send whatsapp=====>>>>>>",err.response)
+    console.log("erorr while send whatsapp=====>>>>>>",error.response)
   }
 }
 module.exports = {sendMessageWhatsApp,sendWhatsAppMsgAdmin,sendWhatsAppMsgAdminPackage,sendWhatsAppMsgRM,sendWhtsAppAISensy };

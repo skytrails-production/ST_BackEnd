@@ -750,11 +750,13 @@ exports.editPackage = async (req, res, next) => {
       select_tags,
       term_Conditions,
       cancellation_Policy,
+      
     } = req.body;
 
     const file = req.file;
-    const isPackageExist = await internationl.findOne({ _id: packageId });
-
+    // const isPackageExist = await internationl.findOne({ _id: packageId });
+    const isPackageExist=await internationl.findOne({_id:packageId})
+// console.log("isPackageExist==========",isPackageExist)
     if (!isPackageExist) {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,
