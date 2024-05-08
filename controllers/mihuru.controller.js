@@ -8,128 +8,107 @@ const {
 
 const commonFunctions = require("../utilities/commonFunctions");
 
+exports.partnerAuthentication = async (req, res) => {
+  try {
+    const data = {
+      partnerId: process.env.MIHURUPARTNERID,
+      apiKey: process.env.MIHURUAPIKEY,
+    };
+    const response = await axios.post(`${api.partnerAuthentication}`, data);
+    // console.log(response.data,"response");
+    // console.log(data,"data")
 
+    msg = "Token Generate Successfully!";
+    actionCompleteResponse(res, response.data, msg);
+  } catch (err) {
+    // console.log(err);
+    sendActionFailedResponse(res, { err }, err.message);
+  }
+};
 
-
-exports.partnerAuthentication =async (req,res) =>{
-    try{
-        const data={            
-                partnerId: process.env.MIHURUPARTNERID,
-                apiKey: process.env.MIHURUAPIKEY              
-        };
-        const response = await axios.post(`${api.partnerAuthentication}`, data);
-        // console.log(response.data,"response");
-        // console.log(data,"data")
-
-        msg = "Token Generate Successfully!";
-        actionCompleteResponse(res, response.data, msg);      
-    } catch (err) {
-      // console.log(err);
-      sendActionFailedResponse(res, {}, err.message);
-    }
-}
-
-
-//signUp 
+//signUp
 
 exports.signUp = async (req, res) => {
   try {
-    const requestBody=req.body;
+    const requestBody = req.body;
 
-    const data={...requestBody,
+    const data = {
+      ...requestBody,
       partnerTransactionId: "emt1049",
       travelAgentName: "Deepika Padukone",
       travelBrandName: "WDS",
       travelAgentEmailId: "abc@gmail.com",
-      travelAgentMobile: "9999999999"
+      travelAgentMobile: "9999999999",
     };
     // console.log(data,"data");
 
     // return;
 
-    const apiToken=req.headers.mihirutoken;
+    const apiToken = req.headers.mihirutoken;
     // console.log(req.headers,"token")
 
-
-
-    const response = await axios.post(`${api.customerSignUp}`, data,{
+    const response = await axios.post(`${api.customerSignUp}`, data, {
       headers: {
-        'Authorization': `Bearer ${apiToken}`
-      }
+        Authorization: `Bearer ${apiToken}`,
+      },
     });
-    
-    msg = "user signUp successfully!";
-  actionCompleteResponse(res, response.data, msg); 
 
+    msg = "user signUp successfully!";
+    actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    sendActionFailedResponse(res, {}, err.message);    
+    sendActionFailedResponse(res, { err }, err.message);
   }
-  
-}
+};
 
 //submitOtp
 
-
-exports.submitOtp = async (req, res) =>{
-
+exports.submitOtp = async (req, res) => {
   try {
-    const data=req.body;
+    const data = req.body;
 
     // console.log(requestBody,"data");
 
-
-
-    const apiToken=req.headers.mihirutoken;
+    const apiToken = req.headers.mihirutoken;
     // console.log(apiToken,"token");
-        // return;
+    // return;
 
-
-
-    const response = await axios.post(`${api.submitOtp}`, data,{
+    const response = await axios.post(`${api.submitOtp}`, data, {
       headers: {
-        'Authorization': `Bearer ${apiToken}`
-      }
+        Authorization: `Bearer ${apiToken}`,
+      },
     });
-    
+
     msg = "submit otp successfully!";
-  actionCompleteResponse(res, response.data, msg); 
-
+    actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    sendActionFailedResponse(res, {}, err.message);    
+    sendActionFailedResponse(res, { err }, err.message);
   }
+};
 
-}
-
-exports.travelPlanGenerator = async (req, res) =>{
-
-  try{
-    const requestBody=req.body;
-    const data={ 
-      ...requestBody,     
-        confirmPersonalDetails: true,
-        navigateToMihuruUrlForDocsUpload: true,
-        partnerCallbackUrl: "https://theskytrails.com/"
-                
+exports.travelPlanGenerator = async (req, res) => {
+  try {
+    const requestBody = req.body;
+    const data = {
+      ...requestBody,
+      confirmPersonalDetails: true,
+      navigateToMihuruUrlForDocsUpload: true,
     };
 
-    const apiToken=req.headers.mihirutoken;
-    console.log(apiToken,"data");
-    
-    const response = await axios.post(`${api.travelPlanGenerator}`, data,
-    {
+    const apiToken = req.headers.mihirutoken;
+    // console.log(apiToken,"data");
+
+    const response = await axios.post(`${api.travelPlanGenerator}`, data, {
       headers: {
-        Authorization: `Bearer ${apiToken}`
-      }
-    }
-    );
+        Authorization: `Bearer ${apiToken}`,
+      },
+    });
     // console.log(response,"response");
     // console.log(data,"data")
 
     msg = "submit Otp Successfully!";
-    actionCompleteResponse(res, response.data, msg);      
-} catch (err) {
-  console.log(err);
-  sendActionFailedResponse(res, {}, err.message);
-}
-
-}
+    actionCompleteResponse(res, response.data, msg);
+  } catch (err) {
+    // console.log(err);
+    sendActionFailedResponse(res, { err }, err.message);
+  }
+};

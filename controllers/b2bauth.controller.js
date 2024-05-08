@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 var bcrypt = require("bcryptjs");
 const wallet = require("../model/wallet.model");
 const agentWallets = require("../model/agentWallet.model");
+const randomPayments= require("../model/randomPayment.model");
 const User = require("../model/user.model");
 const Role = require("../model/role.model");
 const crypto = require("crypto");
@@ -2007,3 +2008,149 @@ exports.updatePersonalProfile=async(req,res,next)=>{
 }
 
 //***********************for agent profile banner************************************/
+
+
+
+
+
+//b2c website random payment method controller
+
+
+//initiate 
+
+exports.randomPayment=async (req, res, next) => {
+  try {
+    const {
+      firstname,
+      phone,
+      email,
+      amount,
+      productinfo,
+      bookingType,
+      surl,
+      furl,
+    } = req.body;
+
+    const txnId = "T" + Date.now();
+    const hashComponents = [
+      configEaseBuzz.key,
+      txnId,
+      amount,
+      productinfo,
+      firstname,
+      email,
+    ];
+    const hashString = hashComponents.join("|");
+    const inputString = `${hashString}|||||||||||${configEaseBuzz.salt}`;
+    const sha512Hash = generateSHA512Hash(inputString);
+    const encodedParams = new URLSearchParams();
+    encodedParams.set("key", configEaseBuzz.key);
+    encodedParams.set("txnid", txnId);
+    encodedParams.set("amount", amount);
+    encodedParams.set("productinfo", productinfo);
+    encodedParams.set("firstname", firstname.trim());
+    encodedParams.set("phone", phone);
+    encodedParams.set("email", email);
+    encodedParams.set("surl", `${surl}${txnId}`);
+    encodedParams.set("furl", `${furl}${txnId}`);
+    encodedParams.set("hash", sha512Hash);
+
+
+    const options = {
+      method: "POST",
+      url: "https://pay.easebuzz.in/payment/initiateLink",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Accept: "application/json",
+      },
+      data: encodedParams,
+    };
+    try {
+      const { data } = await axios.request(options);
+      // console.log(data);
+      const result = {
+        access: data.data,
+        key: process.env.EASEBUZZ_KEY,
+        env: process.env.EASEBUZZ_ENV,
+      };
+      const object = {
+        // userId: userId,
+        amount: amount,
+        paymentId: txnId,
+        bookingType: bookingType,
+        easepayid:'NA'
+      };
+      const createData = await randomPayments.create(object);
+      res.status(201).send({
+        statusCode: 201,
+        responseMessage: responseMessage.PAYMENT_INTIATE,
+        result: result,
+      });
+    } catch (error) {
+      console.error("error axios:===========>>>>>>>>>>", error);
+    }
+  } catch (error) {
+    // console.log("error into easebuzz ", error);
+    return next(error);
+  }
+};
+
+
+//success
+exports.randomPaymentSuccess = async (req, res, next) => {
+  try {
+    // console.log("successVerifyApi==",req.body.easepayid);
+    const { merchantTransactionId } = req.query;
+    const isTransactionExist = await randomPayments.find({
+      paymentId: merchantTransactionId,
+    });
+    //  console.log("isTransactionExist==",isTransactionExist)
+    if (isTransactionExist) {
+      // console.log("isTransactionExist=========",isTransactionExist);
+      const result = await randomPayments.findOneAndUpdate(
+        { _id: isTransactionExist[0]._id },
+        { $set: { transactionStatus: "SUCCESS",easepayid: req.body.easepayid  } },
+        { new: true }
+      );
+
+
+
+      // Respond with the updated user object
+      actionCompleteResponse(
+        res,
+        result,
+        "Payment successfully Received"
+      );
+    }
+  } catch (error) {
+    console.log("error ==========", error);
+    return next(error);
+  }
+};
+
+
+
+exports.randomPaymentFailure= async (req, res, next) => {
+  try {
+    const { merchantTransactionId } = req.query;
+    const isTransactionExist = await randomPayments.find({
+      paymentId: merchantTransactionId,
+    });
+    //  console.log("failed==",merchantTransactionId);
+    //  console.log("isTransactionExist==",isTransactionExist);
+    if (isTransactionExist) {
+      const result = await randomPayments.findOneAndUpdate(
+        { _id: isTransactionExist[0]._id },
+        { $set: { transactionStatus: "FAILED" } },
+        { new: true }
+      );
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.PAYMENT_FAILURE,
+      });
+    }
+  } catch (error) {
+    console.log("error on failure operation", error);
+    return next(error);
+  }
+};

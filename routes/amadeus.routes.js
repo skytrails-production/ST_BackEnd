@@ -29,6 +29,9 @@ module.exports = function (app) {
 
     //PNR RETRIEVE
     app.post("/skyTrails/amadeus/pnrretrieve",controller.pnrRetrieve);
+    
+    //pnr retrieve inseries
+    app.post("/skyTrails/amadeus/pnrret",controller.pnrRet);
 
 
 

@@ -11,7 +11,12 @@ const sendSMS = require("../utilities/sendSms");
 const commonFunction = require("../utilities/commonFunctions");
 const whatsappAPIUrl = require("../utilities/whatsApi");
 const approvalStatus = require("../enums/approveStatus");
-const storyStatus=require("../enums/storyStatus")
+const storyStatus=require("../enums/storyStatus");
+const authType=require("../enums/authType")
+//********************MODELS**********************/
+const flightModel = require("../model/flightBookingData.model");
+const hotelBookingModel = require("../model/hotelBooking.model");
+const busBookingModel = require("../model/busBookingData.model");
 //***********************************SERVICES********************************************** */
 const adminModel=require("../model/user.model")
 const { userServices } = require("../services/userServices");
@@ -73,6 +78,95 @@ const {
   forumQueListLookUpOfUser,
 } = forumQueServices;
 
+const { brbuserServices } = require("../services/btobagentServices");
+const {
+  createbrbuser,
+  findbrbuser,
+  findOneAgent,
+  getbrbuser,
+  findbrbuserData,
+  findbrbData,
+  deletebrbuser,
+  brbuserList,
+  updatebrbuser,
+  paginatebrbuserSearch,
+  countTotalbrbUser,
+} = brbuserServices;
+const { cancelBookingServices } = require("../services/cancelServices");
+const {
+  createcancelFlightBookings,
+  findAnd,
+  findCancelFlightBookings,
+  updatecancelFlightBookings,
+  findHotelCancelRequest,
+  findBusCancelRequest,
+  aggregatePaginatecancelFlightBookingsList,
+  countTotalcancelFlightBookings,
+  findCancelHotelBookings,
+  createHotelCancelRequest,
+  updateHotelCancelRequest,
+  getHotelCancelRequesrByAggregate,
+  countTotalHotelCancelled,
+  createBusCancelRequest,
+  updateBusCancelRequest,
+  findCancelBusBookings,
+  getBusCancelRequestByAggregate,
+  countTotalBusCancelled,
+  getBusCancellation,
+} = cancelBookingServices;
+const { changeRequestServices } = require("../services/changeRequest");
+const {
+  createchangeRequest,
+  findchangeRequest,
+  findchangeRequestData,
+  deletechangeRequest,
+  changeRequestList,
+  updatechangeRequest,
+  paginatechangeRequestSearch,
+  aggregatePaginatechangeRequestList,
+  countTotalchangeRequest,
+} = changeRequestServices;
+const {
+  changeHotelRequestServices,
+} = require("../services/changeHotelRequestServices");
+const {
+  createchangeHotelRequest,
+  findchangeHotelRequest,
+  findchangeHotelRequestData,
+  getchangeHotelRequest,
+  deletechangeHotelRequest,
+  changeHotelRequestList,
+  updatechangeHotelRequest,
+  paginatechangeHotelRequestSearch,
+  aggregatePaginatechangeHotelRequestList,
+  countTotalchangeHotelRequest,
+} = changeHotelRequestServices;
+const { changeBusRequestServices } = require("../services/changeBusRequest");
+const {
+  createchangeBusRequest,
+  findchangeBusRequest,
+  findchangeBusRequestData,
+  getchangeBusRequest,
+  deletechangeBusRequest,
+  changeBusRequestList,
+  updatechangeBusRequest,
+  paginatechangeBusRequestSearch,
+  aggregatePaginatechangeBusRequestList,
+  countTotalchangeBusRequest,
+} = changeBusRequestServices;
+const {
+  relationShipManagerServices,
+} = require("../services/relationshipManagerServices");
+const {
+  createRelationShipManager,
+  findRelationShipManager,
+  findRelationShipManagerData,
+  deleteRelationShipManager,
+  relationShipManagerList,
+  updateRelationShipManager,
+  paginateRelationShipManagerSearch,
+  countTotalRelationShipManager,
+} = relationShipManagerServices;
 /********************SUbAdmin apis************************************************* */
 exports.createSubAdmin = async (req, res, next) => {
   try {
@@ -427,5 +521,330 @@ exports.addTrending=async(req,res,next)=>{
   } catch (error) {
     console.log("error while trying to make it trending.",error);
     return next(error)
+  }
+}
+
+exports.getAgentsIdName=async(req,res,next)=>{
+  try {
+    const isSubAdmin = await findSubAdminData({
+      _id: req.userId,
+      userType: userType.SUBADMIN,
+    });
+    // console.log("isSubAdmin==========", isSubAdmin);
+    if (!isSubAdmin) {
+      return res
+        .status(statusCode.NotFound)
+        .send({
+          statusCode: statusCode.NotFound,
+          responseMessage: responseMessage.SUBADMIN_NOT_EXIST,
+        });
+    }
+    let agentIdArray = [];
+    const agentsArray = await findbrbData({is_active:1});
+    for (let agent of agentsArray) {
+      const obj = {
+        agentId: agent._id,
+        agentName:
+          agent.personal_details.first_name + agent.personal_details.last_name,
+      };
+      agentIdArray.push(obj);
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: agentIdArray,
+    });
+  } catch (error) {
+    console.log("Error while trying to get subadmin agent Bookings", error);
+    return next(error);
+  }
+}
+
+exports.getBookingAgentWise=async(req,res,next)=>{
+  try {
+    let { agentId, bookingType } = req.body;
+    if (req.body.bookingType) {
+      req.body.bookingType = req.body.bookingType.toLowerCase();
+    }
+    const isSubAdmin = await findSubAdminData({
+      _id: req.userId,
+      userType: userType.SUBADMIN,
+    });
+    // console.log("isSubAdmin==========", isSubAdmin);
+    if (!isSubAdmin) {
+      return res
+        .status(statusCode.NotFound)
+        .send({
+          statusCode: statusCode.NotFound,
+          responseMessage: responseMessage.SUBADMIN_NOT_EXIST,
+        });
+    }
+    let result = {};
+    const isAgentExist = await findOneAgent({ _id: agentId });
+    if (!isAgentExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.AGENT_NOT_FOUND,
+      });
+    }
+    if (req.body.bookingType === "flight") {
+      result.flightBooking = await flightModel.find({
+        userId: isAgentExist._id,
+      });
+    } else if (req.body.bookingType === "bus") {
+      result.busBooking = await busBookingModel.find({
+        userId: isAgentExist._id,
+      });
+    }
+    if (req.body.bookingType === "hotel") {
+      result.hotelBooking = await hotelBookingModel.find({
+        userId: isAgentExist._id,
+      });
+    } else if (req.body.bookingType === "all") {
+      result.flightBooking = await flightModel.find({
+        userId: isAgentExist._id,
+      });
+      result.busBooking = await busBookingModel.find({
+        userId: isAgentExist._id,
+      });
+      result.hotelBooking = await hotelBookingModel.find({
+        userId: isAgentExist._id,
+      });
+    }
+    if (!result||result==null) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
+      });
+    }
+
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
+  } catch (error) {
+    console.log("Error while trying to get subadmin agent Bookings", error);
+    return next(error);
+  }
+}
+
+
+exports.getAgentCancelRequest = async (req, res, next) => {
+  try {
+    const { agentId, searchType } = req.body;
+    if (req.body.searchType) {
+      req.body.searchType = req.body.searchType.toLowerCase();
+    }
+    let result = {};
+    const isSubAdmin = await findSubAdminData({
+      _id: req.userId,
+      userType: userType.SUBADMIN,
+    });
+    // console.log("isSubAdmin==========", isSubAdmin);
+    if (!isSubAdmin) {
+      return res
+        .status(statusCode.NotFound)
+        .send({
+          statusCode: statusCode.NotFound,
+          responseMessage: responseMessage.SUBADMIN_NOT_EXIST,
+        });
+    }
+    const isAgentExist = await findOneAgent({ _id: agentId });
+    if (!isAgentExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.AGENT_NOT_FOUND,
+      });
+    }
+    if (req.body.searchType === "flight" || req.body.searchType === "all") {
+      result.flightCancelReq = await findAnd({ userId: isAgentExist._id });
+    }
+    if (req.body.searchType === "bus" || req.body.searchType === "all") {
+      result.busCancelReq = await findBusCancelRequest({
+        userId: isAgentExist._id,
+      });
+    }
+    if (req.body.searchType === "hotel" || req.body.searchType === "all") {
+      result.hotelCancelReq = await findHotelCancelRequest({
+        userId: isAgentExist._id,
+      });
+    }
+    const resultKeys = Object.keys(result);
+    let totalCount = 0;
+    for (const key of resultKeys) {
+      totalCount += result[key].length;
+    }
+    result.totalCount = totalCount;
+    if (totalCount < 1) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
+      });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
+  } catch (error) {
+    console.log("Error while trying to get agentCancelRequest", error);
+    return next(error);
+  }
+};
+
+exports.getAgentChangeRequest = async (req, res, next) => {
+  try {
+    const { agentId, searchType } = req.body;
+    if (req.body.searchType) {
+      req.body.searchType = req.body.searchType.toLowerCase();
+    }
+    let result = {};
+    const isSubAdmin = await findSubAdminData({
+      _id: req.userId,
+      userType: userType.SUBADMIN,
+    });
+    // console.log("isSubAdmin==========", isSubAdmin);
+    if (!isSubAdmin) {
+      return res
+        .status(statusCode.NotFound)
+        .send({
+          statusCode: statusCode.NotFound,
+          responseMessage: responseMessage.SUBADMIN_NOT_EXIST,
+        });
+    }
+    const isAgentExist = await findOneAgent({ _id: agentId });
+    if (!isAgentExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.AGENT_NOT_FOUND,
+      });
+    }
+    if (req.body.searchType === "flight" || req.body.searchType === "all") {
+      result.flightCancelReq = await findchangeRequestData({
+        agentId: isAgentExist._id,
+      });
+    }
+    if (req.body.searchType === "bus" || req.body.searchType === "all") {
+      result.busCancelReq = await findchangeBusRequestData({
+        agentId: isAgentExist._id,
+      });
+    }
+    if (req.body.searchType === "hotel" || req.body.searchType === "all") {
+      result.hotelCancelReq = await findchangeHotelRequestData({
+        agentId: isAgentExist._id,
+      });
+    }
+    const resultKeys = Object.keys(result);
+    let totalCount = 0;
+    for (const key of resultKeys) {
+      totalCount += result[key].length;
+    }
+    result.totalCount = totalCount;
+    if (totalCount < 1) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
+      });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
+  } catch (error) {
+    console.log("Error while trying to get agentCancelRequest", error);
+    return next(error);
+  }
+};
+
+exports.findRMAgentList=async(req,res,next)=>{
+  try {
+    const {rmId}=req.query;
+    const isSubAdmin = await findSubAdminData({
+      _id: req.userId,
+      userType: userType.SUBADMIN,
+    });
+    // console.log("isSubAdmin==========", isSubAdmin);
+    if (!isSubAdmin) {
+      return res
+        .status(statusCode.NotFound)
+        .send({
+          statusCode: statusCode.NotFound,
+          responseMessage: responseMessage.SUBADMIN_NOT_EXIST,
+        });
+    }
+    const isRMExist=await findRelationShipManager({_id:rmId,status:status.ACTIVE});
+    const result = await findbrbData({
+      "personal_details.address_details.city": isRMExist.addressDetails.city,
+    });
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
+  } catch (error) {
+    console.log("Error while trying to get rmagents", error);
+    return next(error);
+  }
+}
+
+exports.getAgnetReferralsCount=async(req,res,next)=>{
+  try {
+    const {agentId}=req.query;
+    const isSubAdmin = await findSubAdminData({
+      _id: req.userId,
+      userType: userType.SUBADMIN,
+      authType:authType.BOOKING_MANAGER
+    });
+    // console.log("isSubAdmin==========", isSubAdmin);
+    if (!isSubAdmin) {
+      return res
+        .status(statusCode.NotFound)
+        .send({
+          statusCode: statusCode.NotFound,
+          responseMessage: responseMessage.SUBADMIN_NOT_EXIST,
+        });
+    }
+    const isAgentExist=await findbrbuser({_id:agentId});
+    if(!isAgentExist){
+      return res
+      .status(statusCode.NotFound)
+      .send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.AGENT_NOT_FOUND,
+      });
+    }
+    const isReferralExist=await countTotalbrbUser({referrerCode:isAgentExist.referralCode});
+     return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: isReferralExist,
+    });
+  } catch (error) {
+    console.log("Error while trying to get count of referrals", error);
+    return next(error);
+  }
+}
+
+exports.getSubAdminDashboard=async(req,res,next)=>{
+  try {
+    const isSubAdmin = await findSubAdminData({
+      _id: req.userId,
+      userType: userType.SUBADMIN,
+      authType:authType.BOOKING_MANAGER
+    });
+    // console.log("isSubAdmin==========", isSubAdmin);
+    if (!isSubAdmin) {
+      return res
+        .status(statusCode.NotFound)
+        .send({
+          statusCode: statusCode.NotFound,
+          responseMessage: responseMessage.SUBADMIN_NOT_EXIST,
+        });
+    }
+  } catch (error) {
+    console.log("error while trying to get booking of booking manager",error);
+    return next(error);
   }
 }

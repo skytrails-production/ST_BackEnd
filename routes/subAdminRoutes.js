@@ -158,5 +158,37 @@ module.exports = function (app) {
   );
   app.get("/skyTrails/api/subAdmin/getAllRM",
   [authJwt.verifcationSubAdminToken],
-  rmController.getRelationShipManagers)
+  rmController.getRelationShipManagers);
+  app.get(
+    "/skyTrails/api/subAdmin/getAgenList",
+    [authJwt.verifcationSubAdminToken],
+    subAdminController.getAgentsIdName
+  );
+  app.post(
+    "/skyTrails/api/subAdmin/getBookingAgentWise",
+    [authJwt.verifcationSubAdminToken],
+    subAdminController.getBookingAgentWise
+  );
+  app.post(
+    "/skyTrails/api/subAdmin/getChangeRequestAgentWise",
+    [authJwt.verifcationSubAdminToken],
+    SchemaValidator(schemas.rmgetAgentCancelReq),
+    subAdminController.getAgentChangeRequest
+  );
+  app.post(
+    "/skyTrails/api/subAdmin/getCancelRequestAgentWise",
+    [authJwt.verifcationSubAdminToken],
+    SchemaValidator(schemas.rmgetAgentCancelReq),
+    subAdminController.getAgentCancelRequest
+  );
+  app.get(
+    "/skyTrails/api/subAdmin/getRMAgentList",
+    [authJwt.verifcationSubAdminToken],
+    subAdminController.findRMAgentList
+  );
+  app.get(
+    "/skyTrails/api/subAdmin/getAgnetReferralsCount",
+    [authJwt.verifcationSubAdminToken],
+    subAdminController.getAgnetReferralsCount
+  );
 };

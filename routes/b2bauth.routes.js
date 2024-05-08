@@ -190,4 +190,11 @@ module.exports = function (app) {
   app.get("/skyTrails/agent/staticContent/getAllAgentStaticContent",agentStaticController.getAllAgentStaticContent);
 
 
+  //b2c website random payment method route
+
+
+  app.post("/skyTrails/website/payment",controller.randomPayment);
+  app.post("/skyTrails/website/successVerifyApi",controller.randomPaymentSuccess);
+  app.post("/skyTrails/website/paymentFailure",controller.randomPaymentFailure);
+
 };

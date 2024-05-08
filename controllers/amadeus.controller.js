@@ -139,7 +139,7 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
       SOAPAction: "http://webservices.amadeus.com/FMPTBQ_23_4_1A",
     };
 
-    console.log("data", data);
+    // console.log("data", data);
 
     const response = await axios.post(url, data, { headers });
 
@@ -262,7 +262,7 @@ exports.fareInformativePricingWithoutPNR = async (req, res) => {
       SOAPAction: "http://webservices.amadeus.com/TIPNRQ_23_1_1A",
     };
 
-      console.log("data", data);
+      // console.log("data", data);
 
     const response = await axios.post(url, data, { headers });
     // console.log("response",response)
@@ -346,7 +346,7 @@ exports.fareCheckRule =async (req, res)=>{
             SOAPAction: "http://webservices.amadeus.com/FARQNQ_07_1_1A",
           };
 
-          console.log(data,"data");
+          // console.log(data,"data");
 
           const response = await axios.post(url,data,{headers} );
 
@@ -449,7 +449,8 @@ exports.airSell =async (req, res,next) =>{
     </soapenv:Body>
     </soapenv:Envelope>`;
 
-    console.log(data,"data");
+    // console.log(data,"data");
+
         const headers = {
             "Content-Type": "text/xml;charset=UTF-8",
             SOAPAction: "http://webservices.amadeus.com/ITAREQ_05_2_IA",
@@ -524,7 +525,7 @@ exports.pnrAddMultiElements = async (req, res) =>{
             <soapenv:Body>${requestBody}</soapenv:Body>
         </soapenv:Envelope>`;
 
-        console.log(data,"data");
+        // console.log(data,"data");
 
         const headers = {
             "Content-Type": "text/xml;charset=UTF-8",
@@ -639,7 +640,7 @@ exports.farePricePnrWithBookingClass = async (req, res) =>{
             SOAPAction: "http://webservices.amadeus.com/TPCBRQ_23_2_1A",
           };
 
-          console.log(data,"Data");
+          // console.log(data,"Data");
 
           const response = await axios.post(url,data,{headers} );
 
@@ -668,8 +669,19 @@ exports.farePricePnrWithBookingClass = async (req, res) =>{
 
 
 exports.ticketCreateTSTFromPricing = async (req, res) =>{
+
+  const generateXML=(value)=>{
+    return Array.from({ length: value }, (_, i) => `
+        <psaList>
+            <itemReference>
+                <referenceType>TST</referenceType>
+                <uniqueReference>${i + 1}</uniqueReference>
+            </itemReference>
+        </psaList>`).join('');
+    
+}
     try {
-        const {amadeusMessageID,amadeusUniqueID,amadeusSessionID,amadeusSequenceNumber,amadeusSecurityToken} =req.body;
+        const {amadeusMessageID,amadeusUniqueID,amadeusSessionID,amadeusSequenceNumber,amadeusSecurityToken,totalPax} =req.body;
 
 
         const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
@@ -707,18 +719,7 @@ exports.ticketCreateTSTFromPricing = async (req, res) =>{
             <soapenv:Body>
                 <Ticket_CreateTSTFromPricing
                     xmlns="http://xml.amadeus.com/TAUTCQ_04_1_1A">
-                    <psaList>
-                        <itemReference>
-                            <referenceType>TST</referenceType>
-                            <uniqueReference>1</uniqueReference>
-                        </itemReference>
-                    </psaList>
-                    <psaList>
-                        <itemReference>
-                            <referenceType>TST</referenceType>
-                            <uniqueReference>2</uniqueReference>
-                        </itemReference>
-                    </psaList>
+                    ${generateXML(totalPax)}                  
                 </Ticket_CreateTSTFromPricing>
             </soapenv:Body>
         </soapenv:Envelope>`;
@@ -847,7 +848,90 @@ exports.savePnrAddMultiElements = async (req, res) =>{
 
 
 
+exports.pnrRet = async (req, res) =>{
+  const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
 
+  const {amadeusMessageID,amadeusUniqueID,amadeusSessionID,amadeusSequenceNumber,amadeusSecurityToken,pnr} =req.body;
+
+
+  try {
+  
+    //   const requestBody = req.body;
+      const data=`<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+      xmlns:sec="http://xml.amadeus.com/2010/06/Security_v1"
+      xmlns:typ="http://xml.amadeus.com/2010/06/Types_v1"
+      xmlns:iat="http://www.iata.org/IATA/2007/00/IATA2010.1"
+      xmlns:app="http://xml.amadeus.com/2010/06/AppMdw_CommonTypes_v3"
+      xmlns:ses="http://xml.amadeus.com/2010/06/Session_v3">
+      <soap:Header xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+
+      <awsse:Session xmlns:awsse="http://xml.amadeus.com/2010/06/Session_v3" TransactionStatusCode="InSeries">
+      <awsse:SessionId>${amadeusSessionID}</awsse:SessionId>
+      <awsse:SequenceNumber>${Number(amadeusSequenceNumber)+1}</awsse:SequenceNumber>
+      <awsse:SecurityToken>${amadeusSecurityToken}</awsse:SecurityToken>
+    </awsse:Session>
+
+<add:MessageID xmlns:add="http://www.w3.org/2005/08/addressing">${amadeusMessageID}</add:MessageID>
+<add:Action xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/PNRRET_21_1_1A</add:Action>
+<add:To xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0</add:To>
+<link:TransactionFlowLink xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
+<link:Consumer>
+  <link:UniqueID>${amadeusUniqueID}</link:UniqueID>
+</link:Consumer>
+</link:TransactionFlowLink>
+
+<AMA_SecurityHostedUser xmlns="http://xml.amadeus.com/2010/06/Security_v1" />
+</soap:Header>
+  <soapenv:Body>
+  <PNR_Retrieve xmlns="http://xml.amadeus.com/PNRRET_17_1_1A">
+  <retrievalFacts>
+      <retrieve>
+          <type>2</type>
+      </retrieve>
+      <reservationOrProfileIdentifier>
+          <reservation>
+              <controlNumber>${pnr}</controlNumber>
+          </reservation>
+      </reservationOrProfileIdentifier>
+  </retrievalFacts>
+</PNR_Retrieve>
+  </soapenv:Body>
+  </soapenv:Envelope>`;
+
+  // console.log(data,"data");
+
+
+      const headers = {
+          "Content-Type": "text/xml;charset=UTF-8",
+          SOAPAction: "http://webservices.amadeus.com/PNRRET_21_1_1A",
+        };
+     
+    
+          const response = await axios.post(url,data,{headers} );
+
+
+           const xmlResponse = response.data;
+      const parser = new xml2js.Parser({ explicitArray: false, trim: true });
+      const parsedResponse = await parser.parseStringPromise(xmlResponse);
+
+      // Extract required fields
+      const extractedData = {
+          MessageID: parsedResponse['soapenv:Envelope']['soapenv:Header']['wsa:RelatesTo']._,
+          UniqueID: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsl:TransactionFlowLink']['awsl:Consumer']['awsl:UniqueID'],
+          // ServerID: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsl:TransactionFlowLink']['awsl:Receiver']['awsl:ServerID'],
+          SessionId: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SessionId'],
+          SequenceNumber: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SequenceNumber'],
+          SecurityToken: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SecurityToken'],
+          Pnr:parsedResponse['soapenv:Envelope']['soapenv:Body']['PNR_Reply']['pnrHeader']['reservationInfo']['reservation']['controlNumber']
+      };
+        msg = "Pnr Retrieve Successfully!";
+        actionCompleteResponse(res, {headers:extractedData,data:response.data}, msg);
+     
+  } catch (err) {
+      sendActionFailedResponse(res, { err }, err.message);       
+  }
+
+}
 
 // pnrRetrieve
 
