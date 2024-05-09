@@ -8,6 +8,9 @@ const RandomPaymentSchema=new mongoose.Schema({
     //     type: Schema.Types.ObjectId,
     //     ref: "userb2bs",
     // },
+    name:{
+        type:String,
+    },
     paymentId : {
         type:String,
     },

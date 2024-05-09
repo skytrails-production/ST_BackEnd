@@ -2074,7 +2074,7 @@ exports.randomPayment=async (req, res, next) => {
         env: process.env.EASEBUZZ_ENV,
       };
       const object = {
-        // userId: userId,
+        name: firstname,
         amount: amount,
         paymentId: txnId,
         bookingType: bookingType,
