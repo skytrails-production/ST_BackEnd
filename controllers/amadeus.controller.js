@@ -328,18 +328,19 @@ exports.fareCheckRule =async (req, res)=>{
     </link:Consumer>
   </link:TransactionFlowLink>
   <AMA_SecurityHostedUser xmlns="http://xml.amadeus.com/2010/06/Security_v1" />
-</soap:Header><soapenv:Body><Fare_CheckRules>
-            <msgType>
-                <messageFunctionDetails>
-                    <messageFunction>712</messageFunction>
-                </messageFunctionDetails>
-            </msgType>
-            <itemNumber>
-                <itemNumberDetails>
-                    <number>1</number>
-                </itemNumberDetails>
-            </itemNumber>
-        </Fare_CheckRules></soapenv:Body>
+</soap:Header>
+        <soapenv:Body><Fare_CheckRules>
+        <msgType>
+            <messageFunctionDetails>
+                <messageFunction>712</messageFunction>
+            </messageFunctionDetails>
+        </msgType>
+        <itemNumber>
+            <itemNumberDetails>
+                <number>1</number>
+            </itemNumberDetails>
+        </itemNumber>
+  </Fare_CheckRules></soapenv:Body>
         </soapenv:Envelope>`;
         const headers = {
             "Content-Type": "text/xml;charset=UTF-8",
@@ -372,6 +373,100 @@ exports.fareCheckRule =async (req, res)=>{
     
 }
 
+
+
+//fareCheckRuleSecond 2
+
+exports.fareCheckRuleSecond =async (req, res)=>{
+
+  try {
+
+      const { 
+          amadeusMessageID,
+          amadeusUniqueID,
+          amadeusSessionID,
+          amadeusSequenceNumber,
+          amadeusSecurityToken
+        } = req.body;
+
+      const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
+
+      const data=`<soapenv:Envelope
+      xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+      xmlns:sec="http://xml.amadeus.com/2010/06/Security_v1"
+      xmlns:typ="http://xml.amadeus.com/2010/06/Types_v1"
+      xmlns:iat="http://www.iata.org/IATA/2007/00/IATA2010.1"
+      xmlns:app="http://xml.amadeus.com/2010/06/AppMdw_CommonTypes_v3"
+      xmlns:ses="http://xml.amadeus.com/2010/06/Session_v3">
+      <soap:Header xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <awsse:Session xmlns:awsse="http://xml.amadeus.com/2010/06/Session_v3" TransactionStatusCode="End">
+    <awsse:SessionId>${amadeusSessionID}</awsse:SessionId>
+    <awsse:SequenceNumber>${Number(amadeusSequenceNumber)+1}</awsse:SequenceNumber>
+    <awsse:SecurityToken>${amadeusSecurityToken}</awsse:SecurityToken>
+  </awsse:Session>
+  <add:MessageID xmlns:add="http://www.w3.org/2005/08/addressing">${amadeusMessageID}</add:MessageID>
+  <add:Action xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/FARQNQ_07_1_1A</add:Action>
+  <add:To xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0</add:To>
+  <link:TransactionFlowLink xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
+    <link:Consumer>
+      <link:UniqueID>${amadeusUniqueID}</link:UniqueID>
+    </link:Consumer>
+  </link:TransactionFlowLink>
+  <AMA_SecurityHostedUser xmlns="http://xml.amadeus.com/2010/06/Security_v1" />
+</soap:Header>
+      <soapenv:Body><Fare_CheckRules>
+      <msgType>
+          <messageFunctionDetails>
+              <messageFunction>712</messageFunction>
+          </messageFunctionDetails>
+      </msgType>
+      <itemNumber>
+          <itemNumberDetails>
+              <number>1</number>
+          </itemNumberDetails>
+      </itemNumber>
+      <fareRule>
+          <tarifFareRule>
+              <ruleSectionId>RU</ruleSectionId>
+              <ruleSectionId>MX</ruleSectionId>
+              <ruleSectionId>SR</ruleSectionId>
+              <ruleSectionId>TR</ruleSectionId>
+              <ruleSectionId>AP</ruleSectionId>
+              <ruleSectionId>CD</ruleSectionId>
+          </tarifFareRule>
+      </fareRule>
+</Fare_CheckRules></soapenv:Body>
+      </soapenv:Envelope>`;
+      const headers = {
+          "Content-Type": "text/xml;charset=UTF-8",
+          SOAPAction: "http://webservices.amadeus.com/FARQNQ_07_1_1A",
+        };
+
+        // console.log(data,"data");
+
+        const response = await axios.post(url,data,{headers} );
+
+        const xmlResponse = response.data;
+        const parser = new xml2js.Parser({ explicitArray: false, trim: true });
+        const parsedResponse = await parser.parseStringPromise(xmlResponse);
+
+          const extractedData = {
+            MessageID: parsedResponse['soapenv:Envelope']['soapenv:Header']['wsa:RelatesTo']._,
+            UniqueID: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsl:TransactionFlowLink']['awsl:Consumer']['awsl:UniqueID'],
+            // ServerID: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsl:TransactionFlowLink']['awsl:Receiver']['awsl:ServerID'],
+            SessionId: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SessionId'],
+            SequenceNumber: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SequenceNumber'],
+            SecurityToken: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SecurityToken']
+        };
+
+        msg = "Fare Price Pnr Successfully!";
+        actionCompleteResponse(res, {headers:extractedData,data:response.data}, msg);
+      
+  } catch (err) {
+      sendActionFailedResponse(res, { err }, err.message);        
+  }
+  
+}
 
 
 //airsell 
@@ -471,7 +566,8 @@ exports.airSell =async (req, res,next) =>{
             // ServerID: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsl:TransactionFlowLink']['awsl:Receiver']['awsl:ServerID'],
             SessionId: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SessionId'],
             SequenceNumber: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SequenceNumber'],
-            SecurityToken: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SecurityToken']
+            SecurityToken: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SecurityToken'],
+            StatusCode: parsedResponse['soapenv:Envelope']['soapenv:Body']['Air_SellFromRecommendationReply']['itineraryDetails']['segmentInformation']['actionDetails']['statusCode']
         };
           msg = "Flight Searched Successfully!";
           actionCompleteResponse(res, {headers:extractedData,data:response.data}, msg);
@@ -1019,7 +1115,7 @@ exports.pnrRetrieve = async (req , res) =>{
       </soapenv:Body>
       </soapenv:Envelope>`;
   
-    //   console.log(data,"data");
+      // console.log(data,"data");
 
 
           const headers = {

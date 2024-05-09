@@ -7,7 +7,7 @@ module.exports = function (app) {
     });
 
     app.post("/skyTrails/amadeus/fareMasterPricerTravelBoardSearch",controller.fareMasterPricerTravelBoardSearch);
-    app.post("/skyTrails/amadeus/fareInformativePricingWithoutPNR",controller.fareInformativePricingWithoutPNR);
+    
     
     app.post("/skyTrails/api/combinedApi",combinedController.cobinedAsPerPrice);
     app.post("/skyTrails/amadeus/combineResponse",combinedController.combineTVOAMADEUS);
@@ -16,7 +16,8 @@ module.exports = function (app) {
 
     //new routes  fareInformative price to  fareRule start or end
     app.post("/skyTrails/amadeus/fareInformativePricingWithoutPNR",controller.fareInformativePricingWithoutPNR);
-    app.post("/skyTrails/amadeus/farecheckRule",controller.fareCheckRule);
+    app.post("/skyTrails/amadeus/farecheckrule",controller.fareCheckRule);
+    app.post("/skyTrails/amadeus/farecheckrule2", controller.fareCheckRuleSecond);
 
     //new routes  air sell to pnr
     app.post("/skyTrails/amadeus/airsell",controller.airSell);
