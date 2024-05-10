@@ -1171,7 +1171,7 @@ exports.signOut = async (req, res) =>{
         <soap:Header xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
         <awsse:Session xmlns:awsse="http://xml.amadeus.com/2010/06/Session_v3" TransactionStatusCode="End">
           <awsse:SessionId>${amadeusSessionID}</awsse:SessionId>
-          <awsse:SequenceNumber>${amadeusSequenceNumber}</awsse:SequenceNumber>
+          <awsse:SequenceNumber>${Number(amadeusSequenceNumber)+1}</awsse:SequenceNumber>
           <awsse:SecurityToken>${amadeusSecurityToken}</awsse:SecurityToken>
         </awsse:Session>
         <add:MessageID xmlns:add="http://www.w3.org/2005/08/addressing">${amadeusMessageID}</add:MessageID>
