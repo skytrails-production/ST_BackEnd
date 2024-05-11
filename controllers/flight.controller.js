@@ -271,7 +271,7 @@ exports.fareQuote = async (req, res) => {
 
     const response = await axios.post(`${api.flightFareQuoteURL}`, data);
 
-    msg = "Fare Rule Searched Successfully!";
+    msg = "Fare Quote Searched Successfully!";
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
