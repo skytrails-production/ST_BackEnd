@@ -2,14 +2,10 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const aggregatePaginate = require("mongoose-aggregate-paginate-v2")
 mongoose.pluralize(null);
-const status=require ('../../enums/storyStatus')
-const forumQueSchema = new mongoose.Schema({
+const status=require ('../enums/storyStatus')
+const blogSchema = new mongoose.Schema({
     title: {
         type: String,
-    },
-    userId: {
-        type: mongoose.Types.ObjectId,
-        ref: 'userBtoC',
     },
     content: {
         type: String, // Content of the question
@@ -27,16 +23,7 @@ const forumQueSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
-    media: [
-        {
-            filename: String, // Original file name
-            url: String, // URL to the media file (e.g., stored in cloud storage)
-            type: String, // MIME type (e.g., 'image/jpeg', 'video/mp4')
-        },
-    ],
-    image:{
-        type:String, 
-    },
+    media: [],
     isLike: {
         type: Boolean,
         default: false,
@@ -60,15 +47,16 @@ const forumQueSchema = new mongoose.Schema({
     location:{
         type:String, 
     },
-    multLocation:{
+    multiLocation:{
         type:String
     },
     status:{
         type:String,
-        default:status.PENDING
+        enum:[status.ACTIVE,status.DELETE,status.PENDING],
+        default:status.ACTIVE
     },
 }, { timestamps: true });
 
-forumQueSchema.plugin(mongoosePaginate);
-forumQueSchema.plugin(aggregatePaginate);
-module.exports = mongoose.model('forumQue', forumQueSchema);
+blogSchema.plugin(mongoosePaginate);
+blogSchema.plugin(aggregatePaginate);
+module.exports = mongoose.model('blog', blogSchema);

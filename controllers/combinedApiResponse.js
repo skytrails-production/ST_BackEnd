@@ -163,6 +163,7 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
     }
     let jsonResult = {};
     if (amadeusResponse.status == 200) {
+      console.log("amadeusResponse==========",amadeusResponse);
       jsonResult = await xmlToJson(amadeusResponse.data);
       const obj =
         jsonResult["soapenv:Envelope"]["soapenv:Body"][

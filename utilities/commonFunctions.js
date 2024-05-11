@@ -5084,23 +5084,6 @@ module.exports = {
   },
 
   getImageUrlAWS: async (file) => {
-    //   const s3Params = {
-    //     Bucket: process.env.AWS_BUCKET_NAME,
-    //     Key: file.originalname,
-    //     Body: file.buffer,
-    //     ContentType: file.mimetype,
-    //     ACL: "public-read",
-    //   };
-    //   var result = await s3.upload(s3Params);
-    //   console.log("result======",result)
-    //   return result;
-    // },
-
-    //  console.log("file",file)
-    // if (!file || !file.originalname || !file.buffer) {
-    //   throw new Error('Invalid file object');
-    // }
-
     const params = {
       Bucket: process.env.AWS_BUCKET_NAME,
       Key: `uploadedFile_${Date.now()}_${file.originalname.replace(/\s/g, "")}`,

@@ -119,7 +119,7 @@ const {
 const { log } = require("console");
 const { internationl } = require("../model/international.model");
 const { logger, sendMail } = require("../config/nodeConfig");
-
+const agentWalletHistory=require("../model/agentWalletHistory")
 // console.log(process.env.AWS_ACCESS_KEY_ID, process.env.AWS_SECRET_ACCESS_KEY);
 
 // Set up AWS S3 client
@@ -682,20 +682,24 @@ exports.agentQues = async (req, res, next) => {
 
 exports.subtractBalance = async (req, res) => {
   try {
-    const { _id, amount } = req.body;
+    const { _id, amount ,bookingType} = req.body;
 
     const user = await b2bUser.findById(_id);
 
     if (!user) {
       return sendActionFailedResponse(res, {}, "Invalid userId");
     }
-
     // Update the user's balance by subtracting balance
     user.balance -= Number(amount);
 
     // Save the updated user
     const updatedUser = await user.save();
-
+    const obj={
+      agnetId:_id,
+      amount:amount,
+      bookingType:bookingType
+    }
+    const wallethistory=await agentWalletHistory.create(obj);
     // Respond with the updated user object
     actionCompleteResponse(
       res,

@@ -187,7 +187,8 @@ require("./routes/packageBannerRoutes")(app)
 const quizRoute=require("./routes/btocRoutes/quizRoutes");
 quizRoute(app)
 require("./routes/ratingRoutes")(app);
-require("./routes/relationshipManagerRoutes")(app)
+require("./routes/relationshipManagerRoutes")(app);
+require("./routes/blogRoutes")(app)
 mongoose
   .connect(configs.mongoUrl.DEVELOPMENT, {
     useNewUrlParser: true,
