@@ -121,8 +121,8 @@ var taskPromotionalNotification = cron.schedule("25 11 * * *",async () => {
     // const messageBody = `✨Check out our latest promotion! We're offering deals so good, even your coffee will do a double-take! ☕️ Explore your journey with TheSkyTrails pvt ltd✨`;
     for (const user of users) {
       try { 
-        const notificationMessage = `I know I am not your therapist 👩‍⚕️`;
-        const messageBody = `but ,I can be your travelist`;
+        const notificationMessage = `Kab tak uske khayalo mai jate rhoge ❔`;
+        const messageBody = `Kabhi kisi trip🏖️ PE bhi jakr dekho✈️`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
       // const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`
         // Check if a notification has been sent to this user recently
@@ -289,8 +289,8 @@ var taskPlatformNotification = cron.schedule("30 12 * * *",
           // Now you can find super cool deals on flights✈ and hotels🏨📱 
           
           // Update your app now and let's get your wanderlust fix!`;
-          const notificationMessage = `Trip pr kab Jaa rhe ho `;
-      const messageBody = `Ab to apraisal bhi aa gya hai,`;
+          const notificationMessage = `Kuch to baat thi usme`;
+      const messageBody = `Jab jab trip ka plan bnaya cancel krwa diya`;
           await pushSimpleNotification(
             user.deviceToken,
             notificationMessage,

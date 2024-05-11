@@ -45,6 +45,8 @@ exports.api = {
   //   "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/FareRule",
   // flightFareQuoteURL:
   //   "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/FareQuote",
+  // flightSSR:
+  // "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/SSR",
   // flightBookingURL:
   //   "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/Book",
 
@@ -52,6 +54,8 @@ exports.api = {
     "https://tboapi.travelboutiqueonline.com/AirAPI_V10/AirService.svc/rest/FareRule",
   flightFareQuoteURL:
     "https://tboapi.travelboutiqueonline.com/AirAPI_V10/AirService.svc/rest/FareQuote",
+    flightSSR:
+  "https://tboapi.travelboutiqueonline.com/AirAPI_V10/AirService.svc/rest/SSR",
   flightBookingURL:
     "https://booking.travelboutiqueonline.com/AirAPI_V10/AirService.svc/rest/Book",
 

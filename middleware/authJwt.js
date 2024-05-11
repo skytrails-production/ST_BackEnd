@@ -221,7 +221,7 @@ verificationTokenOfRM=(req,res,next)=>{
   try {
     if (req.headers.token) {
       
-      console.log(req.headers.token,"token")
+      // console.log(req.headers.token,"token")
       jwt.verify(req.headers.token, config.secret, (err, result) => {
         if (err) {
           if (err.name == "TokenExpiredError") {
@@ -240,7 +240,7 @@ verificationTokenOfRM=(req,res,next)=>{
           }
         }
         else {
-          console.log("result===",result)
+          // console.log("result===",result)
           rmModel.findOne({ _id: result._id }, (error, result2) => {
             if (error) {
               return next(error)

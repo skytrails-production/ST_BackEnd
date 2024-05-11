@@ -55,7 +55,8 @@ module.exports = function (app) {
   //FareQuote Search
   app.post("/skyTrails/flight/farequote", controller.fareQuote);
 
-  //SSR Pending
+  //SSR 
+  app.post("/skyTrails/flight/ssr",controller.ssrFlight)
 
   //Booking Non LCC FLights
   app.post("/skyTrails/flight/booking", controller.bookingFLight);
