@@ -7,15 +7,17 @@ const {
 const { userIPDetail } = require("../model/city.model");
 const requestIp = require('request-ip');
 
+const headerSet=  {
+  "Content-Type": "application/json",
+  token: "QVBJQWNjZXNzQVBJQDEyMw==", // Replace with your actual token
+};
+
 exports.getOTP = async (req, res) => {
   try {
     const { header, data } = req.body;
     let params = { header: header, data: data };
     const response = await axios.post(`${api.getOTPRequest}`, params, {
-      headers: {
-        "Content-Type": "application/json",
-        token: "QVBJQWNjZXNzQVBJQDEyMw==", // Replace with your actual token
-      },
+      headers: headerSet
     });
     msg = "Send OTP Successfully!";
 
@@ -31,10 +33,7 @@ exports.getVerifyOTP = async (req, res) => {
     const { header, data } = req.body;
     let params = { header: header, data: data };
     const response = await axios.post(`${api.getVerifyOTPRequest}`, params, {
-      headers: {
-        "Content-Type": "application/json",
-        token: "QVBJQWNjZXNzQVBJQDEyMw==", // Replace with your actual token
-      },
+      headers: headerSet
     });
     msg = "OTP verify Successfully!";
 
@@ -50,10 +49,7 @@ exports.getPromoCode = async (req, res) => {
     const { header, data } = req.body;
     let params = { header: header, data: data };
     const response = await axios.post(`${api.getPromoCodeRequest}`, params, {
-      headers: {
-        "Content-Type": "application/json",
-        token: "QVBJQWNjZXNzQVBJQDEyMw==", // Replace with your actual token
-      },
+      headers: headerSet
     });
     msg = "Get Promo Code Successfully!";
 
@@ -72,10 +68,7 @@ exports.getPromoService = async (req, res) => {
       `${api.getPromoServicesRequest}`,
       params,
       {
-        headers: {
-          "Content-Type": "application/json",
-          token: "QVBJQWNjZXNzQVBJQDEyMw==", // Replace with your actual token
-        },
+        headers: headerSet
       }
     );
     msg = "Get Promo Services Successfully!";
@@ -92,10 +85,7 @@ exports.getUserBalance = async (req, res) => {
     const { header, data } = req.body;
     let params = { header: header, data: data };
     const response = await axios.post(`${api.getUserBalanceRequest}`, params, {
-      headers: {
-        "Content-Type": "application/json",
-        token: "QVBJQWNjZXNzQVBJQDEyMw==", // Replace with your actual token
-      },
+      headers: headerSet
     });
     msg = "Get User Balance Successfully!";
 
@@ -116,13 +106,10 @@ exports.userLogin = async (req, res) => {
 
   try {
     const response = await axios.post(`${api.utilityloginwebapiURL}`, data, {
-      headers: {
-        "Content-Type": "application/json",
-        token: "QVBJQWNjZXNzQVBJQDEyMw==", // Replace with your actual token
-      },
+      headers: headerSet
     });
 
-    msg = "Transaction Success!";
+    msg = "Login Success!";
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
@@ -144,12 +131,9 @@ exports.getService = async (req, res) => {
     const { data } = req.body;
     let params = { header: header, data: data };
     const response = await axios.post(`${api.getServiceRechegeURL}`, params, {
-      headers: {
-        "Content-Type": "application/json",
-        token: "QVBJQWNjZXNzQVBJQDEyMw==", // Replace with your actual token
-      },
+      headers:headerSet
     });
-    msg = "Transaction Success!";
+    msg = "Get Service Provider List!";
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
@@ -164,12 +148,9 @@ exports.getRechargePlan = async (req, res) => {
     const {data } = req.body;
     let params = { header: header, data: data };
     const response = await axios.post(`${api.getRechargePlanULR}`, params, {
-      headers: {
-        "Content-Type": "application/json",
-        token: "QVBJQWNjZXNzQVBJQDEyMw==", // Replace with your actual token
-      },
+      headers: headerSet
     });
-    msg = "Transaction Success!";
+    msg = "Get Recharge Plan Successfully";
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
@@ -183,12 +164,9 @@ exports.getRechargePlanDetails = async (req, res) => {
     const { data } = req.body;
     let params = { header: header, data: data };
     const response = await axios.post(`${api.getPlanDetailURL}`, params, {
-      headers: {
-        "Content-Type": "application/json",
-        token: "QVBJQWNjZXNzQVBJQDEyMw==", // Replace with your actual token
-      },
+      headers:headerSet
     });
-    msg = "Transaction Success!";
+    msg = "Get Recharge plan Details Successfully!";
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
@@ -209,12 +187,9 @@ exports.rechageRequest = async (req, res) => {
     await userIPDetail.create(userBookingIpDetails);
 
     const response = await axios.post(`${api.rechageRequestURL}`, params, {
-      headers: {
-        "Content-Type": "application/json",
-        token: "QVBJQWNjZXNzQVBJQDEyMw==", // Replace with your actual token
-      },
+      headers:headerSet
     });
-    msg = "Transaction Success!";
+    msg = "Recharge Successfully done!";
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
@@ -239,13 +214,10 @@ exports.getBillService = async (req, res) => {
     // console.log(data,"data");
 
 
-    const response = await axios.post(`https://utilitywebapi.bisplindia.in/api/Bill/GetBillService`, params, {
-      headers: {
-        "Content-Type": "application/json",
-        token: "QVBJQWNjZXNzQVBJQDEyMw==", // Replace with your actual token
-      },
+    const response = await axios.post(`${api.getBillServiceURL}`, params, {
+      headers:headerSet
     });
-    msg = "Transaction Success!";
+    msg = "Get Bill Agency List!";
 
     // console.log(response,"response");
 
@@ -267,13 +239,10 @@ exports.getBillServiceParamemter = async (req, res) =>{
     // console.log(data,"data");
 
 
-    const response = await axios.post(`https://utilitywebapi.bisplindia.in/api/Bill/GetBillServiceParamemter`, params, {
-      headers: {
-        "Content-Type": "application/json",
-        token: "QVBJQWNjZXNzQVBJQDEyMw==", // Replace with your actual token
-      },
+    const response = await axios.post(`${api.getBillServiceParamemterURL}`, params, {
+      headers:headerSet
     });
-    msg = "Transaction Success!";
+    msg = "Get Bill Service Details!";
 
     // console.log(response,"response");
 
@@ -284,5 +253,27 @@ exports.getBillServiceParamemter = async (req, res) =>{
   }
 
 }
+
+
+//saveBillPayment
+
+exports.saveBillPayment=async (req, res) =>{
+  try {
+    const  data = req.body;
+    let params = { header: header, data: data };
+    const response = await axios.post(`${api.saveBillPaymentURL}`, params, {
+      headers:headerSet
+    });
+    msg = "Save Bill Payment!";
+
+    // console.log(response,"response");
+
+    actionCompleteResponse(res, response.data, msg);
+    
+  } catch (err) {
+    sendActionFailedResponse(res, {}, err.message);    
+  }
+}
+
 
 //----------------------------Billing Api --------------End-----

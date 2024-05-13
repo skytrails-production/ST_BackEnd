@@ -30,4 +30,5 @@ module.exports = function (app) {
 
   app.post("/skyTrails/api/bill/getbillservice", controller.getBillService);
   app.post("/skyTrails/api/bill/getbillserviceparamemter", controller.getBillServiceParamemter);
+  app.post("/skyTrails/api/bill/savebillpayment", controller.saveBillPayment);
 };

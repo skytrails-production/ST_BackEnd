@@ -295,6 +295,17 @@ busCancelURL:
   getVerifyOTPRequest:
     "https://utilitywebapi.bisplindia.in/api/Admin/VerifyOTP",
 
+
+
+     //bill api url
+
+     getBillServiceURL:"https://utilitywebapi.bisplindia.in/api/Bill/GetBillService",
+     getBillServiceParamemterURL:"https://utilitywebapi.bisplindia.in/api/Bill/GetBillServiceParamemter",
+     saveBillPaymentURL:"https://utilitywebapi.bisplindia.in/api/Bill/SaveBillPayment",
+ 
+ 
+
+
     //Mihuru api url 
     partnerAuthentication:
     "https://uat.partners.mihuru.com/api/assistmodule/login/apiuser",
