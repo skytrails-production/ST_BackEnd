@@ -46,7 +46,7 @@ exports.busBooking = async (req, res, next) => {
       _id: req.userId,
       status: status.ACTIVE,
     });
-    const contactNo =`${isUserExist.phone.country_code}+${isUserExist.phone.mobile_number}`
+    const contactNo =`${isUserExist.phone.country_code}${isUserExist.phone.mobile_number}`
     if (!isUserExist) {
       return res
         .status(statusCode.NotFound)
@@ -57,7 +57,7 @@ exports.busBooking = async (req, res, next) => {
     }
     data.userId=isUserExist._id
     const result = await createUserBusBooking(data);
-    const userName =`${result.passenger[0].firstName} ${result.passenger[0].lastName}`
+    const userName =`${result.passenger[0].firstName} ${result.passenger[0].lastName}`;
     const notObject={
       userId:isUserExist._id,
       title:"Bus Booking by User",
@@ -65,12 +65,23 @@ exports.busBooking = async (req, res, next) => {
       from:'busBookiing',
       to:userName,
     }
-    await createPushNotification(notObject);
-    await sendSMS.sendSMSBusBooking(result.passenger[0].Phone, userName);
-    const url=`https://theskytrails.com/busEticket/${result._id}`
+    // const bookingDate=result.departureTime.getDate();
+    // Define options for formatting the date
+let options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+
+// Format the date using the toLocaleDateString() function
+let formattedDate = new Date().toLocaleDateString('en-GB', options);
+
+   const createdData= await createPushNotification(notObject);
+    // await sendSMS.sendSMSBusBooking(result.passenger[0].Phone, userName);
+    const url=`https://theskytrails.com/busEticket/${result._id}`;
+    const TemplateNames=[String(notObject.from),String(createdData.pnr),String(notObject.to),String(formattedDate)];
+    // const TemplateNames1=[String(var1),String(var1)]
+    const sent=await whatsApi.sendWhtsAppOTPAISensy(AdminNumber,TemplateNames,'admin_booking_Alert');
+    // await whatsApi.sendWhtsAppOTPAISensy(AdminNumber,TemplateNames1,'admin_booking_Alert');
     await whatsApi.sendMessageWhatsApp(contactNo,userName,url,'bus');
-    await whatsApi.sendWhatsAppMsgAdmin(AdminNumber,'adminbooking_alert');
-    await whatsApi.sendWhatsAppMsgAdmin(AdminNumber,'adminalert');
+    // await whatsApi.sendWhatsAppMsgAdmin(AdminNumber,'adminbooking_alert');
+    // await whatsApi.sendWhatsAppMsgAdmin(AdminNumber,'adminalert');
     await commonFunction.BusBookingConfirmationMail(result);
     if (result) {
      

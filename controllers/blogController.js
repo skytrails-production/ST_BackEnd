@@ -15,6 +15,7 @@ const {
   findBlog,
   findSingleBlog,
   findBlogData,
+  blogList,
   deleteBlog,
   updateBlog,
   countTotalBlog,
@@ -33,11 +34,8 @@ exports.createBlog = async (req, res, next) => {
       location,
     } = req.body;
     let media=[];
-    console.log("req.files==============", req.files,req.files.length);
     if (req.files) {
-        console.log("i============+++++++++++++++++++++++++==========");
         for(const img of req.files){
-            console.log("i=================",img);
             const secureurl = await commonFuction.getImageUrlAWS(img);
             media.push(secureurl);
         }
@@ -53,7 +51,6 @@ exports.createBlog = async (req, res, next) => {
         location,
     }
     const result=await createBlog(obj);
-    console.log("result==============",result);
     return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.POST_CREATED,
@@ -66,7 +63,8 @@ exports.createBlog = async (req, res, next) => {
 
 exports.getBlogList=async(req,res,next)=>{
     try {
-        const result=await findBlogData({status:status.ACTIVE});
+      const result=await findBlogData({status:status.ACTIVE});
+
         if(result.length<1){
             return res.status(statusCode.OK).send({
                 statusCode: statusCode.NotFound,
@@ -86,7 +84,9 @@ exports.getBlogList=async(req,res,next)=>{
 exports.getBlogById=async(req,res,next)=>{
     try {
         const {blogId}=req.query;
+        const allResult={};
         const result=await findBlog({_id:blogId});
+        result.trendingBlog=await blogList({status:status.ACTIVE})
         if(!result){
             return res.status(statusCode.OK).send({
                 statusCode: statusCode.NotFound,
@@ -94,10 +94,12 @@ exports.getBlogById=async(req,res,next)=>{
               }); 
         }
         const updateViews=await updateBlog({ _id: result._id }, { $inc: { views: 1 } });
+        allResult.searchedBlog=updateViews;
+        allResult.trendingBlog=await blogList({status:status.ACTIVE});
         return res.status(statusCode.OK).send({
             statusCode: statusCode.OK,
             responseMessage: responseMessage.BLOG_GET_SUCCESSFULLY,
-            result: updateViews,
+            result: allResult,
           });
     } catch (error) {
        console.log("Error while trying to get blogs",error);

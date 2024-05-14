@@ -25,7 +25,7 @@ const bloggingServices = {
     },
 
     blogList: async (query) => {
-        return await bloggingModel.find(query);
+        return await bloggingModel.find(query).sort({ createdAt: -1 }).limit(6);
     },
     updateBlog: async (query, updateObj) => {
         return await bloggingModel.findOneAndUpdate(query, updateObj, { new: true });

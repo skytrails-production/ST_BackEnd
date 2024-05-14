@@ -168,7 +168,7 @@ const flattenedArray = segNumber.flatMap((item, index) => {
 
 
     msg = "Flight Searched Successfully!";
-    actionCompleteResponse(res, response.data, msg);
+    actionCompleteResponse(res, flattenedArray, msg);
   } catch (err) {
     // console.log(err);
     sendActionFailedResponse(res, {}, err.message);

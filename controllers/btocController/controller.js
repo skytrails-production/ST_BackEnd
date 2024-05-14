@@ -1074,12 +1074,11 @@ exports.loginWithMailMobileLogin = async (req, res, next) => {
 
         const userMobile =
           isExist.phone.country_code + isExist.phone.mobile_number;
-
-        const sent = await whatsappAPIUrl.sendMessageWhatsApp(
+        const templateParams=[String(isExist.username),String(otp)]
+        const sent = await whatsappAPIUrl.sendWhtsAppOTPAISensy(
           userMobile,
-          isExist.username,
-          otp,
-          "loginotp"
+          templateParams,
+          "user_OTP"
         );
         console.log("sent+============", sent);
         await sendSMS.sendSMSForOtp(email, otp);
@@ -1110,12 +1109,18 @@ exports.loginWithMailMobileLogin = async (req, res, next) => {
       const createNewUser = await createUser(obj);
       const userMobile =
         createNewUser.phone.country_code + createNewUser.phone.mobile_number;
-      await whatsappAPIUrl.sendMessageWhatsApp(
-        userMobile,
-        var1,
-        otp,
-        "loginotp"
-      );
+      // await whatsappAPIUrl.sendMessageWhatsApp(
+      //   userMobile,
+      //   var1,
+      //   otp,
+      //   "loginotp"
+      // );
+      const templateParams=[String(var1),String(otp)]
+        const sent = await whatsappAPIUrl.sendWhtsAppOTPAISensy(
+          userMobile,
+          templateParams,
+          "user_OTP"
+        );
       await sendSMS.sendSMSForOtp(createNewUser.phone.mobile_number, otp);
       const token = await commonFunction.getToken({
         _id: createNewUser._id,

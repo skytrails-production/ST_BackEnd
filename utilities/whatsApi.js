@@ -189,8 +189,6 @@ async function sendWhatsAppMsgRM(number,to,email,pass,temName) {
 }
 
 async function sendWhtsAppAISensy(to,var1,var2,var3,compaignName){
-  console.log("to,var1,var2,var3,compaignName",to,var1,var2,var3,compaignName);
-  console.log("`${var1}`,`${var2}`,`${var3}`===========",String(var1),String(var2),String(var3));
   try {
 let data = {  "apiKey": process.env.AISENSYAPIKEY,    
 "campaignName": compaignName,    
@@ -213,14 +211,45 @@ let config = {
 };
 
 const response=await axios.request(config)
-  // console.log("=======================",JSON.stringify(response.data),response);
+  console.log("=======================",JSON.stringify(response.data),response);
   return response.data;
 
   } catch (error) {
     console.log("erorr while send whatsapp=====>>>>>>",error.response)
   }
 }
-module.exports = {sendMessageWhatsApp,sendWhatsAppMsgAdmin,sendWhatsAppMsgAdminPackage,sendWhatsAppMsgRM,sendWhtsAppAISensy };
+
+async function sendWhtsAppOTPAISensy(to,templateParams,compaignName){
+  try {
+let data = {  "apiKey": process.env.AISENSYAPIKEY,    
+"campaignName": compaignName,    
+"destination": to,    
+"userName":  process.env.AISENSYUSERNAME,   
+"templateParams" : templateParams,
+"source": "new-landing-page form",
+  "media": {},
+  "buttons": [],
+  "carouselCards": [],
+  // "location": {}
+};
+
+let config = {
+  method: 'post',
+  maxBodyLength: Infinity,
+  url: 'https://backend.aisensy.com/campaign/t1/api/v2',
+  headers: {},
+  data : data
+};
+
+const response=await axios.request(config)
+  console.log("=======================",JSON.stringify(response.data),response);
+  return response.data;
+
+  } catch (error) {
+    console.log("erorr while send whatsapp=====>>>>>>",error.response)
+  }
+}
+module.exports = {sendMessageWhatsApp,sendWhatsAppMsgAdmin,sendWhatsAppMsgAdminPackage,sendWhatsAppMsgRM,sendWhtsAppAISensy,sendWhtsAppOTPAISensy };
 
 // const axios = require('axios');
 

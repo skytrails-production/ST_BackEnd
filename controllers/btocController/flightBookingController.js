@@ -66,7 +66,12 @@ exports.flighBooking = async (req, res, next) => {
       from:'FLightBooking',
       to:isUserExist.userName,
     }
-    await createPushNotification(notObject);
+    const createdData=await createPushNotification(notObject);
+    let options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+// Format the date using the toLocaleDateString() function
+let formattedDate = new Date().toLocaleDateString('en-GB', options);
+    const TemplateNames=[String(notObject.from),String(createdData.pnr),String(notObject.to),String(formattedDate)];
+    await whatsApi.sendWhtsAppOTPAISensy(AdminNumber,TemplateNames,'admin_booking_Alert');
     await whatsApi.sendWhatsAppMsgAdmin(AdminNumber,'adminbooking_alert');
     await whatsApi.sendWhatsAppMsgAdmin(AdminNumber,'adminalert');
     const result = await createUserflightBooking(data);

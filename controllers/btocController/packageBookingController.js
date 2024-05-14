@@ -144,6 +144,7 @@ exports.packageBooking = async (req, res, next) => {
       isPackageExist.pakage_title,
       "adminnotification"
     );
+    
     await whatsApi.sendWhatsAppMsgAdmin(AdminNumber, "adminalert");
     await commonFunction.packageBookingConfirmationMail(populatedResult);
     if (result) {
