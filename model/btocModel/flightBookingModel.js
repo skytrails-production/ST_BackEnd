@@ -7,7 +7,37 @@ const gender=require("../../enums/gender");
 mongoose.pluralize(null);
 const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 const mongoosePaginate = require('mongoose-paginate-v2');
-const offerType=require('../../enums/offerType')
+const offerType=require('../../enums/offerType');
+
+const baggageSchema = new mongoose.Schema({
+  AirlineCode: String,
+  FlightNumber: String,
+  WayType: Number,
+  Code:String,
+  Description:String,
+  Weight:Number,
+  Currency:String,
+  Price:Number,
+  Origin:String,
+  Destination:String
+});
+
+
+const mealDynamicSchema=new mongoose.Schema({
+          AirlineCode: String,
+          FlightNumber: String,
+          WayType: Number,
+          Code: String,
+          Description: Number,
+          AirlineDescription: String,
+          Quantity: Number,
+          Currency: String,
+          Price: Number,
+          Origin: String,
+          Destination: String
+});
+
+
 const BookingDetailSchema = new mongoose.Schema(
     {
         userId: {
@@ -74,6 +104,8 @@ const BookingDetailSchema = new mongoose.Schema(
             }
           }
         },
+        baggage: [baggageSchema],
+      mealDynamic:[mealDynamicSchema],  
         
         passengerDetails: {
           type: [

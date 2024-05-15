@@ -163,7 +163,7 @@ module.exports = {
     };
     try {
       const info = await transporter.sendMail(mailOptions);
-      console.log("Email sent: " + info.response);
+      // console.log("Email sent: " + info.response);
       return info;
     } catch (error) {
       console.error("Email sending failed:", error);
@@ -290,7 +290,7 @@ module.exports = {
 
       // Send the email
       const info = await transporter.sendMail(mailOptions);
-      console.log("Email sent: " + info.response);
+      // console.log("Email sent: " + info.response);
       return info;
     } catch (error) {
       console.error("Email sending failed:", error);
@@ -359,7 +359,7 @@ module.exports = {
 
       // Send the email
       const info = await transporter.sendMail(mailOptions);
-      console.log("Email sent: " + info.response);
+      // console.log("Email sent: " + info.response);
       return info;
     } catch (error) {
       console.error("Email sending failed:", error);
@@ -2322,7 +2322,7 @@ module.exports = {
 
       // Send the email
       const info = await transporter.sendMail(mailOptions);
-      console.log("Email sent: " + info.response);
+      // console.log("Email sent: " + info.response);
 
       // Clean up the temporary PDF file
       fs.unlinkSync(pdfFilePath);
@@ -2881,7 +2881,7 @@ module.exports = {
 
       // Send the email
       const info = await transporter.sendMail(mailOptions);
-      console.log("Email sent: " + info.response);
+      // console.log("Email sent: " + info.response);
 
       // Clean up the temporary PDF file
       fs.unlinkSync(pdfFilePath);
@@ -3586,7 +3586,7 @@ module.exports = {
 
       // Send the email
       const info = await transporter.sendMail(mailOptions);
-      console.log("Email sent: " + info.response);
+      // console.log("Email sent: " + info.response);
 
       fs.unlinkSync(pdfFilePath);
 
@@ -4286,7 +4286,7 @@ module.exports = {
 
       // Send the email
       const info = await transporter.sendMail(mailOptions);
-      console.log("Email sent: " + info.response);
+      // console.log("Email sent: " + info.response);
 
       fs.unlinkSync(pdfFilePath);
 
@@ -4300,7 +4300,7 @@ module.exports = {
   //upload image on cloudinary***************************************
   getSecureUrl: async (base64) => {
     var result = await cloudinary.v2.uploader.upload(base64);
-    console.log("result=============", result);
+    // console.log("result=============", result);
     return result.secure_url;
   },
 
@@ -4344,7 +4344,7 @@ module.exports = {
 
       // Send the email
       const info = await transporter.sendMail(mailOptions);
-      console.log("Email sent: " + info.response);
+      // console.log("Email sent: " + info.response);
       return info;
     } catch (error) {
       console.error("Email sending failed:", error);
@@ -4381,7 +4381,7 @@ module.exports = {
       });
       // Send the email
       const info = await transporter.sendMail(mailOptions);
-      console.log("Email sent: " + info.response);
+      // console.log("Email sent: " + info.response);
       return info;
     } catch (error) {
       console.error("Email sending failed:", error);
@@ -4445,7 +4445,7 @@ module.exports = {
 
       // Send the email
       const info = await transporter.sendMail(mailOptions);
-      console.log("Email sent: " + info.response);
+      // console.log("Email sent: " + info.response);
       return info;
     } catch (error) {
       console.error("Email sending failed:", error);
@@ -4531,7 +4531,7 @@ module.exports = {
     return await transporter.sendMail(mailOptions);
   },
   sendRMCredential: async (to, userName, password) => {
-    console.log("to, userName, password=============",to, userName, password)
+    // console.log("to, userName, password=============",to, userName, password)
     var transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -5788,7 +5788,7 @@ module.exports = {
       };
       await transporter.verify();
       const info = await transporter.sendMail(mailOptions);
-      console.log("Email sent: " + info.response);
+      // console.log("Email sent: " + info.response);
       return info;
   },
 

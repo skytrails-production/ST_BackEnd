@@ -138,5 +138,6 @@ module.exports = {
 	WALLET_HISTORY_GET:"Wallet history get successfully.",
 	REDEEM_NOT_ALLOW:"Reedem not allow,SkyCoins must be greater than",
 	ALLOWED_BALANCE:"Your current withdrawable balance is",
-	BLOG_GET_SUCCESSFULLY:"Blog get successfully.!"
+	BLOG_GET_SUCCESSFULLY:"Blog get successfully.!",
+	BLOG_NOT_FOUND:"Blog not found."
 };

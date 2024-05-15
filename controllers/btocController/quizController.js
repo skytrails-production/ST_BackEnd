@@ -43,12 +43,12 @@ exports.getDailyQuiz=async(req,res,next)=>{
         const getDate=moment(currentDate).format("YYYY-MM-DD")
         const getDateExp=moment(result.quizExpiration).format("YYYY-MM-DD");
         if(getDateExp>getDate){
-            return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.QUIZ_GET,result:result});
+            return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.RESPONSE_SUBMIT,result:result});
         }
     }else{
             const result=await findQuizContent({status:status.ACTIVE,quizExpiration:{$gte:currentDate}});
             console.log("===========================================================");
-            return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.QUIZ_GET,result:result});
+            return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.RESPONSE_SUBMIT,result:result});
         }
     } catch (error) {
         console.log("error while trying to get daily quiz",error);
@@ -99,7 +99,7 @@ exports.submitDailyQuizResponse=async(req,res,next)=>{
             answer:answer,
             isFirstResponse:true,
             isWinner:true,
-            reultDate:isQuestionExist.quizExpiration
+            resultDate:isQuestionExist.quizExpiration
         }
         const result=await createQuizResponseContent(object);
         return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.RESPONSE_SUBMIT,result:result});
@@ -128,10 +128,10 @@ exports.getWinnerOfQuiz=async(req,res,next)=>{
         // const {questionId}=req.query;
         const currentDate=new Date()
         let result={}
-        result.lastDayWinner=await findQuizResponseContentPop({isWinner:true,isFirstResponse:true,reultDate:{$lte:currentDate}});
+        result.lastDayWinner=await findQuizResponseContentPop({isWinner:true,isFirstResponse:true,resultDate:{$lte:currentDate}});
         result.winnerList=await findQuizResponseData({isWinner:true,isFirstResponse:true});
         if(result.lastDayWinner){
-            if(moment(result.lastDayWinner.reultDate).format('YYYY-MM-DD')==moment(currentDate).format('YYYY-MM-DD')){            
+            if(moment(result.lastDayWinner.resultDate).format('YYYY-MM-DD')==moment(currentDate).format('YYYY-MM-DD')){            
             return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.WIINER_GOT,result:result});
         }
         }

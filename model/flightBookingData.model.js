@@ -5,6 +5,36 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 const status =require("../enums/status");
 const bookingStatus = require("../enums/bookingStatus");
 const { string } = require("joi");
+
+const baggageSchema = new mongoose.Schema({
+  AirlineCode: String,
+  FlightNumber: String,
+  WayType: Number,
+  Code:String,
+  Description:String,
+  Weight:Number,
+  Currency:String,
+  Price:Number,
+  Origin:String,
+  Destination:String
+});
+
+
+const mealDynamicSchema=new mongoose.Schema({
+          AirlineCode: String,
+          FlightNumber: String,
+          WayType: Number,
+          Code: String,
+          Description: Number,
+          AirlineDescription: String,
+          Quantity: Number,
+          Currency: String,
+          Price: Number,
+          Origin: String,
+          Destination: String
+});
+
+
 const flightBookingData = new mongoose.Schema(
     {
       userId: {
@@ -71,7 +101,8 @@ const flightBookingData = new mongoose.Schema(
           }
         }
       },
-      
+      baggage: [baggageSchema],
+      mealDynamic:[mealDynamicSchema],      
       passengerDetails: {
         type: [
           {

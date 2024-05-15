@@ -269,12 +269,13 @@ taskPromotionalNotification.start(); // Start the task2
 // taskEventNotification1.start(); // Start the task2
 
 // Define and schedule task2 separately
-var taskPlatformNotification = cron.schedule("30 12 * * *",
+var taskPlatformNotification = cron.schedule("14 14 * * *",
   async () => {
     try {
+      console.log("===========================");
       // 'contactNo.mobile_number': { $in: ['8115199076', '9135219071'] },
       const users = await userList({
-        // 'phone.mobile_number': { $in: ['8115199076','9135219071','8384082560'] },
+        'phone.mobile_number': { $in: ['8115199076','9135219071','8384082560'] },
         status: status.ACTIVE,
         deviceToken: { $exists: true, $ne: "" },
       });
@@ -289,8 +290,13 @@ var taskPlatformNotification = cron.schedule("30 12 * * *",
           // Now you can find super cool deals on flights✈ and hotels🏨📱 
           
           // Update your app now and let's get your wanderlust fix!`;
-          const notificationMessage = `Kuch to baat thi usme`;
-      const messageBody = `Jab jab trip ka plan bnaya cancel krwa diya`;
+          const notificationMessage = `I know I am not your therapist `;
+      const messageBody = `but I can be your travelist so travel with
+      THE
+          SKYTRAILS
+      FLY
+          HIGH
+      &🥰`;
           await pushSimpleNotification(
             user.deviceToken,
             notificationMessage,

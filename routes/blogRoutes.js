@@ -15,5 +15,8 @@ module.exports = function (app) {
   app.get("/skyTrails/api/blog/getAllBlogs",controller.getBlogList);
   app.get("/skyTrails/api/blog/getBlogById",controller.getBlogById);
 //   app.post("/skyTrails/api/blog/createBlog",controller.randomPaymentFailure);
-
+app.put("/skyTrails/api/blog/deleteBlog",controller.deleteBlog);
+app.put("/skyTrails/api/blog/hideBlog",controller.hideBlog);
+app.put("/skyTrails/api/blog/updateBlog",controller.updateBlog);
+app.get("/skyTrails/api/blog/getAllBlogsAdmin",controller.getBlogListAdmin);
 };

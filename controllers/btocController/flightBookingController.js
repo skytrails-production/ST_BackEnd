@@ -47,6 +47,7 @@ const {
 exports.flighBooking = async (req, res, next) => {
   try {
     const data = { ...req.body };
+    console.log("data=================",data,req)
     const isUserExist = await findUser({
       _id: req.userId,
       status: status.ACTIVE,
@@ -78,7 +79,12 @@ let formattedDate = new Date().toLocaleDateString('en-GB', options);
     const userName = `${data?.passengerDetails[0]?.firstName} ${data?.passengerDetails[0]?.lastName}`;
     const phone = '+91'+data?.passengerDetails[0]?.ContactNo;
     const url=`https://theskytrails.com/FlightEticket/${result._id}`;
-    await whatsApi.sendMessageWhatsApp(phone,userName,url,'flight');
+    // await whatsApi.sendMessageWhatsApp(phone,userName,url,'flight');
+    const depDate=new Date(createdData.airlineDetails[0].Origin.DepTime);
+    const depTime=new Date(createdData.airlineDetails[0].Origin.DepTime);
+    const arrTime=new Date(createdData.airlineDetails[0].Destination.ArrTime);
+    const templates=[String(userName),String(createdData.pnr),String(createdData.airlineDetails[0].Airline.AirlineName),String(depDate.toLocaleDateString('en-GB', options)),String(depTime.toLocaleTimeString('en-GB')),String(arrTime.toLocaleTimeString('en-GB')),String(createdData.totalAmount)];
+    await whatsApi.sendWhtsAppAISensy(phone,templates,"Flight Booking");
     await sendSMSUtils.sendSMSForFlightBooking(data);
     await commonFunction.FlightBookingConfirmationMail(result);
     return res.status(statusCode.OK).send({

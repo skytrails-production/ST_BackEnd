@@ -31,7 +31,7 @@ const QuizRespSchema = new mongoose.Schema({
         type:Boolean,
         default:false
       },
-      reultDate:{
+      resultDate:{
         type:Date,
         // default:new Date()
       }

@@ -1008,7 +1008,7 @@ exports.combinerApiForFlight=async(req,res,next)=>{
     };
 
     const response = await axios.post(`${api.emiflightSearch}`, travoltPayload);
-    console.log("response===================",response);
+    // console.log("response===================",response);
 
   } catch (error) {
     console.error("error while trying to combined the response for both",error);
