@@ -67,11 +67,11 @@ exports.flighBooking = async (req, res, next) => {
       from:'FLightBooking',
       to:isUserExist.userName,
     }
-    const createdData=await createPushNotification(notObject);
+    await createPushNotification(notObject);
     let options = { day: '2-digit', month: '2-digit', year: 'numeric' };
 // Format the date using the toLocaleDateString() function
 let formattedDate = new Date().toLocaleDateString('en-GB', options);
-    const TemplateNames=[String(notObject.from),String(createdData.pnr),String(notObject.to),String(formattedDate)];
+    const TemplateNames=[String(notObject.from),String(data.pnr),String(notObject.to),String(formattedDate)];
     await whatsApi.sendWhtsAppOTPAISensy(AdminNumber,TemplateNames,'admin_booking_Alert');
     await whatsApi.sendWhatsAppMsgAdmin(AdminNumber,'adminbooking_alert');
     await whatsApi.sendWhatsAppMsgAdmin(AdminNumber,'adminalert');
@@ -80,11 +80,12 @@ let formattedDate = new Date().toLocaleDateString('en-GB', options);
     const phone = '+91'+data?.passengerDetails[0]?.ContactNo;
     const url=`https://theskytrails.com/FlightEticket/${result._id}`;
     // await whatsApi.sendMessageWhatsApp(phone,userName,url,'flight');
-    const depDate=new Date(createdData.airlineDetails[0].Origin.DepTime);
-    const depTime=new Date(createdData.airlineDetails[0].Origin.DepTime);
-    const arrTime=new Date(createdData.airlineDetails[0].Destination.ArrTime);
-    const templates=[String(userName),String(createdData.pnr),String(createdData.airlineDetails[0].Airline.AirlineName),String(depDate.toLocaleDateString('en-GB', options)),String(depTime.toLocaleTimeString('en-GB')),String(arrTime.toLocaleTimeString('en-GB')),String(createdData.totalAmount)];
-    await whatsApi.sendWhtsAppAISensy(phone,templates,"Flight Booking");
+    const depDate=new Date(data.airlineDetails[0].Origin.DepTime);
+    const depTime=new Date(data.airlineDetails[0].Origin.DepTime);
+    const arrTime=new Date(data.airlineDetails[0].Destination.ArrTime);
+    const templates=[String(userName),String(data.pnr),String(data.airlineDetails[0].Airline.AirlineName),String(depDate.toLocaleDateString('en-GB', options)),String(depTime.toLocaleTimeString('en-GB')),String(arrTime.toLocaleTimeString('en-GB')),String(data.totalAmount)];
+   console.log(templates,"logs")
+    await whatsApi.sendWhtsAppOTPAISensy(phone,templates,"flightBooking");
     await sendSMSUtils.sendSMSForFlightBooking(data);
     await commonFunction.FlightBookingConfirmationMail(result);
     return res.status(statusCode.OK).send({
