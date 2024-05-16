@@ -35,7 +35,7 @@ const quizServices={
         return await quizResponsemodel.findOne(query).populate('user');
     },
     findQuizResponseData: async (query) => {
-        return await quizResponsemodel.find(query).populate('user');
+        return await quizResponsemodel.find(query).populate('user').sort({createdAt:-1});
     },
 
     deleteQuizResponse: async (query) => {

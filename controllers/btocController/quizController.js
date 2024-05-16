@@ -128,13 +128,18 @@ exports.getWinnerOfQuiz=async(req,res,next)=>{
         // const {questionId}=req.query;
         const currentDate=new Date()
         let result={}
-        result.lastDayWinner=await findQuizResponseContentPop({isWinner:true,isFirstResponse:true,resultDate:{$lte:currentDate}});
+        result.lastDayWinner=await findQuizResponseContentPop({isWinner:true,isFirstResponse:true, resultDate: {
+            $gte: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()),
+            $lt: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 1)
+        }});
+        // console.log("result.lastDayWinner==============",result.lastDayWinner);
         result.winnerList=await findQuizResponseData({isWinner:true,isFirstResponse:true});
-        if(result.lastDayWinner){
-            if(moment(result.lastDayWinner.resultDate).format('YYYY-MM-DD')==moment(currentDate).format('YYYY-MM-DD')){            
-            return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.WIINER_GOT,result:result});
-        }
-        }
+        // if(result.lastDayWinner){
+        //     console.log("result.lastDayWinner======================");
+        //     if(moment(result.lastDayWinner.resultDate).format('YYYY-MM-DD')==moment(currentDate).format('YYYY-MM-DD')){            
+        //     return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.WIINER_GOT,result:result});
+        // }
+        // }
         return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.WIINER_GOT,result:result});
 
     } catch (error) {

@@ -33,5 +33,6 @@ module.exports = function (app) {
     app.delete("/skyTrails/grnconnect/hotelcancelbooking",controller.hotelCancelBooking);
 
     app.post("/skyTrails/grnconnect/addhotelBooking", controller.addHotelBooking);
+
     
 }

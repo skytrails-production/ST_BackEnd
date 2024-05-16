@@ -109,7 +109,7 @@ exports.getBlogById=async(req,res,next)=>{
 exports.deleteBlog=async(req,res,next)=>{
   try {
     const {blogId}=req.body;
-    const isBlogExits=await findBlog({_id:blogId,status:status.ACTIVE});
+    const isBlogExits=await findBlog({_id:blogId});
     if(!isBlogExits){
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
@@ -130,7 +130,7 @@ exports.deleteBlog=async(req,res,next)=>{
 
 exports.hideBlog=async(req,res,next)=>{
   try {
-    const {blogId}=req.body;
+    const {blogId,}=req.body;
     const isBlogExits=await findBlog({_id:blogId,status:status.ACTIVE});
     if(!isBlogExits){
       return res.status(statusCode.OK).send({
@@ -152,7 +152,7 @@ exports.hideBlog=async(req,res,next)=>{
 
 exports.updateBlog=async(req,res,next)=>{
   try {
-    const {blogId,title,content,location,status}=req.body;
+    const {blogId,title,content,location}=req.body;
     const isBlogExits=await findBlog({_id:blogId,status:status.ACTIVE});
     if(!isBlogExits){
       return res.status(statusCode.OK).send({
@@ -192,6 +192,27 @@ exports.getBlogListAdmin=async(req,res,next)=>{
      return next(error);
   }
 };
+exports.activeStatus=async(req,res,next)=>{
+  try {
+    const {blogId,status}=req.body;
+    const isBlogExits=await findBlog({_id:blogId});
+    if(!isBlogExits){
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.BLOG_NOT_FOUND,
+      }); 
+    }
+    const update=await updateBlog({_id:isBlogExits._id},{status:status});
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.UPDATE_SUCCESS,
+      result:update
+    });
+  } catch (error) {
+    console.log("error while trying to active blog",error);
+    return next(error);
+  }
+}
 exports.likeBlog=async(req,res,next)=>{
     try {
         const {blogId}=req.query;

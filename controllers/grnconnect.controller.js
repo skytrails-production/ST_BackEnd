@@ -16,12 +16,19 @@ const s3 = new aws.S3({
 });
 
 
+// const headers = {
+//     'Content-Type': 'application/json',
+//     'Accept': 'application/json',
+//     'Accept-Encoding': 'application/gzip',
+//     'api-key': 'b3df547f1c1a2a3989c234bcf2aacaed',
+// };
 const headers = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'Accept-Encoding': 'application/gzip',
-    'api-key': 'b79e47991faefb0c7d091b9b6ddc9ea4',
+  'Content-Type': 'application/json',
+  'Accept': 'application/json',
+  'Accept-Encoding': 'application/gzip',
+  'api-key': 'b79e47991faefb0c7d091b9b6ddc9ea4',
 };
+
 // const baseurl='https://api-sandbox.grnconnect.com';
 const baseurl =" https://v4-api.grnconnect.com";
 
@@ -146,6 +153,8 @@ exports.hotelSearchWithPagination=async (req,res) =>{
        // Fetch hotel codes with pagination
        const hotelCode = await exports.grnHotelCityMapWithPagination(req.body.cityCode, page, limit);
       //  console.log(hotelCode,"hotelCode");
+      // const hotelLength=await exports.hotelCodeLength(req.body.cityCode);
+      // console.log(hotelLength);
 
       const searchData={
         rooms:req.body.rooms,
@@ -158,7 +167,8 @@ exports.hotelSearchWithPagination=async (req,res) =>{
         version:req.body.version
       }
       // console.log(searchData,"data")
-      console.log(`${baseurl}/api/v3/hotels/availability`,"console")
+
+      // console.log(`${baseurl}/api/v3/hotels/availability`,"console")
       const response = await axios.post(`${baseurl}/api/v3/hotels/availability`, searchData, { headers });   
       
       
@@ -176,7 +186,8 @@ exports.refetchHotel = async (req, res) => {
     try{
         const SearchId=req.query.searchId;
         const hcode=req.query.hcode;
-        // console.log(`${baseurl}/api/v3/hotels/availability/${data}?rates="concise"`,"console")
+
+        // console.log(`${baseurl}/api/v3/hotels/availability/${SearchId}?hcode=${hcode}&bundled=true`,"console")
 
         const response = await axios.get(`${baseurl}/api/v3/hotels/availability/${SearchId}?hcode=${hcode}&bundled=true`,{ headers });   
         
@@ -198,6 +209,8 @@ exports.rateRefetchHotel =async (req, res) =>{
             ...req.body
         };
         const searchId=req.query.searchId;
+
+        // console.log("data",data)
         // console.log(`${baseurl}api/v3/hotels/availability/<sid>/rates/auto?action=recheck`,"console")
         const response = await axios.post(`${baseurl}/api/v3/hotels/availability/${searchId}/rates/auto?action=recheck`, data, { headers });   
         
@@ -246,6 +259,26 @@ exports.grnHotelCityMapWithPagination = async (cityCode, page , limit) => {
   }
 };
 
+//hotel code length
+
+exports.hotelCodeLength = async (cityCode)=>{
+
+  try {
+    const hotelCodes = await GrnHotelCityMap.find({'cityCode': cityCode});
+    const hotelLength=hotelCodes.length/100;
+      //  hotelLength=Number(hotelLength);
+      //  console.log(hotelLength>1?parseInt(Number(hotelLength)+Number(1)):1)
+    
+    return hotelLength>1?parseInt(Number(hotelLength)+Number(1)):1;
+    
+    
+  } catch (error) {
+    throw new Error(error.message);
+    
+  }
+
+}
+
 
 //get hotel Images
 
@@ -275,6 +308,7 @@ exports.bundledRates=async (req, res)=>{
       ...req.body
     };
 
+    // console.log(payload,"payload");
     const response = await axios.post(`${baseurl}/api/v3/hotels/availability/${data}/rates/?action=recheck`,payload,{ headers });   
     
     
@@ -295,6 +329,7 @@ exports.hotelBooking = async (req, res)=>{
       ...req.body
     };
     
+    // console.log(data,"data")
     const response=await axios.post(`${baseurl}/api/v3/hotels/bookings`, data, { headers })
 
     msg = "Hotel Booking Successfully!";
@@ -332,11 +367,14 @@ exports.hotelFetchBooking = async (req, res)=>{
 exports.hotelCancelBooking = async (req, res)=>{
 
   try {
+    const bookingId=req.query.bookingId;
      const data={
       ...req.body
      };
+
+    //  console.log(data,"data");
     
-    const response=await axios.delete(`${baseurl}/api/v3/hotels/bookings/`, { headers })
+    const response=await axios.delete(`${baseurl}/api/v3/hotels/bookings/${bookingId}`, { headers })
 
     msg = "Hotel Booking Successfully!";
     actionCompleteResponse(res, response.data, msg); 

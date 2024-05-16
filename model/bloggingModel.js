@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const aggregatePaginate = require("mongoose-aggregate-paginate-v2")
 mongoose.pluralize(null);
-const status=require ('../enums/storyStatus')
+const status=require ('../enums/status')
 const blogSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -52,7 +52,7 @@ const blogSchema = new mongoose.Schema({
     },
     status:{
         type:String,
-        enum:[status.ACTIVE,status.DELETE,status.PENDING],
+        enum:[status.ACTIVE,status.DELETE,status.BLOCK],
         default:status.ACTIVE
     },
 }, { timestamps: true });

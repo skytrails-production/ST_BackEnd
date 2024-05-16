@@ -1056,7 +1056,8 @@ exports.beachesPackagesCategoryArr = async (req, res, next) => {
         const options = {
           page: Number(page) || 1,
           limit: Number(limit) || 5,
-          sort: { createdAt: -1 }
+          sort: { createdAt: -1 },
+          select:{pakage_amount:1,pakage_title:1,pakage_img:1,days:1}
         };
         // Perform pagination query
         const result = await internationl.paginate(queryObj, options);
@@ -1131,3 +1132,75 @@ exports.getPackageByLocation=async(req,res,next)=>{
     return next(error);
   }
 }
+
+exports.beachesPackagesCategoryArr1 = async (req, res, next) => {
+  try {
+    const { page, limit,seeAll,keyword } = req.query;
+    let queryObj = {};
+    if(seeAll=="true"){
+      // for (const key of keywordsArray) {
+        queryObj = {
+          [`insclusions.${keyword}`]: "true",
+          is_active: 1
+        };
+      // }\
+        const results=await internationl.find(queryObj);
+        return res.status(statusCode.OK).send({
+          statusCode: statusCode.OK,
+          responseMessage: responseMessage.DATA_FOUND,
+          results: results,
+          resultsl:results.length
+        });
+    }
+    const categoryArray=await findPackageCategoryData({});
+    // console.log("categoryArray=-=========",categoryArray);
+     // Check if keyword exists and is an array
+     if (categoryArray.length > 0) {
+      const finalRes=[]
+      const results = {};
+      // Iterate over each keyword
+      for (const key of categoryArray) {
+        
+        queryObj = {
+          [`insclusions.${key.inclusion}`]: "true",
+          is_active: 1
+        };
+        const options = {
+          page: Number(page) || 1,
+          limit: Number(limit) || 5,
+          sort: { createdAt: -1 },
+          select:{pakage_amount:1,pakage_title:1,pakage_img:1,days:1}
+        };
+        // Perform pagination query
+        console.log("Selecting fields:", 'pakage_amount pakage_img pakage_title days');
+        const result = await internationl.paginate(queryObj, options, {
+          
+        });
+        console.log("Query Result:", result);results[key.inclusion] = result;
+      // Push result along with additional information to finalRes array
+      // console.log("result============",result);
+      // const modifiedobject={}
+      // for(const data of result.docs){
+
+      // }
+      finalRes.push({
+        inclusion: key.inclusion,
+        result,
+        colorCode: key.colorCode,
+        Icon: key.images,
+        headingCode:key.headingCode
+      });
+
+      }
+      
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.DATA_FOUND,
+        results: finalRes,
+      });
+    } 
+  } catch (error) {
+    console.error("Error while trying to fetch beach packages:", error);
+    return next(error);
+  }
+};
