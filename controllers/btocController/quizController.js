@@ -76,7 +76,8 @@ exports.submitDailyQuizResponse=async(req,res,next)=>{
             });}
            const isresponseExist=await findQuizResponseContent({questionId:isQuestionExist._id});
            if(isresponseExist){
-            if(isresponseExist.user.toString()===isUserExist._id.toString()){
+            const isuserAlreadyRespond=await findQuizResponseContent({questionId:isQuestionExist._id,user:isUserExist._id});
+            if(isuserAlreadyRespond){
                 return res.status(statusCode.OK).send({
                     statusCode: statusCode.Conflict,
                     responseMessage: responseMessage.ALREADY_RESPOND,
@@ -133,7 +134,7 @@ exports.getWinnerOfQuiz=async(req,res,next)=>{
             $lt: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 1)
         }});
         // console.log("result.lastDayWinner==============",result.lastDayWinner);
-        result.winnerList=await findQuizResponseData({isWinner:true,isFirstResponse:true});
+        result.winnerList=await findQuizResponseData({isWinner:true,isFirstResponse:true,resultDate:{$lt: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate())}});
         // if(result.lastDayWinner){
         //     console.log("result.lastDayWinner======================");
         //     if(moment(result.lastDayWinner.resultDate).format('YYYY-MM-DD')==moment(currentDate).format('YYYY-MM-DD')){            

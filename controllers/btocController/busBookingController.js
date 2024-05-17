@@ -38,10 +38,13 @@ const {
 const whatsApi = require("../../utilities/whatsApi");
 
 exports.busBooking = async (req, res, next) => {
+  console.log("========================")
   try {
+  
     const data = {
       ...req.body,
     };
+    console.log("data===========",data)
     const isUserExist = await findUser({
       _id: req.userId,
       status: status.ACTIVE,

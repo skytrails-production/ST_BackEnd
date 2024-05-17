@@ -112,3 +112,26 @@ exports.travelPlanGenerator = async (req, res) => {
     sendActionFailedResponse(res, { err }, err.message);
   }
 };
+
+
+
+exports.travelEmiPlan = async (req, res) =>{
+
+  try {
+    const data=req.body;
+
+    const response = await axios.post(`${api.emiTravelPlan}`, data, {
+      headers: {
+        partnerId: process.env.MIHURUPARTNERID,
+        apiKey: process.env.MIHURUAPIKEY,
+        'Content-Type': "application/json" 
+      },
+    });
+
+    msg = "Travel Plan EMI Data :";
+    actionCompleteResponse(res, response.data, msg);
+    
+  } catch (err) {
+    sendActionFailedResponse(res, { err }, err.message);
+  }
+}

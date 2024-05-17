@@ -318,7 +318,9 @@ busCancelURL:
     resendOtp:
     "https://uat.partners.mihuru.com/api/assistmodule/v1/confirmpersonaldetails",
     applicationStatus:
-    "https://uat.partners.mihuru.com/api/application/status"
+    "https://uat.partners.mihuru.com/api/application/status",
+    emiTravelPlan:
+    "https://uat.partners.mihuru.com/api/TravelEMI/TravelPlanEMI"
 };
 exports.responseFlags = {
   ACTION_COMPLETE: 200,

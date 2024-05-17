@@ -14,5 +14,8 @@ module.exports = function (app) {
     app.post("/skyTrails/mihuru/signup",controller.signUp);
     app.post("/skyTrails/mihuru/submitotp",controller.submitOtp);
     app.post("/skyTrails/mihuru/travelplangenerator", controller.travelPlanGenerator);
+
+    //emi calcularot
+    app.post("/skyTrails/mihuru/travelemiplan",controller.travelEmiPlan);
     
 }
