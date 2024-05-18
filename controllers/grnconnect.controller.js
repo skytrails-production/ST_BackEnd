@@ -166,7 +166,7 @@ exports.hotelSearchWithPagination=async (req,res) =>{
         checkout:req.body.checkout,
         version:req.body.version
       }
-      // console.log(searchData,"data")
+      // console.log(searchData,"data");
 
       // console.log(`${baseurl}/api/v3/hotels/availability`,"console")
       const response = await axios.post(`${baseurl}/api/v3/hotels/availability`, searchData, { headers });   

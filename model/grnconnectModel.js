@@ -109,15 +109,12 @@ countryName:String
 })
 
 const GrnHotelCityMapSchema = new mongoose.Schema({
-  hotelCode: {
-    type: Number,
-  },
-  locationCode: {
-    type: Number,
-  },
-  cityCode: {
-    type: Number,
-  },
+  hotelCode:Number,
+  hotelName:String,
+  cityCode:Number,
+  countryCode:String,
+  latitude:Number,
+  longitude:Number
 });
 
 
