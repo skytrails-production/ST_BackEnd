@@ -38,13 +38,12 @@ const {
 const whatsApi = require("../../utilities/whatsApi");
 
 exports.busBooking = async (req, res, next) => {
-  console.log("========================")
   try {
-  
+    console.log("======================");
     const data = {
       ...req.body,
     };
-    console.log("data===========",data)
+    console.log("==================",data);
     const isUserExist = await findUser({
       _id: req.userId,
       status: status.ACTIVE,
@@ -74,20 +73,20 @@ let options = { day: '2-digit', month: '2-digit', year: 'numeric' };
 
 // Format the date using the toLocaleDateString() function
 let formattedDate = new Date().toLocaleDateString('en-GB', options);
-
-   const createdData= await createPushNotification(notObject);
+let journeyDate=new Date(data.departureTime);
+await createPushNotification(notObject);
     // await sendSMS.sendSMSBusBooking(result.passenger[0].Phone, userName);
     const url=`https://theskytrails.com/busEticket/${result._id}`;
-    const TemplateNames=[String(notObject.from),String(createdData.pnr),String(notObject.to),String(formattedDate)];
+    const TemplateNames=[String(notObject.from),String(data.pnr),String(notObject.to),String(formattedDate)];
     // const TemplateNames1=[String(var1),String(var1)]
-    const sent=await whatsApi.sendWhtsAppOTPAISensy(AdminNumber,TemplateNames,'admin_booking_Alert');
-    // await whatsApi.sendWhtsAppOTPAISensy(AdminNumber,TemplateNames1,'admin_booking_Alert');
-    await whatsApi.sendMessageWhatsApp(contactNo,userName,url,'bus');
+    await whatsApi.sendWhtsAppOTPAISensy(AdminNumber,TemplateNames,'admin_booking_Alert');
+    const template=[String(data.origin),String(data.destination),String(data.pnr),String(journeyDate.toLocaleDateString('en-GB', options)),String(data.noOfSeats),String(data.BoardingPoint.Location)]
+    await whatsApi.sendWhtsAppOTPAISensy(contactNo,template,'busBooking');
+    // await whatsApi.sendMessageWhatsApp(contactNo,userName,url,'bus');
     // await whatsApi.sendWhatsAppMsgAdmin(AdminNumber,'adminbooking_alert');
     // await whatsApi.sendWhatsAppMsgAdmin(AdminNumber,'adminalert');
     await commonFunction.BusBookingConfirmationMail(result);
     if (result) {
-     
       return res
         .status(statusCode.OK)
         .send({

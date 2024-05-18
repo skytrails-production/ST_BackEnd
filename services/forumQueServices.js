@@ -161,7 +161,7 @@ const forumQueServices={
       let options = {
         page: parseInt(page, 10) || 1,
         limit: parseInt(limit, 10) || 10,
-        createdAt:-1
+        sort:{createdAt:-1}
       };
    
       const result = await forumQueModel.aggregatePaginate(aggregate, options);

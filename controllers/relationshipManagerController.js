@@ -186,6 +186,8 @@ exports.createRelationShipManage = async (req, res, next) => {
     }
     const result = await createRelationShipManager(object);
     console.log("result=====", result);
+    const template=[String("Relationship Manager"),String(result.userName),String(password),String("https://thehawaiyatra.com/relationshipManager/Login")]
+    await whatsappAPIUrl.sendWhtsAppOTPAISensy("+91" + contactNumber,template,"loginCredential");
     const sent = await whatsappAPIUrl.sendWhatsAppMsgRM(
       "+91" + contactNumber,
       firstName + lastName,

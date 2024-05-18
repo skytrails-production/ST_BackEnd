@@ -208,8 +208,11 @@ exports.createSubAdmin = async (req, res, next) => {
     // }
     await sendSMS.sendSMSForSubAdmin(mobile_number, result.email);
     const message = `Welcome To TheSkyTrails, now you are subAdmin.`;
-    const MobileNo='+91'+mobile_number
+    const MobileNo='+91'+mobile_number;
+    
     await whatsappAPIUrl.sendMessageWhatsApp(MobileNo, message,"hello_test");
+    const template=[String("SubAdmin"),String(result.userName),String(password),String("https://thehawaiyatra.com/subAdminLogin")]
+    await whatsappAPIUrl.sendWhtsAppOTPAISensy(MobileNo,template,"loginCredential")
     await commonFunction.sendSubAdmin(result.email, result.userName, password);
     return res.status(statusCode.OK).send({
       status: statusCode.OK,
