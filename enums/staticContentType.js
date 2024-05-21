@@ -23,5 +23,6 @@ module.exports = Object.freeze({
     CancellationsPaymentPolicy:'CancellationsPaymentPolicy',
     DISCLAIMER:'DISCLAIMER',
     REFTNC:'REFTNC',
-    REFFAQ:'REFFAQ'
+    REFFAQ:'REFFAQ',
+    TRIVIAFAQ:'TRIVIAFAQ'
 })

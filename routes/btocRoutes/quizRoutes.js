@@ -1,6 +1,6 @@
 // const {upload} = require('../../utilities/uploadHandler');
 const quizController=require('../../controllers/btocController/quizController')
-
+const flightAdsCOntroller=require('../../controllers/btocController/advertisementController')
 const schemas = require('../../utilities/schema.utilities');
 const SchemaValidator = require('../../utilities/validations.utilities');
 // const upload=require('../../utilities/uploadHandler')
@@ -20,4 +20,5 @@ module.exports = function (app) {
     app.post('/skyTrails/api/user/quiz/submitQuizResponse',[authJwt.verifcationToken],quizController.submitDailyQuizResponse)
     app.get('/skyTrails/api/user/quiz/getAllQuiz',quizController.getAllQuizQustion);
     app.get('/skyTrails/api/user/quiz/getQuizWinnerToday',quizController.getWinnerOfQuiz);
+    app.post('/skyTrails/api/user/uploadImage',upload.single("images"),flightAdsCOntroller.uploadImage);
 }

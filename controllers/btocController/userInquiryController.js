@@ -1,8 +1,7 @@
 const responseMessage = require("../../utilities/responses");
 const statusCode = require("../../utilities/responceCode");
-const status = require("../../enums/status");
-const bcrypt = require("bcryptjs");
-const resolveStatus=require("../../enums/errorType")
+const resolveStatus=require("../../enums/errorType");
+const whatsApi=require("../../utilities/whatsApi");
 /**********************************SERVICES********************************** */
 const { userServices } = require("../../services/userServices");
 const {
@@ -29,6 +28,9 @@ exports.userInquiriesEntry=async(req,res,next)=>{
             message:content
         }
         const result=await createUserInquiry(obj);
+        const templates=[String(name)];
+        const userContact='+91'+phone
+         await whatsApi.sendWhtsAppOTPAISensy(userContact,templates,"userEnquiry");
         return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.SUCCESS,result:result});
 
     } catch (error) {

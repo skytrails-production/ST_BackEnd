@@ -18,7 +18,7 @@ const bloggingServices = {
         return await bloggingModel.findOne(query);
     },
     findBlogData: async (query) => {
-        return await bloggingModel.find(query);
+        return await bloggingModel.find(query).sort({createdAt:-1});
     },
     deleteBlog: async (query) => {
         return await bloggingModel.deleteOne(query);

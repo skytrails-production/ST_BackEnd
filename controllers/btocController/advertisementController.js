@@ -356,3 +356,23 @@ exports.gethoteladvertisementController = async (req, res, next) => {
         return next(error);
     }
 }
+
+
+exports.uploadImage=async(req,res,next)=>{
+    try {
+        if (!req.file) {
+            return res.status(400).send({ message: "No file uploaded." });
+          }
+        if(req.file){
+            const imageFiles = await commonFunction.getImageUrlAWS(req.file);
+            if (!imageFiles) {
+                return res.status(statusCode.InternalError).send({ statusCode: statusCode.OK, message: responseMessage.INTERNAL_ERROR });
+            }
+            return res.status(statusCode.InternalError).send({ statusCode: statusCode.OK, message: responseMessage.UPLOAD_SUCCESS,result: imageFiles});
+        }
+        
+    } catch (error) {
+     console.log("error while trying to upload image on cloud",error);
+     return next(error)   
+    }
+}
