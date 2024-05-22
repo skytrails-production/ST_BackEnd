@@ -2368,4 +2368,472 @@ function ssdcMail(to){
 
 
 
-module.exports = {flightMail, busMail, hotelMail, otpMail, welcomeMail,welcomeAgentMail ,ssdcMail };
+function packageLandingMail(to){
+
+    
+
+      const mailData=`<div class="container">
+      <h1>Packaging Booking Enquiry</h1>
+      <p>Dear ${to.name},</p>
+      <p>Thank you for reaching out to us regarding your packaging needs. We have received your enquiry and appreciate your interest in our services.</p>
+      <p>Thank you for registering with us. We will be in touch with you shortly.</p></div>`;
+    return `<html>
+    <head>
+      <style>
+        body {
+          font-family: 'Arial', sans-serif;
+          margin: 0;
+          padding: 0;
+          background-color: #f4f4f4;
+        }
+        .container {
+          margin: 20px auto;
+          background-color: #ffffff;
+          padding: 20px;
+          border-radius: 5px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+          color: #333333;
+        }
+        p {
+          color: #555555;
+        }
+      </style>
+    </head>
+    <body>
+     ${mailData}
+    </body>
+  </html>`
+
+}
+
+
+
+function hotelGrnMail(to){
+    // console.log(to)
+
+    const checkInDate = new Date(to.CheckInDate);
+    const checkOutDate = new Date(to.CheckOutDate);
+
+    // Calculate the difference in milliseconds
+    const differenceInTime = checkOutDate.getTime() - checkInDate.getTime();
+
+    // Convert milliseconds to days
+    const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+
+    // Display the number of nights
+    const numberOfNights = Math.floor(differenceInDays);
+
+    return`<!DOCTYPE html>
+
+    <html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
+    <head>
+    <title></title>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/><!--[if mso]><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch><o:AllowPNG/></o:OfficeDocumentSettings></xml><![endif]-->
+    <style>
+            * {
+                box-sizing: border-box;
+            }
+    
+            body {
+                margin: 0;
+                padding: 0;
+            }
+    
+            a[x-apple-data-detectors] {
+                color: inherit !important;
+                text-decoration: inherit !important;
+            }
+    
+            #MessageViewBody a {
+                color: inherit;
+                text-decoration: none;
+            }
+    
+            p {
+                line-height: inherit
+            }
+    
+            .desktop_hide,
+            .desktop_hide table {
+                mso-hide: all;
+                display: none;
+                max-height: 0px;
+                overflow: hidden;
+            }
+    
+            .image_block img+div {
+                display: none;
+            }
+    
+            @media (max-width:620px) {
+                .social_block.desktop_hide .social-table {
+                    display: inline-block !important;
+                }
+    
+                .mobile_hide {
+                    display: none;
+                }
+    
+                .row-content {
+                    width: 100% !important;
+                }
+    
+                .stack .column {
+                    width: 100%;
+                    display: block;
+                }
+    
+                .mobile_hide {
+                    min-height: 0;
+                    max-height: 0;
+                    max-width: 0;
+                    overflow: hidden;
+                    font-size: 0px;
+                }
+    
+                .desktop_hide,
+                .desktop_hide table {
+                    display: table !important;
+                    max-height: none !important;
+                }
+            }
+        </style>
+    </head>
+    <body style="background-color: #fbf3f3; margin: 0; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
+    <table border="0" cellpadding="0" cellspacing="0" class="nl-container" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #fbf3f3;" width="100%">
+    <tbody>
+    <tr>
+    <td>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tbody>
+    <tr>
+    <td>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #071c2c; color: #000000; width: 600px; margin: 0 auto;" width="600">
+    <tbody>
+    <tr>
+    <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="50%">
+    <table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tr>
+    <td class="pad" style="padding-left:15px;width:100%;padding-right:0px;">
+    <div align="left" class="alignment" style="line-height:10px">
+    <div style="max-width: 120px;"><img src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/mailingImages/logo.png" style="display: block; height: auto; border: 0; width: 100%;" width="120"/></div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    </td>
+    <td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="50%">
+    <table border="0" cellpadding="0" cellspacing="0" class="social_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tr>
+    <td class="pad" style="padding-right:15px;text-align:right;padding-left:0px;">
+    <div align="right" class="alignment">
+    <table border="0" cellpadding="0" cellspacing="0" class="social-table" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; display: inline-block;" width="108px">
+    <tr>
+    <td style="padding:0 0 0 4px;"><a href="https://www.facebook.com/theskytrailsofficials" target="_blank"><img alt="Facebook" height="32" src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/mailingImages/facebook-icon.png" style="display: block; height: auto; border: 0;" title="facebook" width="32"/></a></td>
+    <td style="padding:0 0 0 4px;"><a href="https://twitter.com/TheSkytrails" target="_blank"><img alt="Twitter" height="32" src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/mailingImages/twitter-icon.png" style="display: block; height: auto; border: 0;" title="twitter" width="32"/></a></td>
+    <td style="padding:0 0 0 4px;"><a href="https://www.instagram.com/theskytrails" target="_blank"><img alt="Instagram" height="32" src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/mailingImages/instagram-icon.png" style="display: block; height: auto; border: 0;" title="instagram" width="32"/></a></td>
+    </tr>
+    </table>
+    </div>
+    </td>
+    </tr>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #faefef;" width="100%">
+    <tbody>
+    <tr>
+    <td>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #fff; color: #000000; border-radius: 0; width: 600px; margin: 0 auto;" width="600">
+    <tbody>
+    <tr>
+    <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 15px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="33.333333333333336%">
+    <table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tr>
+    <td class="pad" style="padding-left:5px;width:100%;">
+    <div align="center" class="alignment" style="line-height:10px">
+    <div style="max-width: 195px;"><img alt="I'm an image" src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/mailingImages/hotel_img.jpg" style="display: block; height: auto; border: 0; width: 100%;" title="I'm an image" width="195"/></div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    </td>
+    <td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="66.66666666666667%">
+    <table border="0" cellpadding="0" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+    <tr>
+    <td class="pad" style="padding-bottom:10px;padding-left:20px;padding-right:10px;padding-top:20px;">
+    <div style="font-family: sans-serif">
+    <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+    <p style="margin: 0; font-size: 30px; text-align: left; mso-line-height-alt: 36px;"><span style="color:#04072e;"><strong><span style="font-size:30px;">Hotel </span></strong></span></p>
+    <p style="margin: 0; font-size: 30px; text-align: left; mso-line-height-alt: 36px;"><span style="color:#04072e;"><strong><span style="font-size:30px;">Restaurant</span></strong></span></p>
+    </div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    <table border="0" cellpadding="10" cellspacing="0" class="button_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tr>
+    <td class="pad">
+    <div align="left" class="alignment"><!--[if mso]>
+    <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" style="height:42px;width:118px;v-text-anchor:middle;" arcsize="10%" stroke="false" fillcolor="#e03a48">
+    <w:anchorlock/>
+    <v:textbox inset="0px,0px,0px,0px">
+    <center style="color:#ffffff; font-family:Arial, sans-serif; font-size:16px">
+    <![endif]-->
+    <div style="text-decoration:none;display:inline-block;color:#ffffff;background-color:#e03a48;border-radius:4px;width:auto;border-top:0px solid transparent;font-weight:undefined;border-right:0px solid transparent;border-bottom:0px solid transparent;border-left:0px solid transparent;padding-top:5px;padding-bottom:5px;font-family:Arial, Helvetica, sans-serif;font-size:16px;text-align:center;mso-border-alt:none;word-break:keep-all;"><span style="padding-left:20px;padding-right:20px;font-size:16px;display:inline-block;letter-spacing:normal;"><span style="margin: 0; word-break: break-word; line-height: 32px;"><strong>Book Now</strong></span></span></div><!--[if mso]></center></v:textbox></v:roundrect><![endif]-->
+    </div>
+    </td>
+    </tr>
+    </table>
+    <table border="0" cellpadding="10" cellspacing="0" class="text_block block-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+    <tr>
+    <td class="pad">
+    <div style="font-family: sans-serif">
+    <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+    <p style="margin: 0; font-size: 15px; mso-line-height-alt: 18px;"><span style="color:#04072e;"><strong><span style="font-size:15px;">Your booking is confirmed!</span></strong></span></p>
+    <p style="margin: 0; font-size: 15px; mso-line-height-alt: 18px;"><span style="color:#04072e;"><strong><span style="font-size:15px;">Get ready to experience unparalleled</span></strong></span></p>
+    <p style="margin: 0; font-size: 15px; mso-line-height-alt: 18px;"><span style="color:#04072e;"><strong><span style="font-size:15px;">comfort and hospitality.</span></strong></span></p>
+    </div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tbody>
+    <tr>
+    <td>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-radius: 0; color: #000000; width: 600px; margin: 0 auto;" width="600">
+    <tbody>
+    <tr>
+    <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+    <table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tr>
+    <td class="pad" style="width:100%;">
+    <div align="center" class="alignment" style="line-height:10px">
+    <div style="max-width: 600px;"><img alt="I'm an image" src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/mailingImages/hotel_banner_img_2.jpg" style="display: block; height: auto; border: 0; width: 100%;" title="I'm an image" width="600"/></div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-4" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tbody>
+    <tr>
+    <td>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #071c2c; color: #000000; width: 600px; margin: 0 auto;" width="600">
+    <tbody>
+    <tr>
+    <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 20px; padding-top: 20px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="33.333333333333336%">
+    <table border="0" cellpadding="0" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+      </table>
+    <table border="0" cellpadding="10" cellspacing="0" class="text_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+    <tr>
+    <td class="pad">
+    <div style="font-family: sans-serif">
+    <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="color:#ffffff;">${to?.hotel?.paxes?.length} Guests</span></p>
+    </div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    <table border="0" cellpadding="10" cellspacing="0" class="text_block block-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+    <tr>
+    <td class="pad">
+    <div style="font-family: sans-serif">
+    <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;">
+    </div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    
+    <table border="0" cellpadding="0" cellspacing="0" class="text_block block-6" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+    <tr><td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="33.333333333333336%">
+    <table border="0" cellpadding="10" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+    <tr>
+    <td class="pad">
+    <div style="font-family: sans-serif">
+    <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="font-size:16px;"><strong><span style="color:#ffffff;">Check-in</span></strong></span></p>
+    </div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    <table border="0" cellpadding="10" cellspacing="0" class="text_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+    <tr>
+    <td class="pad">
+    <div style="font-family: sans-serif">
+    <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="font-size:15px;color:#ffffff;">${to?.checkin}</span></p>
+    </div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    <table border="0" cellpadding="10" cellspacing="0" class="text_block block-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+    <tr>
+    <td class="pad">
+    <div style="font-family: sans-serif">
+    <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="font-size:15px;color:#ffffff;">After 03:00 PM</span></p>
+    </div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    </td>
+    <td class="column column-3" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="33.333333333333336%">
+    <table border="0" cellpadding="10" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+    <tr>
+    <td class="pad">
+    <div style="font-family: sans-serif">
+    <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="font-size:15px;color:#ffffff;">Check-out</span></p>
+    </div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    <table border="0" cellpadding="10" cellspacing="0" class="text_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+    <tr>
+    <td class="pad">
+    <div style="font-family: sans-serif">
+    <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="font-size:15px;color:#ffffff;">${to?.checkout}</span></p>
+    </div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    <table border="0" cellpadding="10" cellspacing="0" class="text_block block-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+    <tr>
+    <td class="pad">
+    <div style="font-family: sans-serif">
+    <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
+    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="font-size:15px;color:#ffffff;">Before 12:00 PM</span></p>
+    </div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-5" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tbody>
+    <tr>
+    <td>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #fff; color: #000000; width: 600px; margin: 0 auto;" width="600">
+    <tbody>
+    <tr>
+    <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+    <table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tr>
+    <td class="pad" style="width:100%;">
+    <div align="center" class="alignment" style="line-height:10px">
+    <div style="max-width: 537px;"><img alt="I'm an image" src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/mailingImages/hotel_banner_img_3.jpg" style="display: block; height: auto; border: 0; width: 100%;" title="I'm an image" width="537"/></div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-6" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tbody>
+    <tr>
+    <td>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #fbf3f3; color: #000000; width: 600px; margin: 0 auto;" width="600">
+    <tbody>
+    <tr>
+    <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+    <table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tr>
+    <td class="pad" style="width:100%;">
+    <div align="center" class="alignment" style="line-height:10px">
+    <div style="max-width: 600px;"><img alt="I'm an image" src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/mailingImages/hotel_img_5-01.jpg" style="display: block; height: auto; border: 0; width: 100%;" title="I'm an image" width="600"/></div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-7" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tbody>
+    <tr>
+    <td>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #971119; color: #000000; width: 600px; margin: 0 auto;" width="600">
+    <tbody>
+    <tr>
+    <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+    <table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+    <tr>
+    <td class="pad" style="width:100%;">
+    <div align="center" class="alignment" style="line-height:10px">
+    <div style="max-width: 600px;"><img src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/mailingImages/skyTrails-banner.png" style="display: block; height: auto; border: 0; width: 100%;" width="600"/></div>
+    </div>
+    </td>
+    </tr>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    </td>
+    </tr>
+    </tbody>
+    </table><!-- End -->
+    </body>
+    </html>`
+}
+
+
+
+module.exports = {flightMail, busMail, hotelMail, otpMail, welcomeMail,welcomeAgentMail ,ssdcMail, packageLandingMail,hotelGrnMail};

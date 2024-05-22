@@ -231,3 +231,27 @@ exports.likeBlog=async(req,res,next)=>{
     }
 }
 
+exports.getBlogByTitle=async(req,res,next)=>{
+  try {
+    const {blogTitle}=req.query;
+    const allResult={};
+    const result=await findBlog({title:blogTitle});
+    if(!result){
+        return res.status(statusCode.OK).send({
+            statusCode: statusCode.NotFound,
+            responseMessage: responseMessage.DATA_NOT_FOUND,
+          }); 
+    }
+    const updateViews=await updateBlog({ _id: result._id }, { $inc: { views: 1 } });
+    allResult.searchedBlog=updateViews;
+    allResult.trendingBlog=await blogList({status:status.ACTIVE});
+    return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.BLOG_GET_SUCCESSFULLY,
+        result: allResult,
+      });
+} catch (error) {
+   console.log("Error while trying to get blogs",error);
+   return next(error);
+}
+}

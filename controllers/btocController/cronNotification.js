@@ -290,13 +290,8 @@ var taskPlatformNotification = cron.schedule("14 14 * * *",
           // Now you can find super cool deals on flights✈ and hotels🏨📱 
           
           // Update your app now and let's get your wanderlust fix!`;
-          const notificationMessage = `I know I am not your therapist `;
-      const messageBody = `but I can be your travelist so travel with
-      THE
-          SKYTRAILS
-      FLY
-          HIGH
-      &🥰`;
+          const notificationMessage = `Hey ${user.username}, bag pack kiya? 🎒`;
+      const messageBody = `SkyTrails pe book karo aur chalo duniya ghoomne! 🌍✨`;
           await pushSimpleNotification(
             user.deviceToken,
             notificationMessage,
@@ -457,8 +452,8 @@ var taskPlatformNotification = cron.schedule("0 18 * * *",
           // Now you can find super cool deals on flights✈ and hotels🏨📱 
           
           // Update your app now and let's get your wanderlust fix!`;
-          const notificationMessage = '6 missed calls from your friend 📞';
-      const messageBody = `Regarding your next trip with TheSkyTrails✈️🛩️`;
+          const notificationMessage = `Uda do stress ko, ${user.username}! ✈️`;
+      const messageBody = `SkyTrails pe abhi book karo aur le aao zindagi mein thoda adventure! 🌟🗺️`;
           await pushSimpleNotification(
             user.deviceToken,
             notificationMessage,
@@ -491,3 +486,98 @@ var taskPlatformNotification = cron.schedule("0 18 * * *",
   }
 );
 taskPlatformNotification.start();
+
+const notifications = [
+  {
+    message: `Uda do stress ko,username✈️`,
+    body: `SkyTrails pe abhi book karo aur le aao zindagi mein thoda adventure username! 🌟🗺️`,
+  },
+  {
+    message: `Hey username, bag pack kiya ? 🎒`,
+    body: `SkyTrails pe book karo aur chalo duniya ghoomne! 🌍✨`,
+  },
+  {
+    message: `username,nayi destinations ka pata laga! 🌏`,
+    body: `SkyTrails ke sath apni next trip plan karo aur maza lo! 😄🛫`,
+  },
+  {
+    message: `Travel ka time aa gaya,🏃‍♂️✈️`,
+    body: `SkyTrails pe abhi book karo aur pao amazing deals! 💸🌟`,
+  },
+  {
+    message: `duniya bula rahi hai! 🌍`,
+    body: `SkyTrails se book karo aur jee lo zindagi! 🎉🛩️`,
+  },
+  {
+    message: `Wanderlust activated,!🌟`,
+    body: `SkyTrails pe book karo aur apni travel list complete karo! 🗺️🎒`,
+  },
+  {
+    message: `Adventure awaits, username! 🗺️`,
+    body: `SkyTrails se book karo aur pao unbeatable prices! ✈️💰`,
+  },
+  {
+    message: `username,sapno ki yatra shuru ho gayi! 🚀`,
+    body: `SkyTrails pe tickets book karo aur travel ka maza lo! 😎🌍`,
+  },
+  {
+    message: `Naye safar ki shuruaat! 🌅`,
+    body: `SkyTrails pe book karo aur apne dosto ko saath le jao! 👫✈️`,
+  },
+  {
+    message: `Trip ki planning ho gayi? 📅`,
+    body: `SkyTrails ke sath apni next vacation plan karo aur enjoy karo! 🏖️✨`,
+  },
+
+];
+
+const taskRandomNotification = cron.schedule(
+  "0 10 * * *",
+  async () => {
+    try {
+      const users = await userList({
+        status: status.ACTIVE,
+        // 'phone.mobile_number':{ $in: ['8115199076', '9135219071','8847301811'] },
+        deviceToken: { $exists: true, $ne: "" },
+
+      });
+
+      const imageurl = `https://skytrails.s3.amazonaws.com/notification.jpg`;
+
+      for (const user of users) {
+        try {
+          const notification = notifications[Math.floor(Math.random() * notifications.length)];
+          const notificationMessage = notification.message.replace('username', user.username);
+          const messageBody = notification.body.replace('username', user.username);
+
+          await pushSimpleNotification(
+            user.deviceToken,
+            notificationMessage,
+            messageBody,
+            // imageurl
+          );
+          console.log(
+            "Notification cron job executed successfully. User:",
+            user.username
+          );
+        } catch (pushError) {
+          console.error(
+            "Error while sending push notification to user:",
+            pushError
+          );
+          continue;
+        }
+      }
+      // Stop the cron job after execution
+      taskPlatformNotification.stop();
+    } catch (error) {
+      console.log("Error when running task:", error);
+    }
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Kolkata", // Timezone setting
+  }
+);
+
+taskRandomNotification.start();

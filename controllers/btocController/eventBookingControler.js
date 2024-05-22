@@ -80,7 +80,7 @@ const { stringify } = require("querystring");
 const{createPushNotification,findPushNotification,findPushNotificationData,deletePushNotification,updatePushNotification,countPushNotification}=pushNotificationServices;
 
 
-exports.eventBooking = async (req, res, next) => {
+exports.eventBooking1 = async (req, res, next) => {
   try {
     const {
       price,
@@ -308,7 +308,7 @@ exports.bookFreeEvents = async (req, res, next) => {
 
 
 //*********************************PEFA EVENT BOOKING*****************************/
-exports.pefaEventBooking = async (req, res, next) => {
+exports.eventBooking = async (req, res, next) => {
   try {
     const {name,mobileNumber,city,deviceToken,deviceType,eventDate,eventId,noOfMember,profession} = req.body;
     const isUserExist = await findUserData({_id: req.userId,status: status.ACTIVE,});
@@ -362,9 +362,9 @@ exports.pefaEventBooking = async (req, res, next) => {
     const contactNo = "+91" + mobileNumber;
     const smsFormat = isEventExist.title;
     await sendSMS.sendSMSEventEnquiry(mobileNumber,smsFormat);
-    // const templates=[String(userName),String(data.pnr),String(data.airlineDetails[0].Airline.AirlineName),String(depDate.toLocaleDateString('en-GB', options)),String(depTime.toLocaleTimeString('en-GB')),String(arrTime.toLocaleTimeString('en-GB')),String(data.totalAmount)];
+    const templates=[String(eventname)];
     // console.log(templates,"logs")
-    //  await whatsApi.sendWhtsAppOTPAISensy(phone,templates,"flightBooking");
+     const send=await whatsappAPIUrl.sendWhtsAppOTPAISensy(contactNo,templates,"eventBooking");
     await whatsappAPIUrl.sendMessageWhatsApp(contactNo,eventname,date,"event4_v3");
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,

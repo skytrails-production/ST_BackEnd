@@ -392,6 +392,8 @@ exports.addHotelBooking=async (req, res) =>{
     ...req.body
   }
   const response=await GrnHotelBooking.create(data);
+  
+  await commonFunctions.grnHotelBookingConfirmationMailWithPdf(response);
 
   msg = "Hotel Booking Save Successfully in Data Base !";
     actionCompleteResponse(res, response, msg); 

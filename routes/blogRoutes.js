@@ -14,7 +14,7 @@ module.exports = function (app) {
   app.post("/skyTrails/api/blog/createBlog",upload.array("images"),controller.createBlog);
   app.get("/skyTrails/api/blog/getAllBlogs",controller.getBlogList);
   app.get("/skyTrails/api/blog/getBlogById",controller.getBlogById);
-//   app.post("/skyTrails/api/blog/createBlog",controller.randomPaymentFailure);
+  app.get("/skyTrails/api/blog/getBlogByTitle",controller.getBlogByTitle);
 app.put("/skyTrails/api/blog/deleteBlog",controller.deleteBlog);
 app.put("/skyTrails/api/blog/hideBlog",controller.hideBlog);
 app.put("/skyTrails/api/blog/updateBlog",controller.updateBlog);

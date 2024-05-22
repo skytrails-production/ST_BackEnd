@@ -265,9 +265,37 @@ const packageCityData = mongoose.model(
     }
   )
 );
+
+
+// package enquirey shcehma
+
+
+
+const packageEnquirySchema = mongoose.model(
+  "packageEnquirys",
+  mongoose.Schema(
+    {
+      packageName:String,
+      packageAmount:Number,
+      name:String, 
+      phoneNumber:String,
+      email:String,
+      dateOfTravel:String,
+      departureCity:String,
+      noOfAdult:Number,
+      noOfChild:Number           
+    },
+    {
+      timestamps: true,
+    }
+  )
+);
+
+
 module.exports = {
   internationl,
   packagebookingSchema,
   confirmPackagebookingSchema,
   packageCityData,
+  packageEnquirySchema
 };

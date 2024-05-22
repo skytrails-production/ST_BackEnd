@@ -2158,3 +2158,19 @@ exports.randomPaymentFailure= async (req, res, next) => {
     return next(error);
   }
 };
+
+//********************Delete Agent************************ */
+exports.deleteAgent=async(req,res,next)=>{
+  try {
+    const {agentId}=req.body;
+    const isAgentExist=await findbrbuser({_id:agentId}) ;
+    if(!isAgentExist){
+      return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage:responseMessage.AGENT_NOT_FOUND });
+    }
+    const deletedData=await deletebrbuser({_id:isAgentExist._id});
+    return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage:responseMessage.DELETE_SUCCESS,result:deletedData });
+  } catch (error) {
+    console.log("error  while delet agentAccount==========", error);
+    return next(error);
+  }
+}

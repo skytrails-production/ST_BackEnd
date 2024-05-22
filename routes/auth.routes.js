@@ -1,6 +1,6 @@
 const { verifySignUp } = require("../middleware");
 const controller = require("../controllers/auth.controller");
-const agentChangeReqController=require("../controllers/b2bauth.controller")
+const agentController=require("../controllers/b2bauth.controller")
 const subAdminController=require("../controllers/subAdminController");
 const addWebBanner=require('../controllers/btocController/webAdvertisemnetController');
 const { authJwt } = require("../middleware");
@@ -87,5 +87,7 @@ app.put('/skyTrails/api/admin/updatePackageBanner',SchemaValidator(schemas.updat
 app.put('/skyTrails/api/admin/updatePopularDestination',SchemaValidator(schemas.updateDestinationSchema),controller.updatePopularDestination);
 app.post('/skyTrails/api/admin/createPackageCategory',upload.single('images'),controller.createPackageCategory);
 app.post('/skyTrails/api/admin/createDailyQuiz',controller.createDailyQuiz);
-app.put('/skyTrails/api/admin/updateQuizStatus',controller.dailyQuizStatus)
+app.put('/skyTrails/api/admin/updateQuizStatus',controller.dailyQuizStatus);
+app.delete("/skyTrails/api/admin/deleteAgent",agentController.deleteAgent);
+
 };

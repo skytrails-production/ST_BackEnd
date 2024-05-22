@@ -6,7 +6,8 @@ const {
   internationl,
   packagebookingSchema,
   confirmPackagebookingSchema,
-  packageCityData
+  packageCityData,
+  packageEnquirySchema
 } = require("../model/international.model");
 const aws = require("aws-sdk");
 const Internationalapi = require("../utilities/Internationalapi");
@@ -25,6 +26,7 @@ const s3 = new aws.S3({
 });
 //*************************Services****************************************/
 const {packageCategoryServices}=require('../services/packageCategoryServices');
+const commonFunctions = require("../utilities/commonFunctions");
 const {createPackageCategory,findPackageCategory,findPackageCategoryData,deletePackageCategory,updatePackageCategory}=packageCategoryServices;
 // exports.internationalCreate = async (req, res) => {
 //   const reqData = JSON.parse(req.body.data);
@@ -1204,3 +1206,25 @@ exports.beachesPackagesCategoryArr1 = async (req, res, next) => {
     return next(error);
   }
 };
+
+
+
+//b2c landing page packages enquiry data
+
+exports.packagesEnquiry = async (req, res) =>{
+
+  try {
+
+    const results=await packageEnquirySchema.create(req.body);
+
+    await commonFunctions.packageLandingPageMail(results);
+
+    actionCompleteResponse(res, results, "Enquiry for Pacakge Booking");
+
+    
+  } catch (err) {
+    sendActionFailedResponse(res, {err}, err.message);
+    
+  }
+  
+}

@@ -18,7 +18,7 @@ module.exports = function (app) {
     // SchemaValidator(schemas.userbusBookingSchema),   SchemaValidator(schemas.userflightBookingSchema),  ,SchemaValidator(schemas.userhotelBookingSchema) 
     app.post('/skyTrails/api/user/event/eventBookingControler',[authJwt.verifcationToken],SchemaValidator(schemas.eventBookingSchema), eventBookingControler.eventBooking);
     app.post('/skyTrails/api/user/event/bookFreeEvents',[authJwt.verifcationToken],SchemaValidator(schemas.eventBookingSchema), eventBookingControler.bookFreeEvents);
-    app.post('/skyTrails/api/user/event/pefaBookFreeEvents',[authJwt.verifcationToken],SchemaValidator(schemas.eventBookingSchema),eventBookingControler.pefaEventBooking);
+    app.post('/skyTrails/api/user/event/pefaBookFreeEvents',[authJwt.verifcationToken],SchemaValidator(schemas.eventBookingSchema),eventBookingControler.eventBooking);
     app.post('/skyTrails/api/user/pushNotification',eventBookingControler.sendNotificationAfterBooking);
     app.get('/skyTrails/api/user/getEventBookingStatus',[authJwt.verifcationToken],eventBookingControler.getEventBookingStatus);
     app.put('/skyTrails/api/user/event/sendPassesUpdate',eventBookingControler.sendUpdatePasses);

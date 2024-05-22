@@ -17,7 +17,9 @@ const {
   otpMail,
   welcomeMail,
   welcomeAgentMail,
-  ssdcMail
+  ssdcMail,
+  packageLandingMail,
+  hotelGrnMail
 } = require("./mailingFunction.js");
 let cloudinary = require("cloudinary");
 cloudinary.config({
@@ -4297,6 +4299,524 @@ module.exports = {
     }
   },
 
+
+  // Hotel booking Grn with pdf
+
+  grnHotelBookingConfirmationMailWithPdf:  async (to) => {
+    const currentDate = new Date(to.createdAt);
+    const options = {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    };
+    const formattedDate = currentDate.toLocaleDateString("en-US", options);
+
+    const noOfNights = () => {
+      const checkInDateOld = new Date(to.CheckInDate);
+      const checkOutDateOld = new Date(to.CheckOutDate);
+      const timeDifference =
+        checkOutDateOld.getTime() - checkInDateOld.getTime();
+      return timeDifference / (1000 * 60 * 60 * 24);
+    };
+
+    const checkInDate = () => {
+      const date = new Date(to.CheckInDate);
+      const options = {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      };
+      const formattedDate = date.toLocaleDateString("en-US", options);
+      return formattedDate;
+    };
+    //Check Out Date formate
+    const checkOutDate = () => {
+      const date = new Date(to.CheckOutDate);
+      const options = {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      };
+      const formattedDate = date.toLocaleDateString("en-US", options);
+      return formattedDate;
+    };
+
+    let htmlContent = `<!DOCTYPE html>
+    <html lang="en">
+    
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <style>
+            body {
+                font-family: 'Arial', sans-serif;
+                background-color: #f9f9f9;
+                color: #333;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                justify-content: center;
+            }
+    
+            .skyLogo {
+                width: 200px;
+            }
+    
+            .container {
+                /* max-width: 950px; */
+                margin: 30px auto;
+                /* padding: 20px; */
+                background-color: #fff;
+                /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); */
+                border-radius: 10px;
+            }
+    
+            h1,
+            h2 {
+                text-align: center;
+                color: #333;
+                margin-top: 0;
+            }
+    
+            h2 {
+                margin-bottom: 10px;
+            }
+    
+            .section {
+                margin-bottom: 37px;
+            }
+    
+            .booking-pass {
+                background-color: rgba(255, 0, 0, 0.1);
+                /* Translucent red */
+                border: 2px dashed #00838f;
+                border-radius: 10px;
+                padding: 20px;
+                margin-bottom: 30px;
+                /* display: flex; */
+                /* flex-wrap: wrap; */
+                align-items: center;
+                position: relative;
+            }
+    
+            .booking-pass:before,
+            .booking-pass:after {
+                content: '';
+                position: absolute;
+                width: 20px;
+                height: 20px;
+                background-color: #fff;
+                border-radius: 50%;
+            }
+    
+            .booking-pass:before {
+                top: -11px;
+                left: 10px;
+                border: 2px dashed #00838f;
+            }
+    
+            .booking-pass:after {
+                bottom: -11px;
+                right: 10px;
+                border: 2px dashed #00838f;
+            }
+    
+            .booking-pass h2 {
+                color: #333;
+                width: 100%;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+    
+            .bookBox {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+            }
+    
+            .booking-pass p {
+                margin: 5px 0;
+                font-size: 16px;
+            }
+    
+            .booking-pass p strong {
+                display: inline-block;
+                width: 150px;
+                color: #e73c34;
+            }
+    
+            .section img {
+                width: 100%;
+                height: 50vh;
+                /* 50% of the viewport height */
+                object-fit: cover;
+                /* Maintain aspect ratio */
+                display: block;
+                margin: 0 auto 20px;
+                border-radius: 10px;
+            }
+    
+            .section p {
+                margin: 10px 0;
+                line-height: 1.6;
+            }
+    
+            .section p strong {
+                display: inline-block;
+                width: 150px;
+                color: #e73c34;
+            }
+    
+            .pax-info ul {
+                list-style: none;
+                padding: 0;
+            }
+    
+            .pax-info ul li {
+                background: #f1f1f1;
+                margin-bottom: 10px;
+                padding: 10px;
+                border-radius: 5px;
+            }
+    
+            .pax-info ul li span {
+                display: inline-block;
+                width: 120px;
+                color: #e73c34;
+            }
+    
+            .support-section {
+                padding-left: 28px;
+                margin-top: 5px;
+                padding-right: 28px;
+                padding-top: 24px;
+                padding-bottom: 24px;
+                background: white;
+                box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+                border-radius: 12px;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 24px;
+                display: flex;
+            }
+    
+            .support-title {
+                color: #e73c33;
+                font-size: 20px;
+                font-family: Montserrat;
+                font-weight: 700;
+                word-wrap: break-word;
+            }
+    
+            .support-contact {
+                width: 456px;
+                height: 48px;
+                justify-content: flex-start;
+                align-items: center;
+                gap: 40px;
+                display: inline-flex;
+            }
+    
+            .contact-box {
+                padding: 12px;
+                background: #e73c33;
+                border-radius: 12px;
+                justify-content: center;
+                align-items: center;
+                gap: 10px;
+                display: flex;
+            }
+    
+            .contact-box div {
+                color: white;
+                font-size: 20px;
+                font-family: Montserrat;
+                font-weight: 700;
+                word-wrap: break-word;
+            }
+    
+            .contact-email {
+                justify-content: flex-start;
+                align-items: flex-start;
+                gap: 8px;
+                display: flex;
+            }
+    
+            .contact-email div {
+                color: #e73c33;
+                font-size: 16px;
+                font-family: Montserrat;
+                font-weight: 600;
+                word-wrap: break-word;
+            }
+    
+            .footer-img {
+                width: 100%;
+                height: 60%;
+                margin-top: 15px;
+                border-radius: 15px;
+            }
+    
+    
+            .imgBox {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                gap: 35px;
+                margin-bottom: 30px;
+            }
+    
+            .imgBox .hotel-image {
+                height: 200px;
+                width: 300px;
+            }
+    
+            .imgBox .hotel-image img {
+                height: 100%;
+                width: 100%;
+                border-radius: 8px;
+                object-fit: cover;
+            }
+    
+    
+            #customers {
+                font-family: Arial, Helvetica, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+            }
+    
+            #customers td,
+            #customers th {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: center;
+            }
+    
+    
+    
+    
+            #customers th {
+                padding-top: 12px;
+                padding-bottom: 12px;
+                text-align: center;
+                /* background-color: #04AA6D; */
+                color: black;
+            }
+    
+    
+    
+            .roomandcancel {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+            }
+    
+            .roomandcancel h2 {
+                text-align: left;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <div style="width: 100vw;">
+            <div style="justify-content: space-between; align-items: center; display: flex; height: 96px;">
+                <img class="skyLogo"
+                    src="https://raw.githubusercontent.com/The-SkyTrails/Images/5f36baf303400e9ebc6e907da08418b398d2b5b7/logoSky.svg"
+                    alt="logo" style="height: 100%;" />
+                <div
+                    style="color: black; font-size: 24px; font-family: Montserrat; font-weight: 600; word-wrap: break-word;">
+                    Booking Voucher
+                </div>
+                <div style="flex-direction: column; justify-content: center; align-items: center; gap: 8px; display: flex;">
+                    <div style="justify-content: center; align-items: center; gap: 4px; display: flex;">
+                        <div
+                            style="color: #868686; font-size: 12px; font-family: Montserrat; font-weight: 500; word-wrap: break-word;">
+                            Booking Id:
+                        </div>
+                        <div
+                            style="color: #071c2c; font-size: 12px; font-family: Montserrat; font-weight: 500; word-wrap: break-word;">
+                            ${to.booking_id}
+                        </div>
+                    </div>
+                    <div style="justify-content: center; align-items: center; gap: 4px; display: flex;">
+                        <div
+                            style="color: #868686; font-size: 12px; font-family: Montserrat; font-weight: 500; word-wrap: break-word;">
+                            (Booked on ${formattedDate})
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div
+                style="background: white; padding: 24px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border-radius: 12px;">
+                <div class="container">
+                    <!-- <h1>Booking Details</h1> -->
+                    <div class="booking-pass section">
+                        <h2>Booking Information</h2>
+                        <div class="bookBox">
+                            <div class="bookOne">
+                                <p><strong>Booking ID:</strong>${to?.booking_id}</p>
+                                <p><strong>Booking Reference:</strong>${to?.booking_reference}</p>
+                                <p><strong>Total Price:</strong>₹ ${to.total}</p>
+                            </div>
+                            <div class="bookTwo">
+                                <p><strong>Check-in Date:</strong>${to?.checkin}</p>
+                                <p><strong>Check-out Date:</strong>${to?.checkout}</p>
+                                
+                                <p><strong>Status:</strong> BOOKED</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="">
+                        <h2 style="margin-bottom: 35px;">Hotel Information</h2>
+                        <div class="imgBox">
+                            <div class="hotel-image">
+                                <img src=${to?.hotel?.imageUrl}
+                                    alt="Hotel Image">
+                            </div>
+                            <div class="hotel-details">
+                                <p><strong>Hotel Name:</strong>${to?.hotel?.name}</p>
+                                <p><strong>Address:</strong>${to?.hotel?.address}</p>
+                                <p><strong>Category:</strong>${to?.hotel?.category}</p>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section holder-info">
+                        <h2 style="margin-bottom: 40px;">Holder Information</h2>
+                        <p><strong>Name:</strong>${to?.holder?.title} ${to?.holder?.name} ${to?.holder?.surname}</p>
+                        <p><strong>Nationality:</strong>${to?.holder?.client_nationality}</p>
+                        <p><strong>Email:</strong>${to?.holder?.email}</p>
+                        <p><strong>PAN Number:</strong>${to?.holder?.pan_number}</p>
+                    </div>
+                    <div class="section pax-info">
+                        <h2 style="margin-top: 45px;">Passengers</h2>
+                        <!-- <ul>
+                            <li><span>Name:</span> Misha Rahmani <span>Age:</span> 4</li>
+                            <li><span>Name:</span> Ayesha Rahmani <span>Age:</span> 2</li>
+                            <li><span>Name:</span> Shaan Rahman</li>
+                            <li><span>Name:</span> Faizan Khan</li>
+                        </ul> -->
+                        <div>
+                            <table id="customers">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Age</th>
+                                </tr>
+    
+                                <tr>
+                                    <td>Misha Rahmani</td>
+                                    <td>4</td>
+                                </tr>
+                                <tr>
+                                    <td>Qamar Ali</td>
+                                    <td>30</td>
+                                </tr>
+                                <tr>
+                                    <td>Shaan Rahman</td>
+                                    <td>25</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="section room-info">
+                        <h2>Room Details</h2>
+                        <p><strong>Description:</strong> Apartment, 2 Bedrooms (1 King Bed)</p>
+                        <p><strong>Number of Adults:</strong> 2</p>
+                        <p><strong>Number of Children:</strong> 2</p>
+                        <p><strong>Number of Rooms:</strong> 1</p>
+                    </div>
+                    <div class="section cancellation-policy">
+                        <h2>Cancellation Policy</h2>
+                        <p><strong>Non-refundable:</strong> No</p>
+                        <p><strong>Cancel by Date:</strong> 20-05-2024</p>
+                    </div>
+    
+                </div>
+            </div>
+            <div class="support-section">
+                <div class="support-title">The Skytrails Support</div>
+                <div class="support-contact">
+                    <div class="contact-box">
+                        <div>+91 9209793097</div>
+                    </div>
+                    <div class="contact-email">
+                        <div>Info@theskytrails.com</div>
+                    </div>
+                </div>
+            </div>
+            <div style="float: left; width: 100%; margin: 0px; padding: 0px">
+                <img src="https://travvolt.s3.amazonaws.com/app_banner.png" alt="SkyTrails_banner" class="footer-img" />
+            </div>
+        </div>
+    </body>    
+    </html>`;
+
+    // Create a new PDF document
+    const browser = await puppeteer.launch({ headless: "new", timeout: 0 });
+    const page = await browser.newPage();
+
+    // Save the PDF to a temporary file
+    await page.setContent(htmlContent);
+
+    const pdfFilePath = "hotelBooking.pdf";
+
+    const pdfBytes = await page.pdf({
+      path: pdfFilePath,
+      format: "A4",
+      printBackground: true,
+    });
+    await browser.close();
+    // const pdfBytes= await pdf.saveAs(pdfFilePath);
+
+    console.log("PDF generation complete.");
+
+    fs.writeFileSync(pdfFilePath, pdfBytes);
+
+    var transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false,
+      auth: {
+        user: nodemailerConfig.options.auth.user,
+        pass: nodemailerConfig.options.auth.pass,
+      },
+      connectionTimeout: 60000,
+    });
+    const email = to?.holder?.email;
+    var mailOptions = {
+      from: nodemailerConfig.options.auth.user,
+      to: email,
+      subject: "Hotel Booking Confirmation Mail",
+      html: hotelGrnMail(to),
+      attachments: [{ filename: "hotel_booking.pdf", path: pdfFilePath }],
+    };
+    try {
+      // Verify the connection
+      transporter.verify(function (error, success) {
+        if (error) {
+          console.log("SMTP Connection Error: " + error);
+        } else {
+          console.log("SMTP Connection Success: " + success);
+        }
+      });
+
+      // Send the email
+      const info = await transporter.sendMail(mailOptions);
+      // console.log("Email sent: " + info.response);
+
+      fs.unlinkSync(pdfFilePath);
+
+      return info;
+    } catch (error) {
+      console.error("Email sending failed:", error);
+      throw error;
+    }
+  },
+
   //upload image on cloudinary***************************************
   getSecureUrl: async (base64) => {
     var result = await cloudinary.v2.uploader.upload(base64);
@@ -4680,6 +5200,41 @@ module.exports = {
       throw error;
     }
   },
+
+  //package enquiry mail b2c landing page
+
+  packageLandingPageMail: async (to) => {
+    try {
+      const transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false,
+        auth: {
+          user: nodemailerConfig.options.auth.user,
+          pass: nodemailerConfig.options.auth.pass,
+        },
+        connectionTimeout: 60000,
+      });
+
+      const userEmail = to.email;
+      const mailOptions = {
+        from: nodemailerConfig.options.auth.user,
+        to: userEmail,
+        subject: "Confirmation of Your Packaging Booking Enquiry.",
+        html: packageLandingMail(to),        
+      };
+
+      await transporter.verify();
+      const info = await transporter.sendMail(mailOptions);
+    
+
+     
+    } catch (error) {
+      console.error("Email sending failed:", error);
+      throw error;
+    }
+  },
+
 
 //   packageBookingConfirmationMail: async (to) => {
 //     try {
