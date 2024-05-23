@@ -188,7 +188,8 @@ const quizRoute=require("./routes/btocRoutes/quizRoutes");
 quizRoute(app)
 require("./routes/ratingRoutes")(app);
 require("./routes/relationshipManagerRoutes")(app);
-require("./routes/blogRoutes")(app)
+require("./routes/blogRoutes")(app);
+require("./routes/amadeusRoutes/amadeusFlightBookingRoutes")(app);
 mongoose
   .connect(configs.mongoUrl.DEVELOPMENT, {
     useNewUrlParser: true,

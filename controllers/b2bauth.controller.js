@@ -156,6 +156,8 @@ exports.RegisterUser = async (req, res) => {
       const user = new b2bUser({
         personal_details: {
           ...reqData.personal_details,
+          first_name:reqData?.personal_details?.first_name.trim(),
+          last_name:reqData?.personal_details?.last_name.trim(),         
           mobile: {
             country_code: "+91",
             mobile_number: reqData.personal_details.mobile.mobile_number,

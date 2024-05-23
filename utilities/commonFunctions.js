@@ -4694,31 +4694,24 @@ module.exports = {
                     </div>
                     <div class="section pax-info">
                         <h2 style="margin-top: 45px;">Passengers</h2>
-                        <!-- <ul>
-                            <li><span>Name:</span> Misha Rahmani <span>Age:</span> 4</li>
-                            <li><span>Name:</span> Ayesha Rahmani <span>Age:</span> 2</li>
-                            <li><span>Name:</span> Shaan Rahman</li>
-                            <li><span>Name:</span> Faizan Khan</li>
-                        </ul> -->
+                        
                         <div>
                             <table id="customers">
                                 <tr>
                                     <th>Name</th>
                                     <th>Age</th>
                                 </tr>
-    
-                                <tr>
-                                    <td>Misha Rahmani</td>
-                                    <td>4</td>
+
+
+                              ${to.hotel.paxes.map((item)=>`
+                              <tr>
+                                    <td>${item?.title} ${item?.name} ${item?.surname}</td>
+                                    <td>${item?.age ? `${item.age}` : 'Adult'}</td>
                                 </tr>
-                                <tr>
-                                    <td>Qamar Ali</td>
-                                    <td>30</td>
-                                </tr>
-                                <tr>
-                                    <td>Shaan Rahman</td>
-                                    <td>25</td>
-                                </tr>
+
+                              `).join("")}
+                                
+                              
                             </table>
                         </div>
                     </div>
