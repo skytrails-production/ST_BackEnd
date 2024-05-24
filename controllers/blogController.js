@@ -19,6 +19,8 @@ const {
   deleteBlog,
   updateBlog,
   countTotalBlog,
+  aggPagGetBlogList,
+  paginateBlogSearch
 } = bloggingServices;
 
 //***************************************API's********************************************/
@@ -63,7 +65,8 @@ exports.createBlog = async (req, res, next) => {
 
 exports.getBlogList=async(req,res,next)=>{
     try {
-      const result=await findBlogData({status:status.ACTIVE});
+      const { toDate, fromDate, page, limit, search}=req.query;
+      const result=await paginateBlogSearch(req.query);
 
         if(result.length<1){
             return res.status(statusCode.OK).send({

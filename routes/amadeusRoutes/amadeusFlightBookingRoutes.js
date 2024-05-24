@@ -16,6 +16,8 @@ module.exports = function (app) {
     });
     // SchemaValidator(schemas.userbusBookingSchema),   SchemaValidator(schemas.userflightBookingSchema),  ,SchemaValidator(schemas.userhotelBookingSchema) 
     app.post('/skyTrails/api/amadeus/user/flightBooking',[authJwt.verifcationToken], Controller.amdsFlightBooking);
-    app.get('/skyTrails/api/amadeus/user/getflightBooking',[authJwt.verifcationToken],Controller.getUserFlightBooking)
-    // app.post('/skyTrails/api/user/hotelBooking',[authJwt.verifcationToken], Controller.hotelBooking);
+    app.get('/skyTrails/api/amadeus/user/getflightBooking',[authJwt.verifcationToken],Controller.getUserFlightBooking);
+    app.get('/skyTrails/api/amadeus/user/getflightBookingById',Controller.getFlightBookingId);
+    app.get('/skyTrails/api/amadeus/user/getAllflightBooking',Controller.getAllUserFlightBooking);
+    app.put('/skyTrails/api/amadeus/user/UpdateTicket',Controller.UpdateTicket)
 }

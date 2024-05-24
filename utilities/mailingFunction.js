@@ -1927,7 +1927,7 @@ function welcomeAgentMail(to,pass){
     <tr>
     <td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
     <div align="center" class="alignment" style="line-height:10px">
-    <div style="max-width: 174px;"><img alt="I'm an image" src="https://github.com/Radhika57/CRM-EMAIL-IMAGES/blob/main/logo_component-01_1.png?raw=true" style="display: block; height: auto; border: 0; width: 100%;" title="I'm an image" width="174"/></div>
+    <div style="max-width: 174px;"><img alt="I'm an image" src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/hawaiyatramail.png" style="display: block; height: auto; border: 0; width: 100%;" title="I'm an image" width="174"/></div>
     </div>
     </td>
     </tr>
@@ -1948,7 +1948,7 @@ function welcomeAgentMail(to,pass){
     <td class="pad">
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
-    <p style="margin: 0; font-size: 38px; text-align: center; mso-line-height-alt: 45.6px;"><span style="font-size:38px;color:#ffffff;"><strong>Welcome to Sky Trails!</strong></span></p>
+    <p style="margin: 0; font-size: 38px; text-align: center; mso-line-height-alt: 45.6px;"><span style="font-size:38px;color:#ffffff;"><strong>Welcome to Hawaiyatra!</strong></span></p>
     <p style="margin: 0; font-size: 38px; text-align: center; mso-line-height-alt: 45.6px;"><span style="font-size:38px;color:#ffffff;"><strong>Congratulations</strong></span></p>
     </div>
     </div>
@@ -2028,7 +2028,7 @@ function welcomeAgentMail(to,pass){
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
     <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 21.599999999999998px;"><span style="font-size:18px;color:#ffffff;">Login Link:*</span></p>
-    <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 21.599999999999998px;"><span style="font-size:18px;color:#ffffff;"><a href="https://b2b.theskytrails.com/" rel="noopener" style="text-decoration: underline;" target="_blank"><span style="font-size:18px;color:#ffffff;">(https://b2b.theskytrails.com/)</span></a></span></p>
+    <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 21.599999999999998px;"><span style="font-size:18px;color:#ffffff;"><a href="https://b2b.theskytrails.com/" rel="noopener" style="text-decoration: underline;" target="_blank"><span style="font-size:18px;color:#ffffff;">(https://thehawaiyatra.com/Login)</span></a></span></p>
     </div>
     </div>
     </td>
@@ -2056,7 +2056,7 @@ function welcomeAgentMail(to,pass){
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
     <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 21.599999999999998px;"><span style="font-size:18px;color:#000000;">We're thrilled to have you on board and look forward </span></p>
-    <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 21.599999999999998px;"><span style="font-size:18px;color:#000000;">to supporting you in your journey with Sky Trails. Our platform </span></p>
+    <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 21.599999999999998px;"><span style="font-size:18px;color:#000000;">to supporting you in your journey with Hawaiyatra. Our platform </span></p>
     <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 21.599999999999998px;"><span style="font-size:18px;color:#000000;">offers a range of features to enhance your experience, </span></p>
     <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 21.599999999999998px;"><span style="font-size:22px;color:#000000;"><span style="font-size:18px;">making it easier for you to manage and optimize your tasks</span>.</span></p>
     </div>
@@ -2164,7 +2164,7 @@ function welcomeAgentMail(to,pass){
     <td class="pad">
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
-    <p style="margin: 0; font-size: 12px; text-align: center; mso-line-height-alt: 14.399999999999999px;"><span style="color:#000000;"><strong><span style="font-size:20px;">Explore Our Travel Services at The Sky Trails Travel:*</span></strong></span></p>
+    <p style="margin: 0; font-size: 12px; text-align: center; mso-line-height-alt: 14.399999999999999px;"><span style="color:#000000;"><strong><span style="font-size:20px;">Explore Our Travel Services at The Hawaiyatra Travel:*</span></strong></span></p>
     </div>
     </div>
     </td>
@@ -2191,7 +2191,7 @@ function welcomeAgentMail(to,pass){
     <td class="pad" style="padding-bottom:60px;padding-left:10px;padding-right:10px;padding-top:60px;">
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
-    <p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;"><span style="font-size:22px;color:#ffffff;">Website: www.theskytrails.com</span></p>
+    <p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;"><span style="font-size:22px;color:#ffffff;">Website: https://thehawaiyatra.com/</span></p>
     <p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;"><span style="font-size:22px;color:#ffffff;">B2B and B2C travel services</span></p>
     <p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;"><span style="font-size:22px;color:#ffffff;">Unbeatable deals on flights, hotels, </span></p>
     <p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;"><span style="font-size:22px;color:#ffffff;">buses, and tours</span></p>
@@ -2221,7 +2221,7 @@ function welcomeAgentMail(to,pass){
     <td class="pad" style="padding-bottom:10px;padding-left:10px;padding-right:10px;padding-top:60px;">
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 18px; color: #555555; line-height: 1.5;">
-    <p style="margin: 0; font-size: 16px; mso-line-height-alt: 24px;"><strong><span style="font-size:24px;color:#e81414;">THANK YOU FOR CHOOSING SKY TRAILS.</span></strong></p>
+    <p style="margin: 0; font-size: 16px; mso-line-height-alt: 24px;"><strong><span style="font-size:24px;color:#e81414;">THANK YOU FOR CHOOSING Hawai Yatra.</span></strong></p>
     <p style="margin: 0; font-size: 16px; text-align: left; mso-line-height-alt: 24px;"><span style="color:#000000;font-size:16px;">IF YOU HAVE ANY QUESTIONS OR NEED ASSISTANCE, </span></p>
     <p style="margin: 0; font-size: 16px; text-align: left; mso-line-height-alt: 24px;"><span style="color:#000000;font-size:16px;">DON'T HEASITATE TO REACH OUT, WE'RE HERE TO HELP!</span></p>
     </div>
@@ -2285,9 +2285,9 @@ function welcomeAgentMail(to,pass){
     <div align="center" class="alignment">
     <table border="0" cellpadding="0" cellspacing="0" class="social-table" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; display: inline-block;" width="156px">
     <tr>
-    <td style="padding:0 10px 0 10px;"><a href="https://www.facebook.com/theskytrailsofficials" target="_blank"><img alt="Facebook" height="32" src="https://github.com/Radhika57/CRM-EMAIL-IMAGES/blob/main/facebook2x.png?raw=true" style="display: block; height: auto; border: 0;" title="facebook" width="32"/></a></td>
-    <td style="padding:0 10px 0 10px;"><a href="https://twitter.com/TheSkytrails" target="_blank"><img alt="Twitter" height="32" src="https://github.com/Radhika57/CRM-EMAIL-IMAGES/blob/main/twitter2x.png?raw=true" style="display: block; height: auto; border: 0;" title="twitter" width="32"/></a></td>
-    <td style="padding:0 10px 0 10px;"><a href="https://www.instagram.com/theskytrails" target="_blank"><img alt="Instagram" height="32" src="https://github.com/Radhika57/CRM-EMAIL-IMAGES/blob/main/instagram2x.png?raw=true" style="display: block; height: auto; border: 0;" title="instagram" width="32"/></a></td>
+    <td style="padding:0 10px 0 10px;"><a href="#"><img alt="Facebook" height="32" src="https://github.com/Radhika57/CRM-EMAIL-IMAGES/blob/main/facebook2x.png?raw=true" style="display: block; height: auto; border: 0;" title="facebook" width="32"/></a></td>
+    <td style="padding:0 10px 0 10px;"><a href="#"><img alt="Twitter" height="32" src="https://github.com/Radhika57/CRM-EMAIL-IMAGES/blob/main/twitter2x.png?raw=true" style="display: block; height: auto; border: 0;" title="twitter" width="32"/></a></td>
+    <td style="padding:0 10px 0 10px;"><a href="#" target="_blank"><img alt="Instagram" height="32" src="https://github.com/Radhika57/CRM-EMAIL-IMAGES/blob/main/instagram2x.png?raw=true" style="display: block; height: auto; border: 0;" title="instagram" width="32"/></a></td>
     </tr>
     </table>
     </div>

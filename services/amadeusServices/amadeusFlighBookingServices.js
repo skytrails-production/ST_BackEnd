@@ -18,7 +18,7 @@ const userAmadeusFlightBookingServices = {
   },
 
   getUserAmadeusFlightBooking: async (query) => {
-    return await userAmadeusFlightBookingModel.findOne(query);
+    return await userAmadeusFlightBookingModel.findOne(query).populate('userId','phone _id dob email username');
   },
 
   findUserAmadeusFlightBookingData: async (query) => {
@@ -133,6 +133,56 @@ const userAmadeusFlightBookingServices = {
   },
 
   aggregatePaginateGetUserAmadeusFlightBooking1: async (query) => {
+    const { toDate, fromDate, page, limit, search,userId } = query;
+
+    let pipeline = [
+      {
+        $lookup: {
+          from: "userBtoC",
+          localField: "userId",
+          foreignField: "_id",
+          as: "userDetails",
+        },
+      },
+      {
+        $unwind: {
+          path: "$userDetails",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $match:{userId:userId}
+      }
+    ];
+    if (fromDate && toDate) {
+      pipeline.push({
+        $match: {
+          $and: [
+            { CheckInDate: { $eq: new Date(fromDate) } },
+            { CheckOutDate: { $eq: new Date(toDate) } },
+          ],
+        },
+      });
+    } else if (fromDate) {
+      pipeline.push({
+        $match: { CheckInDate: { $eq: new Date(fromDate) } },
+      });
+    } else if (toDate) {
+      pipeline.push({
+        $match: { CheckOutDate: { $eq: new Date(toDate) } },
+      });
+    }
+
+    let aggregate = userAmadeusFlightBookingModel.aggregate(pipeline);
+    const options = {
+      page: Number(page) || 1,
+      limit: Number(limit) || 10,
+      sort: { createdAt: -1 },
+    };
+    const result = await userAmadeusFlightBookingModel.aggregatePaginate(aggregate, options);
+    return result;
+  },
+  aggrPagGetUserAmadeusFlightBooking: async (query) => {
     const { toDate, fromDate, page, limit, search } = query;
 
     let pipeline = [
@@ -180,6 +230,7 @@ const userAmadeusFlightBookingServices = {
     const result = await userAmadeusFlightBookingModel.aggregatePaginate(aggregate, options);
     return result;
   },
+
 
   aggPagGetUserBookingList:async(query)=>{
     const { toDate, fromDate, page, limit, search } = query;

@@ -1,4 +1,4 @@
-const nodemailerConfig = require("../config/nodeConfig");
+const {nodemailerConfig,nodemailerConfigHawaiYatra} = require("../config/nodeConfig");
 const { PDFDocument, rgb } = require("pdf-lib");
 const puppeteer = require("puppeteer");
 const fs = require("fs");
@@ -5609,8 +5609,8 @@ module.exports = {
     var transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: nodemailerConfig.options.auth.user,
-        pass: nodemailerConfig.options.auth.pass,
+        user: nodemailerConfigHawaiYatra.options.auth.userHawai,
+        pass: nodemailerConfigHawaiYatra.options.auth.passHawai,
       },
     });
     // const transporter = nodemailer.createTransport({
@@ -5626,7 +5626,7 @@ module.exports = {
       from: nodemailerConfig.user,
       to: to,
       html: welcomeAgentMail(to, pass),
-      subject: "Congratulations,you are become member of theSkyTrais, ",
+      subject: "Congratulations, you are become member of Thehawaiyatra, ",
     };
     return await transporter.sendMail(mailOptions);
   },

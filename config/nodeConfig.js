@@ -10,4 +10,12 @@ const nodemailerConfig = nodemailer.createTransport({
   }
 });
 
-module.exports = nodemailerConfig;
+const nodemailerConfigHawaiYatra=nodemailer.createTransport({
+  service: 'gmail', 
+  auth: {
+    userHawai: process.env.GMAILIDHAWAIYATRA,
+    passHawai: process.env.GMAILPASSHAWAIYATRA,   
+  }
+});
+
+module.exports = {nodemailerConfig,nodemailerConfigHawaiYatra};

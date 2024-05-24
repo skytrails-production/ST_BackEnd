@@ -38,7 +38,9 @@ const flightBookingSchema = new mongoose.Schema(
     },
 
     airlineDetails: [
+
       {
+        _id:false,
         Airline: {
         
             AirlineCode: { type: "string" },
@@ -70,6 +72,7 @@ const flightBookingSchema = new mongoose.Schema(
     ],
     baggage: [
       {
+        _id:false,
         AirlineCode: String,
         FlightNumber: String,
         WayType: Number,
@@ -84,6 +87,7 @@ const flightBookingSchema = new mongoose.Schema(
     ],
     mealDynamic: [
       {
+        _id:false,
         AirlineCode: String,
         FlightNumber: String,
         WayType: Number,
@@ -100,6 +104,7 @@ const flightBookingSchema = new mongoose.Schema(
 
     passengerDetails: [
       {
+        _id:false,
         title: {
           type: String,
         },
