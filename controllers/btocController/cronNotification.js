@@ -512,8 +512,8 @@ const notifications = [
     body: `SkyTrails pe book karo aur apni travel list complete karo! 🗺️🎒`,
   },
   {
-    message: `Adventure awaits, username! 🗺️`,
-    body: `SkyTrails se book karo aur pao unbeatable prices! ✈️💰`,
+    message: `80 Missed call from The Skytrails! 📞🗺️`,
+    body: `Get the best deals and skyCoins too on flights, hotels and bus booking.📲💰`,
   },
   {
     message: `username,sapno ki yatra shuru ho gayi! 🚀`,
@@ -527,7 +527,18 @@ const notifications = [
     message: `Trip ki planning ho gayi? 📅`,
     body: `SkyTrails ke sath apni next vacation plan karo aur enjoy karo! 🏖️✨`,
   },
-
+  {
+    message: `Boss ne chutti approve kar di?🥳`,
+    body: `"Dil Chahta Hai" a road trip to Goa?🏖😍,Checkout the Goa packages on our app📲`,
+  },
+  {
+    message: `Knock-Knock! The Skytrails ✈`,
+    body: `Don't miss the latest offers and discounts on Hotel Bookings!🎉🤩`,
+  },
+  {
+    message: `New deals just landed! 🛬 `,
+    body: `Check out the hottest travel offers now on the Skytrails App.✈📲`,
+  },
 ];
 
 const taskRandomNotification = cron.schedule(

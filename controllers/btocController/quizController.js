@@ -17,7 +17,7 @@ const SCOPES = ['https://www.googleapis.com/auth/drive'];
 // const fcm=new FCM(fcmKey)
 //Essential Services***************************************************
 const {quizServices}=require("../../services/btocServices/quizServices");
-const {createQuizContent,findQuizContent,findQuizData,deleteQuiz,updateQuiz,createQuizResponseContent,findQuizResponseContent,findQuizResponseContentPop,findQuizResponseData,deleteQuizResponse,updateQuizResponse}=quizServices;
+const {createQuizContent,findQuizContent,findQuizData,findWinnerlastday,deleteQuiz,updateQuiz,createQuizResponseContent,findQuizResponseContent,findQuizResponseContentPop,findQuizResponseData,deleteQuizResponse,updateQuizResponse}=quizServices;
 const { userServices } = require("../../services/userServices");
 const {
   createUser,
@@ -36,8 +36,7 @@ exports.getDailyQuiz=async(req,res,next)=>{
     try {
         const currentDate=new Date();
         // quizDate:{$gte:currentDate}
-        const result=await findQuizContent({status:status.ACTIVE,quizExpiration:{$gte:currentDate}});
-        console.log(currentDate,"result==========",result);
+        const result=await findQuizContent({status:status.ACTIVE,quizExpiration:{$gt:currentDate}});
         if(result){
         // return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND});
         const getDate=moment(currentDate).format("YYYY-MM-DD")
@@ -47,7 +46,6 @@ exports.getDailyQuiz=async(req,res,next)=>{
         }
     }else{
             const result=await findQuizContent({status:status.ACTIVE,quizExpiration:{$gte:currentDate}});
-            console.log("===========================================================");
             return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.RESPONSE_SUBMIT,result:result});
         }
     } catch (error) {
@@ -133,6 +131,9 @@ exports.getWinnerOfQuiz=async(req,res,next)=>{
             $gte: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()),
             $lt: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 1)
         }});
+        if(result.lastDayWinner==null){
+            result.lastDayWinner=await findWinnerlastday({isWinner:true,isFirstResponse:true,});  
+        }
         // console.log("result.lastDayWinner==============",result.lastDayWinner);
         result.winnerList=await findQuizResponseData({isWinner:true,isFirstResponse:true,resultDate:{$lt: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate())}});
         // if(result.lastDayWinner){

@@ -8,14 +8,14 @@ const {
   sendActionFailedResponse,
 } = require("../common/common");
 const { response } = require("express");
-const uuid = uuidv4();
 
+
+// const url="https://nodeD3.production.webservices.amadeus.com/1ASIWTHESP0"
+  const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
 //fare Master Pricer Travel Board Search
 
 exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
-  const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
-
-  
+    
   // Generate new UUID for each request
   const messageId = uuidv4();
   const uniqueId = uuidv4();
@@ -59,7 +59,7 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
             <soap:Header xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
                 <add:MessageID xmlns:add="http://www.w3.org/2005/08/addressing">${messageId}</add:MessageID>
                 <add:Action xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/FMPTBQ_23_4_1A</add:Action>
-                <add:To xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0</add:To>
+                <add:To xmlns:add="http://www.w3.org/2005/08/addressing">${url}</add:To>
                 <link:TransactionFlowLink xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
                     <link:Consumer>
                         <link:UniqueID>${uniqueId}</link:UniqueID>
@@ -143,7 +143,7 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
 
     const response = await axios.post(url, data, { headers });
 
-    // const responseData = extractDataFromResponse(response);
+    const responseData = extractDataFromResponse(response);
     const jsonResult = await xmlToJson(response.data);
     const obj =
       jsonResult["soapenv:Envelope"]["soapenv:Body"][
@@ -171,7 +171,7 @@ const flattenedArray = segNumber.flatMap((item, index) => {
     actionCompleteResponse(res, flattenedArray, msg);
   } catch (err) {
     // console.log(err);
-    sendActionFailedResponse(res, {}, err.message);
+    sendActionFailedResponse(res, {err}, err.message);
   }
 };
 
@@ -188,9 +188,7 @@ async function xmlToJson(xml) {
 }
 
 exports.fareInformativePricingWithoutPNR = async (req, res) => {
-  const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
-
-  
+    
   // Generate new UUID for each request
   const messageId = uuidv4();
   const uniqueId = uuidv4();
@@ -237,7 +235,7 @@ exports.fareInformativePricingWithoutPNR = async (req, res) => {
   <ses:Session xmlns:ses="http://xml.amadeus.com/2010/06/Session_v3" TransactionStatusCode="Start" />
   <add:MessageID xmlns:add="http://www.w3.org/2005/08/addressing">${messageId}</add:MessageID>
   <add:Action xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/TIPNRQ_23_1_1A</add:Action>
-  <add:To xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0</add:To>
+  <add:To xmlns:add="http://www.w3.org/2005/08/addressing">${url}</add:To>
   <link:TransactionFlowLink xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
     <link:Consumer>
       <link:UniqueID>${uniqueId}</link:UniqueID>
@@ -304,7 +302,7 @@ exports.fareCheckRule =async (req, res)=>{
             amadeusSecurityToken
           } = req.body;
 
-        const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
+        
 
         const data=`<soapenv:Envelope
         xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
@@ -321,7 +319,7 @@ exports.fareCheckRule =async (req, res)=>{
   </awsse:Session>
   <add:MessageID xmlns:add="http://www.w3.org/2005/08/addressing">${amadeusMessageID}</add:MessageID>
   <add:Action xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/FARQNQ_07_1_1A</add:Action>
-  <add:To xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0</add:To>
+  <add:To xmlns:add="http://www.w3.org/2005/08/addressing">${url}</add:To>
   <link:TransactionFlowLink xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
     <link:Consumer>
       <link:UniqueID>${amadeusUniqueID}</link:UniqueID>
@@ -389,7 +387,7 @@ exports.fareCheckRuleSecond =async (req, res)=>{
           amadeusSecurityToken
         } = req.body;
 
-      const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
+     
 
       const data=`<soapenv:Envelope
       xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
@@ -406,7 +404,7 @@ exports.fareCheckRuleSecond =async (req, res)=>{
   </awsse:Session>
   <add:MessageID xmlns:add="http://www.w3.org/2005/08/addressing">${amadeusMessageID}</add:MessageID>
   <add:Action xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/FARQNQ_07_1_1A</add:Action>
-  <add:To xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0</add:To>
+  <add:To xmlns:add="http://www.w3.org/2005/08/addressing">${url}</add:To>
   <link:TransactionFlowLink xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
     <link:Consumer>
       <link:UniqueID>${amadeusUniqueID}</link:UniqueID>
@@ -472,10 +470,9 @@ exports.fareCheckRuleSecond =async (req, res)=>{
 //airsell 
 
 exports.airSell =async (req, res,next) =>{
-    const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";   
+       
 
-    
-  // Generate new UUID for each request
+ // Generate new UUID for each request
   const messageId = uuidv4();
   const uniqueId = uuidv4();
 
@@ -521,7 +518,7 @@ exports.airSell =async (req, res,next) =>{
             xmlns:ses="http://xml.amadeus.com/2010/06/Session_v3" TransactionStatusCode="Start" />
         <add:MessageID xmlns:add="http://www.w3.org/2005/08/addressing">${messageId}</add:MessageID>
         <add:Action xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/ITAREQ_05_2_IA</add:Action>
-        <add:To xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0</add:To>
+        <add:To xmlns:add="http://www.w3.org/2005/08/addressing">${url}</add:To>
         <link:TransactionFlowLink xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
             <link:Consumer>
                 <link:UniqueID>${uniqueId}</link:UniqueID>
@@ -590,10 +587,6 @@ exports.pnrAddMultiElements = async (req, res) =>{
 
         const requestBody = req.body;
 
-        // console.log(requestBody,"requestBody");
-        // return;
-
-        const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
 
         const data=`<soapenv:Envelope
         xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
@@ -610,7 +603,7 @@ exports.pnrAddMultiElements = async (req, res) =>{
   </awsse:Session>
   <add:MessageID xmlns:add="http://www.w3.org/2005/08/addressing">${req.headers.amadeusmessageid}</add:MessageID>
   <add:Action xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/PNRADD_21_1_1A</add:Action>
-  <add:To xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0</add:To>
+  <add:To xmlns:add="http://www.w3.org/2005/08/addressing">${url}</add:To>
   <link:TransactionFlowLink xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
     <link:Consumer>
       <link:UniqueID>${req.headers.amadeusuniqueid}</link:UniqueID>
@@ -668,8 +661,7 @@ exports.farePricePnrWithBookingClass = async (req, res) =>{
             flightCode
           } = req.body;
 
-        const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
-
+        
         const data=`<soapenv:Envelope
         xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
         xmlns:sec="http://xml.amadeus.com/2010/06/Security_v1"
@@ -689,7 +681,7 @@ exports.farePricePnrWithBookingClass = async (req, res) =>{
                 xmlns:add="http://www.w3.org/2005/08/addressing">${amadeusMessageID}</add:MessageID>
             <add:Action
                 xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/TPCBRQ_23_2_1A</add:Action>            <add:To
-                xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0</add:To>
+                xmlns:add="http://www.w3.org/2005/08/addressing">${url}</add:To>
             <link:TransactionFlowLink
                 xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
                 <link:Consumer>
@@ -779,9 +771,6 @@ exports.ticketCreateTSTFromPricing = async (req, res) =>{
     try {
         const {amadeusMessageID,amadeusUniqueID,amadeusSessionID,amadeusSequenceNumber,amadeusSecurityToken,totalPax} =req.body;
 
-
-        const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
-
         const data=`<soapenv:Envelope
         xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
         xmlns:sec="http://xml.amadeus.com/2010/06/Security_v1"
@@ -802,7 +791,7 @@ exports.ticketCreateTSTFromPricing = async (req, res) =>{
             <add:Action
                 xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/TAUTCQ_04_1_1A</add:Action>
             <add:To
-                xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0</add:To>
+                xmlns:add="http://www.w3.org/2005/08/addressing">${url}</add:To>
             <link:TransactionFlowLink
                 xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
                 <link:Consumer>
@@ -861,7 +850,7 @@ exports.savePnrAddMultiElements = async (req, res) =>{
 
     try {
 
-        const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
+        
 
         const data=`<soapenv:Envelope
         xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
@@ -878,7 +867,7 @@ exports.savePnrAddMultiElements = async (req, res) =>{
   </awsse:Session>
   <add:MessageID xmlns:add="http://www.w3.org/2005/08/addressing">${amadeusMessageID}</add:MessageID>
   <add:Action xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/PNRADD_21_1_1A</add:Action>
-  <add:To xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0</add:To>
+  <add:To xmlns:add="http://www.w3.org/2005/08/addressing">${url}</add:To>
   <link:TransactionFlowLink xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
     <link:Consumer>
       <link:UniqueID>${amadeusUniqueID}</link:UniqueID>
@@ -945,7 +934,7 @@ exports.savePnrAddMultiElements = async (req, res) =>{
 
 
 exports.pnrRet = async (req, res) =>{
-  const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
+  
 
   const {amadeusMessageID,amadeusUniqueID,amadeusSessionID,amadeusSequenceNumber,amadeusSecurityToken,pnr} =req.body;
 
@@ -969,7 +958,7 @@ exports.pnrRet = async (req, res) =>{
 
 <add:MessageID xmlns:add="http://www.w3.org/2005/08/addressing">${amadeusMessageID}</add:MessageID>
 <add:Action xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/PNRRET_21_1_1A</add:Action>
-<add:To xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0</add:To>
+<add:To xmlns:add="http://www.w3.org/2005/08/addressing">${url}</add:To>
 <link:TransactionFlowLink xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
 <link:Consumer>
   <link:UniqueID>${amadeusUniqueID}</link:UniqueID>
@@ -1033,7 +1022,6 @@ exports.pnrRet = async (req, res) =>{
 
 exports.pnrRetrieve = async (req , res) =>{
 
-    const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";   
 
     
     // Generate new UUID for each request
@@ -1081,7 +1069,7 @@ exports.pnrRetrieve = async (req , res) =>{
   <ses:Session xmlns:ses="http://xml.amadeus.com/2010/06/Session_v3" TransactionStatusCode="Start" />
   <add:MessageID xmlns:add="http://www.w3.org/2005/08/addressing">${messageId}</add:MessageID>
   <add:Action xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/PNRRET_21_1_1A</add:Action>
-  <add:To xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0</add:To>
+  <add:To xmlns:add="http://www.w3.org/2005/08/addressing">${url}</add:To>
   <link:TransactionFlowLink xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
     <link:Consumer>
       <link:UniqueID>${uniqueId}</link:UniqueID>
@@ -1160,7 +1148,7 @@ exports.signOut = async (req, res) =>{
         const {amadeusMessageID,amadeusUniqueID,amadeusSessionID,amadeusSequenceNumber,amadeusSecurityToken} =req.body;
 
 
-        const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
+        
 
         const data=`<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
         xmlns:sec="http://xml.amadeus.com/2010/06/Security_v1"
@@ -1176,7 +1164,7 @@ exports.signOut = async (req, res) =>{
         </awsse:Session>
         <add:MessageID xmlns:add="http://www.w3.org/2005/08/addressing">${amadeusMessageID}</add:MessageID>
         <add:Action xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/VLSSOQ_04_1_1A</add:Action>
-        <add:To xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0</add:To>
+        <add:To xmlns:add="http://www.w3.org/2005/08/addressing">${url}</add:To>
         <link:TransactionFlowLink xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
           <link:Consumer>
             <link:UniqueID>${amadeusUniqueID}</link:UniqueID>

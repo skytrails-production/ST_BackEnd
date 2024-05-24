@@ -16,21 +16,21 @@ const s3 = new aws.S3({
 });
 
 
-// const headers = {
-//     'Content-Type': 'application/json',
-//     'Accept': 'application/json',
-//     'Accept-Encoding': 'application/gzip',
-//     'api-key': 'b3df547f1c1a2a3989c234bcf2aacaed',
-// };
 const headers = {
-  'Content-Type': 'application/json',
-  'Accept': 'application/json',
-  'Accept-Encoding': 'application/gzip',
-  'api-key': 'b79e47991faefb0c7d091b9b6ddc9ea4',
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'Accept-Encoding': 'application/gzip',
+    'api-key': 'b3df547f1c1a2a3989c234bcf2aacaed',
 };
+// const headers = {
+//   'Content-Type': 'application/json',
+//   'Accept': 'application/json',
+//   'Accept-Encoding': 'application/gzip',
+//   'api-key': 'b79e47991faefb0c7d091b9b6ddc9ea4',
+// };
 
-// const baseurl='https://api-sandbox.grnconnect.com';
-const baseurl =" https://v4-api.grnconnect.com";
+const baseurl='https://api-sandbox.grnconnect.com';
+// const baseurl =" https://v4-api.grnconnect.com";
 
 //citylist data
 
@@ -164,9 +164,10 @@ exports.hotelSearchWithPagination=async (req,res) =>{
         client_nationality:req.body.client_nationality,
         checkin:req.body.checkin,
         checkout:req.body.checkout,
+        cutoff_time: 5000,
         version:req.body.version
       }
-      // console.log(searchData,"data");
+      console.log(searchData,"data");
 
       // console.log(`${baseurl}/api/v3/hotels/availability`,"console")
       const response = await axios.post(`${baseurl}/api/v3/hotels/availability`, searchData, { headers });   

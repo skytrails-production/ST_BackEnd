@@ -42,6 +42,9 @@ const buffer = Buffer.concat([
   nodeCrypto.createHash("sha1").update(Buffer.from(CLEARPASSWORD)).digest(),
 ]);
 
+// const url="https://nodeD3.production.webservices.amadeus.com/1ASIWTHESP0"
+const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
+
 // Compute SHA-1 hash of the concatenated buffer and encode in base64
 const hashedPassword = nodeCrypto
   .createHash("sha1")
@@ -70,7 +73,7 @@ exports.combinedAPI1 = async (req, res, next) => {
     ).format("DDMMYY"); // Format the date as "DDMMYY"
     const api1Url = commonUrl.api.flightSearchURL;
 
-    const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
+    
     const flattenedArray = [];
     const headers = {
       "Content-Type": "text/xml;charset=UTF-8",
@@ -140,7 +143,7 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
     ).format("DDMMYY"); // Format the date as "DDMMYY"
     const api1Url = commonUrl.api.flightSearchURL;
     data.totalPassenger = parseInt(data.AdultCount) + parseInt(data.ChildCount);
-    const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
+    
     const flattenedArray = [];
     const headers = {
       "Content-Type": "text/xml;charset=UTF-8",
@@ -252,7 +255,7 @@ exports.combineTVOAMADEUS = async (req, res, next) => {
     ).format("DDMMYY"); // Format the date as "DDMMYY"
     const api1Url = commonUrl.api.flightSearchURL;
 
-    const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
+    
     const flattenedArray = [];
     const headers = {
       "Content-Type": "text/xml;charset=UTF-8",
@@ -344,7 +347,7 @@ exports.cobinedAsPerPrice = async (req, res, next) => {
       parseInt(data.ChildCount) +
       parseInt(data.InfantCount);
     const api1Url = commonUrl.api.flightSearchURL;
-    const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
+   
     const headers = {
       "Content-Type": "text/xml;charset=UTF-8",
       SOAPAction: "http://webservices.amadeus.com/FMPTBQ_23_4_1A",
@@ -519,7 +522,7 @@ const generateAmadeusRequest1 = (data) => {
       <soap:Header xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
           <add:MessageID xmlns:add="http://www.w3.org/2005/08/addressing">${messageId}</add:MessageID>
           <add:Action xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/FMPTBQ_23_4_1A</add:Action>
-          <add:To xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0</add:To>
+          <add:To xmlns:add="http://www.w3.org/2005/08/addressing">${url}</add:To>
           <link:TransactionFlowLink xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
               <link:Consumer>
                   <link:UniqueID>${uniqueId}</link:UniqueID>
@@ -646,7 +649,7 @@ const generateAmadeusRequest = (data) => {
         <soap:Header xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
             <add:MessageID xmlns:add="http://www.w3.org/2005/08/addressing">${messageId}</add:MessageID>
             <add:Action xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/FMPTBQ_23_4_1A</add:Action>
-            <add:To xmlns:add="http://www.w3.org/2005/08/addressing">https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0</add:To>
+            <add:To xmlns:add="http://www.w3.org/2005/08/addressing">${url}</add:To>
             <link:TransactionFlowLink xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
                 <link:Consumer>
                     <link:UniqueID>${uniqueId}</link:UniqueID>

@@ -62,7 +62,6 @@ exports.createBlog = async (req, res, next) => {
     console.log("error while trying to create blog", error);
   }
 };
-
 exports.getBlogList=async(req,res,next)=>{
     try {
       const { toDate, fromDate, page, limit, search}=req.query;
@@ -108,7 +107,6 @@ exports.getBlogById=async(req,res,next)=>{
        return next(error);
     }
 };
-
 exports.deleteBlog=async(req,res,next)=>{
   try {
     const {blogId}=req.body;
@@ -130,7 +128,6 @@ exports.deleteBlog=async(req,res,next)=>{
     return next(error);
   }
 }
-
 exports.hideBlog=async(req,res,next)=>{
   try {
     const {blogId,}=req.body;
@@ -152,7 +149,6 @@ exports.hideBlog=async(req,res,next)=>{
     return next(error);
   }
 }
-
 exports.updateBlog=async(req,res,next)=>{
   try {
     const {blogId,title,content,location}=req.body;
@@ -174,7 +170,6 @@ exports.updateBlog=async(req,res,next)=>{
     return next(error);
   }
 }
-
 exports.getBlogListAdmin=async(req,res,next)=>{
   try {
     const result=await findBlogData();
@@ -233,7 +228,6 @@ exports.likeBlog=async(req,res,next)=>{
        return next(error);
     }
 }
-
 exports.getBlogByTitle=async(req,res,next)=>{
   try {
     const {blogTitle}=req.query;
@@ -258,3 +252,4 @@ exports.getBlogByTitle=async(req,res,next)=>{
    return next(error);
 }
 }
+

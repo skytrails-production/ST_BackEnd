@@ -32,12 +32,25 @@ const quizServices={
         return await quizResponsemodel.findOne(query);
     },
     findQuizResponseContentPop: async (query) => {
-        return await quizResponsemodel.findOne(query).populate('user');
+        return await quizResponsemodel.findOne(query).populate({
+            path: 'user',
+            select: 'username' // Specify the fields you want to show
+          });
     },
     findQuizResponseData: async (query) => {
-        return await quizResponsemodel.find(query).populate('user').sort({createdAt:-1});
+        return await quizResponsemodel.find(query).populate({
+            path: 'user',
+            select: 'username' // Specify the fields you want to show
+          }).sort({createdAt:-1});
     },
-
+     findWinnerlastday:async (query) => {
+        return await quizResponsemodel.findOne(query)
+          .sort({ createdAt: -1 }) // Sorting by createdAt in descending order
+          .populate({
+            path: 'user',
+            select: 'username' // Specify the fields you want to show
+          })
+      },
     deleteQuizResponse: async (query) => {
         return await quizResponsemodel.deleteOne(query);
     },
