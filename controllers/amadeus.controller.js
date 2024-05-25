@@ -10,8 +10,7 @@ const {
 const { response } = require("express");
 
 
-// const url="https://nodeD3.production.webservices.amadeus.com/1ASIWTHESP0"
-  const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
+  const url = process.env.AMADEUSURL;
 //fare Master Pricer Travel Board Search
 
 exports.fareMasterPricerTravelBoardSearch = async (req, res) => {

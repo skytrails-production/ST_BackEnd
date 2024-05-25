@@ -16,12 +16,17 @@ const s3 = new aws.S3({
 });
 
 
+
+//testing
+
 const headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
     'Accept-Encoding': 'application/gzip',
     'api-key': 'b3df547f1c1a2a3989c234bcf2aacaed',
 };
+
+//production
 // const headers = {
 //   'Content-Type': 'application/json',
 //   'Accept': 'application/json',
@@ -29,8 +34,7 @@ const headers = {
 //   'api-key': 'b79e47991faefb0c7d091b9b6ddc9ea4',
 // };
 
-const baseurl='https://api-sandbox.grnconnect.com';
-// const baseurl =" https://v4-api.grnconnect.com";
+const baseurl=process.env.GRNURL;
 
 //citylist data
 

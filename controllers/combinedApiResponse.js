@@ -42,8 +42,7 @@ const buffer = Buffer.concat([
   nodeCrypto.createHash("sha1").update(Buffer.from(CLEARPASSWORD)).digest(),
 ]);
 
-// const url="https://nodeD3.production.webservices.amadeus.com/1ASIWTHESP0"
-const url = "https://nodeD3.test.webservices.amadeus.com/1ASIWTHESP0";
+const url = process.env.AMADEUSURL;
 
 // Compute SHA-1 hash of the concatenated buffer and encode in base64
 const hashedPassword = nodeCrypto
