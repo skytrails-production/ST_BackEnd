@@ -23,7 +23,7 @@ const headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
     'Accept-Encoding': 'application/gzip',
-    'api-key': 'b3df547f1c1a2a3989c234bcf2aacaed',
+    'api-key': process.env.GRNAPIKEY,
 };
 
 //production
