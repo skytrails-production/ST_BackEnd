@@ -13,7 +13,7 @@ const { log } = require("console");
 const sendSMS = require("../utilities/sendSms");
 const PushNotification = require("../utilities/commonFunForPushNotification");
 const whatsAppMsg = require("../utilities/whatsApi");
-
+const hawaiYatra=require("../utilities/b2bWhatsApp")
 //****************************************SERVICES**************************************/
 const { hotelBookingServicess } = require("../services/hotelBookingServices");
 const { aggregatePaginateHotelBookingList, findhotelBooking, findhotelBookingData, deletehotelBooking, updatehotelBooking, hotelBookingList, countTotalBooking } = hotelBookingServicess;
@@ -50,6 +50,7 @@ exports.addHotelBookingData = async (req, res) => {
       const message = `Hello ${data.name} ,Thank you for booking your hotel stay with TheSkytrails. Your reservation is confirmed! Please click on url to see details:. Or You Can login https://b2b.theskytrails.com/Login`
       await sendSMS.sendSMSForHotelBookingAgent(response);
       // await whatsAppMsg.sendWhatsAppMessage(data.phone, message);
+      await hawaiYatra.sendWhtsAppAISensy('+91'+data.phone,[String("Hotel")],"booking_confirmation");
       await commonFunction.HotelBookingConfirmationMail(response);
 
     }

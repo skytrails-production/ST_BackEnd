@@ -10,6 +10,7 @@ const responseMessage = require("../utilities/responses");
 const sendSMS = require("../utilities/sendSms");
 const commonFunction = require("../utilities/commonFunctions");
 const whatsappAPIUrl = require("../utilities/whatsApi");
+const hwaiYatrawhatsappUrl=require("../utilities/b2bWhatsApp")
 const approvalStatus = require("../enums/approveStatus");
 const storyStatus=require("../enums/storyStatus");
 const authType=require("../enums/authType")
@@ -210,9 +211,9 @@ exports.createSubAdmin = async (req, res, next) => {
     const message = `Welcome To TheSkyTrails, now you are subAdmin.`;
     const MobileNo='+91'+mobile_number;
     
-    await whatsappAPIUrl.sendMessageWhatsApp(MobileNo, message,"hello_test");
+    // await whatsappAPIUrl.sendMessageWhatsApp(MobileNo, message,"hello_test");
     const template=[String("SubAdmin"),String(result.userName),String(password),String("https://thehawaiyatra.com/subAdminLogin")]
-    await whatsappAPIUrl.sendWhtsAppOTPAISensy(MobileNo,template,"loginCredential")
+    await hwaiYatrawhatsappUrl.sendWhtsAppAISensy(MobileNo,template,"loginCredential")
     await commonFunction.sendSubAdmin(result.email, result.userName, password);
     return res.status(statusCode.OK).send({
       status: statusCode.OK,

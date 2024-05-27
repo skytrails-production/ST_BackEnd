@@ -14,6 +14,7 @@ const statusCode = require("../utilities/responceCode");
 const responseMessage = require("../utilities/responses");
 const sendSMS = require("../utilities/sendSms");
 const whatsappAPIUrl = require("../utilities/whatsApi");
+const hwaiYatraWhatsAppURL=require("../utilities/b2bWhatsApp")
 //************SERVICES*************** */
 const { appVersionServices } = require("../services/appVersionServices");
 const {
@@ -1815,7 +1816,7 @@ exports.createAgent = async (req, res, next) => {
     // await whatsappAPIUrl.sendWhatsAppMessage(mobile_number, msg);
     await commonFunction.sendAgent(email, password);
     const template=[String("Agent"),String(email),String(password),String("https://thehawaiyatra.com/Login")]
-    await whatsappAPIUrl.sendWhtsAppOTPAISensy("+91" + contactNumber,template,"loginCredential");
+    await hwaiYatraWhatsAppURL.sendWhtsAppAISensy("+91" + mobile_number,template,"loginCredential");
     // Respond with success
     if (result) {
       return res.status(statusCode.OK).send({

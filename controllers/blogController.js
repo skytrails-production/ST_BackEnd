@@ -252,4 +252,29 @@ exports.getBlogByTitle=async(req,res,next)=>{
    return next(error);
 }
 }
-
+exports.editImage=async(req,res,next)=>{
+  try {
+    const {blogId}=req.body;
+    const isBlogExits=await findBlog({_id:blogId,status:status.ACTIVE});
+    if(!isBlogExits){
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.BLOG_NOT_FOUND,
+      }); 
+    }
+    if (req.file) {
+          const secureurl = await commonFuction.getImageUrlAWS(req.file);
+          req.body.img=secureurl;
+          console.log(req.body.img);
+      }
+      const result = await updateBlog({ _id: blogId }, { $push: { media: req.body.img } });
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.POST_CREATED,
+        result: result,
+      });
+  } catch (error) {
+    console.log("error wwhile trying to upload iumage",error);
+    return next(error);
+  }
+}

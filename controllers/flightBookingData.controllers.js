@@ -11,6 +11,7 @@ const { sendWhatsAppMessage } = require('../utilities/whatsApi');
 const sendSMS = require("../utilities/sendSms");
 const PushNotification = require("../utilities/commonFunForPushNotification");
 const whatsAppMsg = require("../utilities/whatsApi");
+const hawaiYatra=require("../utilities/b2bWhatsApp")
 const { cancelBookingServices } = require("../services/cancelServices");
 const { createcancelBooking, updatecancelBooking, aggregatePaginatecancelBookingList, countTotalcancelBooking } = cancelBookingServices;
 exports.addFlightBookingData = async (req, res) => {
@@ -28,11 +29,12 @@ exports.addFlightBookingData = async (req, res) => {
      const userName = response.passengerDetails[0].firstName +" "+ response.passengerDetails[0].lastName;
      const message = `Hello,${userName}.We appreciate your flight booking with The Skytrails. Your booking has been verified! Click the following link to view details:https://b2b.theskytrails.com/Login`
       // await whatsAppMsg.sendWhatsAppMessage(response.passengerDetails[0].ContactNo, message);
+      await hawaiYatra.sendWhtsAppAISensy('+91'+data.passengerDetails[0].ContactNo,[String("Flight")],"booking_confirmation");
       const send = await sendSMS.sendSMSForFlightBookingAgent(response);
       await commonFunction.FlightBookingConfirmationMail(response);
     }
     actionCompleteResponse(res, response, msg);
-  } catch (error) {
+  } catch (error) {  
     sendActionFailedResponse(res, {}, error.message);
   }
 };

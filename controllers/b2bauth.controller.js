@@ -312,6 +312,8 @@ exports.UserUpdate = async (req, res) => {
     };
     let updateCri = {
       is_active: is_active,
+      approveStatus:status.ACTIVE,
+      isApproved:true
     };
 
     await b2bUser.findOneAndUpdate(findCri, updateCri, { new: true });

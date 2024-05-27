@@ -19,5 +19,6 @@ app.put("/skyTrails/api/blog/deleteBlog",controller.deleteBlog);
 app.put("/skyTrails/api/blog/hideBlog",controller.hideBlog);
 app.put("/skyTrails/api/blog/updateBlog",controller.updateBlog);
 app.get("/skyTrails/api/blog/getAllBlogsAdmin",controller.getBlogListAdmin);
-app.put("/skyTrails/api/blog/activeStatus",controller.activeStatus)
+app.put("/skyTrails/api/blog/activeStatus",controller.activeStatus);
+app.put("/skyTrails/api/blog/editImage",upload.single("images"),controller.editImage);
 };

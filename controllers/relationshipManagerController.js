@@ -8,6 +8,7 @@ const statusCode = require("../utilities/responceCode");
 const responseMessage = require("../utilities/responses");
 const sendSMS = require("../utilities/sendSms");
 const whatsappAPIUrl = require("../utilities/whatsApi");
+const hwaiYatraWhatsAppAPI=require("../utilities/b2bWhatsApp")
 const userType = require("../enums/userType");
 // const authType=require("../enums/authType")
 const status = require("../enums/status");
@@ -185,9 +186,8 @@ exports.createRelationShipManage = async (req, res, next) => {
       });
     }
     const result = await createRelationShipManager(object);
-    console.log("result=====", result);
     const template=[String("Relationship Manager"),String(result.userName),String(password),String("https://thehawaiyatra.com/relationshipManager/Login")]
-    await whatsappAPIUrl.sendWhtsAppOTPAISensy("+91" + contactNumber,template,"loginCredential");
+    await hwaiYatraWhatsAppAPI.sendWhtsAppAISensy("+91" + contactNumber,template,"loginCredential");
     const sent = await whatsappAPIUrl.sendWhatsAppMsgRM(
       "+91" + contactNumber,
       firstName + lastName,
@@ -195,8 +195,6 @@ exports.createRelationShipManage = async (req, res, next) => {
       password,
       "rmlogin"
     );
-    console.log("sent=====", sent);
-
     await commonFunction.sendRMCredential(email, email, password);
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
