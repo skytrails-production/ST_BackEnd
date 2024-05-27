@@ -267,10 +267,10 @@ exports.editImage=async(req,res,next)=>{
           req.body.img=secureurl;
           console.log(req.body.img);
       }
-      const result = await updateBlog({ _id: blogId }, { $push: { media: req.body.img } });
+      const result = await updateBlog({ _id: blogId },  { media: req.body.img } );
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
-        responseMessage: responseMessage.POST_CREATED,
+        responseMessage: responseMessage.UPDATE_SUCCESS,
         result: result,
       });
   } catch (error) {
