@@ -28,6 +28,9 @@ const responseMessage = require("../utilities/responses");
 const bookingStatus = require("../enums/bookingStatus");
 const sendSMS = require("../utilities/sendSms");
 const whatsappAPIUrl = require("../utilities/whatsApi");
+
+const ObjectId = mongoose.Types.ObjectId;
+
 //************SERVICES*************** */
 
 const { brbuserServices } = require("../services/btobagentServices");
@@ -119,7 +122,8 @@ const {
 const { log } = require("console");
 const { internationl } = require("../model/international.model");
 const { logger, sendMail } = require("../config/nodeConfig");
-const agentWalletHistory=require("../model/agentWalletHistory")
+const agentWalletHistory=require("../model/agentWalletHistory");
+const e = require("cors");
 // console.log(process.env.AWS_ACCESS_KEY_ID, process.env.AWS_SECRET_ACCESS_KEY);
 
 // Set up AWS S3 client
@@ -2174,7 +2178,117 @@ exports.deleteAgent=async(req,res,next)=>{
     const deletedData=await deletebrbuser({_id:isAgentExist._id});
     return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage:responseMessage.DELETE_SUCCESS,result:deletedData });
   } catch (error) {
-    console.log("error  while delet agentAccount==========", error);
+    console.log("error  while delete agentAccount==========", error);
     return next(error);
+  }
+}
+
+exports.getRevenueOfAgent = async (req, res, next) => {
+  try {
+    const { agentId } = req.query;
+    
+    if (!ObjectId.isValid(agentId)) {
+      return res.status(statusCode.BadRequest).send({ 
+        statusCode: statusCode.BadRequest, 
+        responseMessage: responseMessage.INVALID_AGENT_ID 
+      });
+    }
+    
+    const agentObjectId = new ObjectId(agentId);
+
+    // Check if the agent exists
+    const isAgentExist = await findbrbuser({ _id: agentObjectId });
+    if (!isAgentExist) {
+      return res.status(statusCode.NotFound).send({ 
+        statusCode: statusCode.NotFound, 
+        responseMessage: responseMessage.AGENT_NOT_FOUND 
+      });
+    }
+
+    console.log("Checking flights for agent:", agentId);
+
+    // Aggregate flight bookings to calculate total revenue
+    const flightAggregateResult = await flightModel.aggregate([
+      { $match: { userId: agentObjectId } }, // Filter by agentId
+      { $group: { _id: "$userId", totalRevenue: { $sum: "$totalAmount" } } }
+    ]);
+    const hotelAggregateResult = await hotelBookingModel.aggregate([
+      { $match: { userId: agentObjectId } }, // Filter by agentId
+      { $group: { _id: "$userId", totalRevenue: { $sum: "$amount" } } }
+    ]);
+    const busAggregateResult = await busBookingModel.aggregate([
+      { $match: { userId: agentObjectId } }, // Filter by agentId
+      { $group: { _id: "$userId", totalRevenue: { $sum: "$amount" } } }
+    ]);
+    // Extract total revenue from aggregation result
+    const flightRevenue = flightAggregateResult.length > 0 ? flightAggregateResult[0].totalRevenue : 0;
+    const hotelRevenue = hotelAggregateResult.length > 0 ? hotelAggregateResult[0].totalRevenue : 0;
+    const busRevenue = busAggregateResult.length > 0 ? busAggregateResult[0].totalRevenue : 0;
+
+    const totalRevenue=flightRevenue+hotelRevenue+busRevenue
+    console.log("Total revenue calculated:", totalRevenue,"hotelRevenue=",hotelRevenue,"busRevenue====",busRevenue,"flightRevenue===",flightRevenue);
+
+    // Send the response with the total revenue
+    return res.status(statusCode.OK).send({ 
+      statusCode: statusCode.Success, 
+      responseMessage: responseMessage.DATA_FOUND, 
+      result: { totalRevenue }
+    });
+
+  } catch (error) {
+    console.log("Error while getting revenue:", error);
+    return next(error);
+  }
+};
+
+
+exports.forgetPassword=async(req,res,next)=>{
+  try {
+    const {email,redirectUrl}=req.body;
+    const isEmailExist=await findbrbuser({"personal_details.email":email});
+if(!isEmailExist){
+  return res.status(statusCode.OK).send({ 
+    statusCode: statusCode.NotFound, 
+    responseMessage: responseMessage.EMAIL_NOT_EXIST 
+  });
+}
+// const link=`localhost:8000/skyTrails/api/agent/resetPassword/${isEmailExist._id}`
+await commonFunction.sendEmailResetPassword(email,isEmailExist._id)
+return res.status(statusCode.OK).send({ 
+  statusCode: statusCode.OK, 
+  responseMessage: responseMessage.RESET_LINK_SEND 
+});
+  } catch (error) {
+    console.log("error while trying to forgetPassword",error);
+    return next(error);
+  }
+}
+
+exports.resetPassword=async(req,res,next)=>{
+  try {
+    const {id}=req.params;
+    const {password,confirmpassword}=req.body;
+    const isEmailExist=await findbrbuser({_id:id});
+    if(!isEmailExist){
+      return res.status(statusCode.OK).send({ 
+        statusCode: statusCode.NotFound, 
+        responseMessage: responseMessage.EMAIL_NOT_EXIST 
+      });
+    }
+    if(password!=confirmpassword){
+      return res.status(statusCode.OK).send({ 
+        statusCode: statusCode.badRequest, 
+        responseMessage: responseMessage.PASSWORD_NOT_MATCH 
+      });
+    }
+    const hashPass=await bcrypt.hashSync(password,10);
+    await updatebrbuser({_id:isEmailExist._id},{"personal_details.password":hashPass});
+    return res.status(statusCode.OK).send({ 
+      statusCode: statusCode.OK, 
+      responseMessage: responseMessage.UPDATE_SUCCESS 
+    });
+  } catch (error) {
+    console.log("error while trying to reset password",error);
+    return next(error)
   }
 }

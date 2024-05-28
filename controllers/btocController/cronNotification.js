@@ -121,8 +121,8 @@ var taskPromotionalNotification = cron.schedule("0 9 * * *",async () => {
     // const messageBody = `✨Check out our latest promotion! We're offering deals so good, even your coffee will do a double-take! ☕️ Explore your journey with TheSkyTrails pvt ltd✨`;
     for (const user of users) {
       try { 
-        const notificationMessage = `O to thehre pardeshi,sath qa nibhaynege❔`;
-        const messageBody = `Kal ki pehli flight✈️ se , ༺🍃☞ 𝓑𝓐𝓛𝓘 ☪ツ chale jayenge....`;
+        const notificationMessage = `Boss ne chutti approve kar di?🥳"Dil Chahta Hai" a road trip to Goa?🏖😍`;
+        const messageBody = `Checkout the Goa packages on our app📲,`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
       // const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`
         // Check if a notification has been sent to this user recently

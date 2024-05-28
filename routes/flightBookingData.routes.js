@@ -20,4 +20,8 @@ module.exports = function (app) {
     // ================ Get All Flight Booking List for Admin ========
 
     app.post('/skyTrails/flightBooking/getAllFlightsBookingForAdmin', controller.getAllFlghtBookingForAdmin);
+
+
+    //amadeus booking agents
+    app.post('/skyTrails/flightBooking/amadeus/addflightbooking', controller.amadeusFlightBooking);
 }

@@ -19,7 +19,8 @@ const {
   welcomeAgentMail,
   ssdcMail,
   packageLandingMail,
-  hotelGrnMail
+  hotelGrnMail,
+  ResetPassword
 } = require("./mailingFunction.js");
 let cloudinary = require("cloudinary");
 cloudinary.config({
@@ -5022,6 +5023,22 @@ module.exports = {
       to: email,
       subject: "Otp for verication",
       html: otpMail(otp),
+    };
+    return await transporter.sendMail(mailOptions);
+  },
+  sendEmailResetPassword: async (email, userId) => {
+    var transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: nodemailerConfigHawaiYatra.options.auth.userHawai,
+        pass: nodemailerConfigHawaiYatra.options.auth.passHawai,
+      },
+    });
+    var mailOptions = {
+      from: nodemailerConfigHawaiYatra.userHawai,
+      to: email,
+      subject: "Reset Password",
+      html: ResetPassword(userId),
     };
     return await transporter.sendMail(mailOptions);
   },
