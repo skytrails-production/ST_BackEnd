@@ -198,5 +198,6 @@ module.exports = function (app) {
   app.post("/skyTrails/website/paymentFailure",controller.randomPaymentFailure);
   app.post("/skyTrails/api/agent/forgetPassword",controller.forgetPassword);
   app.put("/skyTrails/api/agent/resetPassword/:id",controller.resetPassword);
-  app.get("/skyTrails/api/agent/agentRevenue",controller.getRevenueOfAgent)
+  app.get("/skyTrails/api/agent/agentRevenue",controller.getRevenueOfAgent);
+  app.get("/skyTrails/api/agent/getAllAgentRevenue",controller.getAllAgentRevenue)
 };

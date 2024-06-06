@@ -22,20 +22,15 @@ const { Readable } = require("stream");
 const { userInfo } = require("os");
 const commonFunction = require("../utilities/commonFunctions");
 const approvestatus = require("../enums/approveStatus");
-//require responsemessage and statusCode
 const statusCode = require("../utilities/responceCode");
 const responseMessage = require("../utilities/responses");
 const bookingStatus = require("../enums/bookingStatus");
 const sendSMS = require("../utilities/sendSms");
 const whatsappAPIUrl = require("../utilities/whatsApi");
-
 const ObjectId = mongoose.Types.ObjectId;
-
-//************SERVICES*************** */
-
-const { brbuserServices } = require("../services/btobagentServices");
 const userType = require("../enums/userType");
 const status = require("../enums/status");
+//***************************************************************************SERVICES******************************************************************/
 const { hotelBookingServicess } = require("../services/hotelBookingServices");
 const {
   aggregatePaginateHotelBookingList,
@@ -48,6 +43,7 @@ const {
   aggregatePaginateHotelBookingList1,
   aggregatePaginateHotelBookings,
 } = hotelBookingServicess;
+const { brbuserServices } = require("../services/btobagentServices");
 const {
   createbrbuser,
   findbrbuser,
@@ -106,14 +102,12 @@ const {
   aggregatePaginatechangeBusRequestList,
   countTotalchangeBusRequest,
 } = changeBusRequestServices;
-
 const {agentStaticContentServices}=require('../services/agentStaticServices');
 const {createAgentStaticContent,findAgentStaticContent,findAgentStaticContentData,deleteAgentStaticContentStatic,updateAgentStaticContentStatic}=agentStaticContentServices;
 //**********Necessary models***********/
 const flightModel = require("../model/flightBookingData.model");
 const hotelBookingModel = require("../model/hotelBooking.model");
 const busBookingModel = require("../model/busBookingData.model");
-
 const aws = require("aws-sdk");
 const {
   actionCompleteResponse,
@@ -160,6 +154,7 @@ exports.RegisterUser = async (req, res) => {
       const user = new b2bUser({
         personal_details: {
           ...reqData.personal_details,
+          email:reqData?.personal_details?.email.toLowerCase(),
           first_name:reqData?.personal_details?.first_name.trim(),
           last_name:reqData?.personal_details?.last_name.trim(),         
           mobile: {
@@ -1427,7 +1422,6 @@ exports.upload = async (req, res) => {
 // exports.cancelRequest = function
 
 //easy buzz payment controller
-
 var configEaseBuzz = {
   key: process.env.EASEBUZZ_KEY,
   salt: process.env.EASEBUZZ_SALT,
@@ -1561,8 +1555,7 @@ exports.paymentSuccess = async (req, res, next) => {
 };
 
 
-//payment success 
-
+//payment success***************************************************************************************
 exports.paymentSuccessAgent = async (req, res, next) => {
   try {
     // console.log("successVerifyApi==",req.body.easepayid);
@@ -1790,11 +1783,7 @@ function generateSHA512Hash(input) {
   return hash.digest("hex");
 }
 
-
-
-
 ///agentProfilePage
-
 exports.agentProfilePage = async (req, res) =>{
 
   const companyDomain = req.body.companyDomain;
@@ -1823,10 +1812,7 @@ exports.agentProfilePage = async (req, res) =>{
   }
 }
 
-
-
 //agentCommission
-
 exports.agentCommission = async (req, res) => {
   const agentId = req.body.agentId;
   const updatedCommissionData = req.body.myCommission;
@@ -1858,11 +1844,7 @@ exports.agentCommission = async (req, res) => {
   }
 };
 
-
-
-
 //addAgentCommission
-
 exports.addAgentCommission =async (req, res) =>{
 
   const {agentId, addAmount}=req.body;
@@ -1889,10 +1871,7 @@ exports.addAgentCommission =async (req, res) =>{
   }
 }
 
-
-
 // updateCompanyDomain
-
 exports.updateCompanyDomain =async (req, res) =>{
 
   const { agentId, companyDomain } = req.body;
@@ -1939,29 +1918,6 @@ exports.checkReferralCode=async(req,res,next)=>{
     return next(error);
   }
 }
-
-// exports.checkIsExits=async(req,res,next)=>{
-//   try {
-//     const {agencyName}=req.body;
-// console.log("regex");
-
-//    console.log("====================",);
-//     // Construct a case-insensitive regular expression for matching variations of the agency name
-//     const regex = new RegExp(agencyName.replace(/\s+/g, '\\s*'), 'i');
-// console.log("regex============",regex);
-//     const isAgentExist=await b2bUser.findOne({'agency_details.agency_name':regex});
-    
-//     if(!isAgentExist){   
-//       return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage:responseMessage.AGENT_NOT_FOUND });
-//   }
-//   return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage:responseMessage.LOGIN_SUCCESS ,result:isAgentExist});
-   
-//   } catch (error) {
-//     console.error("error while trying to check ",error);
-//     return next(error);
-//   }
-// }
-
 
 exports.checkIsExits = async (req, res, next) => {
   try {
@@ -2020,16 +1976,6 @@ exports.updatePersonalProfile=async(req,res,next)=>{
 }
 
 //***********************for agent profile banner************************************/
-
-
-
-
-
-//b2c website random payment method controller
-
-
-//initiate 
-
 exports.randomPayment=async (req, res, next) => {
   try {
     const {
@@ -2107,7 +2053,6 @@ exports.randomPayment=async (req, res, next) => {
   }
 };
 
-
 //success
 exports.randomPaymentSuccess = async (req, res, next) => {
   try {
@@ -2140,8 +2085,6 @@ exports.randomPaymentSuccess = async (req, res, next) => {
   }
 };
 
-
-
 exports.randomPaymentFailure= async (req, res, next) => {
   try {
     const { merchantTransactionId } = req.query;
@@ -2167,7 +2110,7 @@ exports.randomPaymentFailure= async (req, res, next) => {
   }
 };
 
-//********************Delete Agent************************ */
+//***********************************************************Delete Agent***********************************************/
 exports.deleteAgent=async(req,res,next)=>{
   try {
     const {agentId}=req.body;
@@ -2181,15 +2124,16 @@ exports.deleteAgent=async(req,res,next)=>{
     console.log("error  while delete agentAccount==========", error);
     return next(error);
   }
-}
+};
 
+//***************************************************Agent Revenue****************************************************/
 exports.getRevenueOfAgent = async (req, res, next) => {
   try {
     const { agentId } = req.query;
     
     if (!ObjectId.isValid(agentId)) {
-      return res.status(statusCode.BadRequest).send({ 
-        statusCode: statusCode.BadRequest, 
+      return res.status(statusCode.badRequest).send({ 
+        statusCode: statusCode.badRequest, 
         responseMessage: responseMessage.INVALID_AGENT_ID 
       });
     }
@@ -2205,7 +2149,6 @@ exports.getRevenueOfAgent = async (req, res, next) => {
       });
     }
 
-    console.log("Checking flights for agent:", agentId);
 
     // Aggregate flight bookings to calculate total revenue
     const flightAggregateResult = await flightModel.aggregate([
@@ -2241,7 +2184,7 @@ exports.getRevenueOfAgent = async (req, res, next) => {
   }
 };
 
-
+//***************************************************Forget Password**************************************************/
 exports.forgetPassword=async(req,res,next)=>{
   try {
     const {email,redirectUrl}=req.body;
@@ -2262,8 +2205,9 @@ return res.status(statusCode.OK).send({
     console.log("error while trying to forgetPassword",error);
     return next(error);
   }
-}
+};
 
+//***************************************************Reset Password**************************************************/
 exports.resetPassword=async(req,res,next)=>{
   try {
     const {id}=req.params;
@@ -2289,6 +2233,52 @@ exports.resetPassword=async(req,res,next)=>{
     });
   } catch (error) {
     console.log("error while trying to reset password",error);
+    return next(error)
+  }
+};
+
+//*******************************************************All user revenue*****************************************************/
+exports.getAllAgentRevenue=async(req,res,next)=>{
+  try {
+    let result=[];
+    const agentList=await brbuserList({});
+    if(agentList.length<1){
+      return res.status(statusCode.NotFound).send({ 
+        statusCode: statusCode.NotFound, 
+        responseMessage: responseMessage.AGENT_NOT_FOUND 
+      });
+    }
+    for(var agent of agentList){
+      let agentWiseRevenue={agentId:agent._id,agentName:agent.personal_details.first_name,email:agent.personal_details.email}
+      const agentObjectId = new ObjectId(agent._id);
+
+      const flightAggregateResult = await flightModel.aggregate([
+        { $match: { userId: agentObjectId } }, // Filter by agentId
+        { $group: { _id: "$userId", totalRevenue: { $sum: "$totalAmount" } } }
+      ]);
+      const hotelAggregateResult = await hotelBookingModel.aggregate([
+        { $match: { userId: agentObjectId } }, // Filter by agentId
+        { $group: { _id: "$userId", totalRevenue: { $sum: "$amount" } } }
+      ]);
+      const busAggregateResult = await busBookingModel.aggregate([
+        { $match: { userId: agentObjectId } }, // Filter by agentId
+        { $group: { _id: "$userId", totalRevenue: { $sum: "$amount" } } }
+      ]);
+      const flightRevenue = flightAggregateResult.length > 0 ? flightAggregateResult[0].totalRevenue : 0;
+    const hotelRevenue = hotelAggregateResult.length > 0 ? hotelAggregateResult[0].totalRevenue : 0;
+    const busRevenue = busAggregateResult.length > 0 ? busAggregateResult[0].totalRevenue : 0;
+
+    agentWiseRevenue.totalRevenue=flightRevenue+hotelRevenue+busRevenue
+    result.push(agentWiseRevenue);
+    }
+    return res.status(statusCode.OK).send({ 
+      statusCode: statusCode.Success, 
+      responseMessage: responseMessage.DATA_FOUND, 
+      result: result,
+
+    });
+  } catch (error) {
+    console.log("error while getAgents revenue",error);
     return next(error)
   }
 }

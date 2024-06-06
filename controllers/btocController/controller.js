@@ -936,13 +936,7 @@ exports.loginWithMailMobileLogin = async (req, res, next) => {
       email: email,
     };
     const phoneNumber = data["email"];
-    console.log(
-      emailRegex.test(phoneNumber),
-      "phoneNumber===========",
-      phoneNumber
-    );
     if (emailRegex.test(phoneNumber)) {
-      console.log("===========================");
       const isExist = await findUser({ email: email, status: status.ACTIVE });
       // Perform actions for login with email
       if (isExist) {
@@ -983,7 +977,7 @@ exports.loginWithMailMobileLogin = async (req, res, next) => {
         });
       }
       const obj = {
-        email: email,
+        email: email.toLowerCase(),
         otp: otp,
         otpExpireTime: otpExpireTime,
       };
@@ -1009,10 +1003,6 @@ exports.loginWithMailMobileLogin = async (req, res, next) => {
         result: result,
       });
     } else if (mobileRegex.test(phoneNumber)) {
-      console.log(
-        "=========>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
-        mobileRegex.test(phoneNumber)
-      );
       // Perform actions for login with mobile number
       const isExist = await findUser({ "phone.mobile_number": email });
       const var1 =
