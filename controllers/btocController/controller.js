@@ -597,7 +597,6 @@ exports.verifyUserOtpWithSocialId = async (req, res, next) => {
         message: responseMessage.USERS_NOT_FOUND,
       });
     }
-    console.log("isUserExist.otp !== otp", isUserExist.otp !== otp);
     if (isUserExist.otp !== otp) {
       return res.status(statusCode.badRequest).json({
         statusCode: statusCode.badRequest,
@@ -614,7 +613,6 @@ exports.verifyUserOtpWithSocialId = async (req, res, next) => {
       { _id: isUserExist._id, status: status.ACTIVE },
       { otpVerified: true }
     );
-    console.log("======================", updation);
     if (updation.firstTime === false) {
       const token = await commonFunction.getToken({
         _id: updation._id,
@@ -1070,7 +1068,6 @@ exports.loginWithMailMobileLogin = async (req, res, next) => {
           templateParams,
           "user_OTP"
         );
-        console.log("sent+============", sent);
         await sendSMS.sendSMSForOtp(email, otp);
         const token = await commonFunction.getToken({
           _id: setUnVerified._id,
@@ -1236,10 +1233,7 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
       });
     }
     const refeerralCode = commonFunction.generateReferralCode();
-    console.log(
-      "mobileRegex.test(phoneNumber)=============",
-      mobileRegex.test(phoneNumber)
-    );
+    
     var obj = {};
     var updateData = {};
     if (emailRegex.test(phoneNumber)) {
@@ -1396,7 +1390,6 @@ exports.sendOtpOnSMS = async (req, res, next) => {
       });
     }
     const sent = await sendSMS.sendSMSForOtp(mobile, otp);
-    console.log("sent===================", sent);
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.OTP_SEND,
@@ -1428,7 +1421,6 @@ exports.resendOtpMailMobile = async (req, res, next) => {
       contactMethod = "email";
       userIdentifier = user.email;
     } else if (mobileRegex.test(email)) {
-      console.log("email========", email);
       user = await findUser({
         "phone.mobile_number": email,
         status: status.ACTIVE,
@@ -1495,10 +1487,8 @@ exports.resendOtpMailMobile = async (req, res, next) => {
       });
     }
     if (contactMethod === "email") {
-      console.log("==============email");
       await commonFunction.sendEmailOtp(userIdentifier, otp);
     } else if (contactMethod === "mobile") {
-      console.log("==================mobile", userIdentifier);
       const username = `${updateData.username}` || "Dear";
       const sent = await whatsappAPIUrl.sendMessageWhatsApp(
         userIdentifier,
@@ -1515,9 +1505,7 @@ exports.resendOtpMailMobile = async (req, res, next) => {
       const sent1 = await sendSMS.sendSMSForOtp(email, otp);
 
       // const sent=await whatsappAPIUrl.sendMessageWhatsApp(userIdentifier, username, otp, "loginotp");
-      console.log("sent============", sent);
       // const sent1=await sendSMS.sendSMSForOtp(userIdentifier, otp);
-      console.log("sent============", sent1);
     }
     const token = await commonFunction.getToken({
       _id: updateData._id,
@@ -1562,7 +1550,6 @@ exports.shareReferralCodeSMSWHTSAPP = async (req, res, next) => {
     const referralLink = `https://play.google.com/store/apps/details?id=com.skytrails`;
     const referralLinkIOS = `https://apps.apple.com/us/app/the-skytrails/id6475768819?id=com.skytrails`;
     const contact = countryCode + contactNumber;
-    console.log("contact--------------------",contact);
     // Shorten the referral link
     var result = {};
     result.referralLinkIOS = referralLinkIOS;
@@ -1579,9 +1566,7 @@ const var3=`IOS=${referralLinkIOS} and Andriod=${referralLink}`
       combineReferral,
       "sharerefcode"
     );
-    console.log("data=============",data);
     const sendWhats=await whatsappAPIUrl.sendWhtsAppAISensy(contact,isUserExist.referralCode,checkReward.refereeAmount,var3,"shareReferral");
-    console.log("sendWhats===================",sendWhats);
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.LINK_GENERATED,

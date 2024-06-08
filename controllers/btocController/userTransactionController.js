@@ -930,7 +930,6 @@ exports.checkCashfreePaymentStatus = async (req, res, next) => {
     const isTransactionExist = await findUsertransaction({
       paymentId: orderId,
     });
-    console.log("isTransactionExist=========",isTransactionExist);
     if (isTransactionExist){
       // Handle payment status as needed
       if (orderStatus === 'PAID') {
@@ -1127,14 +1126,10 @@ exports.CCEVENUEPayment = async (req, res, next) => {
         billing_tel: customerPhone, // Change customer phone as needed
         billing_email: customerEmail, // Change customer email as needed
       };
-console.log("requestData",requestData);
       // Generate checksum
      
-      console.log("checksum==============",checksum);
       const encryptedData = ccav.encrypt(requestData);
-      console.log(encryptedData);
       const decryptedData = ccav.decrypt(encryptedData);
-      console.log(decryptedData);
       try {
         // Send request to CCAvenue
         const response = await axios.post(url, checksum);

@@ -459,10 +459,7 @@ var taskPlatformNotification = cron.schedule("0 18 * * *",
             messageBody,
             // imageurl
           );
-          console.log(
-            "Notification cron job executed successfully.TASK 2",
-            user.username
-          );
+          
         } catch (pushError) {
           // Handle if any user is not registered
           console.error(
@@ -566,10 +563,7 @@ const taskRandomNotification = cron.schedule(
             messageBody,
             // imageurl
           );
-          console.log(
-            "Notification cron job executed successfully. User:",
-            user.username
-          );
+         
         } catch (pushError) {
           console.error(
             "Error while sending push notification to user:",

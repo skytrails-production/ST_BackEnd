@@ -84,7 +84,6 @@ let formattedDate = new Date().toLocaleDateString('en-GB', options);
     const depTime=new Date(data.airlineDetails[0].Origin.DepTime);
     const arrTime=new Date(data.airlineDetails[0].Destination.ArrTime);
     const templates=[String(userName),String(data.pnr),String(data.airlineDetails[0].Airline.AirlineName),String(depDate.toLocaleDateString('en-GB', options)),String(depTime.toLocaleTimeString('en-GB')),String(arrTime.toLocaleTimeString('en-GB')),String(data.totalAmount)];
-   console.log(templates,"logs")
     await whatsApi.sendWhtsAppOTPAISensy(phone,templates,"flightBooking");
     await sendSMSUtils.sendSMSForFlightBooking(data);
     await commonFunction.FlightBookingConfirmationMail(result);

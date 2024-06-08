@@ -1553,7 +1553,6 @@ exports.createMarkup = async (req, res, next) => {
       rechargeMarkup: rechargeMarkup,
     };
     const data = await findMarkup({ status: status.ACTIVE });
-    console.log("data", data);
     if (data) {
       const resultData = await updateMarkup({ _id: data._id }, object);
       if (!resultData) {

@@ -126,7 +126,7 @@ exports.getReferrals=async(req,res,next)=>{
       });
     }
     const allReferrals=await findbrbData({referrerCode:isAgentExist.referralCode});
-    return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.LINK_GENERATED,result:allReferrals});
+    return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result:allReferrals});
 
   } catch (error) {
     console.log("error while trying to get referrals");

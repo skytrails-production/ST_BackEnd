@@ -95,16 +95,12 @@ exports.travelPlanGenerator = async (req, res) => {
     };
 
     const apiToken = req.headers.mihirutoken;
-    // console.log(apiToken,"data");
 
     const response = await axios.post(`${api.travelPlanGenerator}`, data, {
       headers: {
         Authorization: `Bearer ${apiToken}`,
       },
     });
-    // console.log(response,"response");
-    // console.log(data,"data")
-
     msg = "submit Otp Successfully!";
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {

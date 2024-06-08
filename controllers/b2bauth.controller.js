@@ -52,6 +52,7 @@ const {
   updatebrbuser,
   deletebrbuser,
   brbuserList,
+  brbAgentList,
   paginatebrbuserSearch,
   countTotalbrbUser,
 } = brbuserServices;
@@ -468,7 +469,6 @@ exports.GetMarkup = async (req, res) => {
 
 exports.payVerify = (req, res) => {
   try {
-    // console.log(req.body);
     body = req.body.razorpay_order_id + "|" + req.body.razorpay_payment_id;
     var crypto = require("crypto");
     var expectedSignature = crypto
@@ -2275,10 +2275,54 @@ exports.getAllAgentRevenue=async(req,res,next)=>{
       statusCode: statusCode.Success, 
       responseMessage: responseMessage.DATA_FOUND, 
       result: result,
-
     });
   } catch (error) {
     console.log("error while getAgents revenue",error);
+    return next(error)
+  }
+}
+
+
+exports.getAgentTableWithRevenue=async(req,res,next)=>{
+  try {
+    const agentList=await brbAgentList({});
+    if(agentList.length<1){
+      return res.status(statusCode.NotFound).send({ 
+        statusCode: statusCode.NotFound, 
+        responseMessage: responseMessage.AGENT_NOT_FOUND 
+      });
+    }
+     const revenuePromises = agentList.map(async (agent) => {
+      let agentObj = { ...agent._doc };
+      const agentObjectId = new ObjectId(agent._id);
+      const [flightAggregateResult, hotelAggregateResult, busAggregateResult] = await Promise.all([
+        flightModel.aggregate([
+          { $match: { userId: agentObjectId } },
+          { $group: { _id: "$userId", totalRevenue: { $sum: "$totalAmount" } } }
+        ]),
+        hotelBookingModel.aggregate([
+          { $match: { userId: agentObjectId } },
+          { $group: { _id: "$userId", totalRevenue: { $sum: "$amount" } } }
+        ]),
+        busBookingModel.aggregate([
+          { $match: { userId: agentObjectId } },
+          { $group: { _id: "$userId", totalRevenue: { $sum: "$amount" } } }
+        ])
+      ]);
+      const flightRevenue = flightAggregateResult.length > 0 ? flightAggregateResult[0].totalRevenue : 0;
+      const hotelRevenue = hotelAggregateResult.length > 0 ? hotelAggregateResult[0].totalRevenue : 0;
+      const busRevenue = busAggregateResult.length > 0 ? busAggregateResult[0].totalRevenue : 0;
+      agentObj.totalRevenue = flightRevenue + hotelRevenue + busRevenue;
+     return agentObj
+    });
+    const revenueResults = await Promise.all(revenuePromises);
+    return res.status(statusCode.OK).send({ 
+      statusCode: statusCode.Success, 
+      responseMessage: responseMessage.DATA_FOUND, 
+      result: revenueResults,
+    });
+  } catch (error) {
+    console.log("Error while trying to get agent Table",error);
     return next(error)
   }
 }

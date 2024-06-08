@@ -314,73 +314,76 @@ exports.loginRM = async (req, res, next) => {
   }
 };
 
-// exports.forgetPassword = async (req, res, next) => {
-//   try {
-//     const { email } = req.body;
-//     const isUserExist = await findUser({
-//       status: { $ne: status.DELETE },
-//       $or: [{ email: email, contactNumber: email }],
-//     });
-//     if (!isUserExist) {
-//         return res.status(statusCode.OK).send({
-//           statusCode: statusCode.NotFound,
-//           responseMessage: responseMessage.USERS_NOT_FOUND,
-//         });
-//     }
-//     const token=commonFunction.getToken({
-//       _id:isUserExist._id,
-//       email:isUserExist.email,
-//       contactNumber:isUserExist.contactNumber,
-//       userType:isUserExist.userType
-//     })
-//     const resetPassLink=`http://localhost:8000/skyTrails/api/relationshipManager/resetPassword?${token}`
-//     const sentMail=await commonFunction.sendResetPassMail(email,resetPassLink);
-//     console.log("sentMail=======",sentMail);
-//     return res.status(statusCode.OK).send({
-//       statusCode: statusCode.OK,
-//       responseMessage: responseMessage.EMAIL_SENT,
-//     });
-//   } catch (error) {
-//     console.log("Error while trying to forget password", error);
-//     return next(error);
-//   }
-// };
+exports.forgetPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const isUserExist = await findRelationShipManager({
+      status: { $ne: status.DELETE },
+      $or: [{ email: email, contactNumber: email }],
+    });
+    if (!isUserExist) {
+        return res.status(statusCode.OK).send({
+          statusCode: statusCode.NotFound,
+          responseMessage: responseMessage.USERS_NOT_FOUND,
+        });
+    }
+    const token=commonFunction.getToken({
+      _id:isUserExist._id,
+      email:isUserExist.email,
+      contactNumber:isUserExist.contactNumber,
+      userType:isUserExist.userType
+    })
+    // const resetPassLink=`http://localhost:8000/skyTrails/api/relationshipManager/resetPassword?${token}`
+    const sentMail=await commonFunction.sendResetPassMail(email,isUserExist._id);
+    // console.log("sentMail=======",sentMail);
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.EMAIL_SENT,
+    });
+  } catch (error) {
+    console.log("Error while trying to forget password", error);
+    return next(error);
+  }
+};
 
-// exports.resetPassword=async(req,res,next)=>{
-//   try {
-//     const {password,confrmPassword}=req.body;
-//     const isRMExist = await findRelationShipManager({
-//       _id:req.userId,
-//      });
-//      if (!isRMExist) {
-//        return res.status(statusCode.OK).send({
-//          statusCode: statusCode.NotFound,
-//          responseMessage: responseMessage.SUBADMIN_NOT_EXIST,
-//        });
-//      }
-//     if(password!=confrmPassword){
-//       return res.status(statusCode.OK).send({
-//         statusCode: statusCode.OK,
-//         responseMessage: responseMessage.PASSWORD_NOT_MATCH,
-//       });
-//     }
+exports.resetPassword=async(req,res,next)=>{
+  try {
+    const {password,confrmPassword}=req.body;
+    const isRMExist = await findRelationShipManager({
+      _id:req.userId,
+     });
+     if (!isRMExist) {
+       return res.status(statusCode.OK).send({
+         statusCode: statusCode.NotFound,
+         responseMessage: responseMessage.USERS_NOT_FOUND,
+       });
+     }
+    if(password!=confrmPassword){
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.PASSWORD_NOT_MATCH,
+      });
+    }
 
-//     const hashedPass=await bcrypt.hashSync(password,10);
-//     const updateUser=await updateRelationShipManager({})
-
-//   } catch (error) {
-//     console.log("Error while trying to reset password", error);
-//     return next(error);
-//   }
-// }
-// exports.getAllRMOfAGENT = async (req, res, next) => {
-//   try {
-//     const isAgentExist = await findOneAgent({});
-//   } catch (error) {
-//     console.log("error while trying to get all agent as per city");
-//     return next(error);
-//   }
-// };
+    const hashedPass=await bcrypt.hashSync(password,10);
+    await updateRelationShipManager({_id:isRMExist._id},{password:hashedPass})
+    return res.status(statusCode.OK).send({ 
+      statusCode: statusCode.OK, 
+      responseMessage: responseMessage.UPDATE_SUCCESS 
+    });
+  } catch (error) {
+    console.log("Error while trying to reset password", error);
+    return next(error);
+  }
+}
+exports.getAllRMOfAGENT = async (req, res, next) => {
+  try {
+    const isAgentExist = await findOneAgent({});
+  } catch (error) {
+    console.log("error while trying to get all agent as per city");
+    return next(error);
+  }
+};
 
 exports.getAgentListOfRM = async (req, res, next) => {
   try {
@@ -475,23 +478,19 @@ exports.getAgentBooking = async (req, res, next) => {
       });
     }
     if (req.body.bookingType === "flight") {
-      console.log("=====================", bookingType);
       result.flightBooking = await flightModel.find({
         userId: isAgentExist._id,
       });
     } else if (req.body.bookingType === "bus") {
-      console.log("=====================", req.body.bookingType);
       result.busBooking = await busBookingModel.find({
         userId: isAgentExist._id,
       });
     }
     if (req.body.bookingType === "hotel") {
-      console.log("=====================", req.body.bookingType);
       result.hotelBooking = await hotelBookingModel.find({
         userId: isAgentExist._id,
       });
     } else if (req.body.bookingType === "all") {
-      console.log("req.body.bookingType============", req.body.bookingType);
       result.flightBooking = await flightModel.find({
         userId: isAgentExist._id,
       });
@@ -565,7 +564,6 @@ exports.getAgentCancelRequest = async (req, res, next) => {
       totalCount += result[key].length;
     }
     result.totalCount = totalCount;
-    console.log("result============", result);
     if (totalCount < 1) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
@@ -627,7 +625,6 @@ exports.getAgentChangeRequest = async (req, res, next) => {
       totalCount += result[key].length;
     }
     result.totalCount = totalCount;
-    console.log("result============", result);
     if (totalCount < 1) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,

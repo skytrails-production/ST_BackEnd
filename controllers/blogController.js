@@ -265,7 +265,6 @@ exports.editImage=async(req,res,next)=>{
     if (req.file) {
           const secureurl = await commonFuction.getImageUrlAWS(req.file);
           req.body.img=secureurl;
-          console.log(req.body.img);
       }
       const result = await updateBlog({ _id: blogId },  { media: req.body.img } );
       return res.status(statusCode.OK).send({

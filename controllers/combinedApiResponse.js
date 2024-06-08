@@ -88,16 +88,11 @@ exports.combinedAPI1 = async (req, res, next) => {
         }),
     ]);
     var tvoArray = [];
-    console.log(
-      "tvoResponse.data.Response============",
-      tvoResponse.data.Response
-    );
     if (tvoResponse.data.Response.ResponseStatus === 1) {
       tvoArray = tvoResponse.data.Response.Results[0];
     } else {
       tvoArray = [];
     }
-    console.log("amadeusResponse.data==============",amadeusResponse.data)
     let jsonResult = {};
     if (amadeusResponse.status == 200) {
       jsonResult = await xmlToJson(amadeusResponse.data);
@@ -105,7 +100,6 @@ exports.combinedAPI1 = async (req, res, next) => {
         jsonResult["soapenv:Envelope"]["soapenv:Body"][
           "Fare_MasterPricerTravelBoardSearchReply"
         ];
-        console.log("obj=================",obj)
       const recommendationObject = await obj.recommendation;
       const segNumber = recommendationObject.map((item, index) => {
         return item.segmentFlightRef.length || 1;
@@ -165,7 +159,6 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
     }
     let jsonResult = {};
     if (amadeusResponse.status == 200) {
-      console.log("amadeusResponse==========",amadeusResponse);
       jsonResult = await xmlToJson(amadeusResponse.data);
       const obj =
         jsonResult["soapenv:Envelope"]["soapenv:Body"][
@@ -270,10 +263,7 @@ exports.combineTVOAMADEUS = async (req, res, next) => {
         }),
     ]);
     var tvoArray = [];
-    console.log(
-      "tvoResponse.data.Response============",
-      tvoResponse.data.Response
-    );
+    
     if (tvoResponse.data.Response.ResponseStatus === 1) {
       tvoArray = tvoResponse.data.Response.Results[0];
     } else {
@@ -375,7 +365,6 @@ exports.cobinedAsPerPrice = async (req, res, next) => {
         jsonResult["soapenv:Envelope"]["soapenv:Body"][
           "Fare_MasterPricerTravelBoardSearchReply"
         ];
-      console.log("obj==============", obj.errorMessage);
       const recommendationObject = await obj.recommendation;
       var segNumber = [];
       // if(recommendationObject.length>0){
@@ -383,7 +372,6 @@ exports.cobinedAsPerPrice = async (req, res, next) => {
         return item.segmentFlightRef.length || 1;
       });
       // }
-      console.log("segNumber===========", segNumber.length);
 
       for (let i = 0; i < segNumber.length; i++) {
         const modifiedArray = [];
@@ -405,7 +393,6 @@ exports.cobinedAsPerPrice = async (req, res, next) => {
         // Use object destructuring for better readability
         const { Segments, Fare } = tvoObj;
         const { flightDetails, paxFareDetail } = amadeusObj;
-        console.log("amadeusObj==================", amadeusObj);
         // Perform comparisons
         if (
           Segments[0][0].Airline.FlightNumber ===
@@ -449,14 +436,12 @@ exports.cobinedAsPerPrice = async (req, res, next) => {
             }
           } else {
             if (!addedObjects.has(amadeusObj)) {
-              console.log("!addedObjects.has(amadeusObj)--------------");
               finalResult.push(amadeusObj);
               addedObjects.add(amadeusObj);
             }
           }
         } else {
           if (!addedObjects.has(tvoObj)) {
-            console.log("=================", tvoObj.length);
             finalResult.push(tvoObj);
             addedObjects.add(tvoObj);
           }
@@ -466,12 +451,10 @@ exports.cobinedAsPerPrice = async (req, res, next) => {
     // Iterate through each object in amadeus that hasn't been added
     for (const amadeusObj of flattenedArray) {
       if (!addedObjects.has(amadeusObj)) {
-        console.log("!addedObjects.has(amadeusObj==================");
         finalResult.push(amadeusObj);
         addedObjects.add(amadeusObj);
       }
     }
-    console.log("finalResult=============", finalResult.length);
     // for(const finalSort of finalResult){
 
     // }
@@ -501,13 +484,11 @@ const generateAmadeusRequest1 = (data) => {
   const NONCE = bytesToBase64(generateRandomBytes(streamLength));
   const TIMESTAMP = new Date().toISOString();
   const CLEARPASSWORD = process.env.AMADAPASS;
-  console.log("data.px===========", data.px);
   const buffer = Buffer.concat([
     Buffer.from(NONCE, "base64"),
     Buffer.from(TIMESTAMP),
     nodeCrypto.createHash("sha1").update(Buffer.from(CLEARPASSWORD)).digest(),
   ]);
-  console.log("data.totalPassenger========", data.totalPassenger);
   const hashedPassword = nodeCrypto
     .createHash("sha1")
     .update(buffer)
@@ -617,7 +598,6 @@ const generateAmadeusRequest1 = (data) => {
   </Fare_MasterPricerTravelBoardSearch>
       </soapenv:Body>
   </soapenv:Envelope>`;
-  console.log("soapRequest=============", soapRequest);
   return soapRequest;
 };
  

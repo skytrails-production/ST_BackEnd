@@ -358,6 +358,57 @@ exports.subAdminLogin = async (req, res, next) => {
   }
 };
 
+exports.forgetPassword=async(req,res,next)=>{
+  try {
+    const {email}=req.body;
+    const isEmailExist=await findSubAdmin({email:email});
+    if(!isEmailExist){
+      return res.status(statusCode.OK).send({ 
+        statusCode: statusCode.NotFound, 
+        responseMessage: responseMessage.EMAIL_NOT_EXIST 
+      });
+    }
+    const link=`localhost:8000/skyTrails/api/agent/resetPassword/${isEmailExist._id}`
+await commonFunction.sendEmailResetPassword(email,link);
+    await commonFunction.sendEmailResetPassword(email,isEmailExist._id)
+return res.status(statusCode.OK).send({ 
+  statusCode: statusCode.OK, 
+  responseMessage: responseMessage.RESET_LINK_SEND 
+});
+  } catch (error) {
+    console.log("Error while trying to send forot mail",error);
+    return next(error);
+  }
+}
+exports.passwordReset=async(req,res,next)=>{
+  try {
+    const {id}=req.params;
+    const {password,confirmpassword}=req.body;
+    const isEmailExist=await findSubAdmin({_id:id});
+    if(!isEmailExist){
+      return res.status(statusCode.OK).send({ 
+        statusCode: statusCode.NotFound, 
+        responseMessage: responseMessage.EMAIL_NOT_EXIST 
+      });
+    }
+    if(password!=confirmpassword){
+      return res.status(statusCode.OK).send({ 
+        statusCode: statusCode.badRequest, 
+        responseMessage: responseMessage.PASSWORD_NOT_MATCH 
+      });
+    }
+    const hashPass=await bcrypt.hashSync(password,10);
+    await updateSubAdmin({_id:isEmailExist._id},{password:hashPass});
+    return res.status(statusCode.OK).send({ 
+      statusCode: statusCode.OK, 
+      responseMessage: responseMessage.UPDATE_SUCCESS 
+    });
+  } catch (error) {
+    console.log("Error while trying to reset password",error);
+    return next(error);
+  }
+}
+
 exports.getSubAdminByAggregate = async (req, res, next) => {
   try {
     const { page, limit, search } = req.query;
@@ -373,7 +424,6 @@ exports.getSubAdminByAggregate = async (req, res, next) => {
 
 exports.subAdminDashboard = async (req, res, next) => {
   try {
-    console.log("================================")
     const isSubAdmin = await findSubAdminData({
       _id: req.userId,
       userType: userType.SUBADMIN,
@@ -632,7 +682,6 @@ exports.getBookingAgentWise=async(req,res,next)=>{
     return next(error);
   }
 }
-
 
 exports.getAgentCancelRequest = async (req, res, next) => {
   try {
