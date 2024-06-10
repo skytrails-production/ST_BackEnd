@@ -410,3 +410,72 @@ exports.addHotelBooking=async (req, res) =>{
 
 
 }
+
+
+
+
+
+
+
+//getCityAndHotelSearch
+
+// exports.getCityAndHotelSearch = async (req, res) => {
+
+//   try {
+
+//     const data=req.query.keyword;
+//     const resCityList = await GrnCityList.find({"cityName":{$regex:data, $options:"i"}}).select('-_id'); 
+//     const resHotelList= await GrnHotelCityMap.find({$or:[{"address":{$regex:data, $options:"i"}},{"hotelName":{$regex:data, $options:"i"}}]}).select('-_id');
+
+//     const response=[...resCityList,...resHotelList];
+//     msg = "Search City and Hotel Successfully!";
+//     actionCompleteResponse(res, response, msg); 
+    
+//   } catch (err) {
+//     sendActionFailedResponse(res, {}, err.message);
+    
+//   }
+
+// }
+
+exports.getCityAndHotelSearch = async (req, res) => {
+  try {
+    const keyword = req.query.keyword;
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const skip = (page - 1) * limit;
+
+    if (!keyword) {
+      return sendActionFailedResponse(res, {}, "Keyword is required.");
+    }
+
+    // Perform city and hotel searches concurrently
+    const [cityList, hotelList] = await Promise.all([
+      GrnCityList.find({ cityName: { $regex: keyword, $options: "i" } }).select('-_id').skip(skip).limit(limit),
+      GrnHotelCityMap.find({ hotelName: { $regex: keyword, $options: "i" } }).select('-_id -longitude -latitude').skip(skip).limit(limit)
+    ]);
+
+    const response = [...cityList, ...hotelList];
+    const message = response.length >= 1 ? "Search City and Hotel Successfully!" : "No Data Found!";
+
+    actionCompleteResponse(res, response, message);
+  } catch (err) {
+    sendActionFailedResponse(res, {}, err.message);
+  }
+};
+
+
+//hotel search with hotel code
+
+exports.hotelSearchWithCode=async (req,res) =>{
+  try{    
+
+      const response = await axios.post(`${baseurl}/api/v3/hotels/availability`, req.body, { headers });   
+ 
+      msg = "Hotel Search Successfully!";
+      actionCompleteResponse(res, response.data, msg);      
+  } catch (err) {
+    // console.log(err);
+    sendActionFailedResponse(res, {err}, err.message);
+  }
+}

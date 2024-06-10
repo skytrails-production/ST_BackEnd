@@ -34,5 +34,12 @@ module.exports = function (app) {
 
     app.post("/skyTrails/grnconnect/addhotelBooking", controller.addHotelBooking);
 
+
+    //get city and hotel 
+
+    app.get("/skyTrails/grnconnect/searchcityandhotel",controller.getCityAndHotelSearch);
+
+    app.post("/skyTrails/grnconnect/hotelsearchwhc",controller.hotelSearchWithCode);
+
     
 }

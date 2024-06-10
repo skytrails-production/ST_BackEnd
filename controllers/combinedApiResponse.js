@@ -138,6 +138,7 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
     data.totalPassenger = parseInt(data.AdultCount) + parseInt(data.ChildCount);
     
     const flattenedArray = [];
+    let finalFlattenedArray=[]
     const headers = {
       "Content-Type": "text/xml;charset=UTF-8",
       SOAPAction: "http://webservices.amadeus.com/FMPTBQ_23_4_1A",
@@ -165,39 +166,71 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
           "Fare_MasterPricerTravelBoardSearchReply"
         ];
       const recommendationObject = await obj.recommendation;
+      const baggageReference=await obj.serviceFeesGrp
+      const freeBaggageAllowance=baggageReference?.freeBagAllowanceGrp
       const segNumber = recommendationObject.map((item, index) => {
         return item.segmentFlightRef.length || 1;
       });
+      // console.log(baggageReference.serviceCoverageInfoGrp[0].serviceCovInfoGrp.refInfo.referencingDetail,"freeBaggageAllowance")
+const baggaReferenceArray = recommendationObject.reduce((accumulator, item) => {
+  if (Array.isArray(item.segmentFlightRef)) {
+    accumulator.push(...item.segmentFlightRef);
+  } else if (item.segmentFlightRef && item.segmentFlightRef.referencingDetail) {
+    accumulator.push({...item.segmentFlightRef});
+  }
+  return accumulator;
+}, []);
 
+      // console.log(baggaReferenceArray,"baggaReferenceArray")
+    // console.log(recommendationObject,"recommendationObject")
       for (let i = 0; i < segNumber.length; i++) {
         const modifiedArray = [];
         for (let j = 0; j < segNumber[i]; j++) {
           modifiedArray.push({
             ...obj.flightIndex.groupOfFlights[j],
             ...recommendationObject[i].paxFareProduct,
-            ...obj.recommendation[i].recPriceInfo
+            ...obj.recommendation[i].recPriceInfo,
+
           });
+          // count++;
         }
+       
         flattenedArray.push(...modifiedArray);
       }
+      
+     const newFlattnedArray= flattenedArray.map((item,index)=>{
+         return {...item,baggage:baggaReferenceArray[index]}
+      })
+      console.log(newFlattnedArray[0].baggage.referencingDetail,"newFlattnedArray")
+       finalFlattenedArray=newFlattnedArray.map((item,index)=>{
+        const tempItemBaggage=item.baggage.referencingDetail[1].refNumber
+        // console.log(tempItemBaggage,"tempItemBaggage")
+        const freeAllownaceLuggageIndex=baggageReference.serviceCoverageInfoGrp[tempItemBaggage-1].serviceCovInfoGrp.refInfo.referencingDetail.refNumber;
+        // console.log(freeAllownaceLuggageIndex,"freeAllownaceLuggageIndex")
+        return {...item,baggage:freeBaggageAllowance[freeAllownaceLuggageIndex-1]}
+      })
+      // console.log(finalFlattenedArray,"finalFlattenedArray")
     }
+    
+   
+    
     var finalResult = [];
     var selectedArray = [];
     if (tvoArray.length > 0) {
       selectedArray = await tvoArray.filter((value) => value.IsLCC === true);
       if (selectedArray.length > 0) {
 
-        finalResult = await flattenedArray.concat(selectedArray);
-      } else if (flattenedArray.length <= 0) {
+        finalResult = await finalFlattenedArray.concat(selectedArray);
+      } else if (finalFlattenedArray.length <= 0) {
         finalResult = [...tvoArray];
       }else{
-        finalResult = [...flattenedArray];
+        finalResult = [...finalFlattenedArray];
       }
     } else {
-      finalResult = [...flattenedArray];
+      finalResult = [...finalFlattenedArray];
     }
     const length = {
-      flattenedArray: flattenedArray.length,
+      finalFlattenedArray: finalFlattenedArray.length,
       tvoArray: tvoArray.length,
       finalResult: finalResult.length,
       selectedArray: selectedArray.length,
@@ -475,132 +508,6 @@ exports.cobinedAsPerPrice = async (req, res, next) => {
   }
 };
 
-// Function to generate Amadeus SOAP request
-const generateAmadeusRequest1 = (data) => {
-  // Generate the SOAP request XML based on the provided data
-  // Generate new values for messageId, uniqueId, NONCE, TIMESTAMP, and hashedPassword
-  const messageId = uuidv4();
-  const uniqueId = uuidv4();
-  const NONCE = bytesToBase64(generateRandomBytes(streamLength));
-  const TIMESTAMP = new Date().toISOString();
-  const CLEARPASSWORD = process.env.AMADAPASS;
-  const buffer = Buffer.concat([
-    Buffer.from(NONCE, "base64"),
-    Buffer.from(TIMESTAMP),
-    nodeCrypto.createHash("sha1").update(Buffer.from(CLEARPASSWORD)).digest(),
-  ]);
-  const hashedPassword = nodeCrypto
-    .createHash("sha1")
-    .update(buffer)
-    .digest("base64");
-  var soapRequest = `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
-  xmlns:sec="http://xml.amadeus.com/2010/06/Security_v1"
-  xmlns:typ="http://xml.amadeus.com/2010/06/Types_v1"
-  xmlns:iat="http://www.iata.org/IATA/2007/00/IATA2010.1"
-  xmlns:app="http://xml.amadeus.com/2010/06/AppMdw_CommonTypes_v3"
-  xmlns:ses="http://xml.amadeus.com/2010/06/Session_v3">
-      <soap:Header xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-          <add:MessageID xmlns:add="http://www.w3.org/2005/08/addressing">${messageId}</add:MessageID>
-          <add:Action xmlns:add="http://www.w3.org/2005/08/addressing">http://webservices.amadeus.com/FMPTBQ_23_4_1A</add:Action>
-          <add:To xmlns:add="http://www.w3.org/2005/08/addressing">${url}</add:To>
-          <link:TransactionFlowLink xmlns:link="http://wsdl.amadeus.com/2010/06/ws/Link_v1">
-              <link:Consumer>
-                  <link:UniqueID>${uniqueId}</link:UniqueID>
-              </link:Consumer>
-          </link:TransactionFlowLink>
-          <oas:Security xmlns:oas="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
-              <oas:UsernameToken xmlns:oas1="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" oas1:Id="UsernameToken-1">
-                  <oas:Username>WSSP0THE</oas:Username>
-                  <oas:Nonce EncodingType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary">${NONCE}</oas:Nonce>
-                  <oas:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordDigest">${hashedPassword}</oas:Password>
-                  <oas1:Created>${TIMESTAMP}</oas1:Created>
-              </oas:UsernameToken>
-          </oas:Security>
-          <AMA_SecurityHostedUser xmlns="http://xml.amadeus.com/2010/06/Security_v1">
-              <UserID POS_Type="1" PseudoCityCode="DELVS38UE" AgentDutyCode="SU" RequestorType="U" />
-          </AMA_SecurityHostedUser>
-      </soap:Header>        ​
-      <soapenv:Body>
-      <Fare_MasterPricerTravelBoardSearch xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd="http://www.w3.org/2001/XMLSchema&quot;>
-      <numberOfUnit xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A&quot;>
-          <unitNumberDetail>
-              <numberOfUnits>${data.totalPassenger}</numberOfUnits>
-              <typeOfUnit>PX</typeOfUnit>
-          </unitNumberDetail>
-          <unitNumberDetail>
-              <numberOfUnits>250</numberOfUnits>
-              <typeOfUnit>RC</typeOfUnit>
-          </unitNumberDetail>
-      </numberOfUnit>
-      <paxReference xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A">
-              <ptc>ADT</ptc>`;
-  for (let i = 0; i < data.px; i++) {
-    soapRequest += `
-              <traveller>
-                  <ref>${i + 1}</ref>
-              </traveller>`;
-  }
-  soapRequest += `
-          </paxReference>
-          `;
-  for (let i = 0; i < data.ChildCount; i++) {
-    soapRequest += `
-    <paxReference xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A">
-          <ptc>CH</ptc>
-          <traveller>
-          <ref>${data.px + i + 1}</ref>
-          </traveller>
-          </paxReference>`;
-  }
-  // soapRequest += `</paxReference>`;
-  for (let i = 0; i < data.InfantCount; i++) {
-    soapRequest += `
-    <paxReference xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A">
-      <ptc>INF</ptc>
-      <traveller>
-          <ref>${i + 1}</ref>
-          <infantIndicator>${i + 1}</infantIndicator>
-      </traveller>
-      </paxReference>`;
-  }
-  soapRequest += `
-
-      <fareOptions xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A&quot;>
-          <pricingTickInfo>
-              <pricingTicketing>
-                  <priceType>RP</priceType>
-                  <priceType>ET</priceType>
-                  <priceType>RU</priceType>
-                  <priceType>TAC</priceType>
-              </pricingTicketing>
-          </pricingTickInfo>
-      </fareOptions>
-      <itinerary xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A&quot;>
-          <requestedSegmentRef>
-              <segRef>1</segRef>
-          </requestedSegmentRef>
-          <departureLocalization>
-              <departurePoint>
-                  <locationId>${data.from}</locationId>
-              </departurePoint>
-          </departureLocalization>
-          <arrivalLocalization>
-              <arrivalPointDetails>
-                  <locationId>${data.to}</locationId>
-              </arrivalPointDetails>
-          </arrivalLocalization>
-          <timeDetails>
-              <firstDateTimeDetail>
-                  <date>${data.formattedDate}</date>
-              </firstDateTimeDetail>
-          </timeDetails>
-      </itinerary>
-  </Fare_MasterPricerTravelBoardSearch>
-      </soapenv:Body>
-  </soapenv:Envelope>`;
-  return soapRequest;
-};
- 
 const generateAmadeusRequest = (data) => {
   // Generate the SOAP request XML based on the provided data
   // Generate new values for messageId, uniqueId, NONCE, TIMESTAMP, and hashedPassword
@@ -654,7 +561,7 @@ const generateAmadeusRequest = (data) => {
             <typeOfUnit>PX</typeOfUnit>
         </unitNumberDetail>
         <unitNumberDetail>
-            <numberOfUnits>250</numberOfUnits>
+            <numberOfUnits>10</numberOfUnits>
             <typeOfUnit>RC</typeOfUnit>
         </unitNumberDetail>
     </numberOfUnit>
