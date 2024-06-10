@@ -368,12 +368,19 @@ exports.forgetPassword=async(req,res,next)=>{
         responseMessage: responseMessage.EMAIL_NOT_EXIST 
       });
     }
-    const link=`localhost:8000/skyTrails/api/agent/resetPassword/${isEmailExist._id}`
-await commonFunction.sendEmailResetPassword(email,link);
+    const token=await commonFunction.getToken({
+      _id:isEmailExist._id,
+      email:isEmailExist.email,
+      contactNumber:isEmailExist.contactNumber,
+      userType:isEmailExist.userType
+    })
+    // const link=`localhost:8000/skytrails/api/subAdmin/resetPassword/${isEmailExist._id}`
+// await commonFunction.sendEmailResetPassword(email,link);
     await commonFunction.sendEmailResetPassword(email,isEmailExist._id)
 return res.status(statusCode.OK).send({ 
   statusCode: statusCode.OK, 
-  responseMessage: responseMessage.RESET_LINK_SEND 
+  responseMessage: responseMessage.RESET_LINK_SEND ,
+  result:token
 });
   } catch (error) {
     console.log("Error while trying to send forot mail",error);
@@ -382,9 +389,8 @@ return res.status(statusCode.OK).send({
 }
 exports.passwordReset=async(req,res,next)=>{
   try {
-    const {id}=req.params;
     const {password,confirmpassword}=req.body;
-    const isEmailExist=await findSubAdmin({_id:id});
+    const isEmailExist=await findSubAdmin({_id:req.userId});
     if(!isEmailExist){
       return res.status(statusCode.OK).send({ 
         statusCode: statusCode.NotFound, 

@@ -67,7 +67,7 @@ module.exports = function (app) {
     subAdminController.subAdminLogin
   );
   app.post("/skytrails/api/subAdmin/forgetPassword",subAdminController.forgetPassword);
-  app.put("/skytrails/api/subAdmin/resetPassword",subAdminController.passwordReset);
+  app.put("/skytrails/api/subAdmin/resetPassword",[authJwt.verifcationSubAdminToken],subAdminController.passwordReset);
   // app.put("/skytrails/api/subAdmin/editprofile",[authJwt.verifcationToken],subAdminController.editProfile)
   app.get("/skytrails/api/subAdmin/getAgents", controller.getAgents);
   app.get(

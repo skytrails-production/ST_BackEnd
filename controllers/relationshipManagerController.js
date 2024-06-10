@@ -317,28 +317,26 @@ exports.loginRM = async (req, res, next) => {
 exports.forgetPassword = async (req, res, next) => {
   try {
     const { email } = req.body;
-    const isUserExist = await findRelationShipManager({
-      status: { $ne: status.DELETE },
-      $or: [{ email: email, contactNumber: email }],
-    });
-    if (!isUserExist) {
+    console.log("email============",email)
+    const isRmExist = await findRelationShipManager({status: { $ne: status.DELETE }, email: email });
+    if (!isRmExist) {
         return res.status(statusCode.OK).send({
           statusCode: statusCode.NotFound,
           responseMessage: responseMessage.USERS_NOT_FOUND,
         });
     }
-    const token=commonFunction.getToken({
-      _id:isUserExist._id,
-      email:isUserExist.email,
-      contactNumber:isUserExist.contactNumber,
-      userType:isUserExist.userType
+    const token=await commonFunction.getToken({
+      _id:isRmExist._id,
+      email:isRmExist.email,
+      contactNumber:isRmExist.contactNumber,
+      userType:isRmExist.userType
     })
     // const resetPassLink=`http://localhost:8000/skyTrails/api/relationshipManager/resetPassword?${token}`
-    const sentMail=await commonFunction.sendResetPassMail(email,isUserExist._id);
-    // console.log("sentMail=======",sentMail);
+    const sentMail=await commonFunction.sendResetPassMail(email,isRmExist._id);
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.EMAIL_SENT,
+      result:token
     });
   } catch (error) {
     console.log("Error while trying to forget password", error);

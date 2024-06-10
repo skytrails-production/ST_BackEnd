@@ -35,7 +35,7 @@ const brbuserServices = {
         return await brbuserModel.find(query).select('-otp -location -isOnline -coinBalance -isChange -otpExpireTime -firstTime -approveStatus -socialLinks -confirmPassword -password  -isApprove -createdAt -updatedAt');
     },
     brbAgentList: async (query) => {
-        return await brbuserModel.find(query).select('-otp -location -isOnline -coinBalance -isChange -otpExpireTime -firstTime -approveStatus -socialLinks -confirmPassword -password  -isApprove -createdAt -updatedAt').sort({ createdAt: -1 });
+        return await brbuserModel.find(query).select('-otp  -isOnline  -isChange -otpExpireTime -firstTime -confirmPassword -password  -updatedAt').sort({ createdAt: -1 });
     },
     updatebrbuser: async (query, updateObj) => {
         return await brbuserModel.findOneAndUpdate(query, updateObj, { new: true });

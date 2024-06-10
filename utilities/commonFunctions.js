@@ -4345,6 +4345,19 @@ module.exports = {
       return formattedDate;
     };
 
+    let cancellationPolicy;
+
+    if(to?.hotel?.non_refundable===false){
+      cancellationPolicy=`
+      <p><strong>Refundable:</strong>Yes</p>
+      <p><strong>Cancel by Date:</strong>${to?.hotel?.cancellation_policy?.cancel_by_date}</p>
+      `;
+    }else{
+      cancellationPolicy=`
+       <p><strong>Refundable:</strong> No</p>      
+      `;
+    }
+
     let htmlContent = `<!DOCTYPE html>
     <html lang="en">
     
@@ -4716,6 +4729,7 @@ module.exports = {
                             </table>
                         </div>
                     </div>
+                    <!--
                     <div class="section room-info">
                         <h2>Room Details</h2>
                         <p><strong>Description:</strong> Apartment, 2 Bedrooms (1 King Bed)</p>
@@ -4723,12 +4737,16 @@ module.exports = {
                         <p><strong>Number of Children:</strong> 2</p>
                         <p><strong>Number of Rooms:</strong> 1</p>
                     </div>
+                    -->
+                    <div class="section room-info">
+                        <h2>Room Details</h2>
+                        <p><strong>Rooms:</strong>${to?.hotel?.rooms.length}</p>
+                        <p><strong>Guest</strong>${to?.hotel?.paxes.length} </p>
+                    </div>
                     <div class="section cancellation-policy">
                         <h2>Cancellation Policy</h2>
-                        <p><strong>Non-refundable:</strong> No</p>
-                        <p><strong>Cancel by Date:</strong> 20-05-2024</p>
-                    </div>
-    
+                        ${cancellationPolicy}                        
+                    </div>    
                 </div>
             </div>
             <div class="support-section">
@@ -6383,12 +6401,15 @@ module.exports = {
     
     </body>
     </html>`;
-    var transporter = nodemailerConfig.createTransport({
-      service: nodemailerConfig.service,
-      auth: {
-        user: nodemailerConfig.user,
-        pass: nodemailerConfig.pass,
-      },
+    var transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+        port: 587,
+        secure: false,
+        auth: {
+          user: nodemailerConfig.options.auth.user,
+          pass: nodemailerConfig.options.auth.pass,
+        },
+        connectionTimeout: 60000,
     });
     var mailOptions = {
       from: nodemailerConfig.user,

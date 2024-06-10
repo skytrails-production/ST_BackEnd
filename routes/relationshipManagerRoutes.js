@@ -10,7 +10,7 @@ module.exports = function (app) {
   });
 app.post("/skyTrails/api/relationShipManager/login",SchemaValidator(schemas.rmLoginSchema),relationshipManagerController.loginRM);
 app.post("/skyTrails/api/relationShipManager/forgetPassword",relationshipManagerController.forgetPassword);
-app.post("/skyTrails/api/relationShipManager/resetPassword",relationshipManagerController.resetPassword);
+app.put("/skyTrails/api/relationShipManager/resetPassword",[authJwt.verificationTokenOfRM],relationshipManagerController.resetPassword);
 app.get("/skyTrails/api/relationShipManager/getAllRMOfAGENT",[authJwt.verificationTokenOfRM],relationshipManagerController.getAgentListOfRM);
 app.get("/skyTrails/api/relationShipManager/getRelationShipManagerById",relationshipManagerController.getRelationShipManagerById);
 app.post("/skyTrails/api/relationShipManager/getAgentBookings",[authJwt.verificationTokenOfRM],SchemaValidator(schemas.rmgetAgentBooking),relationshipManagerController.getAgentBooking);
