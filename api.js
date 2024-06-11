@@ -190,6 +190,7 @@ require("./routes/ratingRoutes")(app);
 require("./routes/relationshipManagerRoutes")(app);
 require("./routes/blogRoutes")(app);
 require("./routes/amadeusRoutes/amadeusFlightBookingRoutes")(app);
+require("./routes/grnRoutes/grnRoutes")(app);
 mongoose
   .connect(configs.mongoUrl.DEVELOPMENT, {
     useNewUrlParser: true,

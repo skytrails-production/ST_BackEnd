@@ -210,17 +210,14 @@ const baggaReferenceArray = recommendationObject.reduce((accumulator, item) => {
         return {...item,baggage:freeBaggageAllowance[freeAllownaceLuggageIndex-1]}
       })
       // console.log(finalFlattenedArray,"finalFlattenedArray")
-    }
-    
-   
-    
+    }      
     var finalResult = [];
     var selectedArray = [];
     if (tvoArray.length > 0) {
       selectedArray = await tvoArray.filter((value) => value.IsLCC === true);
       if (selectedArray.length > 0) {
 
-        finalResult = await finalFlattenedArray.concat(selectedArray);
+        finalResult = finalFlattenedArray.concat(selectedArray);
       } else if (finalFlattenedArray.length <= 0) {
         finalResult = [...tvoArray];
       }else{
@@ -508,6 +505,105 @@ exports.cobinedAsPerPrice = async (req, res, next) => {
   }
 };
 
+exports.combineTVOAMADEUSOptimised = async (req, res, next) => {
+  try {
+    const data = req.body;
+    data.formattedDate = moment(data.Segments[0].PreferredDepartureTime, "DD MMM, YY").format("DDMMYY");
+    data.totalPassenger = parseInt(data.AdultCount) + parseInt(data.ChildCount);
+    const api1Url = commonUrl.api.flightSearchURL;
+
+    const headers = {
+      "Content-Type": "text/xml;charset=UTF-8",
+      SOAPAction: "http://webservices.amadeus.com/FMPTBQ_23_4_1A",
+    };
+
+    const [tvoResponse, amadeusResponse] = await Promise.all([
+      axios.post(api1Url, data),
+      axios.post(url, generateAmadeusRequest(data), { headers }).catch((error) => {
+        console.error("Error in Amadeus API request:", error);
+        return { data: {} };
+      }),
+    ]);
+
+    let tvoArray = [];
+    if (tvoResponse.data.Response.ResponseStatus === 1) {
+      tvoArray = tvoResponse.data.Response.Results[0];
+    }
+
+    let finalFlattenedArray = [];
+    if (amadeusResponse.status === 200) {
+      const jsonResult = await xmlToJson(amadeusResponse.data);
+      const obj = jsonResult["soapenv:Envelope"]["soapenv:Body"]["Fare_MasterPricerTravelBoardSearchReply"];
+      const recommendationObject = obj.recommendation;
+      const baggageReference = obj.serviceFeesGrp;
+      const freeBaggageAllowance = baggageReference?.freeBagAllowanceGrp;
+
+      const flattenedArray = recommendationObject.reduce((acc, item, index) => {
+        const segRefs = Array.isArray(item.segmentFlightRef) ? item.segmentFlightRef : [item.segmentFlightRef];
+        const flightGroup = obj.flightIndex.groupOfFlights[index];
+        const fareProduct = item.paxFareProduct;
+        const recPriceInfo = item.recPriceInfo;
+
+        segRefs.forEach((segRef, i) => {
+          const baggage = segRefs[i];
+          acc.push({
+            ...flightGroup,
+            ...fareProduct,
+            ...recPriceInfo,
+            baggage,
+          });
+        });
+        return acc;
+      }, []);
+
+      finalFlattenedArray = flattenedArray.map((item, index) => {
+        const baggageIndex = item.baggage.referencingDetail[1].refNumber - 1;
+        const freeAllowanceIndex = baggageReference.serviceCoverageInfoGrp[baggageIndex].serviceCovInfoGrp.refInfo.referencingDetail.refNumber - 1;
+        return { ...item, baggage: freeBaggageAllowance[freeAllowanceIndex] };
+      });
+    }
+
+    const selectedArray = tvoArray.filter(value => value.IsLCC);
+    let finalResult = [...finalFlattenedArray, ...selectedArray];
+
+    if (selectedArray.length === 0 && finalFlattenedArray.length === 0) {
+      finalResult = [...tvoArray];
+    }
+
+    finalResult = finalResult.map(finalRep => {
+      if (finalRep.propFlightGrDetail) {
+        const totalFare = parseInt(finalRep.monetaryDetail[0].amount);
+        const totalTax = parseInt(finalRep.monetaryDetail[1].amount);
+        finalRep.TotalPublishFare = totalFare + totalTax;
+      } else if (finalRep.Segments) {
+        finalRep.TotalPublishFare = finalRep.Fare.PublishedFare;
+      }
+      return finalRep;
+    });
+
+    const sortedData = finalResult.sort((a, b) => a.TotalPublishFare - b.TotalPublishFare);
+
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      tvoTraceId: tvoResponse.data.Response.TraceId,
+      result: sortedData,
+      length: {
+        finalFlattenedArray: finalFlattenedArray.length,
+        tvoArray: tvoArray.length,
+        finalResult: finalResult.length,
+        selectedArray: selectedArray.length,
+      },
+    });
+  } catch (error) {
+    console.error("Error while trying to get response", error);
+    return next(error);
+  }
+};
+
+
+
+
 const generateAmadeusRequest = (data) => {
   // Generate the SOAP request XML based on the provided data
   // Generate new values for messageId, uniqueId, NONCE, TIMESTAMP, and hashedPassword
@@ -561,7 +657,7 @@ const generateAmadeusRequest = (data) => {
             <typeOfUnit>PX</typeOfUnit>
         </unitNumberDetail>
         <unitNumberDetail>
-            <numberOfUnits>10</numberOfUnits>
+            <numberOfUnits>250</numberOfUnits>
             <typeOfUnit>RC</typeOfUnit>
         </unitNumberDetail>
     </numberOfUnit>

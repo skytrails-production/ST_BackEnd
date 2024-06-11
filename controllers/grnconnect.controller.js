@@ -171,7 +171,7 @@ exports.hotelSearchWithPagination=async (req,res) =>{
         cutoff_time: 5000,
         version:req.body.version
       }
-      console.log(searchData,"data");
+      // console.log(searchData,"data");
 
       // console.log(`${baseurl}/api/v3/hotels/availability`,"console")
       const response = await axios.post(`${baseurl}/api/v3/hotels/availability`, searchData, { headers });   
@@ -455,10 +455,10 @@ exports.getCityAndHotelSearch = async (req, res) => {
       GrnHotelCityMap.find({ hotelName: { $regex: keyword, $options: "i" } }).select('-_id -longitude -latitude').skip(skip).limit(limit)
     ]);
 
-    const response = [...cityList, ...hotelList];
-    const message = response.length >= 1 ? "Search City and Hotel Successfully!" : "No Data Found!";
+    // const response = [...cityList, ...hotelList];
+    const message = cityList.length >= 1 ? "Search City and Hotel Successfully!" : "No Data Found!";
 
-    actionCompleteResponse(res, response, message);
+    actionCompleteResponse(res, {cityList,hotelList}, message);
   } catch (err) {
     sendActionFailedResponse(res, {}, err.message);
   }

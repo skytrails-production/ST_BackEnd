@@ -13,6 +13,7 @@ module.exports = function (app) {
     app.post("/skyTrails/amadeus/combineResponse",combinedController.combineTVOAMADEUS);
     app.post("/skytrails/api/combined/combineTVOAMADEUSPriceSort",combinedController.combineTVOAMADEUSPriceSort);   
 
+    app.post("/skytrails/api/combined/combineTVOAMADEUSOptimised",combinedController.combineTVOAMADEUSOptimised);   
 
     //new routes  fareInformative price to  fareRule start or end
     app.post("/skyTrails/amadeus/fareInformativePricingWithoutPNR",controller.fareInformativePricingWithoutPNR);
