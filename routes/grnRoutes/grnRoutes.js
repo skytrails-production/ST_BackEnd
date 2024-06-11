@@ -1,4 +1,5 @@
-const Controller=require('../../controllers/grnHotelBookingController/userGrnHotelBookingController')
+const Controller=require('../../controllers/grnHotelBookingController/userGrnHotelBookingController');
+const cancelCoontroller=require('../../controllers/grnHotelBookingController/userGrnCancelController')
 const schemas = require('../../utilities/schema.utilities');
 const SchemaValidator = require('../../utilities/validations.utilities');
 // const upload=require('../../utilities/uploadHandler')
@@ -15,9 +16,10 @@ module.exports = function (app) {
         next();
     });
     // SchemaValidator(schemas.userbusBookingSchema),   SchemaValidator(schemas.userflightBookingSchema),  ,SchemaValidator(schemas.userhotelBookingSchema) 
-    app.post('/skyTrails/api/grn/user/grnBookig',[authJwt.verifcationToken], Controller.grnHotelBooking);
-    // app.get('/skyTrails/api/grn/user/getflightBooking',[authJwt.verifcationToken],Controller.getUserFlightBooking);
-    // app.get('/skyTrails/api/grn/user/getflightBookingById',Controller.getFlightBookingId);
-    // app.get('/skyTrails/api/grn/user/getAllflightBooking',Controller.getAllUserFlightBooking);
+    app.post('/skyTrails/api/grn/user/grnBookig',[authJwt.verifcationToken], Controller.grnUserHotelBooking);
+    app.get('/skyTrails/api/grn/user/grnUserBooking',[authJwt.verifcationToken],Controller.getUserGrnBooking);
+    app.get('/skyTrails/api/grn/user/getUserBookingById',[authJwt.verifcationToken],Controller.getUserGrnBookingById);
+    app.get('/skyTrails/api/grn/user/getAllgrnBooking',Controller.getAllGrnBookingList);
     // app.put('/skyTrails/api/grn/user/UpdateTicket',Controller.UpdateTicket)
+    app.post('/skyTrails/api/grn/user/cancel/createCancelRequest',[authJwt.verifcationToken],cancelCoontroller.createUserGrnCancelRequest);
 }

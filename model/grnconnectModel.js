@@ -31,7 +31,7 @@ const grnHotelBookingDetailSchema = new mongoose.Schema(
   {
       userId: {
           type: Schema.Types.ObjectId,
-          ref: "userBtoC",
+          ref: "userb2bs",
       },
       agnet_reference:String,
       booking_date:String,
@@ -137,7 +137,7 @@ const GrnHotelCityMap = mongoose.model(
   GrnHotelCityMapSchema
 );
 
-const GrnHotelBooking= mongoose.model("userGrnHotelBookingDetail", grnHotelBookingDetailSchema);
+const GrnHotelBooking= mongoose.model("agentGrnHotelBookingDetail", grnHotelBookingDetailSchema);
 const GrnCountryList=mongoose.model("grnCountryList",GrnCountryListSehema)
 
 module.exports = { GrnCityList, GrnHotelCityMap,GrnCountryList,GrnHotelBooking };

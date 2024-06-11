@@ -369,14 +369,14 @@ exports.forgetPassword=async(req,res,next)=>{
       });
     }
     const token=await commonFunction.getToken({
-      _id:isEmailExist._id,
+      id:isEmailExist._id,
       email:isEmailExist.email,
       contactNumber:isEmailExist.contactNumber,
       userType:isEmailExist.userType
     })
     // const link=`localhost:8000/skytrails/api/subAdmin/resetPassword/${isEmailExist._id}`
 // await commonFunction.sendEmailResetPassword(email,link);
-    await commonFunction.sendEmailResetPassword(email,isEmailExist._id)
+    await commonFunction.sendEmailResetPassword(email,token)
 return res.status(statusCode.OK).send({ 
   statusCode: statusCode.OK, 
   responseMessage: responseMessage.RESET_LINK_SEND ,

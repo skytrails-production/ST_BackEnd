@@ -43,6 +43,7 @@ const {
 const {
   createUserGrnBooking,
   findUserGrnBooking,
+  findUserGrnBookingList,
   getUserGrnBooking,
   deleteUserGrnBooking,
   userGrnBooking,
@@ -54,7 +55,7 @@ const {
 
 //******************************API's****************************************************/
 
-exports.grnHotelBooking = async (req, res, next) => {
+exports.grnUserHotelBooking = async (req, res, next) => {
   try {
     let data = { ...req.body };
     const isUserExist = await findUser({
@@ -122,3 +123,72 @@ exports.grnHotelBooking = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.getUserGrnBooking=async(req,res,next)=>{
+  try {
+    const isUserExist = await findUser({
+      _id: req.userId,
+      status: status.ACTIVE,
+    });
+    if (!isUserExist) {
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+    const result=await findUserGrnBookingList({status: status.ACTIVE,userId: isUserExist._id})
+    if (result.length<1) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
+      });
+    }
+    return res.status(statusCode.OK).send({ responseMessage: responseMessage.DATA_FOUND, result: result });
+  } catch (error) {
+    console.log("Error while trying to get booking history",error);
+    return next(error);
+  }
+}
+
+exports.getUserGrnBookingById=async(req,res,next)=>{
+  try {
+    const{bookingId}=req.body;
+    const isUserExist = await findUser({
+      _id: req.userId,
+      status: status.ACTIVE,
+    });
+    if (!isUserExist) {
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+    const result=await findUserGrnBooking({_id:bookingId});
+    if (!result) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
+      });
+    }
+    return res.status(statusCode.OK).send({ responseMessage: responseMessage.DATA_FOUND, result: result });
+   } catch (error) {
+    console.log("Error while trying to get data by id",error);
+    return next(error);
+  }
+}
+
+exports.getAllGrnBookingList=async(req,res,next)=>{
+  try {
+    const result=await userGrnBooking({status: status.ACTIVE});
+    if (result.length<1) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
+      });
+    }
+    return res.status(statusCode.OK).send({ responseMessage: responseMessage.DATA_FOUND, result: result });
+  } catch (error) {
+    console.log("error while trying to get all booking ", error);
+    return next(error);
+  }
+}

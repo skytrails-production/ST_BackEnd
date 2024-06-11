@@ -180,9 +180,6 @@ const baggaReferenceArray = recommendationObject.reduce((accumulator, item) => {
   }
   return accumulator;
 }, []);
-
-      // console.log(baggaReferenceArray,"baggaReferenceArray")
-    // console.log(recommendationObject,"recommendationObject")
       for (let i = 0; i < segNumber.length; i++) {
         const modifiedArray = [];
         for (let j = 0; j < segNumber[i]; j++) {
@@ -192,7 +189,6 @@ const baggaReferenceArray = recommendationObject.reduce((accumulator, item) => {
             ...obj.recommendation[i].recPriceInfo,
 
           });
-          // count++;
         }
        
         flattenedArray.push(...modifiedArray);
@@ -201,7 +197,7 @@ const baggaReferenceArray = recommendationObject.reduce((accumulator, item) => {
      const newFlattnedArray= flattenedArray.map((item,index)=>{
          return {...item,baggage:baggaReferenceArray[index]}
       })
-      console.log(newFlattnedArray[0].baggage.referencingDetail,"newFlattnedArray")
+      // console.log(newFlattnedArray[0].baggage.referencingDetail,"newFlattnedArray")
        finalFlattenedArray=newFlattnedArray.map((item,index)=>{
         const tempItemBaggage=item.baggage.referencingDetail[1].refNumber
         // console.log(tempItemBaggage,"tempItemBaggage")

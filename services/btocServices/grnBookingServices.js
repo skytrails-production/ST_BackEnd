@@ -21,7 +21,7 @@ const userGrnBookingModelServices = {
     },
 
     findUserGrnBookingList: async (query) => {
-        return await hotelBookingModel.findOne(query)
+        return await hotelBookingModel.find(query).sort({createdAt:-1})
     },
 
     deleteUserGrnBooking: async (query) => {

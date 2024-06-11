@@ -20,7 +20,8 @@ const {
   ssdcMail,
   packageLandingMail,
   hotelGrnMail,
-  ResetPassword
+  ResetPassword,
+  SubAdminResetPassword
 } = require("./mailingFunction.js");
 let cloudinary = require("cloudinary");
 cloudinary.config({
@@ -5044,7 +5045,7 @@ module.exports = {
     };
     return await transporter.sendMail(mailOptions);
   },
-  sendEmailResetPassword: async (email, userId) => {
+  sendEmailResetPassword: async (email, token) => {
     var transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -5055,8 +5056,8 @@ module.exports = {
     var mailOptions = {
       from: nodemailerConfigHawaiYatra.userHawai,
       to: email,
-      subject: "Reset Password",
-      html: ResetPassword(userId),
+      subject: "Reset Subadmin Password",
+      html: SubAdminResetPassword(token),
     };
     return await transporter.sendMail(mailOptions);
   },

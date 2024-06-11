@@ -513,7 +513,7 @@ exports.postLike=async(req,res,next)=>{
       const updated=await updateUser(
         { _id: isUser._id },
         {
-          $inc: { balance: checkReward.refereeAmount},
+          $inc: { balance: checkReward.refereeAmount,likesCount: 1},
           $push:{walletHistory:walletObj}
         }
       );

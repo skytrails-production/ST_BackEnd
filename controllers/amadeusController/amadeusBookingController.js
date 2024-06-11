@@ -93,6 +93,7 @@ exports.amdsFlightBooking = async (req, res, next) => {
       String(formattedDate),
     ];
     const result = await createUserAmadeusFlightBooking(data);
+    const adminContact=['+918115199076','+919765432345']
     await whatsApi.sendWhtsAppOTPAISensy(
       AdminNumber,
       TemplateNames,

@@ -154,7 +154,6 @@ verifcationToken = (req, res, next) => {
 verifcationSubAdminToken = (req, res, next) => {
   try {
     if (req.headers.token) {
-      console.log(req.headers.token,"token")
       jwt.verify(req.headers.token, config.secret, (err, result) => {
         if (err) {
           if (err.name == "TokenExpiredError") {
@@ -173,13 +172,12 @@ verifcationSubAdminToken = (req, res, next) => {
           }
         }
         else {
-          console.log("result===",result)
           subAdminModel.findOne({ _id: result.id }, (error, result2) => {
             if (error) {
               return next(error)
             }
             else if (!result2) {
-              console.log("result2",result2);
+              console.log("result2=====",result2);
               //throw apiError.notFound(responseMessage.USER_NOT_FOUND);
               return res.status(404).json({
                 responseCode: 404,
