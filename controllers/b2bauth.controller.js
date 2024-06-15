@@ -2219,7 +2219,7 @@ exports.resetPassword=async(req,res,next)=>{
         responseMessage: responseMessage.EMAIL_NOT_EXIST 
       });
     }
-    if(password!=confirmpassword){
+    if(password!==confirmpassword){
       return res.status(statusCode.OK).send({ 
         statusCode: statusCode.badRequest, 
         responseMessage: responseMessage.PASSWORD_NOT_MATCH 

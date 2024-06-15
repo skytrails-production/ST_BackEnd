@@ -130,10 +130,12 @@ exports.combinedAPI1 = async (req, res, next) => {
 exports.combineTVOAMADEUSPriceSort = async (req, res, next) => { 
   try {
     const data = req.body;
+    console.log("===============",data)
     data.formattedDate =  moment(
       data.Segments[0].PreferredDepartureTime,
       "DD MMM, YY"
     ).format("DDMMYY"); // Format the date as "DDMMYY"
+    console.log("data.formattedDate==============",data.formattedDate)
     const api1Url = commonUrl.api.flightSearchURL;
     data.totalPassenger = parseInt(data.AdultCount) + parseInt(data.ChildCount);
     
@@ -166,7 +168,7 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
           "Fare_MasterPricerTravelBoardSearchReply"
         ];
       const recommendationObject = await obj.recommendation;
-      const baggageReference=await obj.serviceFeesGrp
+      const baggageReference=await obj.serviceFeesGrp;
       const freeBaggageAllowance=baggageReference?.freeBagAllowanceGrp
       const segNumber = recommendationObject.map((item, index) => {
         return item.segmentFlightRef.length || 1;
@@ -180,6 +182,7 @@ const baggaReferenceArray = recommendationObject.reduce((accumulator, item) => {
   }
   return accumulator;
 }, []);
+// console.log("baggaReferenceArray=============",baggaReferenceArray)
       for (let i = 0; i < segNumber.length; i++) {
         const modifiedArray = [];
         for (let j = 0; j < segNumber[i]; j++) {
@@ -200,10 +203,23 @@ const baggaReferenceArray = recommendationObject.reduce((accumulator, item) => {
       // console.log(newFlattnedArray[0].baggage.referencingDetail,"newFlattnedArray")
        finalFlattenedArray=newFlattnedArray.map((item,index)=>{
         const tempItemBaggage=item.baggage.referencingDetail[1].refNumber
-        // console.log(tempItemBaggage,"tempItemBaggage")
-        const freeAllownaceLuggageIndex=baggageReference.serviceCoverageInfoGrp[tempItemBaggage-1].serviceCovInfoGrp.refInfo.referencingDetail.refNumber;
-        // console.log(freeAllownaceLuggageIndex,"freeAllownaceLuggageIndex")
-        return {...item,baggage:freeBaggageAllowance[freeAllownaceLuggageIndex-1]}
+
+        // Check if baggageReference.serviceCoverageInfoGrp exists
+        if (!baggageReference.serviceCoverageInfoGrp || !baggageReference.serviceCoverageInfoGrp[tempItemBaggage - 1]) {
+          return { ...item, baggage: undefined };
+        }
+        const serviceCovInfoGrp = baggageReference.serviceCoverageInfoGrp[tempItemBaggage - 1].serviceCovInfoGrp;
+
+        // Check if refInfo exists
+        const refInfo = serviceCovInfoGrp?.refInfo;
+        if (!refInfo) {
+          return { ...item, baggage: undefined };
+        }
+        const freeAllowanceLuggageIndex = Array.isArray(refInfo)
+        ? refInfo.map(info => info.referencingDetail.refNumber)
+        : [refInfo.referencingDetail.refNumber];
+
+      return { ...item, baggage: freeBaggageAllowance[freeAllowanceLuggageIndex - 1] };
       })
       // console.log(finalFlattenedArray,"finalFlattenedArray")
     }      

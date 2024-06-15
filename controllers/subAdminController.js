@@ -368,7 +368,7 @@ exports.forgetPassword=async(req,res,next)=>{
         responseMessage: responseMessage.EMAIL_NOT_EXIST 
       });
     }
-    const token=await commonFunction.getToken({
+    const token=await commonFunction.getResetToken({
       id:isEmailExist._id,
       email:isEmailExist.email,
       contactNumber:isEmailExist.contactNumber,
@@ -397,7 +397,7 @@ exports.passwordReset=async(req,res,next)=>{
         responseMessage: responseMessage.EMAIL_NOT_EXIST 
       });
     }
-    if(password!=confirmpassword){
+    if(password!==confirmpassword){
       return res.status(statusCode.OK).send({ 
         statusCode: statusCode.badRequest, 
         responseMessage: responseMessage.PASSWORD_NOT_MATCH 

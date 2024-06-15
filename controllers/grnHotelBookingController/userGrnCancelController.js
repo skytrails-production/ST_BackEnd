@@ -121,10 +121,11 @@ exports.createUserGrnCancelRequest = async (req, res, next) => {
       String(isUserExist.phone.mobile_number),
       String(reason),
     ];
-    await whatsApi.sendWhtsAppOTPAISensy(
-      AdminNumber,
+  const sendTo = ["+918115199076", "+919354416602", "+919056768815"];
+    const send=await whatsApi.sendWhtsAppAISensyMultiUSer(
+      sendTo,
       TemplateNames,
-      "admin_booking_Alert"
+      "cancelAlert"
     );
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,

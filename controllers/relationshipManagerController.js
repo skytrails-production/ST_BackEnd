@@ -317,7 +317,7 @@ exports.loginRM = async (req, res, next) => {
 exports.forgetPassword = async (req, res, next) => {
   try {
     const { email } = req.body;
-    console.log("email============",email)
+    // console.log("email============",email)
     const isRmExist = await findRelationShipManager({status: { $ne: status.DELETE }, email: email });
     if (!isRmExist) {
         return res.status(statusCode.OK).send({
@@ -325,17 +325,17 @@ exports.forgetPassword = async (req, res, next) => {
           responseMessage: responseMessage.USERS_NOT_FOUND,
         });
     }
-    const token=await commonFunction.getToken({
+    const token=await commonFunction.getResetToken({
       _id:isRmExist._id,
       email:isRmExist.email,
       contactNumber:isRmExist.contactNumber,
       userType:isRmExist.userType
     })
     // const resetPassLink=`http://localhost:8000/skyTrails/api/relationshipManager/resetPassword?${token}`
-    const sentMail=await commonFunction.sendResetPassMail(email,isRmExist._id);
+    const sentMail=await commonFunction.sendResetPassMail(email,token);
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
-      responseMessage: responseMessage.EMAIL_SENT,
+      // responseMessage: responseMessage.EMAIL_SENT,
       result:token
     });
   } catch (error) {
@@ -356,13 +356,12 @@ exports.resetPassword=async(req,res,next)=>{
          responseMessage: responseMessage.USERS_NOT_FOUND,
        });
      }
-    if(password!=confrmPassword){
+    if(password!==confrmPassword){
       return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
+        statusCode: statusCode.badRequest,
         responseMessage: responseMessage.PASSWORD_NOT_MATCH,
       });
     }
-
     const hashedPass=await bcrypt.hashSync(password,10);
     await updateRelationShipManager({_id:isRMExist._id},{password:hashedPass})
     return res.status(statusCode.OK).send({ 

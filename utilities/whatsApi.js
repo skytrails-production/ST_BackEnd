@@ -248,5 +248,51 @@ const response=await axios.request(config)
     console.log("erorr while send whatsapp=====>>>>>>",error.response)
   }
 }
-module.exports = {sendMessageWhatsApp,sendWhatsAppMsgAdmin,sendWhatsAppMsgAdminPackage,sendWhatsAppMsgRM,sendWhtsAppAISensy,sendWhtsAppOTPAISensy };
+
+async function sendWhtsAppAISensyMultiUSer(destinations, templateParams, campaignName) {
+  try {
+    // Ensure destinations are in the proper format
+    if (destinations.length === 0) {
+      throw new Error('Destinations should be a non-empty array');
+    }
+    // Construct the base data object
+    let data = {
+      "apiKey": process.env.AISENSYAPIKEY,
+      "campaignName": campaignName,
+      "userName": process.env.AISENSYUSERNAME,
+      "templateParams": templateParams,
+      "source": "new-landing-page form",
+      "media": {},
+      "buttons": [],
+      "carouselCards": [],
+      "location": {}
+    };
+
+    // Add each destination individually
+    destinations.forEach(destination => {
+      data = { ...data, "destination": destination };
+
+      let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: 'https://backend.aisensy.com/campaign/t1/api/v2',
+        headers: {},
+        data: data
+      };
+
+      // Make the request for each destination
+      axios.request(config)
+        .then(response => {
+          console.log(`Response for ${destination}:`, response.data);
+        })
+        .catch(error => {
+          console.error(`Error for ${destination}:`, error.response ? error.response.data : error.message);
+        });
+    });
+
+  } catch (error) {
+    console.error("Error while sending WhatsApp message:", error.response ? error.response.data : error.message);
+  }
+}
+module.exports = {sendMessageWhatsApp,sendWhatsAppMsgAdmin,sendWhatsAppMsgAdminPackage,sendWhatsAppMsgRM,sendWhtsAppAISensy,sendWhtsAppOTPAISensy,sendWhtsAppAISensyMultiUSer };
 

@@ -1,6 +1,9 @@
 const axios = require("axios");
 const { api } = require("../common/const");
 
+const requestIp = require('request-ip');
+const geoip = require('geoip-lite');
+
 const {
   actionCompleteResponse,
   sendActionFailedResponse,
@@ -32,13 +35,22 @@ exports.signUp = async (req, res) => {
   try {
     const requestBody = req.body;
 
+    const userIP =requestIp.getClientIp(req)||"103.154.247.235";
+
+    const userLocation = geoip.lookup(userIP);
+    // const userLocation=geoip.lookup("192.168.10.10");
+    // console.log("location", userIP,userLocation);
+
     const data = {
       ...requestBody,
       partnerTransactionId: "emt1049",
-      travelAgentName: "Deepika Padukone",
-      travelBrandName: "WDS",
-      travelAgentEmailId: "abc@gmail.com",
-      travelAgentMobile: "9999999999",
+      travelAgentName: "B2C",
+      travelBrandName: "SkyTrails",
+      travelAgentEmailId: "shivam@theskytrails.com",
+      travelAgentMobile: "8847301811",
+      ipAddress:userIP,
+      latitude:userLocation?.ll[0],
+      longitude:userLocation?.ll[1]
     };
     // console.log(data,"data");
 
