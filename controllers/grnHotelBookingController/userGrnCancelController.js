@@ -1,6 +1,7 @@
 const responseMessage = require("../../utilities/responses");
 const statusCode = require("../../utilities/responceCode");
 const status = require("../../enums/status");
+const bookingStatus=require('../../enums/bookingStatus')
 const {
   actionCompleteResponse,
   sendActionFailedResponse,
@@ -87,7 +88,7 @@ exports.createUserGrnCancelRequest = async (req, res, next) => {
     if (!isBookingExist) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
-        message: responseMessage.BOOKING_NOT_FOUND,
+        responseMessage: responseMessage.BOOKING_NOT_FOUND,
       });
     }
     const isAlreadyRequested = await findUserGrnCancellation({
@@ -121,7 +122,7 @@ exports.createUserGrnCancelRequest = async (req, res, next) => {
       String(isUserExist.phone.mobile_number),
       String(reason),
     ];
-  const sendTo = ["+918115199076", "+919354416602", "+919056768815"];
+  const sendTo = ["+919898989898",];
     const send=await whatsApi.sendWhtsAppAISensyMultiUSer(
       sendTo,
       TemplateNames,
@@ -137,3 +138,45 @@ exports.createUserGrnCancelRequest = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.getGrnCancelRequests=async(req,res,next)=>{
+  try {
+    const result=await findUserGrnCancellationList({});
+    if (!result) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
+      });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.CANCEL_REQUEST_SEND,
+      result: result,
+    });
+  } catch (error) {
+    console.log("error while trying to get data",error);
+    return next(error);
+  }
+};
+
+exports.updateCancellation=async(req,res,next)=>{
+  try {
+    const {hotelBookingId,status}=req.body;
+    const isBookingExist = await findUserGrnBooking({_id: hotelBookingId});
+    if (!isBookingExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.BOOKING_NOT_FOUND,
+      });
+    }
+    const updateCancellation=await updateGrnCancellation({_id:isBookingExist._id},{bookingStatus:status})
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.UPDATE_SUCCESS,
+      result:updateCancellation
+    });
+  } catch (error) {
+    console.log("error while trying to update data",error);
+    return next(error);
+  }
+}

@@ -266,7 +266,7 @@ exports.uploadAgentLogo = async (req, res) => {
 exports.LoginUser = async (req, res) => {
   try {
     const user = await b2bUser.findOne({
-      "personal_details.email": req.body.email,
+      "personal_details.email": req.body.email.toLowerCase(),
     });
 
     if (!user) {
@@ -2188,7 +2188,7 @@ exports.getRevenueOfAgent = async (req, res, next) => {
 exports.forgetPassword=async(req,res,next)=>{
   try {
     const {email,redirectUrl}=req.body;
-    const isEmailExist=await findbrbuser({"personal_details.email":email});
+    const isEmailExist=await findbrbuser({"personal_details.email":email.toLowerCase()});
 if(!isEmailExist){
   return res.status(statusCode.OK).send({ 
     statusCode: statusCode.NotFound, 

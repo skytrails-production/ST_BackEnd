@@ -485,40 +485,40 @@ taskPlatformNotification.start();
 
 const notifications = [
   {
-    message: `Uda do stress ko,username✈️`,
-    body: `SkyTrails pe abhi book karo aur le aao zindagi mein thoda adventure username! 🌟🗺️`,
+    message: `Travel Now, Pay Later`,
+    body: `Book your dream trip today and pay at your convenience!🌟🗺️`,
   },
   {
-    message: `Hey username, bag pack kiya ? 🎒`,
-    body: `SkyTrails pe book karo aur chalo duniya ghoomne! 🌍✨`,
+    message: `Chance to win a free vacation! 🏖 ✈`,
+    body: `Play now and answer a few fun questions on our social media!🌍✨`,
   },
   {
-    message: `username,nayi destinations ka pata laga! 🌏`,
-    body: `SkyTrails ke sath apni next trip plan karo aur maza lo! 😄🛫`,
+    message: `FunTime!Test your knowledge `,
+    body: `win exciting prizes—play now in our app! 🎉🧳😄🛫`,
   },
   {
-    message: `Travel ka time aa gaya,🏃‍♂️✈️`,
-    body: `SkyTrails pe abhi book karo aur pao amazing deals! 💸🌟`,
+    message: `Your Dream Trip is Calling! `,
+    body: `Take our quiz to discover your perfect getaway and win big! 🏝✨`,
   },
   {
-    message: `duniya bula rahi hai! 🌍`,
-    body: `SkyTrails se book karo aur jee lo zindagi! 🎉🛩️`,
+    message: `knock, knock `,
+    body: `Hey, don't miss the 20% discount on flights. hurry! `,
   },
   {
-    message: `Wanderlust activated,!🌟`,
-    body: `SkyTrails pe book karo aur apni travel list complete karo! 🗺️🎒`,
+    message: `Unlock exclusive discounts!`,
+    body: `Go now for limited-time offers on your favorite destinations! 💰🏖`,
   },
   {
-    message: `80 Missed call from The Skytrails! 📞🗺️`,
-    body: `Get the best deals and skyCoins too on flights, hotels and bus booking.📲💰`,
+    message: `Exclusive Offer!`,
+    body: `Enjoy 20% OFF on All Travel Services!`,
   },
   {
-    message: `username,sapno ki yatra shuru ho gayi! 🚀`,
-    body: `SkyTrails pe tickets book karo aur travel ka maza lo! 😎🌍`,
+    message: `Last Chance Alert! `,
+    body: `Don't miss out on our flash sale - book now before it's gone! ⏰✈`,
   },
   {
-    message: `Naye safar ki shuruaat! 🌅`,
-    body: `SkyTrails pe book karo aur apne dosto ko saath le jao! 👫✈️`,
+    message: `Escape the ordinary!`,
+    body: `Explore our curated list of off-the-beaten-path destinations for your next adventure! 🗺🌟`,
   },
   {
     message: `Trip ki planning ho gayi? 📅`,

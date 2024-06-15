@@ -5,6 +5,7 @@ const authType = require("../enums/authType");
 const queryType = require("../enums/offerType");
 const visaType = require("../enums/visaType");
 const staticType = require("../enums/staticContentType");
+const bookingStatus = require("../enums/bookingStatus");
 // const bookingType=require("../enums/")
 const schemas = {
   flightBookingSchema: joi.object().keys({
@@ -716,6 +717,10 @@ const schemas = {
   rmgetAgentCancelReq:joi.object().keys({
     agentId: joi.string().required(),
     searchType: joi.string().required()
+  }),
+  cancelStatusUpdation:joi.object().keys({
+    hotelBookingId: joi.string().required(),
+    status: joi.valid(...Object.values(bookingStatus)).required(),
   })
 };
 

@@ -33,6 +33,7 @@ const userGrnCancelSchema=new mongoose.Schema( {
     bookingStatus: {
         type: String,
         enums: [bookingStatus.BOOKED, bookingStatus.CANCEL, bookingStatus.PENDING],
+        default:bookingStatus.BOOKED
     },
 },{ timestamps: true });
 

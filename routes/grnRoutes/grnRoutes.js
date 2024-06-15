@@ -22,4 +22,6 @@ module.exports = function (app) {
     app.get('/skyTrails/api/grn/user/getAllgrnBooking',Controller.getAllGrnBookingList);
     // app.put('/skyTrails/api/grn/user/UpdateTicket',Controller.UpdateTicket)
     app.post('/skyTrails/api/grn/user/cancel/createCancelRequest',[authJwt.verifcationToken],cancelCoontroller.createUserGrnCancelRequest);
+    app.put('/skyTrails/api/grn/admin/cancel/updateCancelRequestStatus',SchemaValidator(schemas.cancelStatusUpdation),cancelCoontroller.updateCancellation);
+    
 }
