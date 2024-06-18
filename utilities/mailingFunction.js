@@ -3073,7 +3073,7 @@ function RelationShipManagerResetPassword(token){
             <h1>Password Reset Request</h1>
             <p>Hello User,</p>
             <p>We received a request to reset your password for your account. To reset your password, click the button below:</p>
-            <a href="https://theskytrails.com/RMforgetPassword?token=${token}" class="button">Reset Password</a>
+            <a href="https://thehawaiyatra.com/RMforgetPassword?token=${token}" class="button">Reset Password</a>
             <p>If you did not request a password reset, please ignore this email. This link will expire in 24 hours.</p>
             <p>Thank you,<br>The HawaiYatra PVT. LTD. Team</p>
         </div>

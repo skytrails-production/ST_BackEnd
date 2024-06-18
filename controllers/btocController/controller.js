@@ -1273,7 +1273,7 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
       updateData = await updateUser({ _id: updation._id }, obj);
     }
     updateData = await updateUser({ _id: updation._id }, obj);
-    if (referrerCode) {
+    if (referrerCode&&referrerCode!==" ") {
       const isRefererExist = await findUser({ referralCode: referrerCode });
       if (!isRefererExist) {
         return res.status(statusCode.OK).send({

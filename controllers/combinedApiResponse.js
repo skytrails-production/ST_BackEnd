@@ -614,7 +614,89 @@ exports.combineTVOAMADEUSOptimised = async (req, res, next) => {
 };
 
 
+exports.combineSorting = async (req, res, next) => { 
+  try {
+    const data = req.body;
+    data.formattedDate =  moment(data.Segments[0].PreferredDepartureTime,"DD MMM, YY").format("DDMMYY"); // Format the date as "DDMMYY"
+    const api1Url = commonUrl.api.flightSearchURL;
+    data.totalPassenger = parseInt(data.AdultCount) + parseInt(data.ChildCount);
+    const flattenedArray = [];
+    let finalFlattenedArray=[]
+    const headers = {"Content-Type": "text/xml;charset=UTF-8",SOAPAction: "http://webservices.amadeus.com/FMPTBQ_23_4_1A",};
+    const [tvoResponse, amadeusResponse] = await Promise.all([
+      axios.post(api1Url, data),
+      axios.post(url, generateAmadeusRequest(data), { headers }).catch((error) => {console.error("Error in Amadeus API request:", error);return { data: {} };}),
+    ]);
+    var tvoArray = [];
+    if (tvoResponse.data.Response.ResponseStatus === 1) {
+      tvoArray = tvoResponse.data.Response.Results[0];
+      console.log("tvoArray=",tvoArray);
+    } else {
+      tvoArray = [];
+    }
+    let jsonResult = {};
+    if (amadeusResponse.status == 200) {
+      jsonResult = await xmlToJson(amadeusResponse.data);
+      const obj =
+        jsonResult["soapenv:Envelope"]["soapenv:Body"]["Fare_MasterPricerTravelBoardSearchReply"];
+      const recommendationObject = await obj.recommendation;
+      const baggageReference=await obj.serviceFeesGrp;
+      const freeBaggageAllowance=baggageReference?.freeBagAllowanceGrp
+      const segNumber = recommendationObject.map((item, index) => {return item.segmentFlightRef.length || 1;});
+      // console.log(baggageReference.serviceCoverageInfoGrp[0].serviceCovInfoGrp.refInfo.referencingDetail,"freeBaggageAllowance")
+const baggaReferenceArray = recommendationObject.reduce((accumulator, item) => {
+  if (Array.isArray(item.segmentFlightRef)) {
+    accumulator.push(...item.segmentFlightRef);
+  } else if (item.segmentFlightRef && item.segmentFlightRef.referencingDetail) {
+    accumulator.push({...item.segmentFlightRef});
+  }
+  return accumulator;
+}, []);
+      for (let i = 0; i < segNumber.length; i++) {
+        const modifiedArray = [];
+        for (let j = 0; j < segNumber[i]; j++) {
+          modifiedArray.push({
+            ...obj.flightIndex.groupOfFlights[j],
+            ...recommendationObject[i].paxFareProduct,
+            ...obj.recommendation[i].recPriceInfo,
+          });
+        }
+       
+        flattenedArray.push(...modifiedArray);
+      }
+      
+     const newFlattnedArray= flattenedArray.map((item,index)=>{
+         return {...item,baggage:baggaReferenceArray[index]}
+      })
+      // console.log(newFlattnedArray[0].baggage.referencingDetail,"newFlattnedArray")
+       finalFlattenedArray=newFlattnedArray.map((item,index)=>{
+        const tempItemBaggage=item.baggage.referencingDetail[1].refNumber
 
+        // Check if baggageReference.serviceCoverageInfoGrp exists
+        if (!baggageReference.serviceCoverageInfoGrp || !baggageReference.serviceCoverageInfoGrp[tempItemBaggage - 1]) {
+          return { ...item, baggage: undefined };
+        }
+        const serviceCovInfoGrp = baggageReference.serviceCoverageInfoGrp[tempItemBaggage - 1].serviceCovInfoGrp;
+
+        // Check if refInfo exists
+        const refInfo = serviceCovInfoGrp?.refInfo;
+        if (!refInfo) {
+          return { ...item, baggage: undefined };
+        }
+        const freeAllowanceLuggageIndex = Array.isArray(refInfo)
+        ? refInfo.map(info => info.referencingDetail.refNumber)
+        : [refInfo.referencingDetail.refNumber];
+
+      return { ...item, baggage: freeBaggageAllowance[freeAllowanceLuggageIndex - 1] };
+      })
+      // console.log(finalFlattenedArray,"finalFlattenedArray")
+    }      
+    
+  } catch (error) {
+    console.error("Error while trying to get response", error);
+    return next(error);
+  }
+};
 
 const generateAmadeusRequest = (data) => {
   // Generate the SOAP request XML based on the provided data
