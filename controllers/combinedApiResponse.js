@@ -72,7 +72,6 @@ exports.combinedAPI1 = async (req, res, next) => {
     ).format("DDMMYY"); // Format the date as "DDMMYY"
     const api1Url = commonUrl.api.flightSearchURL;
 
-    
     const flattenedArray = [];
     const headers = {
       "Content-Type": "text/xml;charset=UTF-8",
@@ -127,20 +126,20 @@ exports.combinedAPI1 = async (req, res, next) => {
   }
 };
 
-exports.combineTVOAMADEUSPriceSort = async (req, res, next) => { 
+exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
   try {
     const data = req.body;
-    console.log("===============",data)
-    data.formattedDate =  moment(
+    // console.log("===============", data);
+    data.formattedDate = moment(
       data.Segments[0].PreferredDepartureTime,
       "DD MMM, YY"
     ).format("DDMMYY"); // Format the date as "DDMMYY"
-    console.log("data.formattedDate==============",data.formattedDate)
+    // console.log("data.formattedDate==============", data.formattedDate);
     const api1Url = commonUrl.api.flightSearchURL;
     data.totalPassenger = parseInt(data.AdultCount) + parseInt(data.ChildCount);
-    
+
     const flattenedArray = [];
-    let finalFlattenedArray=[]
+    let finalFlattenedArray = [];
     const headers = {
       "Content-Type": "text/xml;charset=UTF-8",
       SOAPAction: "http://webservices.amadeus.com/FMPTBQ_23_4_1A",
@@ -161,54 +160,77 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
       tvoArray = [];
     }
     let jsonResult = {};
-    if (amadeusResponse.status == 200) {
+    jsonResult = await xmlToJson(amadeusResponse.data);
+    if (
+      amadeusResponse.status == 200 &&
+      !jsonResult["soapenv:Envelope"]["soapenv:Body"][
+        "Fare_MasterPricerTravelBoardSearchReply"
+      ]["errorMessage"]
+    ) {
       jsonResult = await xmlToJson(amadeusResponse.data);
       const obj =
         jsonResult["soapenv:Envelope"]["soapenv:Body"][
           "Fare_MasterPricerTravelBoardSearchReply"
         ];
       const recommendationObject = await obj.recommendation;
-      const baggageReference=await obj.serviceFeesGrp;
-      const freeBaggageAllowance=baggageReference?.freeBagAllowanceGrp
+      
+      const baggageReference = await obj.serviceFeesGrp;
+      const freeBaggageAllowance = baggageReference?.freeBagAllowanceGrp;
+      let count = 0;
       const segNumber = recommendationObject.map((item, index) => {
         return item.segmentFlightRef.length || 1;
       });
-      // console.log(baggageReference.serviceCoverageInfoGrp[0].serviceCovInfoGrp.refInfo.referencingDetail,"freeBaggageAllowance")
-const baggaReferenceArray = recommendationObject.reduce((accumulator, item) => {
-  if (Array.isArray(item.segmentFlightRef)) {
-    accumulator.push(...item.segmentFlightRef);
-  } else if (item.segmentFlightRef && item.segmentFlightRef.referencingDetail) {
-    accumulator.push({...item.segmentFlightRef});
-  }
-  return accumulator;
-}, []);
-// console.log("baggaReferenceArray=============",baggaReferenceArray)
+      segNumber.forEach((item, index) => {
+        count = count + item;
+      });
+      
+      const baggaReferenceArray = recommendationObject.reduce(
+        (accumulator, item) => {
+          if (Array.isArray(item.segmentFlightRef)) {
+            accumulator.push(...item.segmentFlightRef);
+          } else if (
+            item.segmentFlightRef &&
+            item.segmentFlightRef.referencingDetail
+          ) {
+            accumulator.push({ ...item.segmentFlightRef });
+          }
+          return accumulator;
+        },
+        []
+      );
+      // console.log("baggaReferenceArray=============", obj.flightIndex);
+      const modifiedArray = [];
+      let tempIndex = 0;
       for (let i = 0; i < segNumber.length; i++) {
-        const modifiedArray = [];
         for (let j = 0; j < segNumber[i]; j++) {
           modifiedArray.push({
-            ...obj.flightIndex.groupOfFlights[j],
-            ...recommendationObject[i].paxFareProduct,
+            ...obj.flightIndex.groupOfFlights[j + tempIndex],
+            ...obj.recommendation[i].paxFareProduct,
             ...obj.recommendation[i].recPriceInfo,
-
           });
+          // console.log(obj.flightIndex.groupOfFlights[j], "flighNumber");
         }
-       
-        flattenedArray.push(...modifiedArray);
+        tempIndex = tempIndex + segNumber[i];
       }
-      
-     const newFlattnedArray= flattenedArray.map((item,index)=>{
-         return {...item,baggage:baggaReferenceArray[index]}
-      })
+      flattenedArray.push(...modifiedArray);
+     
+      const newFlattnedArray = flattenedArray.map((item, index) => {
+        return { ...item, baggage: baggaReferenceArray[index] };
+      });
       // console.log(newFlattnedArray[0].baggage.referencingDetail,"newFlattnedArray")
-       finalFlattenedArray=newFlattnedArray.map((item,index)=>{
-        const tempItemBaggage=item.baggage.referencingDetail[1].refNumber
+      finalFlattenedArray = newFlattnedArray.map((item, index) => {
+        const tempItemBaggage = item.baggage.referencingDetail[1].refNumber;
 
         // Check if baggageReference.serviceCoverageInfoGrp exists
-        if (!baggageReference.serviceCoverageInfoGrp || !baggageReference.serviceCoverageInfoGrp[tempItemBaggage - 1]) {
+        if (
+          !baggageReference.serviceCoverageInfoGrp ||
+          !baggageReference.serviceCoverageInfoGrp[tempItemBaggage - 1]
+        ) {
           return { ...item, baggage: undefined };
         }
-        const serviceCovInfoGrp = baggageReference.serviceCoverageInfoGrp[tempItemBaggage - 1].serviceCovInfoGrp;
+        const serviceCovInfoGrp =
+          baggageReference.serviceCoverageInfoGrp[tempItemBaggage - 1]
+            .serviceCovInfoGrp;
 
         // Check if refInfo exists
         const refInfo = serviceCovInfoGrp?.refInfo;
@@ -216,23 +238,25 @@ const baggaReferenceArray = recommendationObject.reduce((accumulator, item) => {
           return { ...item, baggage: undefined };
         }
         const freeAllowanceLuggageIndex = Array.isArray(refInfo)
-        ? refInfo.map(info => info.referencingDetail.refNumber)
-        : [refInfo.referencingDetail.refNumber];
+          ? refInfo.map((info) => info.referencingDetail.refNumber)
+          : [refInfo.referencingDetail.refNumber];
 
-      return { ...item, baggage: freeBaggageAllowance[freeAllowanceLuggageIndex - 1] };
-      })
+        return {
+          ...item,
+          baggage: freeBaggageAllowance[freeAllowanceLuggageIndex - 1],
+        };
+      });
       // console.log(finalFlattenedArray,"finalFlattenedArray")
-    }      
+    }
     var finalResult = [];
     var selectedArray = [];
     if (tvoArray.length > 0) {
       selectedArray = await tvoArray.filter((value) => value.IsLCC === true);
       if (selectedArray.length > 0) {
-
         finalResult = finalFlattenedArray.concat(selectedArray);
       } else if (finalFlattenedArray.length <= 0) {
         finalResult = [...tvoArray];
-      }else{
+      } else {
         finalResult = [...finalFlattenedArray];
       }
     } else {
@@ -245,17 +269,17 @@ const baggaReferenceArray = recommendationObject.reduce((accumulator, item) => {
       selectedArray: selectedArray.length,
     };
     for (const finalRep of finalResult) {
-    let totalPublishFare = 0;
+      let totalPublishFare = 0;
       if (finalRep.propFlightGrDetail) {
         // Iterate over each key and calculate totalAmount separately
         // for (const key of Object.keys(finalRep)) {
         //   const obj = finalRep[key];
         //   // if (obj.hasOwnProperty("paxFareDetail")) {
-            const totalFare = parseInt(finalRep.monetaryDetail[0].amount);
-            const totalTax = parseInt(finalRep.monetaryDetail[1].amount);
-            const totalAmount = totalFare + totalTax;
-            // finalRep.totalAmount = totalAmount;
-            totalPublishFare += totalAmount;
+        const totalFare = parseInt(finalRep.monetaryDetail[0].amount);
+        const totalTax = parseInt(finalRep.monetaryDetail[1].amount);
+        const totalAmount = totalFare + totalTax;
+        // finalRep.totalAmount = totalAmount;
+        totalPublishFare += totalAmount;
         //   // }
         // }
 
@@ -263,10 +287,11 @@ const baggaReferenceArray = recommendationObject.reduce((accumulator, item) => {
       } else if (finalRep.Segments) {
         const totalPublishFare = finalRep.Fare.PublishedFare;
         finalRep.TotalPublishFare = totalPublishFare;
-        
       }
     }
-const sortedData=finalResult.sort((a,b)=> a.TotalPublishFare - b.TotalPublishFare);
+    const sortedData = finalResult.sort(
+      (a, b) => a.TotalPublishFare - b.TotalPublishFare
+    );
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.DATA_FOUND,
@@ -289,7 +314,6 @@ exports.combineTVOAMADEUS = async (req, res, next) => {
     ).format("DDMMYY"); // Format the date as "DDMMYY"
     const api1Url = commonUrl.api.flightSearchURL;
 
-    
     const flattenedArray = [];
     const headers = {
       "Content-Type": "text/xml;charset=UTF-8",
@@ -305,7 +329,7 @@ exports.combineTVOAMADEUS = async (req, res, next) => {
         }),
     ]);
     var tvoArray = [];
-    
+
     if (tvoResponse.data.Response.ResponseStatus === 1) {
       tvoArray = tvoResponse.data.Response.Results[0];
     } else {
@@ -378,7 +402,7 @@ exports.cobinedAsPerPrice = async (req, res, next) => {
       parseInt(data.ChildCount) +
       parseInt(data.InfantCount);
     const api1Url = commonUrl.api.flightSearchURL;
-   
+
     const headers = {
       "Content-Type": "text/xml;charset=UTF-8",
       SOAPAction: "http://webservices.amadeus.com/FMPTBQ_23_4_1A",
@@ -520,7 +544,10 @@ exports.cobinedAsPerPrice = async (req, res, next) => {
 exports.combineTVOAMADEUSOptimised = async (req, res, next) => {
   try {
     const data = req.body;
-    data.formattedDate = moment(data.Segments[0].PreferredDepartureTime, "DD MMM, YY").format("DDMMYY");
+    data.formattedDate = moment(
+      data.Segments[0].PreferredDepartureTime,
+      "DD MMM, YY"
+    ).format("DDMMYY");
     data.totalPassenger = parseInt(data.AdultCount) + parseInt(data.ChildCount);
     const api1Url = commonUrl.api.flightSearchURL;
 
@@ -531,10 +558,12 @@ exports.combineTVOAMADEUSOptimised = async (req, res, next) => {
 
     const [tvoResponse, amadeusResponse] = await Promise.all([
       axios.post(api1Url, data),
-      axios.post(url, generateAmadeusRequest(data), { headers }).catch((error) => {
-        console.error("Error in Amadeus API request:", error);
-        return { data: {} };
-      }),
+      axios
+        .post(url, generateAmadeusRequest(data), { headers })
+        .catch((error) => {
+          console.error("Error in Amadeus API request:", error);
+          return { data: {} };
+        }),
     ]);
 
     let tvoArray = [];
@@ -545,13 +574,18 @@ exports.combineTVOAMADEUSOptimised = async (req, res, next) => {
     let finalFlattenedArray = [];
     if (amadeusResponse.status === 200) {
       const jsonResult = await xmlToJson(amadeusResponse.data);
-      const obj = jsonResult["soapenv:Envelope"]["soapenv:Body"]["Fare_MasterPricerTravelBoardSearchReply"];
+      const obj =
+        jsonResult["soapenv:Envelope"]["soapenv:Body"][
+          "Fare_MasterPricerTravelBoardSearchReply"
+        ];
       const recommendationObject = obj.recommendation;
       const baggageReference = obj.serviceFeesGrp;
       const freeBaggageAllowance = baggageReference?.freeBagAllowanceGrp;
 
       const flattenedArray = recommendationObject.reduce((acc, item, index) => {
-        const segRefs = Array.isArray(item.segmentFlightRef) ? item.segmentFlightRef : [item.segmentFlightRef];
+        const segRefs = Array.isArray(item.segmentFlightRef)
+          ? item.segmentFlightRef
+          : [item.segmentFlightRef];
         const flightGroup = obj.flightIndex.groupOfFlights[index];
         const fareProduct = item.paxFareProduct;
         const recPriceInfo = item.recPriceInfo;
@@ -570,19 +604,21 @@ exports.combineTVOAMADEUSOptimised = async (req, res, next) => {
 
       finalFlattenedArray = flattenedArray.map((item, index) => {
         const baggageIndex = item.baggage.referencingDetail[1].refNumber - 1;
-        const freeAllowanceIndex = baggageReference.serviceCoverageInfoGrp[baggageIndex].serviceCovInfoGrp.refInfo.referencingDetail.refNumber - 1;
+        const freeAllowanceIndex =
+          baggageReference.serviceCoverageInfoGrp[baggageIndex]
+            .serviceCovInfoGrp.refInfo.referencingDetail.refNumber - 1;
         return { ...item, baggage: freeBaggageAllowance[freeAllowanceIndex] };
       });
     }
 
-    const selectedArray = tvoArray.filter(value => value.IsLCC);
+    const selectedArray = tvoArray.filter((value) => value.IsLCC);
     let finalResult = [...finalFlattenedArray, ...selectedArray];
 
     if (selectedArray.length === 0 && finalFlattenedArray.length === 0) {
       finalResult = [...tvoArray];
     }
 
-    finalResult = finalResult.map(finalRep => {
+    finalResult = finalResult.map((finalRep) => {
       if (finalRep.propFlightGrDetail) {
         const totalFare = parseInt(finalRep.monetaryDetail[0].amount);
         const totalTax = parseInt(finalRep.monetaryDetail[1].amount);
@@ -593,7 +629,9 @@ exports.combineTVOAMADEUSOptimised = async (req, res, next) => {
       return finalRep;
     });
 
-    const sortedData = finalResult.sort((a, b) => a.TotalPublishFare - b.TotalPublishFare);
+    const sortedData = finalResult.sort(
+      (a, b) => a.TotalPublishFare - b.TotalPublishFare
+    );
 
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
@@ -607,91 +645,6 @@ exports.combineTVOAMADEUSOptimised = async (req, res, next) => {
         selectedArray: selectedArray.length,
       },
     });
-  } catch (error) {
-    console.error("Error while trying to get response", error);
-    return next(error);
-  }
-};
-
-
-exports.combineSorting = async (req, res, next) => { 
-  try {
-    const data = req.body;
-    data.formattedDate =  moment(data.Segments[0].PreferredDepartureTime,"DD MMM, YY").format("DDMMYY"); // Format the date as "DDMMYY"
-    const api1Url = commonUrl.api.flightSearchURL;
-    data.totalPassenger = parseInt(data.AdultCount) + parseInt(data.ChildCount);
-    const flattenedArray = [];
-    let finalFlattenedArray=[]
-    const headers = {"Content-Type": "text/xml;charset=UTF-8",SOAPAction: "http://webservices.amadeus.com/FMPTBQ_23_4_1A",};
-    const [tvoResponse, amadeusResponse] = await Promise.all([
-      axios.post(api1Url, data),
-      axios.post(url, generateAmadeusRequest(data), { headers }).catch((error) => {console.error("Error in Amadeus API request:", error);return { data: {} };}),
-    ]);
-    var tvoArray = [];
-    if (tvoResponse.data.Response.ResponseStatus === 1) {
-      tvoArray = tvoResponse.data.Response.Results[0];
-      console.log("tvoArray=",tvoArray);
-    } else {
-      tvoArray = [];
-    }
-    let jsonResult = {};
-    if (amadeusResponse.status == 200) {
-      jsonResult = await xmlToJson(amadeusResponse.data);
-      const obj =
-        jsonResult["soapenv:Envelope"]["soapenv:Body"]["Fare_MasterPricerTravelBoardSearchReply"];
-      const recommendationObject = await obj.recommendation;
-      const baggageReference=await obj.serviceFeesGrp;
-      const freeBaggageAllowance=baggageReference?.freeBagAllowanceGrp
-      const segNumber = recommendationObject.map((item, index) => {return item.segmentFlightRef.length || 1;});
-      // console.log(baggageReference.serviceCoverageInfoGrp[0].serviceCovInfoGrp.refInfo.referencingDetail,"freeBaggageAllowance")
-const baggaReferenceArray = recommendationObject.reduce((accumulator, item) => {
-  if (Array.isArray(item.segmentFlightRef)) {
-    accumulator.push(...item.segmentFlightRef);
-  } else if (item.segmentFlightRef && item.segmentFlightRef.referencingDetail) {
-    accumulator.push({...item.segmentFlightRef});
-  }
-  return accumulator;
-}, []);
-      for (let i = 0; i < segNumber.length; i++) {
-        const modifiedArray = [];
-        for (let j = 0; j < segNumber[i]; j++) {
-          modifiedArray.push({
-            ...obj.flightIndex.groupOfFlights[j],
-            ...recommendationObject[i].paxFareProduct,
-            ...obj.recommendation[i].recPriceInfo,
-          });
-        }
-       
-        flattenedArray.push(...modifiedArray);
-      }
-      
-     const newFlattnedArray= flattenedArray.map((item,index)=>{
-         return {...item,baggage:baggaReferenceArray[index]}
-      })
-      // console.log(newFlattnedArray[0].baggage.referencingDetail,"newFlattnedArray")
-       finalFlattenedArray=newFlattnedArray.map((item,index)=>{
-        const tempItemBaggage=item.baggage.referencingDetail[1].refNumber
-
-        // Check if baggageReference.serviceCoverageInfoGrp exists
-        if (!baggageReference.serviceCoverageInfoGrp || !baggageReference.serviceCoverageInfoGrp[tempItemBaggage - 1]) {
-          return { ...item, baggage: undefined };
-        }
-        const serviceCovInfoGrp = baggageReference.serviceCoverageInfoGrp[tempItemBaggage - 1].serviceCovInfoGrp;
-
-        // Check if refInfo exists
-        const refInfo = serviceCovInfoGrp?.refInfo;
-        if (!refInfo) {
-          return { ...item, baggage: undefined };
-        }
-        const freeAllowanceLuggageIndex = Array.isArray(refInfo)
-        ? refInfo.map(info => info.referencingDetail.refNumber)
-        : [refInfo.referencingDetail.refNumber];
-
-      return { ...item, baggage: freeBaggageAllowance[freeAllowanceLuggageIndex - 1] };
-      })
-      // console.log(finalFlattenedArray,"finalFlattenedArray")
-    }      
-    
   } catch (error) {
     console.error("Error while trying to get response", error);
     return next(error);

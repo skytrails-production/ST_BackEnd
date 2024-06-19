@@ -169,7 +169,7 @@ exports.hotelSearchWithPagination=async (req,res) =>{
         client_nationality:req.body.client_nationality,
         checkin:req.body.checkin,
         checkout:req.body.checkout,
-        cutoff_time: 5000,
+        cutoff_time: 30000,
         version:req.body.version
       }
       // console.log(searchData,"data");
