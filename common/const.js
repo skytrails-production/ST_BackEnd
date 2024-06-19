@@ -316,11 +316,19 @@ busCancelURL:
     travelPlanGenerator:
     "https://uat.partners.mihuru.com/api/assistmodule/v1/confirmpersonaldetails",
     resendOtp:
-    "https://uat.partners.mihuru.com/api/assistmodule/v1/confirmpersonaldetails",
+    "https://uat.partners.mihuru.com/api/assistmodule/resendotp",
     applicationStatus:
     "https://uat.partners.mihuru.com/api/application/status",
     emiTravelPlan:
-    "https://uat.partners.mihuru.com/api/TravelEMI/TravelPlanEMI"
+    "https://uat.partners.mihuru.com/api/TravelEMI/TravelPlanEMI",
+    initiateBooking:
+    "https://uat.partners.mihuru.com/api/flight/v1/initiateflightbooking",
+    applicationStatu:
+    "https://uat.partners.mihuru.com/api/application/status",
+    bookingCancel:
+    "https://uat.partners.mihuru.com/api/assistmodule/booking/cancellation/initiate",
+    genrateCustomerToken:
+    "https://uat.partners.mihuru.com/api/applicationtoken/currentapplicationtoken"
 };
 exports.responseFlags = {
   ACTION_COMPLETE: 200,

@@ -119,13 +119,14 @@ exports.hotelSearch=async (req,res) =>{
 
         const searchData={
           rooms:req.body.rooms,
-          rates: req.body.rates,
+          rates: "comprehensive",
           hotel_codes:hotelCode,
           currency:req.body.currency,
           client_nationality:req.body.client_nationality,
           checkin:req.body.checkin,
           checkout:req.body.checkout,
-          version:req.body.version
+          version:req.body.version,
+          cutoff_time:10000
         }
         // console.log(searchData,"data")
         // console.log(`${baseurl}/api/v3/hotels/availability`,"console")

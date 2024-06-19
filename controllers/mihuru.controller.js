@@ -43,7 +43,6 @@ exports.signUp = async (req, res) => {
 
     const data = {
       ...requestBody,
-      partnerTransactionId: "emt1049",
       travelAgentName: "B2C",
       travelBrandName: "SkyTrails",
       travelAgentEmailId: "shivam@theskytrails.com",
@@ -142,4 +141,26 @@ exports.travelEmiPlan = async (req, res) =>{
   } catch (err) {
     sendActionFailedResponse(res, { err }, err.message);
   }
+}
+
+
+
+//initiateFlightBooking
+
+
+exports.initiateFlightBooking = async (req , res) =>{
+
+  try {
+
+    const data=req.body;
+
+    const response = await axios.post(`${api.initiateBooking}`, data);
+
+    msg = "Initiate Booking";
+    actionCompleteResponse(res, response.data, msg);
+    
+  } catch (error) {
+    sendActionFailedResponse(res, { error }, error.message);
+  }
+
 }

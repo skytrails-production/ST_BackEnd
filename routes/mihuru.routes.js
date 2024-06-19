@@ -17,5 +17,8 @@ module.exports = function (app) {
 
     //emi calcularot
     app.post("/skyTrails/mihuru/travelemiplan",controller.travelEmiPlan);
+
+
+    app.post("/skyTrails/mihuru/initiateflightbooking", controller.initiateFlightBooking);
     
 }
