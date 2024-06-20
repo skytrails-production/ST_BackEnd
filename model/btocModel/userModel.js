@@ -133,7 +133,11 @@ const usersSchema = new Schema({
       type: Number,
       default:0
     },
-    mihuruWallet:Number,
+    mihuruWallet:{
+      amount:Number,
+      payment_id:String,
+      payment_reference_id:String
+    },
     bio: {
       type: String,
       default: "",

@@ -73,6 +73,8 @@ const {
 const {
   userWalletHistoryServices,
 } = require("../../services/btocServices/userWalletHistoryServices");
+const { actionCompleteResponse, sendActionFailedResponse } = require("../../common/common");
+const User = require("../../model/btocModel/userModel")
 const {
   createUserWalletHistory,
   findUserWalletHistory,
@@ -1676,4 +1678,46 @@ async function shortenURL(url) {
   const shortCode = shortid.generate();
   const shortURL = `https://${shortCode}`;
   return shortURL;
+}
+
+
+
+
+exports.updateMihuruWallet= async (req, res) =>{
+
+  try {
+    const {userId, amount,payment_id,payment_reference_id}=req.body;
+    // console.log(req.body)
+
+    if (!userId || !amount || !payment_id || !payment_reference_id) {
+
+      return actionCompleteResponse(res, {}, "Missing required fields");
+    }
+
+    const user=await User.findById(userId);
+
+    if (!user) {
+      return actionCompleteResponse(res, mihuruData, "User not found"); 
+    }
+    const mihuruData=user?.mihuruWallet;
+
+    if (mihuruData.payment_id === payment_id && mihuruData.payment_reference_id === payment_reference_id) {
+      // Payment already added
+      return actionCompleteResponse(res, mihuruData, "Payment Already Added"); 
+    }
+    
+    // console.log(user?.mihuruWallet);
+     const updatedMihuruWallet=Number(mihuruData?.amount)+Number(amount);
+    const response=await User.findByIdAndUpdate(userId,{ $set: { 
+      'mihuruWallet.amount': updatedMihuruWallet,
+          'mihuruWallet.payment_id': payment_id,
+          'mihuruWallet.payment_reference_id': payment_reference_id
+     } }, 
+      { new: true });
+    
+   actionCompleteResponse(res, response, "Update Mihuru Wallet Successfully");    
+  } catch (err) {
+    sendActionFailedResponse(res, {err}, err.message);   
+  }
+
 }

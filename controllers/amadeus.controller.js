@@ -468,7 +468,7 @@ exports.fareCheckRuleSecond =async (req, res)=>{
 
 //airsell 
 
-exports.airSell =async (req, res,next) =>{
+exports.airSell =async (req, res) =>{
        
 
  // Generate new UUID for each request
@@ -549,13 +549,13 @@ exports.airSell =async (req, res,next) =>{
 
       
             const response = await axios.post(url,data,{headers} );
-  
+             
 
              const xmlResponse = response.data;
         const parser = new xml2js.Parser({ explicitArray: false, trim: true });
         const parsedResponse = await parser.parseStringPromise(xmlResponse);
 
-        // Extract required fields
+       
         const extractedData = {
             MessageID: parsedResponse['soapenv:Envelope']['soapenv:Header']['wsa:RelatesTo']._,
             UniqueID: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsl:TransactionFlowLink']['awsl:Consumer']['awsl:UniqueID'],
@@ -563,14 +563,12 @@ exports.airSell =async (req, res,next) =>{
             SessionId: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SessionId'],
             SequenceNumber: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SequenceNumber'],
             SecurityToken: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SecurityToken'],
-            StatusCode: parsedResponse['soapenv:Envelope']['soapenv:Body']['Air_SellFromRecommendationReply']['itineraryDetails']['segmentInformation']['actionDetails']['statusCode']
+            // StatusCode: parsedResponse['soapenv:Envelope']['soapenv:Body']['Air_SellFromRecommendationReply']['itineraryDetails']['segmentInformation']['actionDetails']['statusCode']
         };
           msg = "Flight Searched Successfully!";
           actionCompleteResponse(res, {headers:extractedData,data:response.data}, msg);
-       
     } catch (err) {
-        sendActionFailedResponse(res, { err }, err.message);
-        next(err);        
+        sendActionFailedResponse(res, { err }, err.message);    
     }
 
 }
