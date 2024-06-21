@@ -157,5 +157,6 @@ const amadeusFlightBookingData = new mongoose.Schema(
   )
   amadeusFlightBookingData.plugin(mongoosePaginate);
   amadeusFlightBookingData.plugin(aggregatePaginate)
-  module.exports = mongoose.model("AmaduesAgentFlightBookings", amadeusFlightBookingData);
+  module.exports = mongoose.model("AmadeusAgentFlightBookings", amadeusFlightBookingData);
 
+  

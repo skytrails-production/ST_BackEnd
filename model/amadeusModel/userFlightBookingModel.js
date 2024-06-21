@@ -22,7 +22,7 @@ const flightBookingSchema = new mongoose.Schema(
       type: Boolean,
     },
     bookingId: {
-      type: Number,
+      type: String,
     },
     pnr: {
       type: String,

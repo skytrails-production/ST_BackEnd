@@ -2,6 +2,9 @@ const aws = require("aws-sdk");
 const axios = require("axios");
 const { api } = require("../common/const");
 
+const { userIPDetail } = require("../model/city.model");
+const requestIp = require('request-ip');
+
 const {
   actionCompleteResponse,
   sendActionFailedResponse,
@@ -335,6 +338,14 @@ exports.hotelBooking = async (req, res)=>{
       ...req.body
     };
     
+    const userIP = requestIp.getClientIp(req);
+    const userBookingIpDetails={userIp:userIP,
+      bookingType:"HotelBookinGrn"
+    };
+
+    await userIPDetail.create(userBookingIpDetails);
+
+
     // console.log(data,"data")
     const response=await axios.post(`${baseurl}/api/v3/hotels/bookings`, data, { headers })
 
