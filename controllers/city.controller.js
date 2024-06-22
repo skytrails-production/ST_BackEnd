@@ -6,7 +6,8 @@ const {
   cityData,
   cityBusData,
   newhotelCityCode,
-  cityBusProductionData
+  cityBusProductionData,
+  airlineData
 } = require("../model/city.model");
 
 const requestIp = require('request-ip');
@@ -138,4 +139,23 @@ exports.searchCityFlight= async (req, res) =>{
   } catch (error) {
     sendActionFailedResponse(res, {}, error.message);
   }
+}
+
+
+
+exports.airlineDetails= async (req, res) =>{
+
+  try {    
+
+    const response=await airlineData.find().select('-_id');
+
+    const msg = "Airline details fetch successfully";
+    actionCompleteResponse(res, response, msg);
+
+    
+  } catch (error) {
+    sendActionFailedResponse(res, {error}, error.message);    
+  }
+  
+  
 }

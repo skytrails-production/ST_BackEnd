@@ -55,4 +55,14 @@ const userIPDetail=mongoose.model(
     timestamps:true
   })
 );
-module.exports = { cityData, cityBusData, newhotelCityCode,cityBusProductionData, userIPDetail };
+
+//airlineList
+
+const airlineData=mongoose.model("airlineList",
+  new mongoose.Schema({    
+airlineName:String,
+airlineCode:String
+  })
+);
+
+module.exports = { cityData, cityBusData, newhotelCityCode,cityBusProductionData, userIPDetail, airlineData};
