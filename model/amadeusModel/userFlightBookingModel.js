@@ -123,6 +123,8 @@ const flightBookingSchema = new mongoose.Schema(
         DateOfBirth: {
           type: String,
         },
+        passportNo:String,
+        passportExpiry:String,
         email: {
           type: String,
         },

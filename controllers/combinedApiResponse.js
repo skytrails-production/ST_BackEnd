@@ -144,21 +144,20 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
       "Content-Type": "text/xml;charset=UTF-8",
       SOAPAction: "http://webservices.amadeus.com/FMPTBQ_23_4_1A",
     };
-    const [tvoResponse, amadeusResponse] = await Promise.all([
-      axios.post(api1Url, data),
-      axios
-        .post(url, generateAmadeusRequest(data), { headers })
+    // const [tvoResponse, amadeusResponse] = await Promise.all([
+    //   axios.post(api1Url, data),
+    const amadeusResponse= await axios.post(url, generateAmadeusRequest(data), { headers })
         .catch((error) => {
           console.error("Error in Amadeus API request:", error);
           return { data: {} };
-        }),
-    ]);
+        })
+    // ]);
     var tvoArray = [];
-    if (tvoResponse.data.Response.ResponseStatus === 1) {
-      tvoArray = tvoResponse.data.Response.Results[0];
-    } else {
-      tvoArray = [];
-    }
+    // if (tvoResponse.data.Response.ResponseStatus === 1) {
+    //   tvoArray = tvoResponse.data.Response.Results[0];
+    // } else {
+    //   tvoArray = [];
+    // }
     let jsonResult = {};
     jsonResult = await xmlToJson(amadeusResponse.data);
     if (
@@ -295,7 +294,7 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.DATA_FOUND,
-      tvoTraceId: tvoResponse.data.Response.TraceId,
+      // tvoTraceId: tvoResponse.data.Response.TraceId,
       result: sortedData,
       length: length,
     });
