@@ -5050,6 +5050,24 @@ module.exports = {
     };
     return await transporter.sendMail(mailOptions);
   },
+
+  sendAgentEmailResetPassword: async (email, token) => {
+    var transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: nodemailerConfigHawaiYatra.options.auth.userHawai,
+        pass: nodemailerConfigHawaiYatra.options.auth.passHawai,
+      },
+    });
+    var mailOptions = {
+      from: nodemailerConfigHawaiYatra.userHawai,
+      to: email,
+      subject: "Reset Subadmin Password",
+      html: ResetPassword(token),
+    };
+    return await transporter.sendMail(mailOptions);
+  },
+
   sendEmailResetPassword: async (email, token) => {
     var transporter = nodemailer.createTransport({
       service: "gmail",

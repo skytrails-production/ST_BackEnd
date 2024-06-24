@@ -131,6 +131,10 @@ const s3 = new aws.S3({
 exports.RegisterUser = async (req, res) => {
   // Upload image to S3
   const reqData = JSON.parse(req.body.data);
+  // const isExistAgent=await User.findOne({"personal_details?.email":reqData?.personal_details?.email.toLowerCase()});
+  // if(isExistAgent){
+  //   return res.status(501).send({message:"Email already exists"});
+  // }
   const file = req?.file;
   var salt = bcrypt.genSaltSync(10);
   // console.log(reqData.password);
@@ -1676,7 +1680,7 @@ exports.updateProfile = async (req, res) => {
       personal_details: {
         first_name: first_name || agent.personal_details.first_name,
         last_name: last_name || agent.personal_details.last_name,
-        email: agent.personal_details.email,
+        email: agent.personal_details.email.toLowerCase(),
         mobile: { mobile_number: agent.personal_details.mobile.mobile_number },
         address_details: {
           residential_address:
@@ -2196,7 +2200,7 @@ if(!isEmailExist){
   });
 }
 // const link=`localhost:8000/skyTrails/api/agent/resetPassword/${isEmailExist._id}`
-await commonFunction.sendEmailResetPassword(email,isEmailExist._id)
+await commonFunction.sendAgentEmailResetPassword(email,isEmailExist._id)
 return res.status(statusCode.OK).send({ 
   statusCode: statusCode.OK, 
   responseMessage: responseMessage.RESET_LINK_SEND 

@@ -1776,9 +1776,9 @@ exports.createAgent = async (req, res, next) => {
     // Create the object with personal_details and agency_details including pan_number
     const object = {
       personal_details: {
-        first_name: firstName,
-        last_name: lastName,
-        email: email,
+        first_name: firstName.trim(),
+        last_name: lastName.trim(),
+        email: email.toLowerCase(),
         mobile: {
           mobile_number: mobile_number,
         },
