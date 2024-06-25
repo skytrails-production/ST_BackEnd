@@ -24,4 +24,9 @@ module.exports = function (app) {
 
     //amadeus booking agents
     app.post('/skyTrails/flightBooking/amadeus/addflightbooking', controller.amadeusFlightBooking);
+
+
+  
+    app.get('/skyTrails/flightbooking/amadeus/amadeusagentbooking', controller.allAmaduesAgentBooking);
+    app.put('/skyTrails/flightbooking/amadeus/updateticket', controller.updateAmadeusTicket);
 }

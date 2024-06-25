@@ -271,3 +271,47 @@ exports.amadeusFlightBooking = async (req, res) =>{
 }
 
 }
+
+
+
+//get all amadeus flight booking
+
+
+exports.allAmaduesAgentBooking = async (req, res) =>{
+  try{
+    const response=await amadeusFlightBookingData.find();
+
+    actionCompleteResponse(res, response, "Amadues flight booking fetch successfully");
+  } catch (error) {  
+    sendActionFailedResponse(res, {}, error.message);
+  }
+
+
+
+}
+
+
+
+
+exports.updateAmadeusTicket = async (req, res ) =>{
+
+  const { bookingId, passengerDetails } = req.body;
+
+  try {
+
+    const updatePromises = passengerDetails.map(async (passenger) => {
+      const result = await amadeusFlightBookingData.updateOne(
+          { _id: bookingId, 'passengerDetails._id': passenger._id },
+          { $set: { 'passengerDetails.$.TicketNumber': passenger.TicketNumber } }
+      );
+      return result.modifiedCount;
+  });
+
+  const updateResults = await Promise.all(updatePromises);
+
+  actionCompleteResponse(res, updateResults, "update Ticket");
+    
+  } catch (error) {
+    sendActionFailedResponse(res, {}, error.message);
+  }
+}
