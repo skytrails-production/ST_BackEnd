@@ -132,6 +132,7 @@ exports.searchCityFlight= async (req, res) =>{
       name: item.name,
       CityCode: item.CityCode,
       CountryCode: item.CountryCode,
+      CountryName:item.CountryName
     }));
     const msg = "All data retrieved successfully";
     actionCompleteResponse(res, responseData, msg);

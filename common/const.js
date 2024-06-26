@@ -312,7 +312,7 @@ busCancelURL:
     customerSignUp:
     "https://uat.partners.mihuru.com/api/assistmodule/v1/signup",
     submitOtp:
-    "https://uat.partners.mihuru.com/api/assistmodule/v1/submitotp",
+    "https://uat.partners.mihuru.com/api/assistmodule/v2/submitotp",
     travelPlanGenerator:
     "https://uat.partners.mihuru.com/api/assistmodule/v1/confirmpersonaldetails",
     resendOtp:

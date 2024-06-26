@@ -13,6 +13,9 @@ const { response } = require("express");
   const url = process.env.AMADEUSURL;
 //fare Master Pricer Travel Board Search
 
+const successMsg = "success";
+const failMsg ="error";
+
 exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
     
   // Generate new UUID for each request
@@ -166,8 +169,7 @@ const flattenedArray = segNumber.flatMap((item, index) => {
 // console.log(flattenedArray);
 
 
-    msg = "Flight Searched Successfully!";
-    actionCompleteResponse(res, flattenedArray, msg);
+    actionCompleteResponse(res, flattenedArray, successMsg);
   } catch (err) {
     // console.log(err);
     sendActionFailedResponse(res, {err}, err.message);
@@ -279,8 +281,8 @@ exports.fareInformativePricingWithoutPNR = async (req, res) => {
         };
 
     // const responseData = extractDataFromResponse(response);
-    msg = "Flight Searched Successfully!";
-    actionCompleteResponse(res, {headers:extractedData,data:response.data}, msg);
+    
+    actionCompleteResponse(res, {headers:extractedData,data:response.data}, successMsg);
   } catch (err) {
     // console.log(err)
     sendActionFailedResponse(res, {err}, err.message);
@@ -361,8 +363,8 @@ exports.fareCheckRule =async (req, res)=>{
               SecurityToken: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SecurityToken']
           };
 
-          msg = "Fare Price Pnr Successfully!";
-          actionCompleteResponse(res, {headers:extractedData,data:response.data}, msg);
+          
+          actionCompleteResponse(res, {headers:extractedData,data:response.data}, successMsg);
         
     } catch (err) {
         sendActionFailedResponse(res, { err }, err.message);        
@@ -456,8 +458,8 @@ exports.fareCheckRuleSecond =async (req, res)=>{
             SecurityToken: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SecurityToken']
         };
 
-        msg = "Fare Price Pnr Successfully!";
-        actionCompleteResponse(res, {headers:extractedData,data:response.data}, msg);
+        
+        actionCompleteResponse(res, {headers:extractedData,data:response.data}, successMsg);
       
   } catch (err) {
       sendActionFailedResponse(res, { err }, err.message);        
@@ -565,8 +567,8 @@ exports.airSell =async (req, res) =>{
             SecurityToken: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SecurityToken'],
             // StatusCode: parsedResponse['soapenv:Envelope']['soapenv:Body']['Air_SellFromRecommendationReply']['itineraryDetails']['segmentInformation']['actionDetails']['statusCode']
         };
-          msg = "Flight Searched Successfully!";
-          actionCompleteResponse(res, {headers:extractedData,data:response.data}, msg);
+          
+          actionCompleteResponse(res, {headers:extractedData,data:response.data}, successMsg);
     } catch (err) {
         sendActionFailedResponse(res, { err }, err.message);    
     }
@@ -633,8 +635,8 @@ exports.pnrAddMultiElements = async (req, res) =>{
             SecurityToken: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SecurityToken']
         };
 
-          msg = "Add Passenger details Successfully!";
-          actionCompleteResponse(res, {headers:extractedData,data:response.data}, msg);
+          
+          actionCompleteResponse(res, {headers:extractedData,data:response.data}, successMsg);
         
     } catch (err) {
         sendActionFailedResponse(res, { err }, err.message);        
@@ -728,6 +730,8 @@ exports.farePricePnrWithBookingClass = async (req, res) =>{
           // console.log(data,"Data");
 
           const response = await axios.post(url,data,{headers} );
+          // console.log(response,"response");
+          // return;
 
           const xmlResponse = response.data;
           const parser = new xml2js.Parser({ explicitArray: false, trim: true });
@@ -742,8 +746,12 @@ exports.farePricePnrWithBookingClass = async (req, res) =>{
               SecurityToken: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SecurityToken']
           };
 
-          msg = "Fare Price Pnr Successfully!";
-          actionCompleteResponse(res, {headers:extractedData,data:response.data}, msg);
+          if(parsedResponse['soapenv:Envelope']['soapenv:Body']['Fare_PricePNRWithBookingClassReply']['applicationError']['errorOrWarningCodeDetails']['errorDetails']){
+          return actionCompleteResponse(res, {headers:extractedData,data:response.data}, failMsg);
+          }
+
+          
+          actionCompleteResponse(res, {headers:extractedData,data:response.data}, successMsg);
         
     } catch (err) {
         sendActionFailedResponse(res, { err }, err.message);        
@@ -806,7 +814,7 @@ exports.ticketCreateTSTFromPricing = async (req, res) =>{
             </soapenv:Body>
         </soapenv:Envelope>`;
 
-        // console.log(data,"data");
+        console.log(data,"data");
 
 
         const headers = {
@@ -829,8 +837,12 @@ exports.ticketCreateTSTFromPricing = async (req, res) =>{
               SecurityToken: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SecurityToken']
           };
 
-          msg = "Ticket Create Successfully!";
-          actionCompleteResponse(res, {headers:extractedData,data:response.data}, msg);
+          if(parsedResponse['soapenv:Envelope']['soapenv:Body']['Ticket_CreateTSTFromPricingReply']['applicationError']){
+            return actionCompleteResponse(res, {headers:extractedData,data:response.data}, failMsg);
+            }
+
+          
+          actionCompleteResponse(res, {headers:extractedData,data:response.data}, successMsg);
         
     } catch (err) {
         sendActionFailedResponse(res, { err }, err.message);        
@@ -920,8 +932,14 @@ exports.savePnrAddMultiElements = async (req, res) =>{
               Pnr: parsedResponse['soapenv:Envelope']['soapenv:Body']['PNR_Reply']['pnrHeader']['reservationInfo']['reservation']['controlNumber']
           };
 
-          msg = "Save Pnr Successfully!";
-          actionCompleteResponse(res, {headers:extractedData,data:response.data}, msg);
+
+          if(parsedResponse['soapenv:Envelope']['soapenv:Body']['PNR_Reply']['generalErrorInfo']){
+            return actionCompleteResponse(res, {headers:extractedData,data:response.data}, failMsg);
+            }
+          
+
+          
+          actionCompleteResponse(res, {headers:extractedData,data:response.data}, successMsg);
         
     } catch (err) {
         sendActionFailedResponse(res, { err }, err.message);        
@@ -1006,8 +1024,8 @@ exports.pnrRet = async (req, res) =>{
           SecurityToken: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SecurityToken'],
           Pnr:parsedResponse['soapenv:Envelope']['soapenv:Body']['PNR_Reply']['pnrHeader']['reservationInfo']['reservation']['controlNumber']
       };
-        msg = "Pnr Retrieve Successfully!";
-        actionCompleteResponse(res, {headers:extractedData,data:response.data}, msg);
+        
+        actionCompleteResponse(res, {headers:extractedData,data:response.data}, successMsg);
      
   } catch (err) {
       sendActionFailedResponse(res, { err }, err.message);       
@@ -1126,8 +1144,8 @@ exports.pnrRetrieve = async (req , res) =>{
               SecurityToken: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SecurityToken'],
               Pnr:parsedResponse['soapenv:Envelope']['soapenv:Body']['PNR_Reply']['pnrHeader']['reservationInfo']['reservation']['controlNumber']
           };
-            msg = "Pnr Retrieve Successfully!";
-            actionCompleteResponse(res, {headers:extractedData,data:response.data}, msg);
+            
+            actionCompleteResponse(res, {headers:extractedData,data:response.data}, successMsg);
          
       } catch (err) {
           sendActionFailedResponse(res, { err }, err.message);       
@@ -1185,8 +1203,8 @@ exports.signOut = async (req, res) =>{
       
             const response = await axios.post(url,data,{headers} );
         
-          msg = "SignOut Session Successfully!";
-          actionCompleteResponse(res, response.data, msg);
+          
+          actionCompleteResponse(res, response.data, successMsg);
         
     } catch (err) {
         sendActionFailedResponse(res, { err }, err.message);         
