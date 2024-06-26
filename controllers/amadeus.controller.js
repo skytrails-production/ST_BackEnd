@@ -746,9 +746,9 @@ exports.farePricePnrWithBookingClass = async (req, res) =>{
               SecurityToken: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SecurityToken']
           };
 
-          if(parsedResponse['soapenv:Envelope']['soapenv:Body']['Fare_PricePNRWithBookingClassReply']['applicationError']['errorOrWarningCodeDetails']['errorDetails']){
-          return actionCompleteResponse(res, {headers:extractedData,data:response.data}, failMsg);
-          }
+          // if(parsedResponse['soapenv:Envelope']['soapenv:Body']['Fare_PricePNRWithBookingClassReply']['applicationError']['errorOrWarningCodeDetails']['errorDetails']){
+          // return actionCompleteResponse(res, {headers:extractedData,data:response.data}, failMsg);
+          // }
 
           
           actionCompleteResponse(res, {headers:extractedData,data:response.data}, successMsg);
@@ -837,9 +837,9 @@ exports.ticketCreateTSTFromPricing = async (req, res) =>{
               SecurityToken: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SecurityToken']
           };
 
-          if(parsedResponse['soapenv:Envelope']['soapenv:Body']['Ticket_CreateTSTFromPricingReply']['applicationError']){
-            return actionCompleteResponse(res, {headers:extractedData,data:response.data}, failMsg);
-            }
+          // if(parsedResponse['soapenv:Envelope']['soapenv:Body']['Ticket_CreateTSTFromPricingReply']['applicationError']){
+          //   return actionCompleteResponse(res, {headers:extractedData,data:response.data}, failMsg);
+          //   }
 
           
           actionCompleteResponse(res, {headers:extractedData,data:response.data}, successMsg);
@@ -933,9 +933,9 @@ exports.savePnrAddMultiElements = async (req, res) =>{
           };
 
 
-          if(parsedResponse['soapenv:Envelope']['soapenv:Body']['PNR_Reply']['generalErrorInfo']){
-            return actionCompleteResponse(res, {headers:extractedData,data:response.data}, failMsg);
-            }
+          // if(parsedResponse['soapenv:Envelope']['soapenv:Body']['PNR_Reply']['generalErrorInfo']){
+          //   return actionCompleteResponse(res, {headers:extractedData,data:response.data}, failMsg);
+          //   }
           
 
           
