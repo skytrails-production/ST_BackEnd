@@ -567,6 +567,10 @@ exports.airSell =async (req, res) =>{
             SecurityToken: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SecurityToken'],
             // StatusCode: parsedResponse['soapenv:Envelope']['soapenv:Body']['Air_SellFromRecommendationReply']['itineraryDetails']['segmentInformation']['actionDetails']['statusCode']
         };
+
+        // if(parsedResponse['soapenv:Envelope']?.['soapenv:Body']?.['Air_SellFromRecommendationReply']?.['errorAtMessageLevel']){
+        //   return actionCompleteResponse(res, {headers:extractedData,data:response.data}, failMsg);
+        //   }
           
           actionCompleteResponse(res, {headers:extractedData,data:response.data}, successMsg);
     } catch (err) {
@@ -746,7 +750,7 @@ exports.farePricePnrWithBookingClass = async (req, res) =>{
               SecurityToken: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SecurityToken']
           };
 
-          // if(parsedResponse['soapenv:Envelope']['soapenv:Body']['Fare_PricePNRWithBookingClassReply']['applicationError']['errorOrWarningCodeDetails']['errorDetails']){
+          // if(parsedResponse['soapenv:Envelope']?.['soapenv:Body']?.['Fare_PricePNRWithBookingClassReply']?.['applicationError']?.['errorOrWarningCodeDetails']?.['errorDetails']){
           // return actionCompleteResponse(res, {headers:extractedData,data:response.data}, failMsg);
           // }
 
@@ -814,7 +818,7 @@ exports.ticketCreateTSTFromPricing = async (req, res) =>{
             </soapenv:Body>
         </soapenv:Envelope>`;
 
-        console.log(data,"data");
+        // console.log(data,"data");
 
 
         const headers = {
@@ -837,7 +841,7 @@ exports.ticketCreateTSTFromPricing = async (req, res) =>{
               SecurityToken: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SecurityToken']
           };
 
-          // if(parsedResponse['soapenv:Envelope']['soapenv:Body']['Ticket_CreateTSTFromPricingReply']['applicationError']){
+          // if(parsedResponse['soapenv:Envelope']?.['soapenv:Body']?.['Ticket_CreateTSTFromPricingReply']?.['applicationError']){
           //   return actionCompleteResponse(res, {headers:extractedData,data:response.data}, failMsg);
           //   }
 
@@ -933,7 +937,7 @@ exports.savePnrAddMultiElements = async (req, res) =>{
           };
 
 
-          // if(parsedResponse['soapenv:Envelope']['soapenv:Body']['PNR_Reply']['generalErrorInfo']){
+          // if(parsedResponse['soapenv:Envelope']?.['soapenv:Body']?.['PNR_Reply']?.['generalErrorInfo']){
           //   return actionCompleteResponse(res, {headers:extractedData,data:response.data}, failMsg);
           //   }
           
