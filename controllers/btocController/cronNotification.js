@@ -121,8 +121,8 @@ var taskPromotionalNotification = cron.schedule("0 9 * * *",async () => {
     // const messageBody = `✨Check out our latest promotion! We're offering deals so good, even your coffee will do a double-take! ☕️ Explore your journey with TheSkyTrails pvt ltd✨`;
     for (const user of users) {
       try { 
-        const notificationMessage = `Boss ne chutti approve kar di?🥳"Dil Chahta Hai" a road trip to Goa?🏖😍`;
-        const messageBody = `Checkout the Goa packages on our app📲,`;
+        const notificationMessage = `🚨 Reminder: Get Up to 20% Off! 🚨`;
+        const messageBody = `Don't miss out! Use the promo code to get up to 20% off. Book now✈✨`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
       // const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`
         // Check if a notification has been sent to this user recently
@@ -289,8 +289,8 @@ var taskPlatformNotification = cron.schedule("14 14 * * *",
           // Now you can find super cool deals on flights✈ and hotels🏨📱 
           
           // Update your app now and let's get your wanderlust fix!`;
-          const notificationMessage = `Hey ${user.username}, bag pack kiya? 🎒`;
-      const messageBody = `SkyTrails pe book karo aur chalo duniya ghoomne! 🌍✨`;
+          const notificationMessage = `☕ Chai ki chuski aur 🌽 bhutte ka swaad,`;
+      const messageBody = `☕ Chai ki chuski aur 🌽 bhutte ka swaad,`;
           await pushSimpleNotification(
             user.deviceToken,
             notificationMessage,
@@ -451,8 +451,8 @@ var taskPlatformNotification = cron.schedule("0 18 * * *",
           // Now you can find super cool deals on flights✈ and hotels🏨📱 
           
           // Update your app now and let's get your wanderlust fix!`;
-          const notificationMessage = `Uda do stress ko, ${user.username}! ✈️`;
-      const messageBody = `SkyTrails pe abhi book karo aur le aao zindagi mein thoda adventure! 🌟🗺️`;
+          const notificationMessage = `💸Dad always says to save💸`;
+      const messageBody = `The Skytrails brings you an exclusive 20% off on all bookings! ✈`;
           await pushSimpleNotification(
             user.deviceToken,
             notificationMessage,
@@ -505,12 +505,12 @@ const notifications = [
     body: `Hey, don't miss the 20% discount on flights. hurry! `,
   },
   {
-    message: `Unlock exclusive discounts!`,
-    body: `Go now for limited-time offers on your favorite destinations! 💰🏖`,
+    message: `🤔 Soch kya rhe ho neeche daikho `,
+    body: `The skytrails pr apko millega har services par 20% ka offer`,
   },
   {
-    message: `Exclusive Offer!`,
-    body: `Enjoy 20% OFF on All Travel Services!`,
+    message: `💕 Honeymoon pe Bali, har pal hai meethi yaad,`,
+    body: `Love ka magic, yeh hai ek pyaara sa raag! `,
   },
   {
     message: `Last Chance Alert! `,
@@ -524,13 +524,22 @@ const notifications = [
     message: `Trip ki planning ho gayi? 📅`,
     body: `SkyTrails ke sath apni next vacation plan karo aur enjoy karo! 🏖️✨`,
   },
-  {
-    message: `Boss ne chutti approve kar di?🥳`,
-    body: `"Dil Chahta Hai" a road trip to Goa?🏖😍,Checkout the Goa packages on our app📲`,
-  },
+//   {
+//     message: `Thara Paisa 💸💵`,
+//     body: `Thari Daulat 🤑
+// Thara Hotel 🏟️
+// Thari Flight ✈️
+// Thara Deal 🤗`,
+//   },
   {
     message: `Knock-Knock! The Skytrails ✈`,
     body: `Don't miss the latest offers and discounts on Hotel Bookings!🎉🤩`,
+  },
+  {
+    message: `Two things we love ❤️`,
+    body: `1. username
+2. Giving 20% OFF* to username on all Bookings
+CLAIM NOW`,
   },
   {
     message: `New deals just landed! 🛬 `,
@@ -539,23 +548,23 @@ const notifications = [
 ];
 
 const taskRandomNotification = cron.schedule(
-  "0 10 * * *",
+  "45 12 * * *",
   async () => {
     try {
       const users = await userList({
         status: status.ACTIVE,
-        // 'phone.mobile_number':{ $in: ['8115199076', '9135219071','8847301811'] },
+        // 'phone.mobile_number':{ $in: ['8115199076','8384082560','8847301811' ] },
         deviceToken: { $exists: true, $ne: "" },
 
       });
 
       const imageurl = `https://skytrails.s3.amazonaws.com/notification.jpg`;
-
+      const notification = notifications[Math.floor(Math.random() * notifications.length)];
+      console.log("notification==========",notification);
       for (const user of users) {
         try {
-          const notification = notifications[Math.floor(Math.random() * notifications.length)];
           const notificationMessage = notification.message.replace('username', user.username);
-          const messageBody = notification.body.replace('username', user.username);
+          const messageBody = notification.body.replace(/username/g, user.username);
 
           await pushSimpleNotification(
             user.deviceToken,

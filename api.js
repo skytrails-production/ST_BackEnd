@@ -156,6 +156,11 @@ require("./routes/mihuru.routes")(app);
 //grn connect api
 require("./routes/grnconnect.routes")(app);
 
+
+//hotel inventory api
+
+require("./routes/inventoryRoutes/inventoryLoginRoutes")(app);
+
 //Require forum Routes*************
 const forumQueRoutes = require("./routes/forumRoutes/forumQueRoutes");
 forumQueRoutes(app);
@@ -191,6 +196,7 @@ require("./routes/relationshipManagerRoutes")(app);
 require("./routes/blogRoutes")(app);
 require("./routes/amadeusRoutes/amadeusFlightBookingRoutes")(app);
 require("./routes/grnRoutes/grnRoutes")(app);
+require("./routes/Itinerary/ItineraryRoutes")(app)
 mongoose
   .connect(configs.mongoUrl.DEVELOPMENT, {
     useNewUrlParser: true,

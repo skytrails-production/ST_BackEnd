@@ -140,5 +140,6 @@ module.exports = {
 	ALLOWED_BALANCE:"Your current withdrawable balance is",
 	BLOG_GET_SUCCESSFULLY:"Blog get successfully.!",
 	BLOG_NOT_FOUND:"Blog not found.",
-	EMAIL_NOT_EXIST:"No account exist with this mail,please go and register first."
+	EMAIL_NOT_EXIST:"No account exist with this mail,please go and register first.",
+	JOB_CATEGORY_NOT_FOUND:"job category not found"
 };

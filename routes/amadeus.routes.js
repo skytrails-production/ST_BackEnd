@@ -31,6 +31,12 @@ module.exports = function (app) {
 
     //PNR RETRIEVE
     app.post("/skyTrails/amadeus/pnrretrieve",controller.pnrRetrieve);
+
+
+
+    //Air_RetrieveSeatMap stateless
+
+    app.post("/skyTrails/amadeus/airretrieveseatmap", controller.airRetrieveSeatMap);
     
     //pnr retrieve inseries
     app.post("/skyTrails/amadeus/pnrret",controller.pnrRet);

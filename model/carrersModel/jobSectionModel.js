@@ -4,12 +4,17 @@ const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 const status = require("../../enums/status");
 const jobType = require("../../enums/jobType");
 const locationType = require("../../enums/locationType");
+const { boolean } = require("joi");
 mongoose.pluralize(null);
 
 const jobSchema = new mongoose.Schema(
   {
+    skyJobCategoriesId:{
+      type:mongoose.Types.ObjectId,
+      ref:'skyJobCategories'
+    },
     designation: { type: String },
-    AboutCompany: { type: String },
+    aboutCompany: { type: String },
     jobDescription: { type: String },
     desiredProfile: { type: String },
     preferredIndustry: { type: String },
@@ -44,10 +49,13 @@ const jobSchema = new mongoose.Schema(
         value: { type: String },
       },
     ],
-    datePosted: {
+    openingAt:{
       type: Date,
-      default: Date.now,
     },
+    isHiring:{
+      type:boolean,
+      default:true
+    }
   },
   { timestamps: true }
 );

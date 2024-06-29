@@ -1,4 +1,5 @@
 const dayWiseController=require('../../controllers/Itinerary/createDayWiseItinerary');
+const ourProposalController=require('../../controllers/Itinerary/ItineraryController')
 const schemas = require('../../utilities/schema.utilities');
 const SchemaValidator = require('../../utilities/validations.utilities');
 // const upload=require('../../utilities/uploadHandler')
@@ -15,10 +16,10 @@ module.exports = function (app) {
         next();
     });
     // SchemaValidator(schemas.userbusBookingSchema),   SchemaValidator(schemas.userflightBookingSchema),  ,SchemaValidator(schemas.userhotelBookingSchema) 
-    // app.post('/skyTrails/api/grn/user/grnBookig',[authJwt.verifcationToken], Controller.grnUserHotelBooking);
+    app.post('/skyTrails/api/itinerary/proposal/createProposal',upload.array("images"),ourProposalController.ourProposal);
     // app.get('/skyTrails/api/grn/user/grnUserBooking',[auth/Jwt.verifcationToken],Controller.getUserGrnBooking);
-    // app.get('/skyTrails/api/grn/user/getUserBookingById',[authJwt.verifcationToken],Controller.getUserGrnBookingById);
-    app.get('/skyTrails/api/itinerary/dayWise/createDayWise',dayWiseController.createDayWiseActivity);
+    app.get('/skyTrails/api/itinerary/dayWise/getAllCItyWiseItinerary',dayWiseController.getDayWiseActivity);
+    app.post('/skyTrails/api/itinerary/dayWise/createDayWise',dayWiseController.createDayWiseActivity);
     // app.put('/skyTrails/api/grn/user/UpdateTicket',Controller.UpdateTicket)
     // app.post('/skyTrails/api/grn/user/cancel/createCancelRequest',[authJwt.verifcationToken],cancelCoontroller.createUserGrnCancelRequest);
     // app.put('/skyTrails/api/grn/admin/cancel/updateCancelRequestStatus',SchemaValidator(schemas.cancelStatusUpdation),cancelCoontroller.updateCancellation);

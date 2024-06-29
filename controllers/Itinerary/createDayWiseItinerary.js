@@ -86,7 +86,7 @@ exports.updateDayWiseActivity = async (rqe, res, next) => {
   }
 };
 
-exports.deletezDayWiseActivity=async(req,res,next)=>{
+exports.deleteDayWiseActivity=async(req,res,next)=>{
     try {
         const{id}=req.body;
         const result = await finOneDayWiseItinerary({ _id: id });
