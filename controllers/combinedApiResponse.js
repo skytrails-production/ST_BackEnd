@@ -295,7 +295,7 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.DATA_FOUND,
-      // tvoTraceId: tvoResponse.data.Response.TraceId,
+      tvoTraceId: tvoResponse.data.Response.TraceId,
       result: sortedData,
       length: length,
     });
