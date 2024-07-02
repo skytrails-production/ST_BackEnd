@@ -22,7 +22,7 @@ exports.searchCityData = async (req, res) => {
     const userIP = requestIp.getClientIp(req);
 
     const userLocation = geoip.lookup(userIP);
-    console.log("location", userLocation)
+    // console.log("location", userLocation);
 
     var regex = new RegExp(escapeRegex(req.query.keyword), "gi");
     const response = await cityData.find({$or:[{ name: regex },{AirportCode:regex}]});
