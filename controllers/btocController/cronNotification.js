@@ -108,7 +108,7 @@ const lastNotificationSent = new Map();
 // task.start();
 
 // Define and schedule task2 separately
-var taskPromotionalNotification = cron.schedule("0 9 * * *",async () => {
+var taskPromotionalNotification = cron.schedule("* 9 * * *",async () => {
   try {
     // 'phone.mobile_number':'8115199076'
     const users = await userList({
@@ -121,8 +121,8 @@ var taskPromotionalNotification = cron.schedule("0 9 * * *",async () => {
     // const messageBody = `✨Check out our latest promotion! We're offering deals so good, even your coffee will do a double-take! ☕️ Explore your journey with TheSkyTrails pvt ltd✨`;
     for (const user of users) {
       try { 
-        const notificationMessage = `🚨 Reminder: Get Up to 20% Off! 🚨`;
-        const messageBody = `Don't miss out! Use the promo code to get up to 20% off. Book now✈✨`;
+        const notificationMessage = `🌊 Take your partner to a beach getaway!`;
+        const messageBody = `Enjoy 20% off on your travel packages! Book now`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
       // const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`
         // Check if a notification has been sent to this user recently
@@ -268,13 +268,13 @@ taskPromotionalNotification.start(); // Start the task2
 // taskEventNotification1.start(); // Start the task2
 
 // Define and schedule task2 separately
-var taskPlatformNotification = cron.schedule("14 14 * * *",
+var taskPlatformNotification = cron.schedule("* 19 * * *",
   async () => {
     try {
       console.log("===========================");
       // 'contactNo.mobile_number': { $in: ['8115199076', '9135219071'] },
       const users = await userList({
-        'phone.mobile_number': { $in: ['8115199076','9135219071','8384082560'] },
+        // 'phone.mobile_number': { $in: ['8115199076','9135219071','8384082560'] },
         status: status.ACTIVE,
         deviceToken: { $exists: true, $ne: "" },
       });
@@ -289,8 +289,10 @@ var taskPlatformNotification = cron.schedule("14 14 * * *",
           // Now you can find super cool deals on flights✈ and hotels🏨📱 
           
           // Update your app now and let's get your wanderlust fix!`;
-          const notificationMessage = `☕ Chai ki chuski aur 🌽 bhutte ka swaad,`;
-      const messageBody = `☕ Chai ki chuski aur 🌽 bhutte ka swaad,`;
+          const notificationMessage = `${user.username},your salary is credited!`;
+      const messageBody = `Received this message? 
+Then take some time for yourself & travel to the Andaman Islands this month.
+Enjoy your well-deserved break!🎊`;
           await pushSimpleNotification(
             user.deviceToken,
             notificationMessage,
@@ -451,8 +453,8 @@ var taskPlatformNotification = cron.schedule("0 18 * * *",
           // Now you can find super cool deals on flights✈ and hotels🏨📱 
           
           // Update your app now and let's get your wanderlust fix!`;
-          const notificationMessage = `💸Dad always says to save💸`;
-      const messageBody = `The Skytrails brings you an exclusive 20% off on all bookings! ✈`;
+          const notificationMessage = `⏰ Got 15 minutes?`;
+      const messageBody = `Book your dream destination now (you're so close!) and enjoy a 20% discount!`;
           await pushSimpleNotification(
             user.deviceToken,
             notificationMessage,
@@ -501,16 +503,16 @@ const notifications = [
     body: `Take our quiz to discover your perfect getaway and win big! 🏝✨`,
   },
   {
-    message: `knock, knock `,
-    body: `Hey, don't miss the 20% discount on flights. hurry! `,
+    message: `Congratulations! username`,
+    body: `Just for you! Exclusive Offer get upto 20% off with TheSkyTrails pvt ltd `,
   },
   {
     message: `🤔 Soch kya rhe ho neeche daikho `,
     body: `The skytrails pr apko millega har services par 20% ka offer`,
   },
   {
-    message: `💕 Honeymoon pe Bali, har pal hai meethi yaad,`,
-    body: `Love ka magic, yeh hai ek pyaara sa raag! `,
+    message: `🌊 Take your partner to a beach getaway!`,
+    body: `Enjoy 20% off on your travel packages! Book now`,
   },
   {
     message: `Last Chance Alert! `,

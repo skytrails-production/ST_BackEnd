@@ -3,6 +3,7 @@ const Controller = require("../../controllers/inventoryController/inventoryContr
 const multer = require("multer");
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
+
 module.exports = function (app) {
   app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
@@ -25,4 +26,12 @@ module.exports = function (app) {
     ]),
     Controller.createHotelForm
   );
+  // app.post('/skyTrails/api/inventory/createInventory',upload.fields([{name: "hotelImages"},{name: "roomsImages"}]),Controller.createhotelinventory)
+  app.post('/skyTrails/api/inventory/createInventory',
+    upload.fields([
+      { name: 'hotelImages', maxCount: 5 },
+      { name: 'roomsImages', maxCount: 10 }
+    ]), Controller.createhotelinventory);
+  app.get("/skyTrails/api/inventory/getAllInventoryData",Controller.getAllHotelInventory);
+  app.get("/skyTrails/api/inventory/getInventoryDataById",Controller.getHotelInventoryById);
 };

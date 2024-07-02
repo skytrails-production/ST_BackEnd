@@ -14,7 +14,7 @@ const jobSectionServices={
     },
 
     findjobSectionData: async (query) => {
-        return await jobSectionModel.findOne(query).populate({path: 'documentTypesId'})
+        return await jobSectionModel.findOne(query).populate('skyJobCategoriesId');
     },
 
     deletejobSection: async (query) => {
@@ -23,7 +23,7 @@ const jobSectionServices={
 
     jobSectionList: async (query) => {
         // .populate({path: 'documentTypesId'})
-        return await jobSectionModel.find(query)
+        return await jobSectionModel.find(query).populate('skyJobCategoriesId');
     },
     updatejobSection: async (query, updateObj) => {
         return await jobSectionModel.findOneAndUpdate(query, updateObj, { new: true });

@@ -5,7 +5,17 @@ const status = require("../../enums/status");
 mongoose.pluralize(null);
 
 const jobApplication = new mongoose.Schema({
-    
+    firstName:String,
+    lastName:String,
+    userEmail:String,
+    userContactNumber: {
+        countryCode: { type: String,default:"+91" },
+        number: { type: String },
+      },
+    jobId:{ type: mongoose.Schema.Types.ObjectId, ref: "skyOpenings" },
+    experience:String,
+    summary: String,
+    document:String,    
 }, { timestamps: true });
 jobApplication.plugin(mongoosePaginate);
 jobApplication.plugin(aggregatePaginate);

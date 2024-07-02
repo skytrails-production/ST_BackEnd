@@ -4,7 +4,7 @@ const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 const status = require("../../enums/status");
 const jobType = require("../../enums/jobType");
 const locationType = require("../../enums/locationType");
-const { boolean } = require("joi");
+
 mongoose.pluralize(null);
 
 const jobSchema = new mongoose.Schema(
@@ -53,7 +53,7 @@ const jobSchema = new mongoose.Schema(
       type: Date,
     },
     isHiring:{
-      type:boolean,
+      type:Boolean,
       default:true
     }
   },

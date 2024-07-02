@@ -2,11 +2,20 @@ const mongoose = require("mongoose");
 const aws = require("aws-sdk");
 const inventoryModel = require("../../model/inventory/inventoryLogin"); // Correct import path
 const inventoryHotelForm = require("../../model/inventory/hotelForm");
+const hotelInventory = require("../../model/inventory/hotelPartener");
+const status=require('../../enums/status')
 const bcrypt = require("bcryptjs");
 const s3 = new aws.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 });
+const responseMessage = require("../../utilities/responses");
+const statusCode = require("../../utilities/responceCode");
+const commonFunction = require("../../utilities/commonFunctions");
+//********************************Services******************************************************/
+const {partenerHotelServices}=require('../../services/inventory/partenerHotelServices');
+const {createPartenerHotel,findPartenerHotelData,deletePartenerHotel,partenerHotelList,updatePartenerHotel,countTotalpartenerHotel,getPartenerHotel}=partenerHotelServices;
+
 
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
@@ -141,11 +150,9 @@ exports.createHotelForm1 = async (req, res) => {
   }
 };
 
-
-
-
 exports.createHotelForm = async (req, res) => {
   const reqData = JSON.parse(req.body.data);
+  console.log("req.files==============", req.files);
   const hotelImageFiles = req.files.hotelImages || [];
   const roomImageFiles = req.files.roomsImages || [];
 
@@ -172,14 +179,14 @@ exports.createHotelForm = async (req, res) => {
       Key: `hotelImages/${Date.now()}_${file.originalname}`,
       Body: file.buffer,
       ContentType: file.mimetype,
-      ACL: 'public-read',
+      ACL: "public-read",
     };
 
     try {
       const data = await s3.upload(s3Params).promise();
       hotelImageUrls.push(data.Location);
     } catch (err) {
-      console.error('Error uploading hotel image to S3:', err);
+      console.error("Error uploading hotel image to S3:", err);
       return res.status(500).send(err);
     }
   }
@@ -191,14 +198,14 @@ exports.createHotelForm = async (req, res) => {
       Key: `roomImages/${Date.now()}_${file.originalname}`,
       Body: file.buffer,
       ContentType: file.mimetype,
-      ACL: 'public-read',
+      ACL: "public-read",
     };
 
     try {
       const data = await s3.upload(s3Params).promise();
       roomImageUrls.push(data.Location);
     } catch (err) {
-      console.error('Error uploading room image to S3:', err);
+      console.error("Error uploading room image to S3:", err);
       return res.status(500).send(err);
     }
   }
@@ -225,10 +232,193 @@ exports.createHotelForm = async (req, res) => {
     const formResult = await newHotelForm.save();
     res.status(200).send({
       status: 200,
-      message: 'Hotel Form created successfully',
+      message: "Hotel Form created successfully",
       result: formResult,
     });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
+
+exports.createhotelinventory = async (req, res, next) => {
+  try {
+    const {
+      hotelName,
+      description,
+      hotelCity,
+      hotelCountry,
+      hotelState,
+      panCard,
+      rating,
+      totalPrice,
+      hotelFacilities,
+      typeOfRoom,
+      meal,
+      mealType,
+      mealDescription,
+      cityCode,
+      amenities,
+      hotelAddress,
+      availableRooms,
+      totalRooms,
+      location,
+      locality,
+      hotelCode,
+      facilities,
+      bookingPolicy,
+      priceDetails,
+      status,
+      roomArr,
+      overView,
+      safe2Stay,
+      hotelPolicy,
+    } = req.body;
+  
+    const hotelImageFiles = req.files.hotelImages || [];
+    const roomImageFiles = req.files.roomsImages || [];
+
+    const hotelImageUrls = await Promise.all(
+      hotelImageFiles.map(async (file) => {
+        const imageUrl = await commonFunction.getImageUrlAWS(file); // Adjust to your upload function
+        return imageUrl;
+      })
+    );
+    const roomImageUrls = await Promise.all(
+      roomImageFiles.map(async (file) => {
+        const imageUrl = await commonFunction.getImageUrlAWS(file);
+        return imageUrl;
+      })
+    );
+
+    // // Construct the rooms array properly
+    // const rooms = [{
+    //   description: roomDescription,
+    //   noOfAdult: Number(noOfAdult),
+    //   noOfChildren: Number(noOfChildren),
+    //   room_type: room_type,
+    //   roomsImages: roomImageUrls
+    // }];
+    // console.log("roomArr============", roomArr, typeof roomArr);
+
+    // Construct the rooms array properly
+    // let rooms;
+    // if (roomArr.length === 1) {
+    //   rooms = [{
+    //     ...roomArr[0],
+    //     roomsImages: roomImageUrls
+    //   }];
+    // } else {
+    //   rooms = roomArr.map((room, index) => ({
+    //     ...room,
+    //     roomsImages: roomImageUrls[index] ? [roomImageUrls[index]] : [],
+    //   }));
+    // }
+
+    // Distribute room images to each room
+    const imagesPerRoom = Math.ceil(roomImageUrls.length / roomArr.length);
+    const rooms = roomArr.map((room, index) => {
+      const start = index * imagesPerRoom;
+      const end = start + imagesPerRoom;
+      return {
+        ...room,
+        roomsImages: roomImageUrls.slice(start, end),
+      };
+    });
+
+    const obj = {
+      hotelName,
+      description,
+      hotelCity,
+      hotelCountry,
+      hotelState,
+      panCard,
+      rating,
+      totalPrice,
+      hotelFacilities,
+      hotelImages: hotelImageUrls,
+      typeOfRoom,
+      locality,
+      meal,
+      mealType,
+      mealDescription,
+      cityCode,
+      amenities,
+      hotelAddress,
+      availableRooms,
+      totalRooms,
+      location,
+      hotelCode,
+      facilities,
+      bookingPolicy,
+      priceDetails,
+      status,
+      rooms: rooms,
+      overView,
+      hotelPolicy,
+      safe2Stay,
+    };
+    const result = await createPartenerHotel(obj);
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.CREATED_SUCCESS,
+      result: result,
+    });
+  } catch (error) {
+    console.log("error while trying to create details", error);
+    return next(error);
+  }
+};
+
+exports.getAllHotelInventory=async(req,res,next)=>{
+  try {
+    // const
+    const result=await partenerHotelList({status:status.ACTIVE,availableRooms:{$gte:1}});
+    if(result.length<1){
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
+        result: result,
+      });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
+  } catch (error) {
+    console.log("Error while trying to get all inventory data",error);
+    return next(error);
+  }
+}
+
+exports.getHotelInventoryById=async(req,res,next)=>{
+  try {
+    const {hotelId}=req.query;
+    const result=await findPartenerHotelData({_id:hotelId});
+    if(!result){
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
+        result: result,
+      });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
+  } catch (error) {
+    console.log("Error while trying to get all inventory data",error);
+    return next(error);
+  }
+}
+
+exports.updatePartenerHotel=async(req,res,next)=>{
+  try {
+    const {data}=req.body;
+    
+  } catch (error) {
+    console.log("Error while trying to update hotel Details",error);
+    return next(error)
+  }
+}

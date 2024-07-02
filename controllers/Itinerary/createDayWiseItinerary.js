@@ -22,12 +22,15 @@ const {
 
 exports.createDayWiseActivity = async (req, res, next) => {
   try {
-    const { destination, origin, dayAt } = req.body;
+    const { destination, origin, dayAt,activities } = req.body;
+    console.log("req.body===========",req.body)
     const object = {
       destination,
       origin,
       dayAt,
+      activities
     };
+    console.log("object=============",object)
     const result = await createDayWiseItinerary(object);
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
@@ -40,12 +43,13 @@ exports.createDayWiseActivity = async (req, res, next) => {
   }
 };
 
-exports.getDayWiseActivity = async (rqe, res, next) => {
+exports.getDayWiseActivity = async (req, res, next) => {
   try {
-    const { origin, destination } = req.query;
+    const { origin, destination,noOfDays } = req.query;
     const result = await findAllDayWiseItinerary({
       destination: destination,
       origin: origin,
+      noOfDays:noOfDays
     });
     if (result.length < 1) {
       return res.status(statusCode.OK).send({

@@ -1,5 +1,6 @@
 const responseMessage = require("../../utilities/responses");
 const statusCode = require("../../utilities/responceCode");
+const categorySchema= require("../../model/carrersModel/jobMainCategoryModel")
 const status = require("../../enums/status");
 /**********************************SERVICES********************************** */
 const { userServices } = require("../../services/userServices");
@@ -32,6 +33,7 @@ const {
 const {
   jobCategoryServices,
 } = require("../../services/careerServices/jobCategoriesServices");
+const { sendActionFailedResponse, actionCompleteResponse } = require("../../common/common");
 const {
   createJobCategory,
   findjJobCategoryData,
@@ -127,4 +129,25 @@ return res.status(statusCode.OK).send({
         console.log("error while trying to delete openneing",error);
         return next(error);
     }
+}
+
+
+
+exports.createJobMainCategory = async (req, res) =>{
+
+ try {
+  const data=req.body;
+
+  const response= await categorySchema.create(data);
+
+  actionCompleteResponse(res, response, "success");
+  
+ } catch (error) {
+
+  sendActionFailedResponse(res, {error}, error.message);
+  
+ }
+
+
+  
 }

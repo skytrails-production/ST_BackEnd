@@ -161,6 +161,8 @@ require("./routes/grnconnect.routes")(app);
 
 require("./routes/inventoryRoutes/inventoryLoginRoutes")(app);
 
+require("./routes/career.routes")(app);
+
 //Require forum Routes*************
 const forumQueRoutes = require("./routes/forumRoutes/forumQueRoutes");
 forumQueRoutes(app);

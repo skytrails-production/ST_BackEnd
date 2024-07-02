@@ -7,17 +7,29 @@ mongoose.pluralize(null);
 
 const dayWiseItinerarySchema = new mongoose.Schema(
   {
-    destination: {  type: String },
+    destination: { type: String },
     origin: { type: String },
-    dayAt:[{
-        title:{ type: String },
-        description:{ type: String },
-        price:{ type: Number },
-        type:{ type: String }
-    }]
+    dayAt: [
+      {
+        title: { type: String },
+        description: { type: String },
+        price: { type: Number },
+        type: { type: String },
+      },
+    ],
+    activities: [
+      {
+        _id: false,
+        title: { type: String },
+        description: { type: String },
+        timing: { type: String },
+        price: { type: Number },
+      },
+    ],
+    noOfDays:{ type: String }
   },
   { timestamps: true }
 );
-dayWiseItinerarySchema.plugin(mongoosePaginate);
+dayWiseItinerarySchema.plugin(mongoosePaginate); 
 dayWiseItinerarySchema.plugin(aggregatePaginate);
 module.exports = mongoose.model("dayWiseItinerary", dayWiseItinerarySchema);

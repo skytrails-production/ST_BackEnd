@@ -1234,7 +1234,7 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
         message: responseMessage.FIELD_REQUIRED,
       });
     }
-    const refeerralCode = commonFunction.generateReferralCode();
+    const refeerralCode =await commonFunction.generateReferralCode();
     
     var obj = {};
     var updateData = {};

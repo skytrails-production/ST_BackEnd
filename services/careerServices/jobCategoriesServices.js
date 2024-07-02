@@ -14,7 +14,7 @@ const jobCategoryServices={
     },
 
     findjJobCategoryData: async (query) => {
-        return await jobCategoryModel.findOne(query).populate({path: 'documentTypesId'})
+        return await jobCategoryModel.findOne(query).populate('parentCategory');
     },
 
     deleteJobCategory: async (query) => {
@@ -43,5 +43,6 @@ const jobCategoryServices={
         };
         return await jobCategoryModel.paginate(query, options);
     }
+    
 }
 module.exports ={jobCategoryServices}

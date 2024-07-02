@@ -52,6 +52,21 @@ const itinerarySchema = new mongoose.Schema(
       type:mongoose.Types.ObjectId,
       ref:'dayWiseItinerary'
     },
+    iteneries:[{
+      title: { type: String },
+      description: { type: String },
+      price: { type: Number },
+      type: { type: String },
+      activities: [
+        {
+          _id: false,
+          title: { type: String },
+          description: { type: String },
+          timing: { type: String },
+          price: { type: Number },
+        },
+      ],
+    }],
     insclusions: {
       type: Array,
       default: [],

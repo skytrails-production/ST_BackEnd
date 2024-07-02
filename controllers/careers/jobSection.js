@@ -63,17 +63,17 @@ exports.createOpenings = async (req, res, next) => {
       openingAt,
       skillsArray,
     } = req.body;
-    const isExist = await findjJobCategoryData({ _id: skyJobCategoriesId });
-    if (!isExist) {
-      return res.status(statusCode.OK).send({
-        statusCode: statusCode.NotFound,
-        responseMessage: responseMessage.JOB_CATEGORY_NOT_FOUND,
-      });
-    }
-    req.body.skills = skillsArray.map((skill, index) => ({
-      key: `tech${index + 1}`,
-      value: skill,
-    }));
+    // const isExist = await findjJobCategoryData({ _id: skyJobCategoriesId });
+    // if (!isExist) {
+    //   return res.status(statusCode.OK).send({
+    //     statusCode: statusCode.NotFound,
+    //     responseMessage: responseMessage.JOB_CATEGORY_NOT_FOUND,
+    //   });
+    // }
+    // req.body.skills = skillsArray.map((skill, index) => ({
+    //   key: `tech${index + 1}`,
+    //   value: skill,
+    // }));
     const result = await createjobSection(req.body);
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
