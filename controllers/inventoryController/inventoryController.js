@@ -3,7 +3,7 @@ const aws = require("aws-sdk");
 const inventoryModel = require("../../model/inventory/inventoryLogin"); // Correct import path
 const inventoryHotelForm = require("../../model/inventory/hotelForm");
 const hotelInventory = require("../../model/inventory/hotelPartener");
-const status=require('../../enums/status')
+const status = require("../../enums/status");
 const bcrypt = require("bcryptjs");
 const s3 = new aws.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -13,9 +13,18 @@ const responseMessage = require("../../utilities/responses");
 const statusCode = require("../../utilities/responceCode");
 const commonFunction = require("../../utilities/commonFunctions");
 //********************************Services******************************************************/
-const {partenerHotelServices}=require('../../services/inventory/partenerHotelServices');
-const {createPartenerHotel,findPartenerHotelData,deletePartenerHotel,partenerHotelList,updatePartenerHotel,countTotalpartenerHotel,getPartenerHotel}=partenerHotelServices;
-
+const {
+  partenerHotelServices,
+} = require("../../services/inventory/partenerHotelServices");
+const {
+  createPartenerHotel,
+  findPartenerHotelData,
+  deletePartenerHotel,
+  partenerHotelList,
+  updatePartenerHotel,
+  countTotalpartenerHotel,
+  getPartenerHotel,
+} = partenerHotelServices;
 
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
@@ -250,12 +259,9 @@ exports.createhotelinventory = async (req, res, next) => {
       hotelState,
       panCard,
       rating,
-      totalPrice,
-      hotelFacilities,
       typeOfRoom,
       meal,
       mealType,
-      mealDescription,
       cityCode,
       amenities,
       hotelAddress,
@@ -267,13 +273,11 @@ exports.createhotelinventory = async (req, res, next) => {
       facilities,
       bookingPolicy,
       priceDetails,
-      status,
       roomArr,
-      overView,
       safe2Stay,
       hotelPolicy,
     } = req.body;
-  
+
     const hotelImageFiles = req.files.hotelImages || [];
     const roomImageFiles = req.files.roomsImages || [];
 
@@ -289,31 +293,6 @@ exports.createhotelinventory = async (req, res, next) => {
         return imageUrl;
       })
     );
-
-    // // Construct the rooms array properly
-    // const rooms = [{
-    //   description: roomDescription,
-    //   noOfAdult: Number(noOfAdult),
-    //   noOfChildren: Number(noOfChildren),
-    //   room_type: room_type,
-    //   roomsImages: roomImageUrls
-    // }];
-    // console.log("roomArr============", roomArr, typeof roomArr);
-
-    // Construct the rooms array properly
-    // let rooms;
-    // if (roomArr.length === 1) {
-    //   rooms = [{
-    //     ...roomArr[0],
-    //     roomsImages: roomImageUrls
-    //   }];
-    // } else {
-    //   rooms = roomArr.map((room, index) => ({
-    //     ...room,
-    //     roomsImages: roomImageUrls[index] ? [roomImageUrls[index]] : [],
-    //   }));
-    // }
-
     // Distribute room images to each room
     const imagesPerRoom = Math.ceil(roomImageUrls.length / roomArr.length);
     const rooms = roomArr.map((room, index) => {
@@ -333,14 +312,11 @@ exports.createhotelinventory = async (req, res, next) => {
       hotelState,
       panCard,
       rating,
-      totalPrice,
-      hotelFacilities,
       hotelImages: hotelImageUrls,
       typeOfRoom,
       locality,
       meal,
       mealType,
-      mealDescription,
       cityCode,
       amenities,
       hotelAddress,
@@ -351,9 +327,7 @@ exports.createhotelinventory = async (req, res, next) => {
       facilities,
       bookingPolicy,
       priceDetails,
-      status,
       rooms: rooms,
-      overView,
       hotelPolicy,
       safe2Stay,
     };
@@ -369,11 +343,14 @@ exports.createhotelinventory = async (req, res, next) => {
   }
 };
 
-exports.getAllHotelInventory=async(req,res,next)=>{
+exports.getAllHotelInventory = async (req, res, next) => {
   try {
     // const
-    const result=await partenerHotelList({status:status.ACTIVE,availableRooms:{$gte:1}});
-    if(result.length<1){
+    const result = await partenerHotelList({
+      status: status.ACTIVE,
+      availableRooms: { $gte: 1 },
+    });
+    if (result.length < 1) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
@@ -386,16 +363,16 @@ exports.getAllHotelInventory=async(req,res,next)=>{
       result: result,
     });
   } catch (error) {
-    console.log("Error while trying to get all inventory data",error);
+    console.log("Error while trying to get all inventory data", error);
     return next(error);
   }
-}
+};
 
-exports.getHotelInventoryById=async(req,res,next)=>{
+exports.getHotelInventoryById = async (req, res, next) => {
   try {
-    const {hotelId}=req.query;
-    const result=await findPartenerHotelData({_id:hotelId});
-    if(!result){
+    const { hotelId } = req.query;
+    const result = await findPartenerHotelData({ _id: hotelId });
+    if (!result) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
@@ -408,17 +385,116 @@ exports.getHotelInventoryById=async(req,res,next)=>{
       result: result,
     });
   } catch (error) {
-    console.log("Error while trying to get all inventory data",error);
+    console.log("Error while trying to get all inventory data", error);
     return next(error);
   }
-}
+};
 
-exports.updatePartenerHotel=async(req,res,next)=>{
+exports.updatePartenerHotel = async (req, res, next) => {
   try {
-    const {data}=req.body;
-    
+    const { hotelId } = req.query;
+    const {
+      hotelName,
+      description,
+      hotelCity,
+      hotelCountry,
+      hotelState,
+      panCard,
+      rating,
+      status,
+      typeOfRoom,
+      meal,
+      mealType,
+      cityCode,
+      amenities,
+      hotelAddress,
+      availableRooms,
+      totalRooms,
+      location,
+      locality,
+      hotelCode,
+      facilities,
+      bookingPolicy,
+      priceDetails,
+      roomArr,
+      safe2Stay,
+      hotelPolicy,
+    } = req.body;
+
+    const isHotelExist = await findPartenerHotelData({ _id: hotelId });
+    if (!isHotelExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.HOTEL_NOT_FOUND,
+      });
+    }
+    const updateData = await updatePartenerHotel(
+      { _id: isHotelExist._id },
+      req.body
+    );
+    if (updateData) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.UPDATE_SUCCESS,
+        result: updateData,
+      });
+    }
   } catch (error) {
-    console.log("Error while trying to update hotel Details",error);
-    return next(error)
+    console.log("Error while trying to update hotel Details", error);
+    return next(error);
   }
-}
+};
+
+exports.changeHotelPrice = async (req, res, next) => {
+  try {
+    const { amount, hotelId, roomId ,netName} = req.body;
+    const isHotelExist = await findPartenerHotelData({ _id: hotelId });
+    if (!isHotelExist) { 
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.HOTEL_NOT_FOUND,
+      });
+    }
+    // Find the room within the hotel's rooms array and update the price
+    const room = isHotelExist.rooms.id(roomId);
+    if (!room) {
+      return res.status(404).send({
+        statusCode: 404,
+        responseMessage: "Room not found",
+      });
+    }
+    // Update the net price details
+    room.priceDetails.net.amount = amount;
+    const netPrice=
+    console.log("room.priceDetails.net",room.priceDetails.net,"============================",room);
+    // Update query to set the net prices
+    const result = await updatePartenerHotel(
+      { _id: hotelId, 'rooms._id': roomId },
+      { $set: { 'rooms.$.priceDetails.net.0.amount': amount } }
+    );
+    console.log("result===============",result);
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.NotFound,
+      responseMessage: responseMessage.UPDATE_SUCCESS,
+      result:result,
+    });
+  } catch (error) {
+    console.log("Error while trying to update price ", error);
+    return next(error);
+  }
+};
+
+exports.deleteInventoryData = async (req, res, next) => {
+  try {
+    const { hotelInventoryId } = req.body;
+    const isExis = await deletePartenerHotel({ _id: hotelInventoryId });
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DELETE_SUCCESS,
+      result: isExis,
+    });
+  } catch (error) {
+    console.log("error while trying to delete", error);
+    return next(error);
+  }
+};

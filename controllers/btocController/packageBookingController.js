@@ -40,6 +40,7 @@ const {
   updatePackage,
   countTotalPackage,
   getPackageEnquiry,
+  findAllPackageEnquiryPopulate
 } = packageBookingModelServices;
 const {
   pushNotificationServices,
@@ -369,3 +370,50 @@ exports.getUserPackageBooking=async(req,res,next)=>{
     return next(error)
   }
 }
+
+exports.packageEnquiryListForCrm = async (req, res, next) => {
+  try {
+    const result = await findAllPackageEnquiryPopulate();
+    if (result.length < 1) {
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
+      });
+    }
+
+    const mappedResult = result.map(item => {
+      let inter_domes = '';
+// console.log(item.packageId.select_tags.some(tag => tag.domestic),"===========");
+if (item.packageId.select_tags.some(tag => tag.domestic)) {
+  inter_domes = 'Domestic';
+} else {
+  inter_domes = 'International';
+}
+      return {
+        name: item.fullName,
+        email: item.email,
+        mobile_number: item.contactNumber.phone,
+        from_date: item.departureDate,
+        query_title: item.packageId.pakage_title,
+        adults: item.adults,
+        child: item.child,
+        complete_package_cost: item.packageId.pakage_amount.amount,
+        departure_City: item.departureCity,
+        date_Of_journey: item.departureDate,
+        isInternational: item.packageId.select_tags.some(tag => !tag.domestic && tag.international),
+        inter_domes: inter_domes,
+        destination: item.packageId.destination.map(dest => dest.addMore).join(', '),
+        country: item.packageId.country
+      };
+    });
+
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: mappedResult,
+    });
+  } catch (error) {
+    console.log("error while trying to get package enquiry list", error);
+    return next(error);
+  }
+};

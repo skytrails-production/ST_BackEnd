@@ -89,5 +89,5 @@ app.post('/skyTrails/api/admin/createPackageCategory',upload.single('images'),co
 app.post('/skyTrails/api/admin/createDailyQuiz',controller.createDailyQuiz);
 app.put('/skyTrails/api/admin/updateQuizStatus',controller.dailyQuizStatus);
 app.delete("/skyTrails/api/admin/deleteAgent",agentController.deleteAgent);
-
+app.get('/skyTrails/api/admin/getAllPackageEnquiryOnCRM',packageControlelr.packageEnquiryListForCrm);
 };

@@ -47,6 +47,8 @@ const hotelFormSchema = new mongoose.Schema(
         roomsImage: [String],
       },
     ],
+    allowed:[String],
+    not_allowed:[String]
   },
 
   { timestamps: true }

@@ -21,7 +21,9 @@ const packageBookingModelServices = {
     getUserPackage: async (query) => {
         return await packageBookingModel.find(query)
     },
-
+    findAllPackageEnquiryPopulate: async (query) => {
+        return await packageBookingModel.find(query).populate('packageId').exec();
+    },
     deletePackage: async (query) => {
         return await packageBookingModel.deleteOne(query);
     },

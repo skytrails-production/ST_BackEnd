@@ -10,7 +10,7 @@ const {
   sendActionFailedResponse,
 } = require("../common/common");
 
-const { GrnCityList, GrnHotelCityMap,GrnCountryList,GrnHotelBooking } = require("../model/grnconnectModel");
+const { GrnCityList, GrnHotelCityMap,GrnCountryList,GrnHotelBooking, GrnLocationCityMap, GrnLocationMaster } = require("../model/grnconnectModel");
 const commonFunctions = require("../utilities/commonFunctions");
 
 const s3 = new aws.S3({
@@ -490,4 +490,43 @@ exports.hotelSearchWithCode=async (req,res) =>{
     // console.log(err);
     sendActionFailedResponse(res, {err}, err.message);
   }
+}
+
+
+
+
+//getAllhotelLocationCode using city code
+
+
+exports.getAllhotelLocationCode = async (req, res) =>{
+
+  try {
+    // const data=req.query;
+    const result=await GrnLocationCityMap.find({"cityCode":"124054"}).select('-_id -hotelCode -cityCode');
+
+
+    const locationCodes = result.reduce((acc, item) => {
+      acc.push(item.locationCode);
+      return acc;
+    }, []);
+    
+
+    const results = await GrnLocationMaster.find({
+      locationCode: { $in: locationCodes }
+    }).select('_id -countryCode -countryName -locationCode');
+
+    const locationNames = results.reduce((acc, item) => {
+      acc.push(item.locationName);
+      return acc;
+    }, []);
+
+    console.log(locationNames,"data");
+
+      actionCompleteResponse(res, locationNames, "success");
+    
+  } catch (error) {
+
+    sendActionFailedResponse(res, {err}, err.message);    
+  }
+
 }

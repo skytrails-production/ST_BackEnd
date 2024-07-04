@@ -23,8 +23,6 @@ const NetSchema = new mongoose.Schema({
   name: String,
 });
 
-
-
 const hotelInventorySchema = new mongoose.Schema(
   {
     hotelName: { type: String },
@@ -34,14 +32,11 @@ const hotelInventorySchema = new mongoose.Schema(
     hotelCountry: { type: String },
     hotelState: { type: String },
     panCard: { type: String },
-    rating: { type: Number },
-    totalPrice: { type: Number },
+    rating: { type: Number,min: 0, max: 5 },
     totalRooms: { type: Number },
     availableRooms: { type: Number },
-    // hotelFacilities: [{ type: { type: String } }],
     hotelImages: [{ type: String }],
     typeOfRoom: [{ type: String }],
-    // meal: [{ type: String }],
     mealType: [
       {
         type: String,
@@ -49,31 +44,21 @@ const hotelInventorySchema = new mongoose.Schema(
       },
     ],
     cityCode: { type: String },
-    amenities: [
-     {type:String}
-    ],
+    amenities: [{ type: String }],
     hotelAddress: { type: String },
     location: {
       type: { type: String, default: "Point" },
       coordinates: { type: [Number], default: [0, 0] },
     },
-    hotelCode: String,
-    hotelPolicy: String,
+    hotelCode: { type: String },
+    hotelPolicy: { type: String },
     facilities: [String],
     bookingPolicy: [String],
-    // priceDetails: [
-    //   {
-    //     _id: false,
-    //     gst: [GstSchema],
-    //     net: [NetSchema],
-    //   },
-    // ],
     status: {
       type: String,
       enum: [status.ACTIVE, status.BLOCK, status.DELETE],
       default: status.ACTIVE,
     },
-    // rooms: {type:mongoose.Types.ObjectId,ref:'hotelRooms '},
     rooms: [
       {
         description: String,
@@ -85,12 +70,12 @@ const hotelInventorySchema = new mongoose.Schema(
         totalRooms: { type: Number },
         availableRooms: { type: Number },
         priceDetails: {
-            gst: [GstSchema],
-            net: [NetSchema],
-          }
+          gst: [GstSchema],
+          net: [NetSchema],
+        },
+        roomAmineties: [String],
       },
     ],
-    overView: String,
     safe2Stay: [String],
   },
   { timestamps: true }
@@ -98,5 +83,6 @@ const hotelInventorySchema = new mongoose.Schema(
 
 hotelInventorySchema.plugin(mongoosePaginate);
 hotelInventorySchema.plugin(aggregatePaginate);
+hotelInventorySchema.index({ location: "2dsphere" });
 
 module.exports = mongoose.model("hotelInventory", hotelInventorySchema);

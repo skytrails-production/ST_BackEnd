@@ -34,4 +34,7 @@ module.exports = function (app) {
     ]), Controller.createhotelinventory);
   app.get("/skyTrails/api/inventory/getAllInventoryData",Controller.getAllHotelInventory);
   app.get("/skyTrails/api/inventory/getInventoryDataById",Controller.getHotelInventoryById);
+  app.delete("/skyTrails/api/inventory/deleteInventoryData",Controller.deleteInventoryData);
+  app.put("/skyTrails/api/inventory/changeHotelPrice",Controller.changeHotelPrice);
+  app.put("/skyTrails/api/inventory/updatePartenerHotel",Controller.updatePartenerHotel);
 };

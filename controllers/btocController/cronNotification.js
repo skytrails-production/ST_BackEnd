@@ -108,11 +108,11 @@ const lastNotificationSent = new Map();
 // task.start();
 
 // Define and schedule task2 separately
-var taskPromotionalNotification = cron.schedule("0 9 * * *",async () => {
+var taskPromotionalNotification = cron.schedule("46 12 * * *",async () => {
   try {
     // 'phone.mobile_number':'8115199076'
     const users = await userList({
-    // 'phone.mobile_number':{ $in: ['8115199076', '9135219071','8847301811'] },
+    // 'phone.mobile_number':{ $in: ['8115199076', '9135219071','8847301811','9810704352','9870249076','9354527010'] },
       status: status.ACTIVE,
       deviceToken: { $exists: true, $ne: "" },
     });
@@ -121,8 +121,8 @@ var taskPromotionalNotification = cron.schedule("0 9 * * *",async () => {
     // const messageBody = `✨Check out our latest promotion! We're offering deals so good, even your coffee will do a double-take! ☕️ Explore your journey with TheSkyTrails pvt ltd✨`;
     for (const user of users) {
       try { 
-        const notificationMessage = `🌊 Take your partner to a beach getaway!`;
-        const messageBody = `Enjoy 20% off on your travel packages! Book now`;
+        const notificationMessage = `🚨 New App Update Available`;
+        const messageBody = `Upgrade to the latest version of the app for improved performance and new features. Update today!`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
       // const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`
         // Check if a notification has been sent to this user recently
@@ -550,7 +550,7 @@ CLAIM NOW`,
 ];
 
 const taskRandomNotification = cron.schedule(
-  "45 12 * * *",
+  "15 14 * * *",
   async () => {
     try {
       const users = await userList({

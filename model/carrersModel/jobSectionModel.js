@@ -7,6 +7,10 @@ const locationType = require("../../enums/locationType");
 
 mongoose.pluralize(null);
 
+const skillsSchema = new mongoose.Schema({
+  skillName: String,
+});
+
 const jobSchema = new mongoose.Schema(
   {
     skyJobCategoriesId:{
@@ -43,12 +47,9 @@ const jobSchema = new mongoose.Schema(
     country: { type: String },
     state: { type: String },
     city: { type: String },
-    skills: [
-      {
-        key: { type: String },
-        value: { type: String },
-      },
-    ],
+    skills: {
+      type: [String],
+    },
     openingAt:{
       type: Date,
     },

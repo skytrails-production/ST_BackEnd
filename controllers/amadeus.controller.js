@@ -83,11 +83,11 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
             <Fare_MasterPricerTravelBoardSearch xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd="http://www.w3.org/2001/XMLSchema&quot;>
             <numberOfUnit xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A&quot;>
                 <unitNumberDetail>
-                    <numberOfUnits>2</numberOfUnits>
+                    <numberOfUnits>1</numberOfUnits>
                     <typeOfUnit>PX</typeOfUnit>
                 </unitNumberDetail>
                 <unitNumberDetail>
-                    <numberOfUnits>250</numberOfUnits>
+                    <numberOfUnits>100</numberOfUnits>
                     <typeOfUnit>RC</typeOfUnit>
                 </unitNumberDetail>
             </numberOfUnit>
@@ -97,12 +97,7 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
                     <ref>1</ref>
                 </traveller>
             </paxReference>
-            <paxReference xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A&quot;>
-                <ptc>CH</ptc>
-                <traveller>
-                    <ref>2</ref>
-                </traveller>
-            </paxReference>
+           
             <fareOptions xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A&quot;>
                 <pricingTickInfo>
                     <pricingTicketing>
@@ -113,6 +108,11 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
                     </pricingTicketing>
                 </pricingTickInfo>
             </fareOptions>
+             <travelFlightInfo>
+<cabinId>
+<cabin>F</cabin>
+</cabinId>
+</travelFlightInfo>
             <itinerary xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A&quot;>
                 <requestedSegmentRef>
                     <segRef>1</segRef>

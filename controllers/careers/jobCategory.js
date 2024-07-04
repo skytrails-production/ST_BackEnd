@@ -1,6 +1,8 @@
 const responseMessage = require("../../utilities/responses");
 const statusCode = require("../../utilities/responceCode");
-const categorySchema= require("../../model/carrersModel/jobMainCategoryModel")
+const categorySchema= require("../../model/carrersModel/jobMainCategoryModel");
+
+const skyCategorySchema= require("../../model/carrersModel/jobCategoryModel");
 const status = require("../../enums/status");
 /**********************************SERVICES********************************** */
 const { userServices } = require("../../services/userServices");
@@ -68,6 +70,52 @@ exports.createJobCategory = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.getJobCategory = async (req, res)=>{
+
+  try {
+
+    const limit=Number.parseInt(req.query.pagesize)||10;
+
+    const page=Number.parseInt(req.query.page)||1;
+    const sortBy=req.query.sort||'-createdAt';
+    const skip=limit*(page-1);
+    const count=await skyCategorySchema.countDocuments();
+    if(count<1){
+      actionCompleteResponse(res, {count}, "No data found");
+    }else{    
+    const result = await skyCategorySchema.find().sort(sortBy).skip(skip).limit(limit).select('-__v -createdAt -updatedAt').populate('parentCategory', '-__v -createdAt -updatedAt');
+  
+    actionCompleteResponse(res, {result,count}, "success");
+    }
+    
+  } catch (error) {
+
+    sendActionFailedResponse(res, {error}, error.message);    
+  }
+
+}
+
+
+exports.deleteJobCategory = async (req , res) =>{
+
+  try {
+    const id=req.query.id;
+    const result=await skyCategorySchema.findByIdAndDelete({_id:id});
+    if(result===null){
+      actionCompleteResponse(res, [],"fail");
+    }else{
+
+    actionCompleteResponse(res, result, "success");
+  }
+    
+  } catch (error) {
+
+    sendActionFailedResponse(res, {error}, error.message);    
+  }
+
+}
+
 exports.getOpening = async (req, res, next) => {
   try {
     const {id}=req.query;
@@ -137,10 +185,18 @@ exports.createJobMainCategory = async (req, res) =>{
 
  try {
   const data=req.body;
-
+  // console.log(data,"data");
+  
+  const existingCategory = await categorySchema.findOne({categoryName:data.categoryName});
+  // console.log(existingCategory);
+  // return;
+  if(existingCategory){
+    actionCompleteResponse(res, existingCategory, "already existing category");
+  }else{
   const response= await categorySchema.create(data);
 
   actionCompleteResponse(res, response, "success");
+  }
   
  } catch (error) {
 
@@ -151,3 +207,35 @@ exports.createJobMainCategory = async (req, res) =>{
 
   
 }
+
+
+exports.getJobMainCategory = async (req, res ) =>{
+
+  try {
+    const limit=Number.parseInt(req.query.pagesize)||10;
+
+    const page=Number.parseInt(req.query.page)||1;
+    const sortBy=req.query.sort||'-createdAt';
+    const skip=limit*(page-1);
+    const count=await categorySchema.countDocuments();
+    if(count<1){
+      actionCompleteResponse(res, {count}, "No data found");
+    }else{    
+    const result = await categorySchema.find().sort(sortBy).skip(skip).limit(limit).select('-__v -createdAt -updatedAt');
+  
+    actionCompleteResponse(res, {result,count}, "success");
+    }
+    
+   } catch (error) {
+  
+    sendActionFailedResponse(res, {error}, error.message);
+    
+   }
+
+}
+
+
+
+
+
+

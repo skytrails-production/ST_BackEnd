@@ -1235,7 +1235,7 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
       });
     }
     const refeerralCode =await commonFunction.generateReferralCode();
-    
+    const checkReward = await findReferralAmount({});
     var obj = {};
     var updateData = {};
     if (emailRegex.test(phoneNumber)) {
@@ -1254,6 +1254,7 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
         otpExpireTime: "",
         firstTime: false,
         referralCode: refeerralCode,
+        balance:checkReward.signUpAmount
       };
       updateData = await updateUser({ _id: updation._id }, obj);
     } else if (mobileRegex.test(phoneNumber)) {
@@ -1271,6 +1272,7 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
         otp: "",
         firstTime: false,
         referralCode: refeerralCode,
+        balance:checkReward.signUpAmount
       };
       updateData = await updateUser({ _id: updation._id }, obj);
     }
