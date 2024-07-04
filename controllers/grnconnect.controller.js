@@ -498,35 +498,29 @@ exports.hotelSearchWithCode=async (req,res) =>{
 //getAllhotelLocationCode using city code
 
 
-exports.getAllhotelLocationCode = async (req, res) =>{
-
+exports.getAllhotelLocationName = async (req, res) => {
   try {
-    // const data=req.query;
-    const result=await GrnLocationCityMap.find({"cityCode":"124054"}).select('-_id -hotelCode -cityCode');
+    // Query to find location codes
+    const cityCode=req.query.cityCode;
+    // console.log(req.query);
+    // const cityCode = "124054";
+    const result = await GrnLocationCityMap.find({ cityCode });
 
+    // Extract location codes using map
+    const locationCodes = result.map(item => item.locationCode);
 
-    const locationCodes = result.reduce((acc, item) => {
-      acc.push(item.locationCode);
-      return acc;
-    }, []);
-    
-
+    // Query to find location names using the extracted location codes
     const results = await GrnLocationMaster.find({
       locationCode: { $in: locationCodes }
-    }).select('_id -countryCode -countryName -locationCode');
+    });
 
-    const locationNames = results.reduce((acc, item) => {
-      acc.push(item.locationName);
-      return acc;
-    }, []);
+    // Extract location names using map
+    const locationNames = results.map(item => item.locationName);
 
-    console.log(locationNames,"data");
+    // console.log(locationNames, "data");
 
-      actionCompleteResponse(res, locationNames, "success");
-    
+    actionCompleteResponse(res, locationNames, "success");
   } catch (error) {
-
-    sendActionFailedResponse(res, {err}, err.message);    
+    sendActionFailedResponse(res, error, error.message);
   }
-
-}
+};

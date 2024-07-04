@@ -120,9 +120,9 @@ const GrnHotelCityMapSchema = new mongoose.Schema({
 
 
 const GrnLocationCityMapSchema = new mongoose.Schema({
-  hotelCode:String,
-  locationCode:String,
-  cityCode:String,
+  hotelCode:Number,
+  locationCode:Number,
+  cityCode:Number,
 });
 
 

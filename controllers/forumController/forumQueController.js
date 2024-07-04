@@ -467,7 +467,7 @@ exports.getTrendingStories = async (req, res, next) => {
 
 exports.postLike=async(req,res,next)=>{
   try {
-    const { postArray } = req.body;
+    const { postId } = req.body;
     let liked;
     const isUser = await findUserData({
       _id: req.userId,
@@ -479,7 +479,7 @@ exports.postLike=async(req,res,next)=>{
         message: responseMessage.USERS_NOT_FOUND,
       });
     }
-    for (const post of postArray) {
+    for (const post of postId) {
       const isPostExist = await findforumQue({
         _id: post,
         status: status.ACTIVE,
@@ -513,13 +513,13 @@ exports.postLike=async(req,res,next)=>{
       const updated=await updateUser(
         { _id: isUser._id },
         {
-          $inc: { balance: checkReward.refereeAmount,likesCount: 1},
+          $inc: { balance: checkReward.likeCoins},
           $push:{walletHistory:walletObj}
         }
       );
 
       // await updateUser({_id:isUser._id},{ $inc: { likesCount: 1 }, $push: { likes: isUser._id }})
-      // console.log(`Post ${post} liked`,updated);
+      console.log(`Post ${post} liked`,updated);
       
     }
     return res.status(statusCode.OK).send({

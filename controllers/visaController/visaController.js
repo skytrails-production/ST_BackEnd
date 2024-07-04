@@ -17,8 +17,8 @@ const issuedType = require('../../enums/issuedType');
 //common response****************
 const statusCode = require('../../utilities/responceCode');
 const responseMessage = require('../../utilities/responses');
-const { RecordingRulesList } = require("twilio/lib/rest/video/v1/room/roomRecordingRule");
 const commonFunctions = require("../../utilities/commonFunctions");
+const { RecordingRulesList } = require("twilio/lib/rest/video/v1/room/roomRecordingRule");
 
 exports.createVisa = async (req, res, next) => {
     try {

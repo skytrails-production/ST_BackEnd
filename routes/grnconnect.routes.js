@@ -42,7 +42,9 @@ module.exports = function (app) {
     app.post("/skyTrails/grnconnect/hotelsearchwhc",controller.hotelSearchWithCode);
 
 
-    app.get("/skyTrails/grnconnect/hotellocationcode",controller.getAllhotelLocationCode);
+    //hotel searchby location name
+
+    app.get("/skyTrails/grnconnect/locationamelist",controller.getAllhotelLocationName);
 
     
 }

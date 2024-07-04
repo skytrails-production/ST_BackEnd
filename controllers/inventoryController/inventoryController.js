@@ -445,17 +445,111 @@ exports.updatePartenerHotel = async (req, res, next) => {
   }
 };
 
+// exports.changeHotelPrice = async (req, res, next) => {
+//   try {
+//     const { amount, hotelId, roomId ,netName} = req.body;
+//     const isHotelExist = await findPartenerHotelData({ _id: hotelId });
+//     if (!isHotelExist) { 
+//       return res.status(statusCode.OK).send({
+//         statusCode: statusCode.NotFound,
+//         responseMessage: responseMessage.HOTEL_NOT_FOUND,
+//       });
+//     }
+//     // Find the room within the hotel's rooms array and update the price
+//     const room = isHotelExist.rooms.id(roomId);
+//     if (!room) {
+//       return res.status(404).send({
+//         statusCode: 404,
+//         responseMessage: "Room not found",
+//       });
+//     }
+//     // Update the net price details
+//     room.priceDetails.net.amount = amount;
+//     const netPrice=
+//     console.log("room.priceDetails.net",room.priceDetails.net,"============================",room);
+//     // Update query to set the net prices
+//     const result = await updatePartenerHotel(
+//       { _id: hotelId, 'rooms._id': roomId },
+//       { $set: { 'rooms.$.priceDetails.net.0.amount': amount } }
+//     );
+//     console.log("result===============",result);
+//     return res.status(statusCode.OK).send({
+//       statusCode: statusCode.NotFound,
+//       responseMessage: responseMessage.UPDATE_SUCCESS,
+//       result:result,
+//     });
+//   } catch (error) {
+//     console.log("Error while trying to update price ", error);
+//     return next(error);
+//   }
+// };
+
 exports.changeHotelPrice = async (req, res, next) => {
   try {
-    const { amount, hotelId, roomId ,netName} = req.body;
+    const { amount, hotelId, roomId, netName } = req.body;
     const isHotelExist = await findPartenerHotelData({ _id: hotelId });
-    if (!isHotelExist) { 
+    
+    if (!isHotelExist) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.HOTEL_NOT_FOUND,
       });
     }
+
     // Find the room within the hotel's rooms array and update the price
+    const room = isHotelExist.rooms.id(roomId);
+    if (!room) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: "Room not found",
+      });
+    }
+
+    // Find the specific net item by netName and update its amount
+    const netItemToUpdate = room.priceDetails.net.find(net => net.name === netName);
+    if (!netItemToUpdate) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: "Net item not found",
+      });
+    }
+
+    // Update the amount of the found net item
+    netItemToUpdate.amount = amount;
+
+    // Update query to set the net prices
+    const result = await updatePartenerHotel(
+      { _id: hotelId, 'rooms._id': roomId },
+      { $set: { 'rooms.$.priceDetails.net': room.priceDetails.net } }
+    );
+
+    console.log("Updated room:", room);
+
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.UPDATE_SUCCESS,
+      result: result,
+    });
+  } catch (error) {
+    console.log("Error while trying to update price:", error);
+    return next(error);
+  }
+};
+
+exports.changeHotelPrice1 = async (req, res, next) => {
+  try {
+    const { amount, hotelId, roomId, netName } = req.body;
+
+    // Check if the hotel exists
+    const isHotelExist = await findPartenerHotelData({ _id: hotelId });
+    if (!isHotelExist) {
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.HOTEL_NOT_FOUND,
+      });
+    }
+
+    // Find the room within the hotel's rooms array
     const room = isHotelExist.rooms.id(roomId);
     if (!room) {
       return res.status(404).send({
@@ -463,26 +557,41 @@ exports.changeHotelPrice = async (req, res, next) => {
         responseMessage: "Room not found",
       });
     }
-    // Update the net price details
-    room.priceDetails.net.amount = amount;
-    const netPrice=
-    console.log("room.priceDetails.net",room.priceDetails.net,"============================",room);
-    // Update query to set the net prices
+
+    // Find the specific net item by netName and get its index
+    const netIndex = room.priceDetails.net.findIndex(net => net.name === netName);
+    if (netIndex === -1) {
+      return res.status(404).send({
+        statusCode: 404,
+        responseMessage: "Net item not found",
+      });
+    }
+
+    // Construct the update path dynamically
+    const updatePath = `rooms.$.priceDetails.net.${netIndex}.amount`;
+
+    // Update the hotel document in the database
     const result = await updatePartenerHotel(
       { _id: hotelId, 'rooms._id': roomId },
-      { $set: { 'rooms.$.priceDetails.net.0.amount': amount } }
+      { $set: { [updatePath]: amount } }
     );
-    console.log("result===============",result);
+
+    // Log the updated room for debugging purposes
+    console.log("Updated room:", room);
+
+    // Return a success response
     return res.status(statusCode.OK).send({
-      statusCode: statusCode.NotFound,
+      statusCode: statusCode.OK,
       responseMessage: responseMessage.UPDATE_SUCCESS,
-      result:result,
+      result: result,
     });
   } catch (error) {
-    console.log("Error while trying to update price ", error);
+    // Log the error for debugging purposes
+    console.log("Error while trying to update price:", error);
     return next(error);
   }
 };
+
 
 exports.deleteInventoryData = async (req, res, next) => {
   try {

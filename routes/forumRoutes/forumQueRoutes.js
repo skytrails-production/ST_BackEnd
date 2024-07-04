@@ -28,6 +28,6 @@ module.exports = function (app) {
     app.get('/skyTrails/forumPost/getPostOfUser',[authJwt.verifcationToken],controller.getPostOfUser);
     app.get('/skyTrails/forumPost/getComments',controller.getComments);
     app.get('/skyTrails/forumPost/getPostByID',controller.getPostByID);
-    app.post('/skyTrails/forumPost/postLikes',[authJwt.verifcationToken],controller.likePost);
-    app.post('/skyTrails/forumPost/likePost',[authJwt.verifcationToken],controller.postLike)
+    app.post('/skyTrails/forumPost/postLikes',[authJwt.verifcationToken],controller.postLike);
+    app.post('/skyTrails/forumPost/likePost',[authJwt.verifcationToken],controller.likePost)
 }
