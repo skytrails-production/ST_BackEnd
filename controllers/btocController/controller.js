@@ -1674,6 +1674,33 @@ exports.redeemCoin = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.getUserBalance = async (req, res, next) => {
+  try {
+    const isUserExist = await findUserData({
+      _id: req.userId,
+      status: status.ACTIVE,
+    });
+    if (!isUserExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+    const result={
+      balance:isUserExist.balance,
+      _id:isUserExist._id
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.CREATED_SUCCESS,
+      result: result
+    });
+  } catch (error) {
+    console.log("error while trying to redeemCoin", error);
+    return next(error);
+  }
+};
 async function shortenURL(url) {
   // Here, you can use any URL shortening service API or your own URL shortening service implementation
   // For demonstration, let's use a simple method with shortid

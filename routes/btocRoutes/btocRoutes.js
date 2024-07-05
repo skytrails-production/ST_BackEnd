@@ -89,5 +89,6 @@ module.exports = function (app) {
     app.get("/skyTrails/api/user/getPackageBookNow",[authJwt.verifcationToken],packageController.getUserPackageBooking);
     app.post("/skyTrails/api/user/shareReferral/shareReferralCodeToUrContact",[authJwt.verifcationToken],Controller.shareReferralCodeSMSWHTSAPP);
     app.get("/skyTrails/api/user/wallet/getWalletHistory",[authJwt.verifcationToken],Controller.getWalletHistory);
-    app.post("/skyTrails/api/user/wallet/redeemCoin",[authJwt.verifcationToken],Controller.redeemCoin)
+    app.post("/skyTrails/api/user/wallet/redeemCoin",[authJwt.verifcationToken],Controller.redeemCoin);
+    app.get("/skyTrails/api/user/getSkyCoins",[authJwt.verifcationToken],Controller.getUserBalance)
 }

@@ -50,21 +50,21 @@ exports.createJobCategory = async (req, res, next) => {
   try {
     const {
         categoryName,description,status,parentCategory} = req.body;
-        if(parentCategory){
-          const findIsExist=await findjJobCategoryData({_id:parentCategory});
-          if(!findIsExist){
-            return res.status(statusCode.OK).send({
+       
+        const isExisting=await findjJobCategoryData({categoryName});
+        if(isExisting){
+                return res.status(statusCode.OK).send({
               statusCode: statusCode.NotFound,
-              responseMessage: responseMessage.JOB_CATEGORY_NOT_FOUND,
+              responseMessage: "Job category already Exist",
             }); 
-          }
-        }
+        }else{
     const result = await createJobCategory(req.body);
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.CREATED_SUCCESS,
       result: result,
     });
+  }
   } catch (error) {
     console.log("error while trying to create opening", error);
     return next(error);
@@ -235,7 +235,24 @@ exports.getJobMainCategory = async (req, res ) =>{
 }
 
 
+//delete JobMainCategory
 
+exports.deleteJobMainCategory = async (req, res) =>{
 
+  try {
+    const id=req.query.id;
+    const result=await categorySchema.findByIdAndDelete({_id:id});
+    if(result===null){
+      actionCompleteResponse(res, [],"fail");
+    }else{
 
+    actionCompleteResponse(res, result, "success");
+  }
+    
+  } catch (error) {
+
+    sendActionFailedResponse(res, {error}, error.message);    
+  }
+
+}
 

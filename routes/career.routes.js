@@ -16,6 +16,8 @@ module.exports = function (app) {
   app.post("/skyTrails/api/career/jobcategory", jobCategory.createJobMainCategory);//create main cateogry
   app.get("/skyTrails/api/career/getjobcategory", jobCategory.getJobMainCategory);//get category
  
+  app.delete("/skyTrails/api/career/deletejobcategory", jobCategory.deleteJobMainCategory);
+  
   app.post("/skyTrails/api/career/skyjobcategory", jobCategory.createJobCategory);// sky job category
 
   app.get("/skyTrails/api/career/getskyjobcategory", jobCategory.getJobCategory); //get sky job category

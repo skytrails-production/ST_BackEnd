@@ -10,7 +10,7 @@ const GstSchema = new mongoose.Schema({
   amount: Number,
   amountType: String,
   currency: String,
-  included: String,
+  included: Boolean,
   name: String,
 });
 
@@ -19,7 +19,7 @@ const NetSchema = new mongoose.Schema({
   amount: Number,
   amountType: String,
   currency: String,
-  included: String,
+  included: Boolean,
   name: String,
 });
 

@@ -506,7 +506,7 @@ exports.postLike=async(req,res,next)=>{
       const checkReward = await findReferralAmount({});
       const walletObj={
         amount:checkReward.likeCoins,
-        details:"You've unlocked a Like Coin🪙 for your post!📸",
+        details:"You've earned a Coin🪙 for liking a post!📸",
         transactionType:'credit',
         createdAt: date.now
       }
@@ -519,7 +519,7 @@ exports.postLike=async(req,res,next)=>{
       );
 
       // await updateUser({_id:isUser._id},{ $inc: { likesCount: 1 }, $push: { likes: isUser._id }})
-      console.log(`Post ${post} liked`,updated);
+      // console.log(`Post ${post} liked`,updated);
       
     }
     return res.status(statusCode.OK).send({
