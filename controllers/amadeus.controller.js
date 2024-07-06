@@ -109,10 +109,10 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
                 </pricingTickInfo>
             </fareOptions>
              <travelFlightInfo>
-<cabinId>
-<cabin>F</cabin>
-</cabinId>
-</travelFlightInfo>
+                <cabinId>
+                 <cabin>Y</cabin>
+                </cabinId>
+              </travelFlightInfo>
             <itinerary xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A&quot;>
                 <requestedSegmentRef>
                     <segRef>1</segRef>
@@ -155,9 +155,14 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
     // console.log(obj)
 
       const recommendationObject=obj.recommendation
+      console.log(recommendationObject?.length,"length")
+      let newData=[];
+      if(recommendationObject?.length>=1){
 const segNumber=recommendationObject.map((item,index)=>{
     return item.segmentFlightRef.length || 1 
-})
+});
+
+
 const flattenedArray = segNumber.flatMap((item, index) => {
     const modifiedArray = [];
     for (let i = 0; i < item; i++) {
@@ -165,11 +170,20 @@ const flattenedArray = segNumber.flatMap((item, index) => {
     }
     return modifiedArray;
 });
+newData=flattenedArray;
 
+}else{
+  const modifiedArray = [];
+  console.log(obj);
+  // return;
+  modifiedArray.push({...obj.flightIndex.groupOfFlights, ...recommendationObject.paxFareProduct})
+  newData=modifiedArray;
+}
 // console.log(flattenedArray);
 
 
-    actionCompleteResponse(res, flattenedArray, successMsg);
+    // actionCompleteResponse(res, newData, successMsg);
+    actionCompleteResponse(res, response.data, successMsg);
   } catch (err) {
     // console.log(err);
     sendActionFailedResponse(res, {err}, err.message);

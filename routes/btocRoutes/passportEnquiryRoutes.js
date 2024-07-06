@@ -1,0 +1,24 @@
+const passportEnquiryControler=require('../../controllers/btocController/passportEnquiry');
+// const eventPromoBannerControler=require('../../controllers/btocController/eventPromoBannerController');
+const schemas = require('../../utilities/schema.utilities');
+const SchemaValidator = require('../../utilities/validations.utilities');
+// const upload=require('../../utilities/uploadHandler')
+const { authJwt } = require("../../middleware");
+const { Schemas } = require('aws-sdk');
+const multer = require("multer");
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+
+
+module.exports = function (app) {
+    app.use(function (req, res, next) {
+        res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
+        next();
+    });
+    // SchemaValidator(schemas.passportEnquirySchema)
+    app.post('/skyTrails/api/user/passport/createEnquiry',upload.array("images"),[authJwt.verifcationToken], passportEnquiryControler.createEnquiry);
+    app.get('/skyTrails/api/user/passport/getAllPassportEnquiry',passportEnquiryControler.getAllPassportEnquiry);
+    // ,[authJwt.verifcationToken]
+    app.get('/skyTrails/api/user/passport/getPassportEnquiry',passportEnquiryControler.getPassportEnquiry);
+  }

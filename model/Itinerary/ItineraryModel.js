@@ -10,12 +10,12 @@ const itinerarySchema = new mongoose.Schema(
     pakageTitle: {
       type: String,
     },
-    pakageImg: {
-      type: String,
-    },
-    packageGallery: {
-      type: Array,
-    },
+    // pakageImg: {
+    //   type: String,
+    // },
+    // packageGallery: {
+    //   type: Array,
+    // },
     origin: {
       type: String,
     },
@@ -28,16 +28,16 @@ const itinerarySchema = new mongoose.Schema(
     days: {
       type: Number,
     },
-    schedule: {
-      flexible: {
-        type: Boolean,
-        default: true,
-      },
-      fixedDeparture: {
-        type: Boolean,
-        default: false,
-      },
-    },
+    // schedule: {
+    //   flexible: {
+    //     type: Boolean,
+    //     default: true,
+    //   },
+    //   fixedDeparture: {
+    //     type: Boolean,
+    //     default: false,
+    //   },
+    // },
     pakageAmount: {
       currency: {
         type: String,

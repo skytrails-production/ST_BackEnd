@@ -19,3 +19,5 @@ hotelRoomsSchema.plugin(mongoosePaginate);
 hotelRoomsSchema.plugin(aggregatePaginate);
 
 module.exports = mongoose.model('hotelRooms', hotelRoomsSchema);
+
+

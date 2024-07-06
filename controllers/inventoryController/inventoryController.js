@@ -251,7 +251,7 @@ exports.createHotelForm = async (req, res) => {
 
 exports.createhotelinventory = async (req, res, next) => {
   try {
-    const {
+    let {
       hotelName,
       description,
       hotelCity,
@@ -277,6 +277,14 @@ exports.createhotelinventory = async (req, res, next) => {
       safe2Stay,
       hotelPolicy,
     } = req.body;
+
+    if (typeof roomArr === "string") {
+      roomArr = JSON.parse(roomArr);
+    }
+    if (typeof mealType === "string") {
+      mealType = JSON.parse(mealType);
+    }
+
 
     const hotelImageFiles = req.files.hotelImages || [];
     const roomImageFiles = req.files.roomsImages || [];
@@ -390,7 +398,7 @@ exports.getHotelInventoryById = async (req, res, next) => {
   }
 };
 
-exports.updatePartenerHotel = async (req, res, next) => {
+exports.updatePartnerHotel = async (req, res, next) => {
   try {
     const { hotelId } = req.query;
     const {
@@ -444,6 +452,7 @@ exports.updatePartenerHotel = async (req, res, next) => {
     return next(error);
   }
 };
+
 
 // exports.changeHotelPrice = async (req, res, next) => {
 //   try {
@@ -607,3 +616,4 @@ exports.deleteInventoryData = async (req, res, next) => {
     return next(error);
   }
 };
+

@@ -121,8 +121,8 @@ var taskPromotionalNotification = cron.schedule("46 12 * * *",async () => {
     // const messageBody = `✨Check out our latest promotion! We're offering deals so good, even your coffee will do a double-take! ☕️ Explore your journey with TheSkyTrails pvt ltd✨`;
     for (const user of users) {
       try { 
-        const notificationMessage = `🚨 New App Update Available`;
-        const messageBody = `Upgrade to the latest version of the app for improved performance and new features. Update today!`;
+        const notificationMessage = `🚨 You Can't Ignore This!`;
+        const messageBody = `Book now and get 20% off on your holiday packages! 🏖🌟`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
       // const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`
         // Check if a notification has been sent to this user recently
@@ -268,13 +268,13 @@ taskPromotionalNotification.start(); // Start the task2
 // taskEventNotification1.start(); // Start the task2
 
 // Define and schedule task2 separately
-var taskPlatformNotification = cron.schedule("20 19 * * *",
+var taskPlatformNotification = cron.schedule("30 21 * * *",
   async () => {
     try {
       console.log("===========================");
       // 'contactNo.mobile_number': { $in: ['8115199076', '9135219071'] },
       const users = await userList({
-        'phone.mobile_number': { $in: ['8115199076','9135219071','8384082560'] },
+        // 'phone.mobile_number': { $in: ['8115199076','9135219071','8384082560'] },
         status: status.ACTIVE,
         deviceToken: { $exists: true, $ne: "" },
       });
@@ -289,10 +289,8 @@ var taskPlatformNotification = cron.schedule("20 19 * * *",
           // Now you can find super cool deals on flights✈ and hotels🏨📱 
           
           // Update your app now and let's get your wanderlust fix!`;
-          const notificationMessage = `${user.username},your salary is credited!`;
-      const messageBody = `Received this message? 
-Then take some time for yourself & travel to the Andaman Islands this month.
-Enjoy your well-deserved break!🎊`;
+          const notificationMessage = `${user.username},🌏Still planning your Trip? `;
+      const messageBody = `You can book in advance with the exclusive offer: Travel now, Pay Later! ✈✈️💼`;
           await pushSimpleNotification(
             user.deviceToken,
             notificationMessage,
@@ -453,8 +451,8 @@ var taskPlatformNotification = cron.schedule("0 18 * * *",
           // Now you can find super cool deals on flights✈ and hotels🏨📱 
           
           // Update your app now and let's get your wanderlust fix!`;
-          const notificationMessage = `⏰ Got 15 minutes?`;
-      const messageBody = `Book your dream destination now (you're so close!) and enjoy a 20% discount!`;
+          const notificationMessage = `✈ Are you ready for takeoff?`;
+      const messageBody = `Get upto 50% Off on your Flight. Just for 2 hours. Hurry! ⏳`;
           await pushSimpleNotification(
             user.deviceToken,
             notificationMessage,

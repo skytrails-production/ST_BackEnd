@@ -11,6 +11,7 @@ const configs = require("./common/common");
 const PORT = process.env.PORT || 8000;
 const db = require("./model");
 const Role = db.role;
+// const initializeRoutes = require("./routes");
 app.use(cors());
 const cron=require('./controllers/btocController/cronNotification');
 const WebSocket = require('websocket').server;
@@ -114,6 +115,8 @@ app.get("/", (req, res) => {
     url: `${req.protocol}://${req.get("host")}`,
   });
 });
+// Initialize routes
+// initializeRoutes(app);
 
 // routes
 require("./routes/auth.routes")(app);
@@ -198,7 +201,9 @@ require("./routes/relationshipManagerRoutes")(app);
 require("./routes/blogRoutes")(app);
 require("./routes/amadeusRoutes/amadeusFlightBookingRoutes")(app);
 require("./routes/grnRoutes/grnRoutes")(app);
-require("./routes/Itinerary/ItineraryRoutes")(app)
+require("./routes/Itinerary/ItineraryRoutes")(app);
+require("./routes/btocRoutes/passportEnquiryRoutes")(app)
+require("./routes/notificationRoutes")(app)
 mongoose
   .connect(configs.mongoUrl.DEVELOPMENT, {
     useNewUrlParser: true,

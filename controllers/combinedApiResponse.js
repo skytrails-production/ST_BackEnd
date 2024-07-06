@@ -243,7 +243,7 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
 
         return {
           ...item,
-          baggage: freeBaggageAllowance[freeAllowanceLuggageIndex - 1],
+          baggage: freeBaggageAllowance[freeAllowanceLuggageIndex - 1]||freeBaggageAllowance,
         };
       });
       // console.log(finalFlattenedArray,"finalFlattenedArray")
@@ -755,6 +755,11 @@ const generateAmadeusRequest = (data) => {
                       </pricingTicketing>
                   </pricingTickInfo>
               </fareOptions>
+              <travelFlightInfo>
+                <cabinId>
+                 <cabin>${data?.cabinClass||'Y'}</cabin>
+                </cabinId>
+              </travelFlightInfo>
               <itinerary xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A">
                   <requestedSegmentRef>
                       <segRef>1</segRef>

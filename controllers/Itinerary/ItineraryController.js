@@ -27,14 +27,14 @@ exports.ourProposal=async(req,res,next)=>{
         const {pakageTitle,destination,country,days,flexible,fixedDeparture,currency,amount,insclusions,highlights,insclusionNote,exclusionNote,detailedItinerary,overview,selectTags,termConditions,cancellationPolicy,hotelDetails,flightDetails,}=req.body;
         // req.body.hotelDetails = JSON.parse(hotelDetails);
         // req.body.flightDetails = JSON.parse(flightDetails);
-        let media=[];
-        if (req.files) {
-            for(const img of req.files){
-                const secureurl = await commonFunction.getImageUrlAWS(img);
-                media.push(secureurl);
-            }
-            req.body.packageGallery=media;
-        }
+        // let media=[];
+        // if (req.files) {
+        //     for(const img of req.files){
+        //         const secureurl = await commonFunction.getImageUrlAWS(img);
+        //         media.push(secureurl);
+        //     }
+        //     req.body.packageGallery=media;
+        // }
         const result=await createProposal(req.body);
         return res.status(statusCode.OK).send({
             statusCode: statusCode.OK,

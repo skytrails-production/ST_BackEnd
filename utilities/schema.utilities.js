@@ -6,6 +6,7 @@ const queryType = require("../enums/offerType");
 const visaType = require("../enums/visaType");
 const staticType = require("../enums/staticContentType");
 const bookingStatus = require("../enums/bookingStatus");
+const genderType=require("../enums/gender")
 // const bookingType=require("../enums/")
 const schemas = {
   flightBookingSchema: joi.object().keys({
@@ -721,7 +722,15 @@ const schemas = {
   cancelStatusUpdation:joi.object().keys({
     hotelBookingId: joi.string().required(),
     status: joi.valid(...Object.values(bookingStatus)).required(),
-  })
+  }),
+  // passportEnquirySchema:joi.object().keys({
+  //   firstName:joi.string().required(),
+  //   lastName:joi.string().required(),
+  //   email:joi.string().required(),
+  //   gender:joi.valid(...Object.values(genderType)).required(),
+  //   dob:joi.string().required(),
+  //   contactNumber:
+  // })
 };
 
 module.exports = schemas;
