@@ -149,21 +149,16 @@ exports.hotelSearch=async (req,res) =>{
 
 exports.singleHotelSearch=async (req,res) =>{
   try{
-      const data={
-          ...req.body
-      };
-      // console.log(data,"data")
-            
-
+     
       const searchData={
-        rooms:req.body.rooms,
-        rates: "comprehensive",
-        hotel_codes:req.body.hotel_codes,
-        currency:req.body.currency,
-        client_nationality:req.body.client_nationality,
-        checkin:req.body.checkin,
-        checkout:req.body.checkout,
-        version:req.body.version,
+        rooms:req?.body?.rooms,
+        rates: req?.body?.rates,
+        hotel_codes:req?.body?.hotel_codes,
+        currency:req?.body?.currency,
+        client_nationality:req?.body?.client_nationality,
+        checkin:req?.body?.checkin,
+        checkout:req?.body?.checkout,
+        version:req?.body?.version,
         cutoff_time:3000
       }
       // console.log(searchData,"data")
@@ -184,10 +179,8 @@ exports.singleHotelSearch=async (req,res) =>{
 
 exports.hotelSearchWithPagination=async (req,res) =>{
   try{
-      const data={
-          ...req.body
-      };
-
+      
+      if(req?.body?.cityCode){
        // Calculate pagination parameters
        const page = req.query.page ? parseInt(req.query.page) : 1; // Get page number from query parameter, default to 1 if not provided
        const limit = 100; // Set the limit of hotel codes per page
@@ -195,9 +188,7 @@ exports.hotelSearchWithPagination=async (req,res) =>{
 
        // Fetch hotel codes with pagination
        const hotelCode = await exports.grnHotelCityMapWithPagination(req.body.cityCode, page, limit);
-      //  console.log(hotelCode,"hotelCode");
-      // const hotelLength=await exports.hotelCodeLength(req.body.cityCode);
-      // console.log(hotelLength);
+      
 
       const searchData={
         rooms:req.body.rooms,
@@ -214,10 +205,28 @@ exports.hotelSearchWithPagination=async (req,res) =>{
 
       // console.log(`${baseurl}/api/v3/hotels/availability`,"console")
       const response = await axios.post(`${baseurl}/api/v3/hotels/availability`, searchData, { headers });   
-      
-      
       msg = "Hotel Search Successfully!";
-      actionCompleteResponse(res, response.data, msg);      
+      return actionCompleteResponse(res, response.data, msg); 
+     }else{
+      const searchData={
+        rooms:req?.body?.rooms,
+        rates:req?.body?.rates,
+        hotel_codes:req?.body?.hotel_codes,
+        currency:req?.body?.currency,
+        client_nationality:req?.body?.client_nationality,
+        checkin:req?.body?.checkin,
+        checkout:req?.body?.checkout,
+        cutoff_time: 5000,
+        version:req.body.version
+      }
+      // console.log(searchData,"data");
+
+      // console.log(`${baseurl}/api/v3/hotels/availability`,"console")
+      const response = await axios.post(`${baseurl}/api/v3/hotels/availability`, searchData, { headers });   
+      msg = "Single Hotel Search Successfully!";
+
+      actionCompleteResponse(res, response.data, msg);    
+    }  
   } catch (err) {
     // console.log(err);
     sendActionFailedResponse(res, {}, err.message);
