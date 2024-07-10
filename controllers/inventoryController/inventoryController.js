@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const aws = require("aws-sdk");
-const inventoryModel = require("../../model/inventory/inventoryLogin"); // Correct import path
+const inventoryModel = require("../../model/inventory/hotelinventoryAuth"); // Correct import path
 const inventoryHotelForm = require("../../model/inventory/hotelForm");
 const hotelInventory = require("../../model/inventory/hotelPartener");
 const status = require("../../enums/status");
@@ -277,6 +277,9 @@ exports.createhotelinventory = async (req, res, next) => {
       safe2Stay,
       hotelPolicy,
     } = req.body;
+    console.log(req.body, "body","typeof hotelPolic==============",typeof hotelPolicy);
+
+    // return;
 
     if (typeof roomArr === "string") {
       roomArr = JSON.parse(roomArr);
@@ -285,7 +288,22 @@ exports.createhotelinventory = async (req, res, next) => {
       mealType = JSON.parse(mealType);
     }
 
+    if (typeof location === "string") {
+      location = JSON.parse(location);
+    }
 
+    if (typeof facilities === "string") {
+      facilities = JSON.parse(facilities);
+    }
+    if (typeof amenities === "string") {
+      amenities = JSON.parse(amenities);
+    }
+
+    if (typeof hotelPolicy === "string") {
+      hotelPolicy = JSON.parse(hotelPolicy);
+      console.log("hotelPolicy==============",hotelPolicy)
+    }
+    // hotelPolicy
     const hotelImageFiles = req.files.hotelImages || [];
     const roomImageFiles = req.files.roomsImages || [];
 
@@ -365,10 +383,14 @@ exports.getAllHotelInventory = async (req, res, next) => {
         result: result,
       });
     }
+    const finalResult={
+      result,
+      Arrlength:result.length
+    }
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.DATA_FOUND,
-      result: result,
+      result: finalResult,
     });
   } catch (error) {
     console.log("Error while trying to get all inventory data", error);
@@ -453,12 +475,11 @@ exports.updatePartnerHotel = async (req, res, next) => {
   }
 };
 
-
 // exports.changeHotelPrice = async (req, res, next) => {
 //   try {
 //     const { amount, hotelId, roomId ,netName} = req.body;
 //     const isHotelExist = await findPartenerHotelData({ _id: hotelId });
-//     if (!isHotelExist) { 
+//     if (!isHotelExist) {
 //       return res.status(statusCode.OK).send({
 //         statusCode: statusCode.NotFound,
 //         responseMessage: responseMessage.HOTEL_NOT_FOUND,
@@ -497,7 +518,7 @@ exports.changeHotelPrice = async (req, res, next) => {
   try {
     const { amount, hotelId, roomId, netName } = req.body;
     const isHotelExist = await findPartenerHotelData({ _id: hotelId });
-    
+
     if (!isHotelExist) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
@@ -515,7 +536,9 @@ exports.changeHotelPrice = async (req, res, next) => {
     }
 
     // Find the specific net item by netName and update its amount
-    const netItemToUpdate = room.priceDetails.net.find(net => net.name === netName);
+    const netItemToUpdate = room.priceDetails.net.find(
+      (net) => net.name === netName
+    );
     if (!netItemToUpdate) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
@@ -528,8 +551,8 @@ exports.changeHotelPrice = async (req, res, next) => {
 
     // Update query to set the net prices
     const result = await updatePartenerHotel(
-      { _id: hotelId, 'rooms._id': roomId },
-      { $set: { 'rooms.$.priceDetails.net': room.priceDetails.net } }
+      { _id: hotelId, "rooms._id": roomId },
+      { $set: { "rooms.$.priceDetails.net": room.priceDetails.net } }
     );
 
     console.log("Updated room:", room);
@@ -568,7 +591,9 @@ exports.changeHotelPrice1 = async (req, res, next) => {
     }
 
     // Find the specific net item by netName and get its index
-    const netIndex = room.priceDetails.net.findIndex(net => net.name === netName);
+    const netIndex = room.priceDetails.net.findIndex(
+      (net) => net.name === netName
+    );
     if (netIndex === -1) {
       return res.status(404).send({
         statusCode: 404,
@@ -581,7 +606,7 @@ exports.changeHotelPrice1 = async (req, res, next) => {
 
     // Update the hotel document in the database
     const result = await updatePartenerHotel(
-      { _id: hotelId, 'rooms._id': roomId },
+      { _id: hotelId, "rooms._id": roomId },
       { $set: { [updatePath]: amount } }
     );
 
@@ -601,7 +626,6 @@ exports.changeHotelPrice1 = async (req, res, next) => {
   }
 };
 
-
 exports.deleteInventoryData = async (req, res, next) => {
   try {
     const { hotelInventoryId } = req.body;
@@ -616,4 +640,3 @@ exports.deleteInventoryData = async (req, res, next) => {
     return next(error);
   }
 };
-

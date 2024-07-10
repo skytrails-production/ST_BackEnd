@@ -9,6 +9,7 @@ const FCM=require('fcm-node');
 const axios=require('axios')
 const { google } = require('googleapis');
 const moment = require('moment');
+const Quiz=require("../../model/btocModel/quizModel")
 // Define the required scopes for the Google API you are using
 const SCOPES = ['https://www.googleapis.com/auth/drive'];
 
@@ -32,27 +33,79 @@ const {
 
 //**********************************API***********************************************/
 
-exports.getDailyQuiz=async(req,res,next)=>{
+exports.getDailyQuiz1=async(req,res,next)=>{
     try {
+        console.log("==========================")
         const currentDate=new Date();
         // quizDate:{$gte:currentDate}
         const result=await findQuizContent({status:status.ACTIVE,quizExpiration:{$gt:currentDate}});
+        console.log("result=============",result);
         if(result){
         // return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND});
         const getDate=moment(currentDate).format("YYYY-MM-DD")
         const getDateExp=moment(result.quizExpiration).format("YYYY-MM-DD");
+        console.log("v=============ijuyhygygygygygyyyuhy=======",getDateExp>getDate);
         if(getDateExp>getDate){
-            return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.RESPONSE_SUBMIT,result:result});
+            return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.QUIZ_GET,result:result});
         }
+        return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.NOT_FOUND});
+      
     }else{
+        console.log("========================");
             const result=await findQuizContent({status:status.ACTIVE,quizExpiration:{$gte:currentDate}});
-            return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.RESPONSE_SUBMIT,result:result});
+            console.log("result===========",result);
+            return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.QUIZ_GET,result:result});
         }
     } catch (error) {
         console.log("error while trying to get daily quiz",error);
         return next(error);
     }
 };
+exports.getDailyQuiz = async (req, res, next) => {
+    try {
+        const currentDate = new Date();
+        const startOfDay = new Date(currentDate.setHours(0, 0, 0, 0)); // Set time to 00:00:00
+
+        const result = await Quiz.aggregate([
+            {
+                $match: {
+                    status: status.ACTIVE,
+                    quizExpiration: { $gte: startOfDay }
+                }
+            },
+            {
+                $addFields: {
+                    quizExpirationDate: { $dateToString: { format: "%Y-%m-%d", date: "$quizExpiration" } }
+                }
+            },
+            {
+                $match: {
+                    quizExpirationDate: { $gt: moment(startOfDay).format("YYYY-MM-DD") }
+                }
+            }
+        ]);
+
+        console.log("Result:", result);
+
+        if (result && result.length > 0) {
+            return res.status(statusCode.OK).send({
+                statusCode: statusCode.OK,
+                responseMessage: responseMessage.DATA_FOUND,
+                result: result[0]
+            });
+        } else {
+            console.log("No active quiz found.");
+            return res.status(statusCode.NOT_FOUND).send({
+                statusCode: statusCode.NOT_FOUND,
+                responseMessage: responseMessage.DATA_NOT_FOUND
+            });
+        }
+    } catch (error) {
+        console.error("Error while trying to get daily quiz:", error);
+        return next(error);
+    }
+};
+
 
 exports.submitDailyQuizResponse=async(req,res,next)=>{
     try {

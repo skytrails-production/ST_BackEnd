@@ -27,7 +27,8 @@ module.exports = function (app) {
     Controller.createHotelForm
   );
   // app.post('/skyTrails/api/inventory/createInventory',upload.fields([{name: "hotelImages"},{name: "roomsImages"}]),Controller.createhotelinventory)
-  app.post('/skyTrails/api/inventory/createInventory',
+  app.post(
+    "/skyTrails/api/inventory/createInventory",
     upload.fields([
       { name: 'hotelImages', maxCount: 5 },
       { name: 'roomsImages', maxCount: 10 }
@@ -37,4 +38,5 @@ module.exports = function (app) {
   app.delete("/skyTrails/api/inventory/deleteInventoryData",Controller.deleteInventoryData);
   app.put("/skyTrails/api/inventory/changeHotelPrice",Controller.changeHotelPrice);
   app.put("/skyTrails/api/inventory/updatePartnerHotel",Controller.updatePartnerHotel);
+
 };

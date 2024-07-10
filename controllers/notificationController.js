@@ -18,11 +18,11 @@ const {createNotification,findNotification,findNotificationData,deleteNotificati
 
 exports.createNotificationContent=async(req,res,next)=>{
     try {
-        const {title,description}=req.body;
+        const {title,description,notificationType}=req.body;
+        req.body.notificationType = notificationType.toLowerCase();
         if(req.file){
-            req.body.image=await commonFunction.getSecureUrlAWS(req.file);
+            req.body.image=await commonFunction.getNotificationImageUrlAWS(req.file);
         }
-        console.log("result",result);
         const result=await createNotification(req.body);
         if(!result){
             return res.status(statusCode.OK).send({
@@ -60,3 +60,4 @@ exports.getAllNotifications=async(req,res,next)=>{
         return next(error)
     }
 }
+

@@ -5723,7 +5723,22 @@ module.exports = {
       throw error;
     }
   },
-
+  getNotificationImageUrlAWS: async (file) => {
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: `notification/uploadedFile_${Date.now()}_${file.originalname.replace(/\s/g, "")}`,
+      Body: file.buffer,
+      ContentType: file.mimetype,
+      ACL: "public-read",
+    };
+    try {
+      const result = await s3.upload(params).promise();
+      return result.Location; // Assuming Location contains the S3 URL
+    } catch (error) {
+      console.error("Error uploading to S3:", error);
+      throw error;
+    }
+  },
   getSecureUrlAWS: async (file) => {
     if (!file || !file[0].originalname || !file[0].buffer) {
       throw new Error("Invalid file object");

@@ -113,7 +113,6 @@ exports.createEnquiry = async (req, res, next) => {
     return next(error);
   }
 };
-
 exports.getAllPassportEnquiry = async (req, res, next) => {
   try {
     const result = await userPassportEnquiryListSorted({
@@ -199,3 +198,28 @@ exports.updateResolveStatus = async (req, res, next) => {
     return next(error);
   }
 };
+exports.deletePassportEnquire=async(req,res,next)=>{
+  try {
+    const { queryId } = req.query;
+    const result = await findUserPassportEnquiryData({
+      _id: queryId,
+      status: status.ACTIVE,
+    });
+    if (!result) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
+        result: result,
+      });
+    }
+    const deletedData=await deleteUserPassportEnquiry({_id:result._id})
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DELETE_SUCCESS,
+      result: deletedData,
+    });
+  } catch (error) {
+    console.log("error while trying to delete passport enquiry", error);
+    return next(error);
+  }
+}

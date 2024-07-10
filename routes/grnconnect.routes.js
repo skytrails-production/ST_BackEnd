@@ -16,7 +16,8 @@ module.exports = function (app) {
     app.get('/skyTrails/updateCities', controller.updateCityListWithCountryNames);
     app.get('/skyTrails/grnconnect/getcountrylist',controller.getCountryList);
 
-    app.post("/skyTrails/grnconnect/hotelSearch",controller.hotelSearch);
+    app.post("/skyTrails/grnconnect/hotelsearch",controller.hotelSearch);
+    app.post("/skyTrails/grnconnect/singlehotelsearch", controller.singleHotelSearch);
     app.post("/skyTrails/grnconnect/hotelSearchWithPagination",controller.hotelSearchWithPagination);
     app.get("/skyTrails/grnconnect/refetchHotel", controller.refetchHotel);
     app.post("/skyTrails/grnconnect/rateRefetchHotel", controller.rateRefetchHotel);
@@ -32,7 +33,16 @@ module.exports = function (app) {
 
     app.delete("/skyTrails/grnconnect/hotelcancelbooking",controller.hotelCancelBooking);
 
+
+
+    //agent booking system
     app.post("/skyTrails/grnconnect/addhotelBooking", controller.addHotelBooking);
+
+
+    //get grn agent booking all by agent id
+    app.get("/skyTrails/agent/getallgrnbooking", controller.getAllAgentBooking);
+    //get grn agent single booking by booking id
+    app.get("/skyTrails/agent/getgrnbookingbyid",controller.getGrnAgentSingleBooking);
 
 
     //get city and hotel 
@@ -40,6 +50,11 @@ module.exports = function (app) {
     app.get("/skyTrails/grnconnect/searchcityandhotel",controller.getCityAndHotelSearch);
 
     app.post("/skyTrails/grnconnect/hotelsearchwhc",controller.hotelSearchWithCode);
+
+
+    //search hotel by hotel name
+
+    app.get("/skyTrails/grnconnect/searchhotelbyname",controller.searchHotelByName);
 
 
     //hotel searchby location name

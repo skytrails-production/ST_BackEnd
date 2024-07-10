@@ -446,6 +446,10 @@ exports.easebussPayment = async (req, res, next) => {
       bookingType,
       surl,
       furl,
+      origin,
+      destination,
+      oneyWayDate,
+      returnDate
     } = req.body;
 
     const isUserExist = await findUser({
@@ -504,10 +508,17 @@ exports.easebussPayment = async (req, res, next) => {
       // console.log("redirectURL=========", redirectURL);
       const object = {
         userId: isUserExist._id,
+        firstName:firstname,
         amount: amount,
         paymentId: txnId,
         bookingType: bookingType,
-        easeBuzzPayId:"NA"
+        easeBuzzPayId:"NA",
+        email:email,
+        origin:origin,
+        destination:destination,
+        phone:phone,
+        oneyWayDate:oneyWayDate,
+        returnDate:returnDate
       };
       const createData = await createUsertransaction(object);
       res.status(statusCode.OK).send({

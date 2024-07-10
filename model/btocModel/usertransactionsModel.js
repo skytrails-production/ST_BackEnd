@@ -30,6 +30,13 @@ const transactionSchema = mongoose.Schema({
     signature:{
         type:String
     },
+    firstName:String,
+    origin:String,
+    destination:String,
+    phone:Number,
+    email:String,
+    oneyWayDate:String,
+    returnDate:String,
     bookingType: {
         type: String,
         enum: [offerType.FLIGHTS, offerType.HOTELS, offerType.BUS,offerType.EVENTS,offerType.RECHARGES],

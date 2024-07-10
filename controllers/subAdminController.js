@@ -19,6 +19,15 @@ const flightModel = require("../model/flightBookingData.model");
 const hotelBookingModel = require("../model/hotelBooking.model");
 const busBookingModel = require("../model/busBookingData.model");
 //***********************************SERVICES********************************************** */
+const {notificationServices}=require('../services/notificationServices')
+const {createNotification,findNotification,findNotificationData,deleteNotification,updateNotification,countNotification}=notificationServices;
+
+const {
+  pushNotification,
+  mediapushNotification,
+  pushSimpleNotification,
+  pushNotification1
+} = require("../utilities/commonFunForPushNotification");
 const adminModel=require("../model/user.model")
 const { userServices } = require("../services/userServices");
 const userType = require("../enums/userType");
@@ -514,9 +523,13 @@ exports.approveStory=async(req,res,next)=>{
       return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.POST_NOT_FOUND});
     }
     const result=await updateforumQue({_id:isPostExist._id},{status:storyStatus.ACTIVE});
+   
+    const findUser=await findUserData({_id:isPostExist.userId});
+   const notificationData= await findNotification({notificationType:'postapprove'});
+    const sentNotification=await pushNotification(findUser.deviceToken,notificationData.title, notificationData.description);
     if(result){
       return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.UPDATE_SUCCESS,result:result});
-    } 
+    }   
   } catch (error) {
     console.log("error while approve story",error);
     return next(error)
@@ -907,3 +920,7 @@ exports.getSubAdminDashboard=async(req,res,next)=>{
     return next(error);
   }
 }
+
+
+
+

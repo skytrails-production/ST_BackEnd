@@ -3,8 +3,7 @@ const status = require("../../enums/status");
 const whatsappAPIUrl = require("../../utilities/whatsApi");
 const sendSMS = require("../../utilities/sendSms");
 const moment = require('moment');
-
-
+//******************************SERVICES********************************************/
 const { quizServices } = require("../../services/btocServices/quizServices");
 const {
   createQuizContent,
@@ -18,7 +17,6 @@ const {
   deleteQuizResponse,
   updateQuizResponse,
 } = quizServices;
-
 
 const {
   pushNotification,
@@ -51,6 +49,75 @@ const {
   paginateUserSearch,
   countTotalUser,
 } = userServices;
+const {notificationServices}=require("../../services/notificationServices");
+const {createNotification,findNotification,findNotificationData,deleteNotification,updateNotification,countNotification}=notificationServices;
+
+const notifications = [
+  {
+    message: `Travel Now, Pay Later`,
+    body: `Book your dream trip today and pay at your convenience!🌟🗺️`,
+  },
+  {
+    message: `Chance to win a free vacation! 🏖 ✈`,
+    body: `Play now and answer a few fun questions on our social media!🌍✨`,
+  },
+  {
+    message: `FunTime!Test your knowledge `,
+    body: `win exciting prizes—play now in our app! 🎉🧳😄🛫`,
+  },
+  {
+    message: `Your Dream Trip is Calling! `,
+    body: `Take our quiz to discover your perfect getaway and win big! 🏝✨`,
+  },
+  {
+    message: `Congratulations! username`,
+    body: `Just for you! Exclusive Offer get upto 20% off with TheSkyTrails pvt ltd `,
+  },
+  {
+    message: `🤔 Soch kya rhe ho neeche daikho `,
+    body: `The skytrails pr apko millega har services par 20% ka offer`,
+  },
+  {
+    message: `🌊 Take your partner to a beach getaway!`,
+    body: `Enjoy 20% off on your travel packages! Book now`,
+  },
+  {
+    message: `Last Chance Alert! `,
+    body: `Don't miss out on our flash sale - book now before it's gone! ⏰✈`,
+  },
+  {
+    message: `Escape the ordinary!`,
+    body: `Explore our curated list of off-the-beaten-path destinations for your next adventure! 🗺🌟`,
+  },
+  {
+    message: `Trip ki planning ho gayi? 📅`,
+    body: `SkyTrails ke sath apni next vacation plan karo aur enjoy karo! 🏖️✨`,
+  },
+//   {
+//     message: `Thara Paisa 💸💵`,
+//     body: `Thari Daulat 🤑
+// Thara Hotel 🏟️
+// Thari Flight ✈️
+// Thara Deal 🤗`,
+//   },
+  {
+    message: `Knock-Knock! The Skytrails ✈`,
+    body: `Don't miss the latest offers and discounts on Hotel Bookings!🎉🤩`,
+  },
+  {
+    message: `Two things we love ❤️`,
+    body: `1. username
+2. Giving 20% OFF* to username on all Bookings
+CLAIM NOW`,
+  },
+  {
+    message: `New deals just landed! 🛬 `,
+    body: `Check out the hottest travel offers now on the Skytrails App.✈📲`,
+  },
+];
+
+
+
 const lastNotificationSent = new Map();
 // Define your cron job schedule. This example runs the job every day at 9:00 AM.
 
@@ -272,6 +339,7 @@ var taskPlatformNotification = cron.schedule("30 21 * * *",
   async () => {
     try {
       console.log("===========================");
+      
       // 'contactNo.mobile_number': { $in: ['8115199076', '9135219071'] },
       const users = await userList({
         // 'phone.mobile_number': { $in: ['8115199076','9135219071','8384082560'] },
@@ -483,69 +551,43 @@ var taskPlatformNotification = cron.schedule("0 18 * * *",
 );
 taskPlatformNotification.start();
 
-const notifications = [
-  {
-    message: `Travel Now, Pay Later`,
-    body: `Book your dream trip today and pay at your convenience!🌟🗺️`,
-  },
-  {
-    message: `Chance to win a free vacation! 🏖 ✈`,
-    body: `Play now and answer a few fun questions on our social media!🌍✨`,
-  },
-  {
-    message: `FunTime!Test your knowledge `,
-    body: `win exciting prizes—play now in our app! 🎉🧳😄🛫`,
-  },
-  {
-    message: `Your Dream Trip is Calling! `,
-    body: `Take our quiz to discover your perfect getaway and win big! 🏝✨`,
-  },
-  {
-    message: `Congratulations! username`,
-    body: `Just for you! Exclusive Offer get upto 20% off with TheSkyTrails pvt ltd `,
-  },
-  {
-    message: `🤔 Soch kya rhe ho neeche daikho `,
-    body: `The skytrails pr apko millega har services par 20% ka offer`,
-  },
-  {
-    message: `🌊 Take your partner to a beach getaway!`,
-    body: `Enjoy 20% off on your travel packages! Book now`,
-  },
-  {
-    message: `Last Chance Alert! `,
-    body: `Don't miss out on our flash sale - book now before it's gone! ⏰✈`,
-  },
-  {
-    message: `Escape the ordinary!`,
-    body: `Explore our curated list of off-the-beaten-path destinations for your next adventure! 🗺🌟`,
-  },
-  {
-    message: `Trip ki planning ho gayi? 📅`,
-    body: `SkyTrails ke sath apni next vacation plan karo aur enjoy karo! 🏖️✨`,
-  },
-//   {
-//     message: `Thara Paisa 💸💵`,
-//     body: `Thari Daulat 🤑
-// Thara Hotel 🏟️
-// Thari Flight ✈️
-// Thara Deal 🤗`,
-//   },
-  {
-    message: `Knock-Knock! The Skytrails ✈`,
-    body: `Don't miss the latest offers and discounts on Hotel Bookings!🎉🤩`,
-  },
-  {
-    message: `Two things we love ❤️`,
-    body: `1. username
-2. Giving 20% OFF* to username on all Bookings
-CLAIM NOW`,
-  },
-  {
-    message: `New deals just landed! 🛬 `,
-    body: `Check out the hottest travel offers now on the Skytrails App.✈📲`,
-  },
-];
+var sendNotificationTask=cron.schedule("23 10 * * *",async()=>{
+  try {
+    const users = await userList({
+      // 'phone.mobile_number': { $in: ['8115199076','9135219071','8384082560','9870249076'] },
+      status: status.ACTIVE,
+      deviceToken: { $exists: true, $ne: "" },
+    });
+    const findAllNotification=await findNotificationData({notificationType:'promotion'});
+    const notification=findAllNotification[Math.floor(Math.random() * findAllNotification.length)]
+    for (const user of users) {
+      try {
+        const notificationMessage = notification.title.replace('username', user.username);
+        const messageBody = notification.description.replace(/username/g, user.username);
+
+        await pushSimpleNotification(
+          user.deviceToken,
+          notificationMessage,
+          messageBody,
+          // imageurl
+        );
+      } catch (pushError) {
+         // Handle if any user is not registered
+         console.error(
+          "Error while sending push notification to user:",
+          pushError
+        );
+        // continue to the next user even if one fails
+        continue;
+      }
+    }
+    // Stop the cron job after execution
+    sendNotificationTask.stop();
+  } catch (error) {
+    console.log("error when running task2", error);
+  }
+})
+sendNotificationTask.start();
 
 const taskRandomNotification = cron.schedule(
   "15 14 * * *",

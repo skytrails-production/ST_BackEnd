@@ -145,6 +145,41 @@ exports.hotelSearch=async (req,res) =>{
 }
 
 
+//singleHotelSearch
+
+exports.singleHotelSearch=async (req,res) =>{
+  try{
+      const data={
+          ...req.body
+      };
+      // console.log(data,"data")
+            
+
+      const searchData={
+        rooms:req.body.rooms,
+        rates: "comprehensive",
+        hotel_codes:req.body.hotel_codes,
+        currency:req.body.currency,
+        client_nationality:req.body.client_nationality,
+        checkin:req.body.checkin,
+        checkout:req.body.checkout,
+        version:req.body.version,
+        cutoff_time:3000
+      }
+      // console.log(searchData,"data")
+      // console.log(`${baseurl}/api/v3/hotels/availability`,"console")
+      const response = await axios.post(`${baseurl}/api/v3/hotels/availability`, searchData, { headers });   
+      
+      
+      msg = "Single Hotel Search Successfully!";
+      actionCompleteResponse(res, response.data, msg);      
+  } catch (err) {
+    // console.log(err);
+    sendActionFailedResponse(res, {}, err.message);
+  }
+}
+
+
 //hotel Search with pagination
 
 exports.hotelSearchWithPagination=async (req,res) =>{
@@ -424,7 +459,57 @@ exports.addHotelBooking=async (req, res) =>{
 }
 
 
+//getAllAgentBooking
 
+exports.getAllAgentBooking = async (req, res ) =>{
+
+  const { page, size, search, userId } = req.query;
+
+  try{
+
+    const limit=Number.parseInt(req?.query?.size)||20;
+
+    const page=Number.parseInt(req?.query?.page)||1;
+    const sortBy=req.query.sort||'createdAt';
+    const skip=limit*(page-1);
+    const totalPages=await GrnHotelBooking.countDocuments();
+
+    const docs=await GrnHotelBooking.find({userId}).sort(sortBy).skip(skip).limit(limit);
+
+    actionCompleteResponse(res, {docs, totalPages}, "success"); 
+    
+  } catch (err) {
+    sendActionFailedResponse(res, {}, err.message);
+  }
+
+}
+
+
+
+// getGrnAgentSingleBooking
+
+exports.getGrnAgentSingleBooking = async (req, res ) =>{
+
+  const {id } = req.query;
+
+  try{
+
+    // const limit=Number.parseInt(req?.query?.size)||20;
+
+    // const page=Number.parseInt(req?.query?.page)||1;
+    // const sortBy=req.query.sort||'createdAt';
+    // const skip=limit*(page-1);
+    // const totalPages=await GrnHotelBooking.countDocuments();
+
+    const result=await GrnHotelBooking.find({_id:id});
+
+    actionCompleteResponse(res, result, "success"); 
+    
+  } catch (err) {
+    sendActionFailedResponse(res, {}, err.message);
+  }
+
+}
 
 
 
@@ -520,6 +605,30 @@ exports.getAllhotelLocationName = async (req, res) => {
     // console.log(locationNames, "data");
 
     actionCompleteResponse(res, locationNames, "success");
+  } catch (error) {
+    sendActionFailedResponse(res, error, error.message);
+  }
+};
+
+
+
+// searchHotelByName
+
+exports.searchHotelByName = async (req, res) => {
+  try {
+    const keyword = req.query.keyword;
+    const query = {
+      $or: [
+        { hotelName: { $regex: keyword, $options: "i" } },
+        { address: { $regex: keyword, $options: "i" } }
+      ]
+    };
+
+    // Using countDocuments as a function and then the same query for retrieving documents
+    // const count = await GrnHotelCityMap.countDocuments(query);
+    const response = await GrnHotelCityMap.find(query);
+
+    actionCompleteResponse(res, response , "success");
   } catch (error) {
     sendActionFailedResponse(res, error, error.message);
   }

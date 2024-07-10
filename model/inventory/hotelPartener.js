@@ -32,7 +32,7 @@ const hotelInventorySchema = new mongoose.Schema(
     hotelCountry: { type: String },
     hotelState: { type: String },
     panCard: { type: String },
-    rating: { type: Number,min: 0, max: 5 },
+    rating: { type: Number, min: 0, max: 5 },
     totalRooms: { type: Number },
     availableRooms: { type: Number },
     hotelImages: [{ type: String }],
@@ -51,7 +51,7 @@ const hotelInventorySchema = new mongoose.Schema(
       coordinates: { type: [Number], default: [0, 0] },
     },
     hotelCode: { type: String },
-    hotelPolicy: { type: String },
+    hotelPolicy: [String],
     facilities: [String],
     bookingPolicy: [String],
     status: {

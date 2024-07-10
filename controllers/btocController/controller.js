@@ -83,6 +83,12 @@ const {
   updateUserWalletHistory,
   countTotalUserWalletHistory,
 } = userWalletHistoryServices;
+const { hotelBookingServicess } = require("../../services/hotelBookingServices");
+const { aggregatePaginateHotelBookingList, aggregatePaginateHotelBookingList1, findhotelBooking, findhotelBookingData, deletehotelBooking, updatehotelBooking, hotelBookingList, countTotalBooking } = hotelBookingServicess;
+const { userBusBookingServices } = require('../../services/btocServices/busBookingServices');
+const { createUserBusBooking, findUserBusBooking, getUserBusBooking, findUserBusBookingData, deleteUserBusBooking, userBusBookingList, updateUserBusBooking, paginateUserBusBookingSearch } = userBusBookingServices
+const { userflightBookingServices } = require('../../services/btocServices/flightBookingServices');
+const { createUserflightBooking, findUserflightBooking, getUserflightBooking, findUserflightBookingData, deleteUserflightBooking, userflightBookingList, updateUserflightBooking, paginateUserflightBookingSearch, aggregatePaginateGetBooking } = userflightBookingServices
 
 //******************************************User SignUp api*************************/
 exports.login = async (req, res, next) => {
@@ -732,7 +738,6 @@ exports.editProfile = async (req, res, next) => {
     return next(error);
   }
 };
-
 exports.deleteUserAccount = async (req, res, next) => {
   try {
     const isUserExist = await findUser({
@@ -761,7 +766,6 @@ exports.deleteUserAccount = async (req, res, next) => {
     return next(error);
   }
 };
-
 exports.getReachargeHistory = async (req, res, next) => {
   try {
     const isUserExist = await findUserData({
@@ -797,7 +801,6 @@ exports.getReachargeHistory = async (req, res, next) => {
     return next(error);
   }
 };
-
 exports.getAppLink = async (req, res, next) => {
   try {
     const mobileNumber = req.params;
@@ -821,7 +824,6 @@ exports.getAppLink = async (req, res, next) => {
     return next(error);
   }
 };
-
 exports.updateDeviceToken = async (req, res, next) => {
   try {
     const { deviceToken, deviceType } = req.body;
@@ -851,7 +853,6 @@ exports.updateDeviceToken = async (req, res, next) => {
     return next(error);
   }
 };
-
 exports.shareReferralCode = async (req, res, next) => {
   try {
     const isUserExist = await findUserData({
@@ -886,7 +887,6 @@ exports.shareReferralCode = async (req, res, next) => {
     return next(error);
   }
 };
-
 exports.updateEmail = async (req, res, next) => {
   try {
     const { email } = req.body;
@@ -923,7 +923,6 @@ exports.updateEmail = async (req, res, next) => {
     return next(error);
   }
 };
-
 exports.loginWithMailMobileLogin = async (req, res, next) => {
   try {
     const { email } = req.body;
@@ -1140,7 +1139,6 @@ exports.loginWithMailMobileLogin = async (req, res, next) => {
     return next(error);
   }
 };
-
 exports.verifyUserOtpMailMobile = async (req, res, next) => {
   try {
     const { otp, fullName, dob, email, referrerCode } = req.body;
@@ -1342,7 +1340,6 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
     return next(error);
   }
 };
-
 exports.sendOtpOnSMS = async (req, res, next) => {
   try {
     const { mobile } = req.body;
@@ -1403,7 +1400,6 @@ exports.sendOtpOnSMS = async (req, res, next) => {
     return next(error);
   }
 };
-
 exports.resendOtpMailMobile = async (req, res, next) => {
   try {
     const { email } = req.body;
@@ -1535,7 +1531,6 @@ exports.resendOtpMailMobile = async (req, res, next) => {
     return next(error);
   }
 };
-
 exports.shareReferralCodeSMSWHTSAPP = async (req, res, next) => {
   try {
     const { countryCode, contactNumber } = req.body;
@@ -1582,7 +1577,6 @@ const var3=`IOS=${referralLinkIOS} and Andriod=${referralLink}`
     return next(error);
   }
 };
-
 exports.getValueOfCoin = async (req, res, next) => {
   try {
     // const isUserExist = await findUserData({
@@ -1606,7 +1600,6 @@ exports.getValueOfCoin = async (req, res, next) => {
     return next(error);
   }
 };
-
 exports.getWalletHistory = async (req, res, next) => {
   try {
     const isUserExist = await findUserData({
@@ -1632,7 +1625,6 @@ exports.getWalletHistory = async (req, res, next) => {
     return next(error);
   }
 };
-
 exports.redeemCoin = async (req, res, next) => {
   try {
     const { redeemCoin, source, details } = req.body;
@@ -1674,7 +1666,6 @@ exports.redeemCoin = async (req, res, next) => {
     return next(error);
   }
 };
-
 exports.getUserBalance = async (req, res, next) => {
   try {
     const isUserExist = await findUserData({
@@ -1749,4 +1740,46 @@ exports.updateMihuruWallet= async (req, res) =>{
     sendActionFailedResponse(res, {err}, err.message);   
   }
 
+}
+
+exports.checkFirstBooking=async(req,res,next)=>{
+  try {
+    const isUserExist = await findUserData({
+      _id: req.userId,
+      status: status.ACTIVE,
+    });
+    if (!isUserExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+     // Check for existing bookings
+     const hotelBooking = await findhotelBooking({ userId: req.userId });
+     const busBooking = await findUserBusBookingData({ userId: req.userId });
+     const flightBooking = await findUserflightBooking({ userId: req.userId });
+ 
+     if (hotelBooking || busBooking || flightBooking) {
+       return res.status(statusCode.OK).send({
+         statusCode: statusCode.OK,
+         responseMessage: responseMessage.USER_BOOKING_ALREADY_EXIST,
+         result: {
+           isFirstBooking: false,
+           hotelBooking: hotelBooking ? hotelBooking : null,
+           busBooking: busBooking ? busBooking : null,
+           flightBooking: flightBooking ? flightBooking : null,
+         },
+       });
+     }
+     return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.USER_FIRST_BOOKING,
+      result: {
+        isFirstBooking: true,
+      },
+    });
+  } catch (error) {
+    console.log("error while tryiong to find is first booking or not",error);
+    return next(error);
+  }
 }

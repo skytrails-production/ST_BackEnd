@@ -1144,21 +1144,28 @@ exports.airRetrieveSeatMap = async (req, res) =>{
                const xmlResponse = response.data;
           const parser = new xml2js.Parser({ explicitArray: false, trim: true });
           const parsedResponse = await parser.parseStringPromise(xmlResponse);
+
+          
           if(parsedResponse['soapenv:Envelope']['soapenv:Body']['soap:Fault']){
             return;
           }
   
+
+
+          const startIndex = xmlResponse.indexOf('<Air_RetrieveSeatMapReply');
+        const endIndex = xmlResponse.indexOf('</Air_RetrieveSeatMapReply>') + '</Air_RetrieveSeatMapReply>'.length;
+        const airRetrieveSeatMapReplyData = xmlResponse.slice(startIndex, endIndex);
           // Extract required fields
-          const extractedData = {
-              MessageID: parsedResponse['soapenv:Envelope']['soapenv:Header']['wsa:RelatesTo']._,
-              UniqueID: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsl:TransactionFlowLink']['awsl:Consumer']['awsl:UniqueID'],
-              // ServerID: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsl:TransactionFlowLink']['awsl:Receiver']['awsl:ServerID'],
-              SessionId: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SessionId'],
-              SequenceNumber: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SequenceNumber'],
-              SecurityToken: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SecurityToken']
-               };
+          // const extractedData = {
+          //     MessageID: parsedResponse['soapenv:Envelope']['soapenv:Header']['wsa:RelatesTo']._,
+          //     UniqueID: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsl:TransactionFlowLink']['awsl:Consumer']['awsl:UniqueID'],
+          //     // ServerID: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsl:TransactionFlowLink']['awsl:Receiver']['awsl:ServerID'],
+          //     SessionId: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SessionId'],
+          //     SequenceNumber: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SequenceNumber'],
+          //     SecurityToken: parsedResponse['soapenv:Envelope']['soapenv:Header']['awsse:Session']['awsse:SecurityToken']
+          //      };
             
-            actionCompleteResponse(res, {headers:extractedData,data:response.data}, successMsg);
+            actionCompleteResponse(res, airRetrieveSeatMapReplyData, successMsg);
          
             //  actionCompleteResponse(res, {data:response.data}, successMsg);
          

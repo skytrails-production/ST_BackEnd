@@ -153,6 +153,8 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
           return { data: {} };
         })
     ]);
+    console.log("tvoResponse==========",tvoResponse.data.Response);
+console.log("amadeusResponse============",amadeusResponse);
     var tvoArray = [];
     if (tvoResponse.data.Response.ResponseStatus === 1) {
       tvoArray = tvoResponse.data.Response.Results[0];
@@ -248,6 +250,7 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
       });
       // console.log(finalFlattenedArray,"finalFlattenedArray")
     }
+
     var finalResult = [];
     var selectedArray = [];
     if (tvoArray.length > 0) {
@@ -298,9 +301,10 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
       tvoTraceId: tvoResponse.data.Response.TraceId,
       result: sortedData,
       length: length,
+      tvoArray:tvoArray
     });
   } catch (error) {
-    console.error("Error while trying to get response", error);
+    // console.error("Error while trying to get response", error);
     return next(error);
   }
 };
@@ -570,7 +574,7 @@ exports.combineTVOAMADEUSOptimised = async (req, res, next) => {
     if (tvoResponse.data.Response.ResponseStatus === 1) {
       tvoArray = tvoResponse.data.Response.Results[0];
     }
-
+console.log("amadeusResponse============",amadeusResponse)
     let finalFlattenedArray = [];
     if (amadeusResponse.status === 200) {
       const jsonResult = await xmlToJson(amadeusResponse.data);
@@ -668,7 +672,7 @@ const generateAmadeusRequest = (data) => {
     .createHash("sha1")
     .update(buffer)
     .digest("base64");
-
+console.log("data============",data);
   var soapRequest = `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
     xmlns:sec="http://xml.amadeus.com/2010/06/Security_v1"
     xmlns:typ="http://xml.amadeus.com/2010/06/Types_v1"

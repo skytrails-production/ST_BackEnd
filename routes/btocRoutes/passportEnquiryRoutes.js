@@ -21,4 +21,6 @@ module.exports = function (app) {
     app.get('/skyTrails/api/user/passport/getAllPassportEnquiry',passportEnquiryControler.getAllPassportEnquiry);
     // ,[authJwt.verifcationToken]
     app.get('/skyTrails/api/user/passport/getPassportEnquiry',passportEnquiryControler.getPassportEnquiry);
+    app.put('/skyTrails/api/user/passport/updateStatus',passportEnquiryControler.updateResolveStatus);
+    app.delete('/skyTrails/app/passport/deletePassportEnquiry',passportEnquiryControler.deletePassportEnquire)
   }

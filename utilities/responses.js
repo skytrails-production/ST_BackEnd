@@ -142,5 +142,9 @@ module.exports = {
 	BLOG_NOT_FOUND:"Blog not found.",
 	EMAIL_NOT_EXIST:"No account exist with this mail,please go and register first.",
 	JOB_CATEGORY_NOT_FOUND:"job category not found",
-	HOTEL_NOT_FOUND:"Hotel not found."
+	HOTEL_NOT_FOUND:"Hotel not found.",
+	DATA_SUBMIT_SUCCESSFULL:"Your data has been submitted successfully.",
+	PARTNER_NOT_FOUND:"Partner not found!",
+	USER_BOOKING_ALREADY_EXIST:"User has existing bookings.",
+	USER_FIRST_BOOKING:"This is the user's first booking."
 };

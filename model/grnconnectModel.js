@@ -112,6 +112,7 @@ const GrnHotelCityMapSchema = new mongoose.Schema({
   hotelCode:Number,
   hotelName:String,
   cityCode:Number,
+  address:String,
   countryCode:String,
   latitude:Number,
   longitude:Number

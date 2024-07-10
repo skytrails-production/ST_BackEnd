@@ -68,7 +68,7 @@ exports.getDayWiseActivity = async (req, res, next) => {
   }
 };
 
-exports.updateDayWiseActivity = async (rqe, res, next) => {
+exports.updateDayWiseActivity = async (req, res, next) => {
   try {
     const { id, destination, origin, dayAt } = req.body;
     const result = await finOneDayWiseItinerary({ _id: id });
