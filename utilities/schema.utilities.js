@@ -6,7 +6,9 @@ const queryType = require("../enums/offerType");
 const visaType = require("../enums/visaType");
 const staticType = require("../enums/staticContentType");
 const bookingStatus = require("../enums/bookingStatus");
-const genderType=require("../enums/gender")
+const genderType=require("../enums/gender");
+const status = require("../enums/status");
+const approveStatus = require("../enums/approveStatus");
 // const bookingType=require("../enums/")
 const schemas = {
   flightBookingSchema: joi.object().keys({
@@ -613,7 +615,7 @@ const schemas = {
     content: joi.string().required(),
     // images: joi.object().optional(),
     couponCode: joi.string().required(),
-    discountPercentage: joi.number().required(),
+    // discountPercentage: joi.number().required(),
     limitAmount: joi.number().required(),
     expirationDate: joi.string().required(),
     termsAndCond: joi.string().required(),
@@ -723,14 +725,12 @@ const schemas = {
     hotelBookingId: joi.string().required(),
     status: joi.valid(...Object.values(bookingStatus)).required(),
   }),
-  // passportEnquirySchema:joi.object().keys({
-  //   firstName:joi.string().required(),
-  //   lastName:joi.string().required(),
-  //   email:joi.string().required(),
-  //   gender:joi.valid(...Object.values(genderType)).required(),
-  //   dob:joi.string().required(),
-  //   contactNumber:
-  // })
+  partnerApprovalSchema:joi.object().keys({
+    partnerId:joi.string().required(),
+    status:joi.valid(...Object.values(status)).optional(),
+    approveStatus:joi.valid(...Object.values(approveStatus)).optional(),
+    reason:joi.string().optional()
+  })
 };
 
 module.exports = schemas;

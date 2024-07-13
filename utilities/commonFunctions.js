@@ -22,7 +22,8 @@ const {
   hotelGrnMail,
   ResetPassword,
   SubAdminResetPassword,
-  RelationShipManagerResetPassword
+  RelationShipManagerResetPassword,
+  InventoryPartnerResetPassword
 } = require("./mailingFunction.js");
 let cloudinary = require("cloudinary");
 cloudinary.config({
@@ -6432,22 +6433,22 @@ module.exports = {
       return info;
   },
 
-  sendResetPassMail: async (to, token) => {   
+  sendResetPassMailInvetoryPartner: async (to, token) => {   
     var transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
         port: 587,
         secure: false,
         auth: {
-          user: nodemailerConfigHawaiYatra.options.auth.userHawai,
-          pass: nodemailerConfigHawaiYatra.options.auth.passHawai,
+          user: nodemailerConfig.options.auth.user,
+          pass: nodemailerConfig.options.auth.pass,
         },
         connectionTimeout: 60000,
     });
     var mailOptions = {
-      from: nodemailerConfigHawaiYatra.userHawai,
+      from: nodemailerConfig.userHawai,
       to: to,
       subject: "Verification Mail",
-      html: RelationShipManagerResetPassword(token),
+      html: InventoryPartnerResetPassword(token),
     };
     return await transporter.sendMail(mailOptions);
   },

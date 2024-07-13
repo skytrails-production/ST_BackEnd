@@ -90,4 +90,5 @@ app.post('/skyTrails/api/admin/createDailyQuiz',controller.createDailyQuiz);
 app.put('/skyTrails/api/admin/updateQuizStatus',controller.dailyQuizStatus);
 app.delete("/skyTrails/api/admin/deleteAgent",agentController.deleteAgent);
 app.get('/skyTrails/api/admin/getAllPackageEnquiryOnCRM',packageControlelr.packageEnquiryListForCrm);
+app.put("/skyTrails/api/admin/approvePartnerAccountStatus",SchemaValidator(schemas.partnerApprovalSchema),controller.approvePartnerAccount)
 };

@@ -146,5 +146,10 @@ module.exports = {
 	DATA_SUBMIT_SUCCESSFULL:"Your data has been submitted successfully.",
 	PARTNER_NOT_FOUND:"Partner not found!",
 	USER_BOOKING_ALREADY_EXIST:"User has existing bookings.",
-	USER_FIRST_BOOKING:"This is the user's first booking."
+	USER_FIRST_BOOKING:"This is the user's first booking.",
+	REQUEST_ALREADY_EXIST:"Your partnership request is already in queue.",
+	REJECTED_ACCOUNT:"Your account is rejected.",
+	LOGIN_SUCCESSFULLY:"Loging successfully!🥰",
+	PASSWORD_CHANGED:"Paasword change successfully!",
+	INCORRECT_PASS:"Incorrect password!"
 };

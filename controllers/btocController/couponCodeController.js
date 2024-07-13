@@ -154,7 +154,7 @@ exports.createCoupons = async (req, res, next) => {
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.CREATED_SUCCESS,
-      result: newCoupon,
+      result: newCoupon
     });
   } catch (error) {
     console.error("error while trying to create error", error);
@@ -291,6 +291,16 @@ exports.CouponApplied=async(req,res,next)=>{
     if (!isCouponExist) {
       return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.COUPON_NOT_FOUND});
     }
+
+    //check if coupon already apply
+    const iscoupanAlreadyApply=await findCoupon({
+      userApplied: { $in: req.userId }
+    });
+    if(iscoupanAlreadyApply){
+      return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,responseMessage: "already apply"});
+   
+    }
+
     if(isCouponExist.couponCode==="WELCOMEPEFA"){
         const isUserRegister = await findBookingEventData({userId: isUserExist._id,status:status.ACTIVE});
       if (!isUserRegister) {
@@ -303,6 +313,12 @@ exports.CouponApplied=async(req,res,next)=>{
 
     await updateBookingEvent({_id:isUserRegister._id},{isCoupanApplied:true});
     return res.status(statusCode.OK).json({statusCode: statusCode.OK,responseMessage: responseMessage.COUPON_APPLIED_SUCCESS,result:resultData});
+    }
+    if (isCouponExist.userApplied.includes(isUserExist._id)) {
+      return res.status(statusCode.Conflict).json({
+        statusCode: statusCode.Conflict,
+        responseMessage: responseMessage.ALREDY_COUPOUN_APPLIED,
+      });
     }
     const result= await updateCoupon({_id:isCouponExist._id}, { $push: { userApplied: isUserExist._id } });
     return res.status(statusCode.OK).json({statusCode: statusCode.OK,responseMessage: responseMessage.COUPON_APPLIED_SUCCESS,result:result});

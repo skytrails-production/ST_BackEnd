@@ -16,14 +16,7 @@ const inventoryPartnerSchema = new mongoose.Schema({
   managerName: { type: String },
   email: { type: String },
   phoneNumber: { type: String },
-  otp: { type: String },
-  otpExpireTime: {
-    type: Date,
-  },
-  otpVerified: {
-    type: Boolean,
-    default: false,
-  },
+  password:{type: String},
   balance: {
     type: Number,
     default: 0,
@@ -37,6 +30,8 @@ const inventoryPartnerSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  reason: { type: String },
+  bio:{type:String},
   approveStatus: {
     type: String,
     enum: [
@@ -55,4 +50,4 @@ const inventoryPartnerSchema = new mongoose.Schema({
 inventoryPartnerSchema.plugin(mongoosePaginate);
 inventoryPartnerSchema.plugin(aggregatePaginate);
 
-module.exports = mongoose.model("hotelPartnerDaetail", inventoryPartnerSchema);
+module.exports = mongoose.model("hotelPartnerDetail", inventoryPartnerSchema);

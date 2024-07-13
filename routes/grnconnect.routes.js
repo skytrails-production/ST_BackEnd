@@ -19,6 +19,9 @@ module.exports = function (app) {
     app.post("/skyTrails/grnconnect/hotelsearch",controller.hotelSearch);
     app.post("/skyTrails/grnconnect/singlehotelsearch", controller.singleHotelSearch);
     app.post("/skyTrails/grnconnect/hotelSearchWithPagination",controller.hotelSearchWithPagination);
+    
+    app.post("/skyTrails/grnconnect/searchmultihotel", controller.searchMulitHotel);
+    
     app.get("/skyTrails/grnconnect/refetchHotel", controller.refetchHotel);
     app.post("/skyTrails/grnconnect/rateRefetchHotel", controller.rateRefetchHotel);
 

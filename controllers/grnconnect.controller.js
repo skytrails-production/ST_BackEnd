@@ -233,6 +233,107 @@ exports.hotelSearchWithPagination=async (req,res) =>{
   }
 }
 
+
+
+//searchMulitHotel
+
+exports.searchMulitHotel = async (req, res) => {
+  try {
+    let results = [];
+    if (req?.body?.cityCode) {
+
+      const totalPage= await GrnHotelCityMap.countDocuments({'cityCode':req?.body?.cityCode});
+        // console.log(totalPage,"totalPage");
+        let page=Math.ceil(totalPage/100)
+      const limit = 100; // Set the limit of hotel codes per page
+      const promises = [];
+      for (let i = 1; i <= page; i++) {
+        //  page = i + 1;
+        promises.push(
+          (async () => {
+            const hotelCode = await exports.grnHotelCityMapWithPagination(req.body.cityCode, i, limit);
+            const searchData = {
+              rooms: req.body.rooms,
+              rates: req.body.rates,
+              hotel_codes: hotelCode,
+              currency: req.body.currency,
+              client_nationality: req.body.client_nationality,
+              checkin: req.body.checkin,
+              checkout: req.body.checkout,
+              cutoff_time: 30000,
+              version: req.body.version
+            };
+            const response = await axios.post(`${baseurl}/api/v3/hotels/availability`, searchData, { headers });
+            return response.data;
+          })()
+        );
+      }
+
+      results = await Promise.all(promises);
+      // const count=results?.reduce((accumulator ,hotel) => {
+      //   return accumulator += hotel?.no_of_hotels;
+      // }, 0); //count all hotels 
+      
+
+        //function remove keys
+      function removeKeys(obj, keys) {
+        let newObj = { ...obj };
+        keys.forEach(key => {
+          delete newObj[key];
+        });
+        return newObj;
+      }
+      
+           
+      // Keys to remove
+      let keysToRemove = ['hotels', 'search_id','no_of_hotels'];
+      
+      let updatedObj = removeKeys(results?.[0], keysToRemove);
+
+      // console.log(updatedObj); // remove hotel and searchId from main
+
+
+      //push hotels and search id for particular hotel
+
+      let modifiedResults = results.reduce((acc, result) => {
+        result?.hotels?.forEach(hotel => {
+          acc?.push({
+            ...hotel,
+            search_id: result?.search_id,
+          });
+        });
+        return acc;
+      }, []);
+
+      const finalResults={
+        hotels:[...modifiedResults],
+        no_of_hotels:[...modifiedResults]?.length,
+        ...updatedObj
+              }
+
+      const msg = "Hotel Search Successfully!";
+      return actionCompleteResponse(res, finalResults, msg);
+    } else {
+      const searchData = {
+        rooms: req?.body?.rooms,
+        rates: req?.body?.rates,
+        hotel_codes: req?.body?.hotel_codes,
+        currency: req?.body?.currency,
+        client_nationality: req?.body?.client_nationality,
+        checkin: req?.body?.checkin,
+        checkout: req?.body?.checkout,
+        cutoff_time: 5000,
+        version: req.body.version
+      };
+      const response = await axios.post(`${baseurl}/api/v3/hotels/availability`, searchData, { headers });
+      const msg = "Single Hotel Search Successfully!";
+      return actionCompleteResponse(res, response.data, msg);
+    }
+  } catch (err) {
+    sendActionFailedResponse(res, {}, err.message);
+  }
+};
+
 //refetch Hotel
 
 exports.refetchHotel = async (req, res) => {
@@ -510,7 +611,7 @@ exports.getGrnAgentSingleBooking = async (req, res ) =>{
     // const skip=limit*(page-1);
     // const totalPages=await GrnHotelBooking.countDocuments();
 
-    const result=await GrnHotelBooking.find({_id:id});
+    const result=await GrnHotelBooking.findOne({_id:id});
 
     actionCompleteResponse(res, result, "success"); 
     

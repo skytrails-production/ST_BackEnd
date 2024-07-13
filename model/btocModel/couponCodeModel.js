@@ -7,6 +7,37 @@ const approvalStatus = require("../../enums/approveStatus");
 mongoose.pluralize(null);
 const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 const mongoosePaginate = require("mongoose-paginate-v2");
+const amountType = require("../../enums/amountType");
+
+
+const discountValueSchema= new Schema({
+  min: [{ type: Number, required: true }],
+  max: [{ type: Number, required: true }]
+
+});
+
+
+const discountSchema = new Schema({
+  name: {
+    type: String,
+    enum: [
+      offerType.BUS,
+      offerType.FLIGHTS,
+      offerType.HOTELS,
+      offerType.PACKAGES
+    ]
+  },
+  value: discountValueSchema,
+  limitAmount:Number,
+  type: {
+    type: String,
+    enum: [amountType.AMOUNT, amountType.PERCENTAGE],
+    required: true
+  },
+  class: {
+    type: [String]
+  }
+});
 
 const couponSchema = new Schema(
   {
@@ -25,9 +56,7 @@ const couponSchema = new Schema(
     couponCode: {
       type: String,
     },
-    discountPercentage: {
-      type: Number,
-    },
+    discountPercentage:[discountSchema],
     limitAmount: {
       type: Number,
     },

@@ -25,6 +25,20 @@ const {
   countTotalpartenerHotel,
   getPartenerHotel,
 } = partenerHotelServices;
+const {
+  hotelinventoryAuthServices,
+} = require("../../services/inventory/partnerAuthServices");
+const approveStatus = require("../../enums/approveStatus");
+const {
+  createhotelinventoryAuth,
+  findhotelinventoryAuthData,
+  deletehotelinventoryAuth,
+  hotelinventoryAuthList,
+  updatehotelinventoryAuth,
+  countTotalhotelinventoryAuth,
+  gethotelinventoryAuth,
+} = hotelinventoryAuthServices;
+
 
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
@@ -276,9 +290,17 @@ exports.createhotelinventory = async (req, res, next) => {
       roomArr,
       safe2Stay,
       hotelPolicy,
+      partnerId
     } = req.body;
     console.log(req.body, "body","typeof hotelPolic==============",typeof hotelPolicy);
-
+const isUserExist=await findhotelinventoryAuthData({_id: req.userId });
+if(!isUserExist){
+  return res.status(statusCode.OK).send({
+    statusCode: statusCode.NotFound,
+    responseMessage: responseMessage.PARTNER_NOT_FOUND,
+  });
+}
+req.body.partnerId=isUserExist._id;
     // return;
 
     if (typeof roomArr === "string") {

@@ -2,7 +2,7 @@ const config = require("../config/auth.config");
 const db = require("../model");
 const User = db.user;
 const b2bUser = require("../model/brbuser.model");
-const moment = require('moment');
+const moment = require("moment");
 const Role = db.role;
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
@@ -14,7 +14,8 @@ const statusCode = require("../utilities/responceCode");
 const responseMessage = require("../utilities/responses");
 const sendSMS = require("../utilities/sendSms");
 const whatsappAPIUrl = require("../utilities/whatsApi");
-const hwaiYatraWhatsAppURL=require("../utilities/b2bWhatsApp")
+const hwaiYatraWhatsAppURL = require("../utilities/b2bWhatsApp");
+const approveStatus = require("../enums/approveStatus");
 //************SERVICES*************** */
 const { appVersionServices } = require("../services/appVersionServices");
 const {
@@ -292,6 +293,18 @@ const {
   deleteQuizResponse,
   updateQuizResponse,
 } = quizServices;
+const {
+  hotelinventoryAuthServices,
+} = require("../services/inventory/partnerAuthServices");
+const {
+  createhotelinventoryAuth,
+  findhotelinventoryAuthData,
+  deletehotelinventoryAuth,
+  hotelinventoryAuthList,
+  updatehotelinventoryAuth,
+  countTotalhotelinventoryAuth,
+  gethotelinventoryAuth,
+} = hotelinventoryAuthServices;
 
 //**********Necessary models***********/
 const flightModel = require("../model/flightBookingData.model");
@@ -1755,8 +1768,17 @@ exports.createAgent = async (req, res, next) => {
     const msg = `Welcome to TheSkyTrails, Admin added you as an agent. Please use the following credentials to login and fill in the mandatory form:\nEmail: ${email}, and Password: ${password} .click here: ${process.env.AGENT_URL}`;
     // await whatsappAPIUrl.sendWhatsAppMessage(mobile_number, msg);
     await commonFunction.sendAgent(email, password);
-    const template=[String("Agent"),String(email),String(password),String("https://thehawaiyatra.com/Login")]
-    await hwaiYatraWhatsAppURL.sendWhtsAppAISensy("+91" + mobile_number,template,"loginCredential");
+    const template = [
+      String("Agent"),
+      String(email),
+      String(password),
+      String("https://thehawaiyatra.com/Login"),
+    ];
+    await hwaiYatraWhatsAppURL.sendWhtsAppAISensy(
+      "+91" + mobile_number,
+      template,
+      "loginCredential"
+    );
     // Respond with success
     if (result) {
       return res.status(statusCode.OK).send({
@@ -1809,13 +1831,11 @@ exports.statusChange = async (req, res, next) => {
       { _id: iSubAdminExist._id },
       { status: approveStatus }
     );
-    return res
-      .status(statusCode.OK)
-      .send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.SUBADMIN_UPDATED,
-        result: updateData,
-      });
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.SUBADMIN_UPDATED,
+      result: updateData,
+    });
   } catch (error) {
     console.log("error in changeing subadmin status", error);
     return next(error);
@@ -1856,20 +1876,16 @@ exports.getAllEventBookings = async (req, res, next) => {
     const { page, limit, search } = req.query;
     const result = await getEventPopulate(req.query);
     if (!result) {
-      return res
-        .status(statusCode.OK)
-        .send({
-          statusCode: statusCode.NotFound,
-          responseMessage: responseMessage.DATA_NOT_FOUND,
-        });
-    }
-    return res
-      .status(statusCode.OK)
-      .send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.DATA_FOUND,
-        result: result,
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
       });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
   } catch (error) {
     console.log("error while trying to get all event booking list", error);
     return next(error);
@@ -2087,7 +2103,17 @@ exports.distributeReward = async (req, res, next) => {
 
 exports.createReferralAmount = async (req, res, next) => {
   try {
-    const { refereeAmount, referrerAmount,coinValue,likeCoins,flightBookingCoin,busBookingCoin,hotelBookingCoin,packageBookingCoin,coinQuantity } = req.body;
+    const {
+      refereeAmount,
+      referrerAmount,
+      coinValue,
+      likeCoins,
+      flightBookingCoin,
+      busBookingCoin,
+      hotelBookingCoin,
+      packageBookingCoin,
+      coinQuantity,
+    } = req.body;
     // Check if there are any existing referral amounts
     const existingReferralAmount = await referralAmountList();
 
@@ -2099,26 +2125,26 @@ exports.createReferralAmount = async (req, res, next) => {
     if (referrerAmount) {
       obj.referrerAmount = referrerAmount;
     }
-    if(coinValue){
+    if (coinValue) {
       obj.coinValue = coinValue;
     }
-    if(likeCoins){
+    if (likeCoins) {
       obj.likeCoins = likeCoins;
     }
-    if(flightBookingCoin){
+    if (flightBookingCoin) {
       obj.flightBookingCoin = flightBookingCoin;
     }
-    if(busBookingCoin){
+    if (busBookingCoin) {
       obj.busBookingCoin = busBookingCoin;
     }
-    if(hotelBookingCoin){
+    if (hotelBookingCoin) {
       obj.hotelBookingCoin = hotelBookingCoin;
     }
-    if(packageBookingCoin){
+    if (packageBookingCoin) {
       obj.packageBookingCoin = packageBookingCoin;
     }
-    if(coinQuantity){
-      obj.coinQuantity=coinQuantity;
+    if (coinQuantity) {
+      obj.coinQuantity = coinQuantity;
     }
     // If there are existing referral amounts, update the first one found
     if (existingReferralAmount.length > 0) {
@@ -2314,9 +2340,18 @@ exports.createPackageCategory = async (req, res, next) => {
   }
 };
 
-exports.createDailyQuiz = async (req, res, next) => { 
+exports.createDailyQuiz = async (req, res, next) => {
   try {
-    const { question, answer, opt1, opt2, opt3, opt4, adminId,quizDate } = req.body;
+    const {
+      question,
+      answer,
+      opt1,
+      opt2,
+      opt3,
+      opt4,
+      adminId,
+      quizDate,
+    } = req.body;
     // const isAdminExist = await adminModel.findOne({ _id: adminId });
     // if (!isAdminExist) {
     //   return res.status(statusCode.NotFound).send({
@@ -2325,9 +2360,9 @@ exports.createDailyQuiz = async (req, res, next) => {
     //   });
     // }
     const createdDate = moment(quizDate);
-    
+
     // Calculate the expiration time as 24 hours after the creation time
-    const expirationDate = createdDate.add(24, 'hours');
+    const expirationDate = createdDate.add(24, "hours");
     const object = {
       question,
       answer,
@@ -2337,8 +2372,8 @@ exports.createDailyQuiz = async (req, res, next) => {
         opt3,
         opt4,
       },
-      quizExpiration:expirationDate,
-      quizDate:quizDate
+      quizExpiration: expirationDate,
+      quizDate: quizDate,
     };
     const result = await createQuizContent(object);
     return res.status(statusCode.OK).send({
@@ -2352,23 +2387,54 @@ exports.createDailyQuiz = async (req, res, next) => {
   }
 };
 
-exports.dailyQuizStatus=async(req,res,next)=>{
+exports.dailyQuizStatus = async (req, res, next) => {
   try {
-    const {status,quizId}=req.body;
-     const updateData = await updateQuiz(
-      { _id: quizId },
-      { status: status }
-    );
-    return res
-      .status(statusCode.OK)
-      .send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.UPDATE_SUCCESS,
-        result: updateData,
-      });
+    const { status, quizId } = req.body;
+    const updateData = await updateQuiz({ _id: quizId }, { status: status });
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.UPDATE_SUCCESS,
+      result: updateData,
+    });
   } catch (error) {
     console.log("Error while trying to update quiz status", error);
     return next(error);
   }
-}
+};
 
+exports.approvePartnerAccount = async (req, res, next) => {
+  try {
+    const { partnerId, status, approveStatus,reason } = req.body;
+    const isExist = await findhotelinventoryAuthData({ _id: partnerId });
+    if (!isExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.PARTNER_NOT_FOUND,
+      });
+    }
+    const data={
+      status, approveStatus,reason
+    }
+    const updateResult = await updatehotelinventoryAuth(
+      { _id: isExist._id },
+      data
+    );
+    if (updateResult) {
+      // await commonFunction.
+      // mobileNumber,
+      // var1,
+      // var2,
+      // "loginotp"
+      await whatsappAPIUrl.sendWhtsAppAISensy(isExist.phoneNumber,isExist.managerName,isExist.email,isExist.managerName + "@" + "1234","partnerconfirmation");
+      await commonFunction.sendSubAdmin(isExist.email,isExist.managerName,isExist.managerName + "@" + "1234")
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.UPDATE_SUCCESS,
+        result: updateResult,
+      });
+    }
+  } catch (error) {
+    console.log("error while tring to approve partner account", error);
+    return next(error);
+  }
+};

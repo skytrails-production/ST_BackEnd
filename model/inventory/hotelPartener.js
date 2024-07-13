@@ -25,6 +25,7 @@ const NetSchema = new mongoose.Schema({
 
 const hotelInventorySchema = new mongoose.Schema(
   {
+    partnerId:{type:mongoose.Types.ObjectId,ref:'hotelPartnerDetail'},
     hotelName: { type: String },
     description: { type: String },
     locality: { type: String },
