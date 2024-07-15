@@ -48,12 +48,13 @@ const itinerarySchema = new mongoose.Schema(
         type: Number,
       },
     },
-    itineraryId:{
-      type:mongoose.Types.ObjectId,
-      ref:'dayWiseItinerary'
-    },
-    iteneries:[{
-      title: { type: String },
+   
+    itenerieData:[{
+      itineraryId:{
+        type:mongoose.Types.ObjectId,
+        ref:'dayWiseItinerary'
+      },
+      iteneries:[{title: { type: String },
       description: { type: String },
       price: { type: Number },
       type: { type: String },
@@ -64,8 +65,8 @@ const itinerarySchema = new mongoose.Schema(
           description: { type: String },
           timing: { type: String },
           price: { type: Number },
-        },
-      ],
+        },]
+      }],
     }],
     insclusions: {
       type: Array,

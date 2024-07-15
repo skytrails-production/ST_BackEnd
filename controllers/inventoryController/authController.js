@@ -10,11 +10,11 @@ const { v4: uuidv4 } = require("uuid");
 const uuid = uuidv4();
 
 /**********************************SERVICES********************************** */
+const approveStatus = require("../../enums/approveStatus");
 
 const {
   hotelinventoryAuthServices,
 } = require("../../services/inventory/partnerAuthServices");
-const approveStatus = require("../../enums/approveStatus");
 const {
   createhotelinventoryAuth,
   findhotelinventoryAuthData,
@@ -36,25 +36,36 @@ exports.signUp = async (req, res, next) => {
       email,
       phoneNumber,
     } = req.body;
+   
+    // Ensure email is in lowercase and trimmed
+    req.body.email = req.body.email.trim().toLowerCase();
+
+    // Generate partner ID and password
     req.body.partnerId = commonFunction.generateReferralCode();
-    const password = managerName + "@" + "1234";
+    const password = `${managerName}@1234`;
     req.body.password = await bcrypt.hashSync(password, 10);
+
     console.log(req.body);
-    const isAlreadyExist = await findhotelinventoryAuthData({
-      $or: [{ email: email }, { phoneNumber: phoneNumber }],
-    });
-    if (isAlreadyExist) {
-      return res.status(statusCode.OK).send({
-        statusCode: statusCode.Conflict,
-        responseMessage: responseMessage.REQUEST_ALREADY_EXIST,
-      });
-    }
-    const result = await createhotelinventoryAuth(req.body);
-    return res.status(statusCode.OK).send({
-      statusCode: statusCode.OK,
-      responseMessage: responseMessage.DATA_SUBMIT_SUCCESSFULL,
-      result: result,
-    });
+// Check if the email or phone number already exists
+const isAlreadyExist = await findhotelinventoryAuthData({
+  $or: [{ email: req.body.email }, { phoneNumber: phoneNumber }],
+});
+
+if (isAlreadyExist) {
+  return res.status(statusCode.OK).send({
+    statusCode: statusCode.Conflict,
+    responseMessage: responseMessage.REQUEST_ALREADY_EXIST,
+  });
+}
+
+// Create new hotel inventory auth data
+const result = await createhotelinventoryAuth(req.body);
+
+return res.status(statusCode.OK).send({
+  statusCode: statusCode.OK,
+  responseMessage: responseMessage.DATA_SUBMIT_SUCCESSFULL,
+  result: result,
+});
   } catch (error) {
     console.log("Error while trying to create user", error);
     return next(error);
@@ -313,7 +324,8 @@ exports.partnerdashboard=async(req,res,next)=>{
         responseMessage: responseMessage.PARTNER_NOT_FOUND,
       });
     }
-
+    const partnerHotelCount=await countTotalhotelinventoryAuth({partnerId:isUserExist._id,status:status.ACTIVE});
+    
   } catch (error) {
     console.log("error while trying to getPartner dashboard",error);
     return next(error);

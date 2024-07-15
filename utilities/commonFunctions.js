@@ -669,7 +669,7 @@ module.exports = {
                     Total Amount:
                   </div>
                   <div style="width:85px; float:right; text-align:right;">
-                    ₹ ${to.totalAmount}.00
+                    ₹ ${to.totalAmount}
                   </div>
                 </div> 
               </div>
@@ -1136,7 +1136,7 @@ module.exports = {
                     Total Amount:
                   </div>
                   <div style="width:85px; float:right; text-align:right;">
-                    ₹ ${to.totalAmount}.00
+                    ₹ ${to.totalAmount}
                   </div>
                 </div> 
               </div>
@@ -1606,7 +1606,7 @@ module.exports = {
                     Total Amount:
                   </div>
                   <div style="width:85px; float:right; text-align:right;">
-                    ₹ ${Number(to.totalAmount) + Number(markup.price)}.00
+                    ₹ ${Number(to.totalAmount) + Number(markup.price)}
                   </div>
                 </div> 
               </div>
@@ -2005,7 +2005,7 @@ module.exports = {
         ${depTimeFormatted}
       </p>
       <p>
-        ₹ ${to.amount}.00
+        ₹ ${to.amount}
       </p>
     </div>
   </div>
@@ -2381,6 +2381,8 @@ module.exports = {
     );
     const depTimeFormatted = formatDate(to.departureTime, "hh:mm A");
 
+    const arrTimeFormatted=formatDate(to.arrivalTime, "ddd, DD MMM YYYY");
+
     // console.log("to================>>>>>>>",to)
     const name = `${to.passenger[0]?.title} ${to.passenger[0]?.firstName} ${to.passenger[0]?.lastName}`;
     // Define your HTML content with nested elements
@@ -2514,7 +2516,7 @@ module.exports = {
                       <strong>Travels:</strong>
                     </p>
                     <p>
-                      <strong>Journey Date:</strong>
+                      <strong>Departure Date:</strong>
                     </p>
                     <p>
                       <strong>PNR:</strong>
@@ -2546,7 +2548,7 @@ module.exports = {
                     </p>
       
                     <p>
-                      <strong>Dep time:</strong>
+                      <strong>Arrival Time:</strong>
                     </p>
                     <p>
                       <strong>Price:</strong>
@@ -2561,10 +2563,10 @@ module.exports = {
                     </p>
       
                     <p>
-                      ${depTimeFormatted}
+                      ${arrTimeFormatted}
                     </p>
                     <p>
-                    ₹ ${to.amount}.00
+                    ₹ ${to.amount}
                     </p>
                   </div>
                 </div>

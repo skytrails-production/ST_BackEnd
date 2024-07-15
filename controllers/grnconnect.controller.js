@@ -270,6 +270,8 @@ exports.searchMulitHotel = async (req, res) => {
       }
 
       results = await Promise.all(promises);
+
+      results = results.filter(result => result && !result.errors);
       // const count=results?.reduce((accumulator ,hotel) => {
       //   return accumulator += hotel?.no_of_hotels;
       // }, 0); //count all hotels 
@@ -296,6 +298,8 @@ exports.searchMulitHotel = async (req, res) => {
       //push hotels and search id for particular hotel
 
       let modifiedResults = results.reduce((acc, result) => {
+        
+
         result?.hotels?.forEach(hotel => {
           acc?.push({
             ...hotel,
@@ -305,13 +309,19 @@ exports.searchMulitHotel = async (req, res) => {
         return acc;
       }, []);
 
+      modifiedResults = modifiedResults.sort((a, b) => {
+        return a?.min_rate?.price - b?.min_rate?.price;
+      });
+      
+      
+
       const finalResults={
         hotels:[...modifiedResults],
         no_of_hotels:[...modifiedResults]?.length,
         ...updatedObj
-              }
+              };
 
-      const msg = "Hotel Search Successfully!";
+      const msg = "Multiple Hotel Search Successfully!";
       return actionCompleteResponse(res, finalResults, msg);
     } else {
       const searchData = {

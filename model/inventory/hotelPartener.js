@@ -78,6 +78,12 @@ const hotelInventorySchema = new mongoose.Schema(
       },
     ],
     safe2Stay: [String],
+    availableDate:{
+      type:String
+    },
+    startFrom:{
+      type:String
+    }
   },
   { timestamps: true }
 );

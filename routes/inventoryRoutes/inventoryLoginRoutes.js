@@ -47,5 +47,7 @@ module.exports = function (app) {
   app.get("/skyTrails/api/inventory/partnergetPartnerList",becomePartnerController.getPartnerList);
   app.get("/skyTrails/api/inventory/partnergetPartnerById",becomePartnerController.getPartnerById);
   app.put("/skyTrails/api/inventory/deletPartnerData",[authJwt.verifyTokenOfInvenPartner],becomePartnerController.deleteAccount);
-  app.put("/skyTrails/api/inventory/changePassword",[authJwt.verifyTokenOfInvenPartner],becomePartnerController.changePassword)
+  app.put("/skyTrails/api/inventory/changePassword",[authJwt.verifyTokenOfInvenPartner],becomePartnerController.changePassword);
+  app.get("/skyTrails/api/inventory/getAllHotelInventoryofPartner",[authJwt.verifyTokenOfInvenPartner],Controller.getAllHotelInventoryofPartner);
+
 };

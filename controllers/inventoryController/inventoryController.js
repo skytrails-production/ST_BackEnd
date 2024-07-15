@@ -39,7 +39,6 @@ const {
   gethotelinventoryAuth,
 } = hotelinventoryAuthServices;
 
-
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -290,17 +289,18 @@ exports.createhotelinventory = async (req, res, next) => {
       roomArr,
       safe2Stay,
       hotelPolicy,
-      partnerId
+      availableDate,
+      startFrom,
     } = req.body;
-    console.log(req.body, "body","typeof hotelPolic==============",typeof hotelPolicy);
-const isUserExist=await findhotelinventoryAuthData({_id: req.userId });
-if(!isUserExist){
-  return res.status(statusCode.OK).send({
-    statusCode: statusCode.NotFound,
-    responseMessage: responseMessage.PARTNER_NOT_FOUND,
-  });
-}
-req.body.partnerId=isUserExist._id;
+    const isUserExist = await findhotelinventoryAuthData({ _id: req.userId });
+    if (!isUserExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.PARTNER_NOT_FOUND,
+      });
+    }
+    console.log("isUserExist======", isUserExist);
+    req.body.partnerId = isUserExist._id;
     // return;
 
     if (typeof roomArr === "string") {
@@ -323,7 +323,6 @@ req.body.partnerId=isUserExist._id;
 
     if (typeof hotelPolicy === "string") {
       hotelPolicy = JSON.parse(hotelPolicy);
-      console.log("hotelPolicy==============",hotelPolicy)
     }
     // hotelPolicy
     const hotelImageFiles = req.files.hotelImages || [];
@@ -353,6 +352,7 @@ req.body.partnerId=isUserExist._id;
     });
 
     const obj = {
+      partnerId: isUserExist._id,
       hotelName,
       description,
       hotelCity,
@@ -378,6 +378,8 @@ req.body.partnerId=isUserExist._id;
       rooms: rooms,
       hotelPolicy,
       safe2Stay,
+      availableDate,
+      startFrom,
     };
     const result = await createPartenerHotel(obj);
     return res.status(statusCode.OK).send({
@@ -393,10 +395,12 @@ req.body.partnerId=isUserExist._id;
 
 exports.getAllHotelInventory = async (req, res, next) => {
   try {
-    // const
+    // Get the current date in ISO format
+    const currentDate = new Date().toISOString();
     const result = await partenerHotelList({
       status: status.ACTIVE,
       availableRooms: { $gte: 1 },
+      availableDate: { $gte: currentDate },
     });
     if (result.length < 1) {
       return res.status(statusCode.OK).send({
@@ -405,10 +409,10 @@ exports.getAllHotelInventory = async (req, res, next) => {
         result: result,
       });
     }
-    const finalResult={
+    const finalResult = {
       result,
-      Arrlength:result.length
-    }
+      Arrlength: result.length,
+    };
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.DATA_FOUND,
@@ -659,6 +663,45 @@ exports.deleteInventoryData = async (req, res, next) => {
     });
   } catch (error) {
     console.log("error while trying to delete", error);
+    return next(error);
+  }
+};
+
+exports.getAllHotelInventoryofPartner = async (req, res, next) => {
+  try {
+    // Get the current date in ISO format
+    // const currentDate = new Date().toISOString();
+    const isUserExist = await findhotelinventoryAuthData({
+      _id: req.userId,
+    });
+    if (!isUserExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.PARTNER_NOT_FOUND,
+      });
+    }
+    const result = await partenerHotelList({partnerId:isUserExist._id,
+      status: status.ACTIVE,
+      // availableRooms: { $gte: 1 },
+    });
+    if (result.length < 1) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
+        result: result,
+      });
+    }
+    const finalResult = {
+      result,
+      Arrlength: result.length,
+    };
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: finalResult,
+    });
+  } catch (error) {
+    console.log("Error while trying to get all inventory data", error);
     return next(error);
   }
 };
