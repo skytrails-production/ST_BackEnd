@@ -68,6 +68,7 @@ const userGrnHotelBookingSchema=new mongoose.Schema({
           from:String
         }]
       },
+
     },         
     status: {
         type: String,
@@ -85,7 +86,9 @@ const userGrnHotelBookingSchema=new mongoose.Schema({
         type:String,
         enum: [offerType.FLIGHTS, offerType.HOTELS, offerType.BUS],
         default:offerType.HOTELS
-    }
+    },
+    isHomeHotel:{type:Boolean,defaul:false},
+    homeHotelId:{type:mongoose.Types.ObjectId,ref:'hotelInventory'}
 },{ timestamps: true });
 
 userGrnHotelBookingSchema.plugin(mongoosePaginate);

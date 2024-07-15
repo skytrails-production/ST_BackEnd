@@ -7,37 +7,15 @@ mongoose.pluralize(null);
 
 const itinerarySchema = new mongoose.Schema(
   {
-    pakageTitle: {
-      type: String,
-    },
-    // pakageImg: {
-    //   type: String,
-    // },
-    // packageGallery: {
-    //   type: Array,
-    // },
     origin: {
       type: String,
     },
     destination: {
       type: String,
     },
-    country: {
-      type: String,
-    },
     days: {
       type: Number,
     },
-    // schedule: {
-    //   flexible: {
-    //     type: Boolean,
-    //     default: true,
-    //   },
-    //   fixedDeparture: {
-    //     type: Boolean,
-    //     default: false,
-    //   },
-    // },
     pakageAmount: {
       currency: {
         type: String,
@@ -48,35 +26,38 @@ const itinerarySchema = new mongoose.Schema(
         type: Number,
       },
     },
-   
-    itenerieData:[{
-      itineraryId:{
-        type:mongoose.Types.ObjectId,
-        ref:'dayWiseItinerary'
+    itenerieData: [
+      {
+        itineraryId: {
+          type: mongoose.Types.ObjectId,
+          ref: "dayWiseItinerary",
+        },
+        // iteneries:[{title: { type: String },
+        // description: { type: String },
+        // price: { type: Number },
+        // type: { type: String },
+        // activities: [
+        //   {
+        //     _id: false,
+        //     title: { type: String },
+        //     description: { type: String },
+        //     timing: { type: String },
+        //     price: { type: Number },
+        //   },]
+        // }],
+        itenararyResult: [],
+        activities: [],
       },
-      iteneries:[{title: { type: String },
-      description: { type: String },
-      price: { type: Number },
-      type: { type: String },
-      activities: [
-        {
-          _id: false,
-          title: { type: String },
-          description: { type: String },
-          timing: { type: String },
-          price: { type: Number },
-        },]
-      }],
-    }],
-    insclusions: {
+    ],
+    costExcludes: {
       type: Array,
       default: [],
     },
-    highlights: {
-     type: Array,
+    compliments: {
+      type: Array,
       default: [],
     },
-    insclusionNote: {
+    freebies: {
       type: String,
     },
     exclusionNote: {
@@ -99,89 +80,52 @@ const itinerarySchema = new mongoose.Schema(
     cancellationPolicy: {
       type: String,
     },
+    paymentPolicy: {
+      type: String,
+    },
     isActive: {
       type: Number,
       default: activeStatus.IN_ACTIVE,
     },
-    hotelDetails:[{
-        'city':String,
-        'hotelname':String,
-        'rating':Number,
-        'room':Number,
-        'mealPlan':String,
-        'dates':String,
-        'description':String
-    }],
-    flightDetails:[{
-      'origin':String,
-      'destination':String,
-      airlineDetails: [
-
+    hotelDetails: [
       {
-        _id:false,
-        Airline: {
-        
-            AirlineCode: { type: "string" },
-            AirlineName: { type: "string" },
-            FlightNumber: { type: "string" },
-            FareClass: { type: "string" },
+        HotelAddress: String,
+        HotelLocation: String,
+        HotelName: String,
+        StarRating: Number,
+        ResultIndex: Number,
+        HotelCode: String,
+        HotelCategory: String,
+        Price: Number,
+        HotelPicture: String,
+        selectedRoom: {
+          Amenities: [String],
+          Inclusion: [String],
+          RoomTypeName: String,
+          PublishedPriceRoundedOff: Number,
+        },
+      },
+    ],
+    flightData: [
+      {
+        id: { type: String },
+        flightDetails: [
+          {
+            AirlineCode: String,
+            Fare: { PublishedFare: Number },
+            IsLCC: Boolean,
+            Segments: [],
           },
-        
-        Origin: {
-          
-            AirportCode: { type: "string" },
-            AirportName: { type: "string" },
-            CityName: { type: "string" },
-            Terminal: { type: "string" },
-            DepTime: { type: "string", format: "date-time" },
-          
-        },
-        Destination: {
-         
-            AirportCode: { type: "string" },
-            AirportName: { type: "string" },
-            CityName: { type: "string" },
-            Terminal: { type: "string" },
-            ArrTime: { type: "string", format: "date-time" },
-          
-        },
-        Baggage: { type: "string" },
+        ],
       },
     ],
-    baggage: [
-      {
-        _id:false,
-        AirlineCode: String,
-        FlightNumber: String,
-        WayType: Number,
-        Code: String,
-        Description: String,
-        Weight: Number,
-        Currency: String,
-        Price: Number,
-        Origin: String,
-        Destination: String,
-      },
-    ],
-    mealDynamic: [
-      {
-        _id:false,
-        AirlineCode: String,
-        FlightNumber: String,
-        WayType: Number,
-        Code: String,
-        Description: Number,
-        AirlineDescription: String,
-        Quantity: Number,
-        Currency: String,
-        Price: Number,
-        Origin: String,
-        Destination: String,
-      },
-    ],
-    dateOfJourney: { type: String },
-    }],
-    dateOfJourney: { type: String }
+    ItenaryPayloadData: {
+      RoomGuests: [{ NoOfAdults: Number, NoOfChild: Number, ChildAge: [] }],
+      cityAndNight:[{night:Number,destination:String}],
+      leavingFrom:String,
+      nationality:String
+    },
+    priceData:{grandTotal:String,markup:Number,withoutMarkup:Number}
   },
   { timestamps: true }
 );

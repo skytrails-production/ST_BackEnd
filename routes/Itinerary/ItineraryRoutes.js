@@ -16,8 +16,9 @@ module.exports = function (app) {
         next();
     });
     // SchemaValidator(schemas.userbusBookingSchema),   SchemaValidator(schemas.userflightBookingSchema),  ,SchemaValidator(schemas.userhotelBookingSchema) 
-    app.post('/skyTrails/api/itinerary/proposal/createProposal',upload.array("images"),ourProposalController.ourProposal);
-    // app.get('/skyTrails/api/grn/user/grnUserBooking',[auth/Jwt.verifcationToken],Controller.getUserGrnBooking);
+    app.post('/skyTrails/api/itinerary/proposal/createProposal',ourProposalController.ourProposal);
+    app.get('/skyTrails/api/itinerary/getProposalById',ourProposalController.getProposalById);
+    app.get('/skyTrails/api/itinerary/getAllProposal',ourProposalController.getAllProposal);
     app.get('/skyTrails/api/itinerary/dayWise/getAllCItyWiseItinerary',dayWiseController.getDayWiseActivity);
     app.post('/skyTrails/api/itinerary/dayWise/createDayWise',dayWiseController.createDayWiseActivity);
     // app.put('/skyTrails/api/grn/user/UpdateTicket',Controller.UpdateTicket)

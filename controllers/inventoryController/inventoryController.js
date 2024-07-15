@@ -64,7 +64,6 @@ exports.loginUser = async (req, res) => {
   }
 };
 
-//inventory register
 exports.registerUser = async (req, res, next) => {
   try {
     const { email, password, hotelName, hotelCity, hotelState } = req.body;
@@ -705,3 +704,4 @@ exports.getAllHotelInventoryofPartner = async (req, res, next) => {
     return next(error);
   }
 };
+

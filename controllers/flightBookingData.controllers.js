@@ -11,7 +11,7 @@ const commonFunction = require("../utilities/commonFunctions");
 const { sendWhatsAppMessage } = require('../utilities/whatsApi');
 const sendSMS = require("../utilities/sendSms");
 const PushNotification = require("../utilities/commonFunForPushNotification");
-const whatsAppMsg = require("../utilities/whatsApi");
+const whatsApi = require("../utilities/whatsApi");
 const hawaiYatra=require("../utilities/b2bWhatsApp")
 const { cancelBookingServices } = require("../services/cancelServices");
 const { createcancelBooking, updatecancelBooking, aggregatePaginatecancelBookingList, countTotalcancelBooking } = cancelBookingServices;
@@ -253,9 +253,23 @@ exports.amadeusFlightBooking = async (req, res) =>{
       ...req.body,
       bookingStatus:"BOOKED",
     }
+    let options = { day: "2-digit", month: "2-digit", year: "numeric" };
+      // Format the date using the toLocaleDateString() function
+      let formattedDate = new Date(data.airlineDetails[0].Origin.DepTime).toLocaleDateString("en-GB", options);
+    const TemplateNames = [
+      String("FLightBooking"),
+      String(data.bookingId),
+      String(data.passengerDetails[0].firstName),
+      String(formattedDate),
+    ];
+    const adminContact=['+918115199076','+919765432345']
   const response = await amadeusFlightBookingData.create(data);
   const msg = "flight booking details added successfully";
-
+  await whatsApi.sendWhtsAppAISensyMultiUSer(
+    adminContact,
+    TemplateNames,
+    "admin_booking_Alert"
+  );
   // if(response.bookingStatus === "BOOKED"){
   
   //  const userName = response.passengerDetails[0].firstName +" "+ response.passengerDetails[0].lastName;
