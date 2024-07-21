@@ -73,10 +73,10 @@ const notifications = [
     message: `Congratulations! username`,
     body: `Just for you! Exclusive Offer get upto 20% off with TheSkyTrails pvt ltd `,
   },
-  {
-    message: `🤔 Soch kya rhe ho neeche daikho `,
-    body: `The skytrails pr apko millega har services par 20% ka offer`,
-  },
+  // {
+  //   message: `🤔 Soch kya rhe ho neeche daikho `,
+  //   body: `The skytrails pr apko millega har services par 20% ka offer`,
+  // },
   {
     message: `🌊 Take your partner to a beach getaway!`,
     body: `Enjoy 20% off on your travel packages! Book now`,
@@ -335,14 +335,14 @@ taskPromotionalNotification.start(); // Start the task2
 // taskEventNotification1.start(); // Start the task2
 
 // Define and schedule task2 separately
-var taskPlatformNotification = cron.schedule("30 21 * * *",
+var taskPlatformNotification = cron.schedule("0 20 * * *",
   async () => {
     try {
       console.log("===========================");
       
       // 'contactNo.mobile_number': { $in: ['8115199076', '9135219071'] },
       const users = await userList({
-        // 'phone.mobile_number': { $in: ['8115199076','9135219071','8384082560'] },
+        'phone.mobile_number': { $in: ['8115199076','9135219071','8384082560'] },
         status: status.ACTIVE,
         deviceToken: { $exists: true, $ne: "" },
       });
@@ -357,8 +357,8 @@ var taskPlatformNotification = cron.schedule("30 21 * * *",
           // Now you can find super cool deals on flights✈ and hotels🏨📱 
           
           // Update your app now and let's get your wanderlust fix!`;
-          const notificationMessage = `${user.username},🌏Still planning your Trip? `;
-      const messageBody = `You can book in advance with the exclusive offer: Travel now, Pay Later! ✈✈️💼`;
+          const notificationMessage = `CODE:SKY500`;
+      const messageBody = `A proposal For ${user.username},Would you love to save on your Bookings.✈️🏖️🚎🏩..`;
           await pushSimpleNotification(
             user.deviceToken,
             notificationMessage,

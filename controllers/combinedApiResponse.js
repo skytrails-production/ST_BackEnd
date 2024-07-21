@@ -63,6 +63,21 @@ async function xmlToJson(xml) {
   });
 }
 
+// Helper function to find and keep flights with the least BaseFare
+const getLowestFareFlights = (flights) => {
+  const uniqueFlights = {};
+  // console.log("flights=============",flights);
+  flights.forEach(flight => {
+    const key = `${flight.flightNumber}_${flight.origin}_${flight.departureTime}`;
+    if (!uniqueFlights[key] || flight.BaseFare < uniqueFlights[key].BaseFare) {
+      uniqueFlights[key] = flight;
+    }
+  });
+
+  return Object.values(uniqueFlights);
+};
+
+
 exports.combinedAPI1 = async (req, res, next) => {
   try {
     const data = req.body;
@@ -153,16 +168,20 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
           return { data: {} };
         })
     ]);
-    console.log("tvoResponse==========",tvoResponse.data.Response);
-console.log("amadeusResponse============",amadeusResponse);
-    var tvoArray = [];
-    if (tvoResponse.data.Response.ResponseStatus === 1) {
-      tvoArray = tvoResponse.data.Response.Results[0];
-    } else {
-      tvoArray = [];
-    }
-    let jsonResult = {};
-    jsonResult = await xmlToJson(amadeusResponse.data);
+    // console.log("tvoResponse==========",tvoResponse.data.Response);
+// console.log("amadeusResponse============",amadeusResponse);
+let tvoArray = tvoResponse.data.Response.ResponseStatus === 1 ? tvoResponse.data.Response.Results[0] : [];
+// Filter tvoArray to keep flights with the lowest BaseFare for each unique combination
+console.log("tvoArray==================",tvoArray.length);
+
+// tvoArray = getLowestFareFlights(tvoArray);
+// console.log("getLowestFareFlightstvoArray==================",tvoArray.length);
+
+let jsonResult = await xmlToJson(amadeusResponse.data);
+// let finalFlattenedArray = [];
+
+    // let jsonResult = {};
+    // jsonResult = await xmlToJson(amadeusResponse.data);
     if (
       amadeusResponse.status == 200 &&
       !jsonResult["soapenv:Envelope"]["soapenv:Body"][
@@ -256,6 +275,7 @@ console.log("amadeusResponse============",amadeusResponse);
     if (tvoArray.length > 0) {
       selectedArray = await tvoArray.filter((value) => value.IsLCC === true);
       if (selectedArray.length > 0) {
+        console.log("selectedArray.length===========",selectedArray.length);
         finalResult = finalFlattenedArray.concat(selectedArray);
       } else if (finalFlattenedArray.length <= 0) {
         finalResult = [...tvoArray];
@@ -278,18 +298,27 @@ console.log("amadeusResponse============",amadeusResponse);
         // for (const key of Object.keys(finalRep)) {
         //   const obj = finalRep[key];
         //   // if (obj.hasOwnProperty("paxFareDetail")) {
-        const totalFare = parseInt(finalRep.monetaryDetail[0].amount);
+        // const totalFare = parseInt(finalRep.monetaryDetail[0].amount);
+        // const totalTax = parseInt(finalRep.monetaryDetail[1].amount);
+        // const totalAmount = totalFare + totalTax;
+        // const totalFare =  parseInt(finalRep.paxFareDetail?.totalFareAmount-finalRep?.paxFareDetail?.totalTaxAmount);
+        // console.log("finalRep.paxFareDetail?.totalFareAmount=",typeof(finalRep.paxFareDetail?.totalFareAmount));
+        const totalFare =  Number(finalRep.paxFareDetail?.totalFareAmount)-Number(finalRep?.paxFareDetail?.totalTaxAmount);
+// console.log("totalFar=========",typeof(totalFare));
         const totalTax = parseInt(finalRep.monetaryDetail[1].amount);
         const totalAmount = totalFare + totalTax;
         // finalRep.totalAmount = totalAmount;
-        totalPublishFare += totalAmount;
+        finalRep.TotalPublishFare = totalFare;
+// finalRep.totalAmount = totalAmount;
+        finalRep.TotalPublishFare = parseInt(totalFare);
         //   // }
         // }
-
-        finalRep.TotalPublishFare = totalPublishFare;
+        // finalRep.TotalPublishFare = totalPublishFare;
       } else if (finalRep.Segments) {
-        const totalPublishFare = finalRep.Fare.PublishedFare;
+        const totalPublishFare = finalRep.Fare.BaseFare;
         finalRep.TotalPublishFare = totalPublishFare;
+        // const totalPublishFare = finalRep.Fare.PublishedFare;
+        // finalRep.TotalPublishFare = totalPublishFare;
       }
     }
     const sortedData = finalResult.sort(
@@ -672,7 +701,6 @@ const generateAmadeusRequest = (data) => {
     .createHash("sha1")
     .update(buffer)
     .digest("base64");
-console.log("data============",data);
   var soapRequest = `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
     xmlns:sec="http://xml.amadeus.com/2010/06/Security_v1"
     xmlns:typ="http://xml.amadeus.com/2010/06/Types_v1"

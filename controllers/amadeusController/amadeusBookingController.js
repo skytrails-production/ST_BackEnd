@@ -93,7 +93,7 @@ exports.amdsFlightBooking = async (req, res, next) => {
       String(formattedDate),
     ];
     const result = await createUserAmadeusFlightBooking(data);
-    const adminContact=['+918115199076','+919765432345']
+    const adminContact=['+918115199076','+919899564481']
     await whatsApi.sendWhtsAppAISensyMultiUSer(
       adminContact,
       TemplateNames,
@@ -229,7 +229,7 @@ exports.getAllUserFlightBooking = async (req, res, next) => {
   }
 };
 
-exports.UpdateTicket = async (req, res, next) => {
+exports.UpdateTicket1 = async (req, res, next) => {
   try {
     const { bookingId, ticketNumber, firstName } = req.body;
     const isBookignExist = await findUserAmadeusFlightBooking({
@@ -241,26 +241,48 @@ exports.UpdateTicket = async (req, res, next) => {
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });
     }
-    const user=await findUser({_id:isBookignExist.userId})
-    // Update the ticket number for the specific passenger
-    const result = await updateUserAmadeusFlightBooking(
-      {
-        _id: bookingId,
-        "passengerDetails.firstName": firstName,
-      },
-      { $set: { "passengerDetails.$.TicketNumber": ticketNumber } }
-    );
+    const user=await findUser({_id:isBookignExist.userId});
+    var depDate;
+    var depTime;
+    var arrTime;
+    var templates;
+    var finalResult=[];
     let options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-    const depDate=new Date(result.airlineDetails[0].Origin.DepTime);
-    const depTime=new Date(result.airlineDetails[0].Origin.DepTime);
-    var arrTime=new Date(result.airlineDetails[0].Origin.DepTime);
-    arrTime.setHours(arrTime.getHours() - 2);
-    const templates=[String(firstName),String(result.pnr),String(result.airlineDetails[0].Airline.AirlineName),String(depDate.toLocaleDateString('en-GB', options)),String(depTime.toLocaleTimeString('en-GB')),String(arrTime.toLocaleTimeString('en-GB')),String(result.totalAmount)];
-    await whatsApi.sendWhtsAppOTPAISensy('+91'+result.passengerDetails[0].ContactNo,templates,"flightBooking");
-    const templateName=[String(user.username),String(result.pnr),String(result.airlineDetails[0].Airline.AirlineName),String(depDate.toLocaleDateString('en-GB', options)),String(depTime.toLocaleTimeString('en-GB')),String(arrTime.toLocaleTimeString('en-GB')),String(result.totalAmount)];
+
+    // Update the ticket number for the specific passenger
+    console.log("firstName----------",firstName);
+    for(var passenger of firstName){
+      console.log("passenger==========",passenger);
+       result = await updateUserAmadeusFlightBooking(
+        {
+          _id: bookingId,
+          "passengerDetails.firstName": passenger.firstName,
+        },
+        { $set: { "passengerDetails.$.TicketNumber": passenger.ticketNumber } }
+      );
+      finalResult.push(result);
+      console.log("result=========",result);
+       depDate=new Date(result.airlineDetails[0].Origin.DepTime);
+       depTime=new Date(result.airlineDetails[0].Origin.DepTime);
+      var arrTime=new Date(result.airlineDetails[0].Origin.DepTime);
+      arrTime.setHours(arrTime.getHours() - 2);
+       templates=[String(firstName),String(result.pnr),String(result.airlineDetails[0].Airline.AirlineName),String(depDate.toLocaleDateString('en-GB', options)),String(depTime.toLocaleTimeString('en-GB')),String(arrTime.toLocaleTimeString('en-GB')),String(result.totalAmount)];
+       return result;
+    }
+    // const result = await updateUserAmadeusFlightBooking(
+    //   {
+    //     _id: bookingId,
+    //     "passengerDetails.firstName": firstName,
+    //   },
+    //   { $set: { "passengerDetails.$.TicketNumber": ticketNumber } }
+    // );
+   console.log("8568890001=======",result);
+   console.log("finalResult==========",finalResult);
+    await whatsApi.sendWhtsAppOTPAISensy('+91'+result[0].passengerDetails[0].ContactNo,templates,"flightBooking");
+    const templateName=[String(user.username),String(result[0].pnr),String(result[0].airlineDetails[0].Airline.AirlineName),String(depDate.toLocaleDateString('en-GB', options)),String(depTime.toLocaleTimeString('en-GB')),String(arrTime.toLocaleTimeString('en-GB')),String(result[0].totalAmount)];
     await whatsApi.sendWhtsAppOTPAISensy('+91'+user.phone.mobile_number,templateName,"flightBooking");
-    await sendSMSUtils.sendSMSForFlightBooking(result);
-    await commonFunction.FlightBookingConfirmationMail(result);
+    await sendSMSUtils.sendSMSForFlightBooking(result[0]);
+    await commonFunction.FlightBookingConfirmationMail1(result);
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.UPDATE_SUCCESS,
@@ -273,3 +295,101 @@ exports.UpdateTicket = async (req, res, next) => {
   }
 };
 
+exports.UpdateTicket = async (req, res, next) => {
+  try {
+    const { bookingId, firstName } = req.body;
+    const isBookingExist = await findUserAmadeusFlightBooking({ _id: bookingId });
+    
+    if (!isBookingExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
+      });
+    }
+    console.log("isBookingExist=-==============",isBookingExist);
+    const user = await findUser({ _id: isBookingExist.userId });
+    let options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    var finalResult ;
+    let depDate, depTime, arrTime, templates;
+
+    for (const passenger of firstName) {
+      const result = await updateUserAmadeusFlightBooking(
+        {
+          _id: bookingId,
+          "passengerDetails.firstName": passenger.firstName,
+        },
+        { $set: { "passengerDetails.$.TicketNumber": passenger.ticketNumber } }
+      );
+console.log("result=====",result);
+      if (result) {
+        // finalResult.push(result);
+        finalResult=result
+        depDate = new Date(result.airlineDetails[0].Origin.DepTime);
+        depTime = new Date(result.airlineDetails[0].Origin.DepTime);
+        arrTime = new Date(result.airlineDetails[0].Origin.DepTime);
+        arrTime.setHours(arrTime.getHours() - 2);
+
+        templates = [
+          String(passenger.firstName),
+          String(result.pnr),
+          String(result.airlineDetails[0].Airline.AirlineName),
+          String(depDate.toLocaleDateString('en-GB', options)),
+          String(depTime.toLocaleTimeString('en-GB')),
+          String(arrTime.toLocaleTimeString('en-GB')),
+          String(result.totalAmount)
+        ];
+      }
+    }
+    // Send WhatsApp messages and SMS
+    // for (const result of finalResult) {
+      const passengerContact = `+91${finalResult.passengerDetails[0].ContactNo}`;
+      await whatsApi.sendWhtsAppOTPAISensy(passengerContact, templates, "flightBooking");
+    // }
+
+    const userTemplateName = [
+      String(user.username),
+      String(finalResult.pnr),
+      String(finalResult.airlineDetails[0].Airline.AirlineName),
+      String(depDate.toLocaleDateString('en-GB', options)),
+      String(depTime.toLocaleTimeString('en-GB')),
+      String(arrTime.toLocaleTimeString('en-GB')),
+      String(finalResult.totalAmount)
+    ];
+    await whatsApi.sendWhtsAppOTPAISensy(`+91${user.phone.mobile_number}`, userTemplateName, "flightBooking");
+
+    // Send SMS
+    await sendSMSUtils.sendSMSForFlightBooking(finalResult[0]);
+
+    // Send email confirmation
+    await commonFunction.FlightBookingConfirmationMail1(finalResult);
+
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.UPDATE_SUCCESS,
+      result: finalResult,
+    });
+  } catch (error) {
+    console.log("error while trying to update userFlight booking! ", error);
+    return next(error);
+  }
+};
+
+
+
+exports.generatePdfOfUSer = async (req, res, next) => {
+  try {
+    const { bookingId } = req.body;
+    const data = await findUserAmadeusFlightBooking({ _id: bookingId });
+    // sendSMS.
+    const response = await commonFunction.FlightBookingConfirmationMail1(data);
+    // console.log("result",result);
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.EMAIL_SENT,
+      result: response,
+    });
+  } catch (error) {
+    console.log("error while trying to craete pdf", error);
+    return next(error);
+  }
+};

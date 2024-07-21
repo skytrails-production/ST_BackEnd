@@ -11,6 +11,7 @@ const configs = require("./common/common");
 const PORT = process.env.PORT || 8000;
 const db = require("./model");
 const Role = db.role;
+
 // const initializeRoutes = require("./routes");
 app.use(cors());
 const cron=require('./controllers/btocController/cronNotification');
@@ -84,8 +85,14 @@ app.use(bodyparser.text({ type: 'text/xml' }));
 app.use(bodyparser.urlencoded({ limit: '20mb', extended: true }));
 app.use(cookieParser());
 
-var corsOptions = {
-  origin: "*",
+// var corsOptions = {
+//   origin: "*",
+// };
+
+// app.use(cors(corsOptions));
+const corsOptions = {
+  origin: '*',
+  optionsSuccessStatus: 200
 };
 
 app.use(cors(corsOptions));

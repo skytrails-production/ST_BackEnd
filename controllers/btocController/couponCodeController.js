@@ -281,15 +281,14 @@ exports.applyCoupon = async (req, res, next) => {
 exports.CouponApplied=async(req,res,next)=>{
   try {
     const { couponCode } = req.params.couponCode;
-    console.log("req.params.couponCode",req.params.couponCode)
     let couponUser = [];
     const isUserExist = await findUserData({_id: req.userId,status: status.ACTIVE });
     if (!isUserExist) {
-      return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.USERS_NOT_FOUND});
+      return res.status(statusCode.OK).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.USERS_NOT_FOUND});
     }
     const isCouponExist = await findCoupon({ couponCode: req.params.couponCode });
     if (!isCouponExist) {
-      return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.COUPON_NOT_FOUND});
+      return res.status(statusCode.OK).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.COUPON_NOT_FOUND});
     }
 
     //check if coupon already apply
@@ -304,7 +303,7 @@ exports.CouponApplied=async(req,res,next)=>{
     if(isCouponExist.couponCode==="WELCOMEPEFA"){
         const isUserRegister = await findBookingEventData({userId: isUserExist._id,status:status.ACTIVE});
       if (!isUserRegister) {
-        return res.status(statusCode.badRequest).send({statusCode: statusCode.badRequest,responseMessage: responseMessage.PEFA_NOT_REGISTER});
+        return res.status(statusCode.OK).send({statusCode: statusCode.badRequest,responseMessage: responseMessage.PEFA_NOT_REGISTER});
       }
       const resultData = await updateCoupon(
         { _id: isCouponExist._id },
@@ -315,7 +314,7 @@ exports.CouponApplied=async(req,res,next)=>{
     return res.status(statusCode.OK).json({statusCode: statusCode.OK,responseMessage: responseMessage.COUPON_APPLIED_SUCCESS,result:resultData});
     }
     if (isCouponExist.userApplied.includes(isUserExist._id)) {
-      return res.status(statusCode.Conflict).json({
+      return res.status(statusCode.OKc).json({
         statusCode: statusCode.Conflict,
         responseMessage: responseMessage.ALREDY_COUPOUN_APPLIED,
       });

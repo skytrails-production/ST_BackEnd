@@ -200,5 +200,6 @@ module.exports = function (app) {
   app.put("/skyTrails/api/agent/resetPassword/:id",controller.resetPassword);
   app.get("/skyTrails/api/agent/agentRevenue",controller.getRevenueOfAgent);
   app.get("/skyTrails/api/agent/getAllAgentRevenue",controller.getAllAgentRevenue);
-  app.get("/skyTrails/api/agent/getAgentTableWithRevenue",controller.getAgentTableWithRevenue)
+  app.get("/skyTrails/api/agent/getAgentTableWithRevenue",controller.getAgentTableWithRevenue);
+  app.put("/skyTrails/api/agent/addBalance",controller.addBalance);
 };

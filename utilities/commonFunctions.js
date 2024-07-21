@@ -6454,4 +6454,228 @@ module.exports = {
     };
     return await transporter.sendMail(mailOptions);
   },
+
+  FlightBookingConfirmationMail1: async (to) => {
+    console.log("to=========",to);
+    const currentDate = new Date(to.createdAt);
+    const options = {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+    };
+    const formattedDate = currentDate.toLocaleDateString("en-US", options);
+
+    const formatDate = (dateString) => {
+        const options = {
+            hour: "numeric",
+            minute: "numeric",
+            hour12: true,
+            weekday: "short",
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+        };
+
+        const date = new Date(dateString);
+        return date.toLocaleString("en-US", options);
+    };
+
+    // const name = `${to?.passengerDetails[0]?.firstName} ${to?.passengerDetails[0]?.lastName}`;
+    const passengerDetailsHtml = to.passengerDetails.map(item => `
+        <div style="width:100%; float: left; padding: 5px;">
+          <div style="width:100%; float: left; padding-bottom:5px;">
+            <div style="width: 40%; float: left; margin-right: 0;">
+              <span style="margin-top: 5px; width: 100%; float: left;"><b>Name:</b>
+                ${item.title} ${item.firstName} ${item.lastName}</span><br>      
+            </div>
+            <div style="width: 30%; float: left; margin-right: 8px;">
+              <span style="margin-top: 5px; width: 100%; float: left;">
+                ${item.TicketNumber}      
+              </span>
+            </div>
+            <div style="width: 15%; float: right; margin-right: 45px; text-align: left;">
+              <span style="margin-top: 5px; width: 100%; float: left; text-align: left;">-</span>      
+            </div>
+          </div>                  
+        </div>
+    `).join("");
+
+    const airlineDetailsHtml = to.airlineDetails.map(item => `
+        <div style="width: 100%; float: left; padding: 5px;">
+          <div style="width: 23%; float: left; margin-right: 0;">
+            <span style="margin-top: 5px; width: 18%; height: 75px; float: left;">
+              <img id="airlineLogo" src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/FlightImages/${item?.Airline?.AirlineCode}.png" height="27px" width="30px" alt="UK">
+            </span>
+            <span style="margin-top: 5px; width: 70%; float: left;">
+              ${item.Airline.AirlineName} ${item.Airline.AirlineCode} ${item.Airline.FlightNumber}<br>
+              ${item.Airline.FareClass} Class
+              <br>      
+              Operating Carrier:${item.Airline.AirlineCode}
+              <label>Cabin:Economy</label>
+            </span>
+          </div>
+          <div style="width: 25%; float: left; margin-right: 10px;">
+            <span style="margin-top: 5px; width: 100%; float: left;">
+              ${item.Origin.AirportCode} (${item.Origin.AirportName}, ${item.Origin.CityName}) </span>
+            <span style="margin-top: 5px; width: 100%; float: left;">Terminal: 3</span>
+            <span style="margin-top: 5px; width: 100%; float: left;">${formatDate(item.Origin.DepTime)}</span>
+          </div>
+          <div style="width: 25%; float: left; margin-right: 10px;">
+            <span style="margin-top: 5px; width: 100%; float: left;">
+              ${item.Destination.AirportCode} (${item.Destination.AirportName}, ${item.Destination.CityName})</span>
+            <span style="margin-top: 5px; width: 100%; float: left;">Terminal: 1</span>
+            <span style="margin-top: 5px; width: 100%; float: left;">${formatDate(item.Destination.ArrTime)}</span>
+          </div>
+          <div style="width: 20%; float: right; margin-right: 10px;">
+            <span style="margin-top: 5px; width: 100%; float: left;"> Confirmed </span>
+          </div>
+          <div align="center" class="alignment" style="line-height:10px">
+        </div>
+    `).join("");
+
+    const htmlContent = `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700;900&family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+      <title>Flight booking pdf</title>
+    </head>
+    <body>
+      <div style="background:#fff; overflow:hidden; padding: 9px; width: 750px; border:1px solid #D6D8E7;font-size:12px; font-family:arial, sans-serif; margin:10px auto;">
+        <div style="justify-content: space-between; align-items: flex-start; display: flex; margin-top: 24px;">
+          <img src="https://travvolt.s3.amazonaws.com/ST-Main-LogoPdf.png" alt="logo" style="width:25%;margin-top: -10px;" />
+          <div style="color: black; font-size: 24px; font-family: Montserrat; font-weight: 600; word-wrap: break-word;">
+            E - Ticket
+          </div>
+          <div style="flex-direction: column; justify-content: center; align-items: center; gap: 8px; display: flex;">
+            <div style="justify-content: center; align-items: center; gap: 4px; display: flex;">
+              <div style="color: #868686; font-size: 12px; font-family: Montserrat; font-weight: 500; word-wrap: break-word;">
+                Booking Id:
+              </div>
+              <div style="color: #071c2c; font-size: 12px; font-family: Montserrat; font-weight: 500; word-wrap: break-word;">
+                ${to.bookingId}
+              </div>
+            </div>
+            <div style="justify-content: center; align-items: center; gap: 4px; display: flex;">
+              <div style="color: #868686; font-size: 12px; font-family: Montserrat; font-weight: 500; word-wrap: break-word;">
+                PNR:
+              </div>
+              <div style="color: #071c2c; font-size: 12px; font-family: Montserrat; font-weight: 500; word-wrap: break-word;">
+                ${to.pnr}
+              </div>
+            </div>
+            <div style="justify-content: center; align-items: center; gap: 4px; display: flex;">
+              <div style="color: #868686; font-size: 12px; font-family: Montserrat; font-weight: 500; word-wrap: break-word;">
+                (Booked on ${formattedDate})
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="background: white; padding: 24px; border-radius: 12px;">
+          <div style="width: 100%; float: left; margin-top: 15px; border: 1px solid #D6D8E7;">
+            <div style="width:100%; background-color: #004684; float: left; font-weight: bold; padding: 5px; padding-right: 0px; border-bottom: 1px solid #D6D8E7; color: #fff;">
+              <div style="width: 40%; float: left; margin-right: 0;">
+                Passenger Name
+              </div>
+              <div style="width: 30%; float: left; margin-right: 0;">
+                Ticket Number
+              </div>
+              <div style="width: 21%; float: right; text-align: left; margin-right: 0;">
+                Frequent flyer no.
+              </div>
+            </div>
+            ${passengerDetailsHtml}
+          </div>
+          <div style="width: 100%; float: left; margin-top: 15px; border: 1px solid #D6D8E7;">
+            <div style="width: 100%; background-color: #004684; float: left; font-weight: bold; padding: 5px; padding-right: 0px; border-bottom: 1px solid #D6D8E7; color: #fff;">
+              <div style="width: 23%; float: left; margin-right: 0;">
+                Flights
+              </div>
+              <div style="width: 24%; float: left; margin-right: 10px;">
+                Departing
+              </div>
+              <div style="width: 23%; float: left; margin-right: 10px;">
+                Arriving
+              </div>
+              <div style="width: 20%; float: right; margin-right: 10px;">
+                Status
+              </div>
+            </div>
+            ${airlineDetailsHtml}
+          </div>
+        </div>
+        <div class="important-info" style="margin-top:100px; padding:10px; margin 10px;">
+      <p><span style="color: red;">Important:</span> This is an Electronic Ticket. Passengers must carry a valid photo ID for check-in at the airport.</p>
+      <p>Carriage and other services provided by the carrier are subject to conditions of carriage which hereby incorporated by reference. These conditions may be obtained from the issuing carrier. If the passenger's journey involves an ultimate destination or stop in a country other than country of departure the Warsaw convention may be applicable and the convention governs and in most cases limits the liability of carriers for death or personal injury and in respect of loss of or damage to baggage.</p>
+      <p><span style="color: red;">Note:</span> We recommend purchasing travel insurance for your trip. Please contact your travel advisor to purchase travel insurance.</p>
+    </div>
+      </div>
+   <div class="footer" style="width: 80%; text-align: center;">
+      <img src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/mailingImages/skyTrails-banner.png" alt="SkyTrails Banner">
+    </div>
+    </body>
+    </html>`;
+
+    // Generate PDF with Puppeteer
+    const browser = await puppeteer.launch({
+        headless: false, // Run in non-headless mode for debugging
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
+    const page = await browser.newPage();
+
+    // Increase the timeout for setContent
+    await page.setContent(htmlContent, { waitUntil: 'networkidle0', timeout: 60000 });
+
+    // Optionally, disable loading of external resources
+    await page.setRequestInterception(true);
+    page.on('request', (request) => {
+        if (request.resourceType() === 'image' || request.resourceType() === 'stylesheet' || request.resourceType() === 'font') {
+            request.abort();
+        } else {
+            request.continue();
+        }
+    });
+
+    const pdfBuffer = await page.pdf({ format: 'A4' });
+    await browser.close();
+
+    // Define nodemailer transporter
+    const transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: nodemailerConfig.options.auth.user,
+      pass: nodemailerConfig.options.auth.pass,
+    },
+    connectionTimeout: 120000,
+    });
+
+    // Define email options
+    const mailOptions = {
+        from: process.env.EMAIL,
+        to: 'charuyadav594@gmail.com',
+        subject: 'Flight Booking Confirmation',
+       html: flightMail(to),
+        attachments: [
+            {
+                filename: 'booking-confirmation.pdf',
+                content: pdfBuffer,
+                contentType: 'application/pdf',
+            },
+        ],
+    };
+
+    // Send email
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully.',pdfBuffer);
+    } catch (error) {
+        console.error('Error sending email:', error);
+    }
+},
 };
+
+

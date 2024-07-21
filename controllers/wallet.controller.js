@@ -4,14 +4,17 @@ const User = require("../model/user.model");
 const Role = require("../model/role.model");
 const Razorpay = require("razorpay");
 const db = require("../model");
-const b2bUser = db.userb2bs;
+const b2bUser = db.userb2b;
 const {
   actionCompleteResponse,
   sendActionFailedResponse,
 } = require("../common/common");
 const { findByIdAndUpdate } = require("../model/international.model");
 const crypto = require("crypto");
-
+const responceCode = require("../utilities/responceCode");
+const responseMessage = require("../utilities/responses");
+const { responseMessages } = require("../common/const");
+const agentWalletHistory=require("../model/agentWalletHistory");
 // exports.add_amount = async(req,res)=>{
 
 //     const {userId,currency} = req.body;
@@ -51,7 +54,7 @@ exports.update_amount = async (req, res) => {
       const data = await wallet.findByIdAndUpdate(id, { balance, currency });
       var size = Object.keys(data).length;
       if (size > 0) {
-        const resData = await b2bUser.findOne({ walletid: id });
+        // const resData = await b2bUser.findById({ walletid: id });
         // console.log(resData.walletid);
         const user = await b2bUser.findOneAndUpdate(
           { walletid: id },
@@ -220,3 +223,5 @@ exports.updateRozarPay = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+

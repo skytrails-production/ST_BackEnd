@@ -409,67 +409,6 @@ exports.GetMarkup = async (req, res) => {
   }
 };
 
-//update b2b balance using razorpay
-// exports.updateUserBalance = async (req, res) => {
-
-//   try {
-//     const { _id, amount, paymentId } = req.body; // Destructure userId and additionalBalance from the request body
-
-//     // Check if userId is valid in your user table
-//     console.log(req.body);
-
-//     let instance = new Razorpay({
-//       key_id: process.env.Razorpay_KEY_ID,
-//       key_secret: process.env.Razorpay_KEY_SECRET,
-//     });
-
-//     var options = {
-//       amount: Number(req.body.amount) * 100, // amount in the smallest currency unit
-//       currency: "INR",
-//       receipt: "order_rcptid_11",
-//     };
-//     console.log(req.body.amount);
-//     instance.orders.create(options, function (err, order) {
-//       if (err) {
-//         console.error(err);
-//         return res.status(500).json({ code: 500, message: "Server Error" });
-//       }
-
-//       console.log(order);
-//       // return res.send({
-//       //   code: 200,
-//       //   message: "order Created Successfully",
-//       //   data: order,
-//       // });
-//     });
-
-//     const AgentWalletData={
-//       userId:_id,
-//       orderId:paymentId,
-//       amount:amount
-//     };
-//     await agentWallets.create(AgentWalletData);
-//     const user = await b2bUser.findById(_id);
-
-//     if (!user) {
-//       return sendActionFailedResponse(res, {}, "Invalid userId");
-//     }
-
-//     // Update the user's balance by adding the additional balance
-//     user.balance += Number(amount);
-
-//     // Save the updated user
-//     const updatedUser = await user.save();
-
-//     // Respond with the updated user object
-//     actionCompleteResponse(res, updatedUser, "User balance updated successfully");
-
-//   } catch (error) {
-//     sendActionFailedResponse(res, {}, "Internal server error");
-//     console.log(error);
-//   }
-
-// };
 
 exports.payVerify = (req, res) => {
   try {
@@ -2328,5 +2267,39 @@ exports.getAgentTableWithRevenue=async(req,res,next)=>{
   } catch (error) {
     console.log("Error while trying to get agent Table",error);
     return next(error)
+  }
+}
+
+
+exports.addBalance=async(req,res,next)=>{
+  try {
+    const {amount,agentId,currency,adminId}=req.body;
+    const user = await User.findById(adminId);
+    // console.log(user.roles[0].toString());
+    const role = await Role.findById(user.roles[0].toString());
+    //  console.log(r.name);
+    if (role.name === "admin") {
+      const isAgentExist=await b2bUser.findOne({_id:agentId});
+      if(!isAgentExist){
+        return res.status(statusCode.NoContent).json({
+          responceCode: statusCode.NoContent,
+          responseMessages:responseMessage.AGENT_NOT_FOUND,
+        });
+      }
+      // const isWalletHistoryExist=await agentWalletHistory.findOne({agnetId:isAgentExist._id});
+      // if(isWalletHistoryExist){
+      //   await agentWalletHistory.updateOne({_id:isWalletHistoryExist._id},{amount:amount})
+      // }
+      agentWalletHistory.create({agnetId:isAgentExist._id,amount:amount,transactionType:'Credit',bookingType:'added by Admin'})
+      const updateBalance=await b2bUser.updateOne({_id:isAgentExist._id},{ $inc: { balance: amount } },{new:true});
+      return res.status(statusCode.OK).json({
+        responceCode: statusCode.OK,
+        responseMessages:responseMessage.UPDATE_SUCCESS,
+        result:updateBalance,
+      });
+    }
+  } catch (error) {
+    console.log("Error while trying to update Balance",error);
+    return next(error);
   }
 }

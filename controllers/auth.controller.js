@@ -2404,7 +2404,7 @@ exports.dailyQuizStatus = async (req, res, next) => {
 
 exports.approvePartnerAccount = async (req, res, next) => {
   try {
-    const { partnerId, status, approveStatus,reason } = req.body;
+    const { partnerId, status, approveStatus, reason } = req.body;
     const isExist = await findhotelinventoryAuthData({ _id: partnerId });
     if (!isExist) {
       return res.status(statusCode.OK).send({
@@ -2412,9 +2412,11 @@ exports.approvePartnerAccount = async (req, res, next) => {
         responseMessage: responseMessage.PARTNER_NOT_FOUND,
       });
     }
-    const data={
-      status, approveStatus,reason
-    }
+    const data = {
+      status,
+      approveStatus,
+      reason,
+    };
     const updateResult = await updatehotelinventoryAuth(
       { _id: isExist._id },
       data
@@ -2425,8 +2427,18 @@ exports.approvePartnerAccount = async (req, res, next) => {
       // var1,
       // var2,
       // "loginotp"
-      await whatsappAPIUrl.sendWhtsAppAISensy(isExist.phoneNumber,isExist.managerName,isExist.email,isExist.managerName + "@" + "1234","partnerconfirmation");
-      await commonFunction.sendSubAdmin(isExist.email,isExist.managerName,isExist.managerName + "@" + "1234")
+      await whatsappAPIUrl.sendWhtsAppAISensy(
+        isExist.phoneNumber,
+        isExist.managerName,
+        isExist.email,
+        isExist.managerName + "@" + "1234",
+        "partnerconfirmation"
+      );
+      await commonFunction.sendSubAdmin(
+        isExist.email,
+        isExist.managerName,
+        isExist.managerName + "@" + "1234"
+      );
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.UPDATE_SUCCESS,

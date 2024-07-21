@@ -19,5 +19,6 @@ module.exports = function (app) {
     app.get('/skyTrails/api/amadeus/user/getflightBooking',[authJwt.verifcationToken],Controller.getUserFlightBooking);
     app.get('/skyTrails/api/amadeus/user/getflightBookingById',Controller.getFlightBookingId);
     app.get('/skyTrails/api/amadeus/user/getAllflightBooking',Controller.getAllUserFlightBooking);
-    app.put('/skyTrails/api/amadeus/user/UpdateTicket',Controller.UpdateTicket)
+    app.put('/skyTrails/api/amadeus/user/UpdateTicket',Controller.UpdateTicket);
+    app.put('/skyTrails/api/amadeus/user/generatePdfOfUSer',Controller.generatePdfOfUSer)
 }

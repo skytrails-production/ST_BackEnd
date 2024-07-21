@@ -28,7 +28,7 @@ function flightMail(to){
     // console.log(to)
     const name = `${to?.passengerDetails[0]?.firstName} ${to?.passengerDetails[0]?.lastName}`;
 
-    return`<!DOCTYPE html>
+    const design=`<!DOCTYPE html>
 
     <html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
     <head>
@@ -478,6 +478,7 @@ function flightMail(to){
     </table><!-- End -->
     </body>
     </html>`
+    return design;
 }
 
 
@@ -3157,7 +3158,7 @@ function InventoryPartnerResetPassword(token){
             <h1>Inventory Partner Password Reset</h1>
             <p>Hello User,</p>
             <p>We received a request to reset your password for your account. To reset your password, click the button below:</p>
-            <a href="http://localhost:3000/inventoryForgetPassword?token=${token}" class="button">Reset Password</a>
+            <a href="https://theskytrails.com/inventoryForgetPassword?token=${token}" class="button">Reset Password</a>
             <p>If you did not request a password reset, please ignore this email. This link will expire in 24 hours.</p>
             <p>Thank you,<br>The HawaiYatra PVT. LTD. Team</p>
         </div>

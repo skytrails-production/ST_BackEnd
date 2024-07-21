@@ -46,11 +46,11 @@ exports.createDayWiseActivity = async (req, res, next) => {
 exports.getDayWiseActivity = async (req, res, next) => {
   try {
     const { origin, destination,noOfDays } = req.query;
-    req.query.noOfDays=noOfDays+1
+    const noOfDay1=parseInt(noOfDays)+1;
     const result = await findAllDayWiseItinerary({
       destination: destination,
       origin: origin,
-      noOfDays:noOfDays
+      noOfDays:String(noOfDay1)
     });
     if (result.length < 1) {
       return res.status(statusCode.OK).send({

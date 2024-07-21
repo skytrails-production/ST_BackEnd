@@ -29,4 +29,5 @@ module.exports = function (app) {
   
     app.get('/skyTrails/flightbooking/amadeus/amadeusagentbooking', controller.allAmaduesAgentBooking);
     app.put('/skyTrails/flightbooking/amadeus/updateticket', controller.updateAmadeusTicket);
+    app.post('/skyTrails/generatePdf',controller.generatePdf)
 }

@@ -510,8 +510,9 @@ exports.postLike=async(req,res,next)=>{
         transactionType:'credit',
         createdAt: date.now
       }
+      // console.log("isPostExist.userId==========",isPostExist.userId)
       const updated=await updateUser(
-        { _id: isUser._id },
+        { _id: isPostExist.userId },
         {
           $inc: { balance: checkReward.likeCoins},
           $push:{walletHistory:walletObj}
@@ -532,5 +533,4 @@ exports.postLike=async(req,res,next)=>{
     return next(error);
   }
 };
-
 

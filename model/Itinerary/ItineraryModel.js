@@ -115,6 +115,7 @@ const itinerarySchema = new mongoose.Schema(
             Fare: { PublishedFare: Number },
             IsLCC: Boolean,
             Segments: [],
+            ValidatingAirline:String
           },
         ],
       },
@@ -123,7 +124,12 @@ const itinerarySchema = new mongoose.Schema(
       RoomGuests: [{ NoOfAdults: Number, NoOfChild: Number, ChildAge: [] }],
       cityAndNight:[{night:Number,destination:String}],
       leavingFrom:String,
-      nationality:String
+      nationality:String,
+      clientName:String,
+      leavingDate:String,
+      interest:String,
+      whoisTravelling:String,
+      ratingData:String
     },
     priceData:{grandTotal:String,markup:Number,withoutMarkup:Number}
   },

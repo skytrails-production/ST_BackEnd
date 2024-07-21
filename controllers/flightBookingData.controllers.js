@@ -7,73 +7,86 @@ const {
   sendActionFailedResponse,
 } = require("../common/common");
 const crypto = require("crypto");
+const sendSMSUtils = require("../utilities/sendSms");
 const commonFunction = require("../utilities/commonFunctions");
-const { sendWhatsAppMessage } = require('../utilities/whatsApi');
+const { sendWhatsAppMessage } = require("../utilities/whatsApi");
 const sendSMS = require("../utilities/sendSms");
 const PushNotification = require("../utilities/commonFunForPushNotification");
 const whatsApi = require("../utilities/whatsApi");
-const hawaiYatra=require("../utilities/b2bWhatsApp")
+const hawaiYatra = require("../utilities/b2bWhatsApp");
 const { cancelBookingServices } = require("../services/cancelServices");
-const { createcancelBooking, updatecancelBooking, aggregatePaginatecancelBookingList, countTotalcancelBooking } = cancelBookingServices;
+const {
+  createcancelBooking,
+  updatecancelBooking,
+  aggregatePaginatecancelBookingList,
+  countTotalcancelBooking,
+} = cancelBookingServices;
 exports.addFlightBookingData = async (req, res) => {
   try {
-
-      const data={
-        ...req.body,
-        bookingStatus:"BOOKED",
-      }
+    const data = {
+      ...req.body,
+      bookingStatus: "BOOKED",
+    };
     const response = await flightBookingData.create(data);
     const msg = "flight booking details added successfully";
 
-    if(response.bookingStatus === "BOOKED"){
-    
-     const userName = response.passengerDetails[0].firstName +" "+ response.passengerDetails[0].lastName;
-     const message = `Hello,${userName}.We appreciate your flight booking with The Skytrails. Your booking has been verified! Click the following link to view details:https://b2b.theskytrails.com/Login`
+    if (response.bookingStatus === "BOOKED") {
+      const userName =
+        response.passengerDetails[0].firstName +
+        " " +
+        response.passengerDetails[0].lastName;
+      const message = `Hello,${userName}.We appreciate your flight booking with The Skytrails. Your booking has been verified! Click the following link to view details:https://b2b.theskytrails.com/Login`;
       // await whatsAppMsg.sendWhatsAppMessage(response.passengerDetails[0].ContactNo, message);
-      await hawaiYatra.sendWhtsAppAISensy('+91'+data.passengerDetails[0].ContactNo,[String("Flight")],"booking_confirmation");
+      await hawaiYatra.sendWhtsAppAISensy(
+        "+91" + data.passengerDetails[0].ContactNo,
+        [String("Flight")],
+        "booking_confirmation"
+      );
       const send = await sendSMS.sendSMSForFlightBookingAgent(response);
       await commonFunction.FlightBookingConfirmationMail(response);
     }
     actionCompleteResponse(res, response, msg);
-  } catch (error) {  
+  } catch (error) {
     sendActionFailedResponse(res, {}, error.message);
   }
 };
 
-
-exports.EmailTicket= async (req, res) => {
-  const data=req.body;
+exports.EmailTicket = async (req, res) => {
+  const data = req.body;
   // console.log(data,"id")
-    try{
-    const response = await flightBookingData.findById({_id:data.TicketId});
-    await commonFunction.FlightBookingConfirmationMailWithNewEmail(response,data.emailTicket);
-    const msg="PDF sent successfully to your email. Please check your inbox."
+  try {
+    const response = await flightBookingData.findById({ _id: data.TicketId });
+    await commonFunction.FlightBookingConfirmationMailWithNewEmail(
+      response,
+      data.emailTicket
+    );
+    const msg = "PDF sent successfully to your email. Please check your inbox.";
 
     actionCompleteResponse(res, msg);
   } catch (error) {
     sendActionFailedResponse(res, {}, error.message);
   }
+};
 
-}
-
-
-exports.emailTicketWithMarkup= async (req, res) => {
-  const id=req.body.TicketId;
-  const markup=req.body;
+exports.emailTicketWithMarkup = async (req, res) => {
+  const id = req.body.TicketId;
+  const markup = req.body;
   // console.log(req.body,"body");
-    try{
-    const response = await flightBookingData.findById({_id:id});
+  try {
+    const response = await flightBookingData.findById({ _id: id });
     // console.log(response,markup,"response")
-    
-    await commonFunction.FlightBookingConfirmationMailwithAgentMarkup(response,markup);
-    const msg="PDF sent successfully to your email. Please check your inbox."
+
+    await commonFunction.FlightBookingConfirmationMailwithAgentMarkup(
+      response,
+      markup
+    );
+    const msg = "PDF sent successfully to your email. Please check your inbox.";
 
     actionCompleteResponse(res, msg);
   } catch (error) {
     sendActionFailedResponse(res, {}, error.message);
   }
-
-}
+};
 
 exports.getAllFlightsBooking = async (req, res) => {
   try {
@@ -118,7 +131,6 @@ exports.getoneFlightsBooking = async (req, res) => {
   }
 };
 
-
 exports.getoneFlightsBookingById = async (req, res) => {
   try {
     response = await flightBookingData.find({
@@ -146,7 +158,10 @@ exports.sendFlightBookingCencelRequestForAdmin = async (req, res) => {
     if (!booking) {
       return res.status(404).json({ message: "Booking not found" });
     } else {
-      const isAdmin = await User.find({ userType: "ADMIN", status: "ACTIVE" }).select('-_id email username');
+      const isAdmin = await User.find({
+        userType: "ADMIN",
+        status: "ACTIVE",
+      }).select("-_id email username");
       const emailMessage = `Flight Booking Cancellation Request\n\nFlightName: ${booking.flightName}\nPnrNumber: ${booking.pnr}\nEmail: ${booking.passengerDetails[0].email}\nBooking Date: ${booking.createdAt}`;
       const payload = {
         email: isAdmin[0].email,
@@ -240,92 +255,201 @@ exports.getMonthlyFlightBookingPassengerCalendar = async (req, res) => {
   }
 };
 
-
 //================================================================
 //============= Amadeus Flgiht Booking ====
 //================================================================
 
-exports.amadeusFlightBooking = async (req, res) =>{
-
+exports.amadeusFlightBooking = async (req, res) => {
   try {
-
-    const data={
+    const data = {
       ...req.body,
-      bookingStatus:"BOOKED",
-    }
+      bookingStatus: "BOOKED",
+    };
     let options = { day: "2-digit", month: "2-digit", year: "numeric" };
-      // Format the date using the toLocaleDateString() function
-      let formattedDate = new Date(data.airlineDetails[0].Origin.DepTime).toLocaleDateString("en-GB", options);
+    // Format the date using the toLocaleDateString() function
+    let formattedDate = new Date(
+      data.airlineDetails[0].Origin.DepTime
+    ).toLocaleDateString("en-GB", options);
     const TemplateNames = [
       String("FLightBooking"),
       String(data.bookingId),
       String(data.passengerDetails[0].firstName),
       String(formattedDate),
     ];
-    const adminContact=['+918115199076','+919765432345']
-  const response = await amadeusFlightBookingData.create(data);
-  const msg = "flight booking details added successfully";
-  await whatsApi.sendWhtsAppAISensyMultiUSer(
-    adminContact,
-    TemplateNames,
-    "admin_booking_Alert"
-  );
-  // if(response.bookingStatus === "BOOKED"){
-  
-  //  const userName = response.passengerDetails[0].firstName +" "+ response.passengerDetails[0].lastName;
-  //  const message = `Hello,${userName}.We appreciate your flight booking with The HawaiYatra. Your booking has been verified! Click the following link to view details:https://b2b.theskytrails.com/Login`
-  //   // await whatsAppMsg.sendWhatsAppMessage(response.passengerDetails[0].ContactNo, message);
-  //   await hawaiYatra.sendWhtsAppAISensy('+91'+data.passengerDetails[0].ContactNo,[String("Flight")],"booking_confirmation");
-  //   const send = await sendSMS.sendSMSForFlightBookingAgent(response);
-  //   await commonFunction.FlightBookingConfirmationMail(response);
-  // }
-  actionCompleteResponse(res, response, msg);
-} catch (error) {  
-  sendActionFailedResponse(res, {}, error.message);
-}
+    const adminContact = ["+918115199076", "+919899564481"];
+    const response = await amadeusFlightBookingData.create(data);
+    const msg = "flight booking details added successfully";
+    await whatsApi.sendWhtsAppAISensyMultiUSer(
+      adminContact,
+      TemplateNames,
+      "admin_booking_Alert"
+    );
+    // if(response.bookingStatus === "BOOKED"){
 
-}
-
-
-
-//get all amadeus flight booking
-
-
-exports.allAmaduesAgentBooking = async (req, res) =>{
-  try{
-    const response=await amadeusFlightBookingData.find();
-
-    actionCompleteResponse(res, response, "Amadues flight booking fetch successfully");
-  } catch (error) {  
-    sendActionFailedResponse(res, {}, error.message);
-  }
-
-
-
-}
-
-
-
-
-exports.updateAmadeusTicket = async (req, res ) =>{
-
-  const { bookingId, passengerDetails } = req.body;
-
-  try {
-
-    const updatePromises = passengerDetails.map(async (passenger) => {
-      const result = await amadeusFlightBookingData.updateOne(
-          { _id: bookingId, 'passengerDetails._id': passenger._id },
-          { $set: { 'passengerDetails.$.TicketNumber': passenger.TicketNumber } }
-      );
-      return result.modifiedCount;
-  });
-
-  const updateResults = await Promise.all(updatePromises);
-
-  actionCompleteResponse(res, updateResults, "update Ticket");
-    
+    //  const userName = response.passengerDetails[0].firstName +" "+ response.passengerDetails[0].lastName;
+    //  const message = `Hello,${userName}.We appreciate your flight booking with The HawaiYatra. Your booking has been verified! Click the following link to view details:https://b2b.theskytrails.com/Login`
+    //   // await whatsAppMsg.sendWhatsAppMessage(response.passengerDetails[0].ContactNo, message);
+    await hawaiYatra.sendWhtsAppAISensy(
+      "+91" + data.passengerDetails[0].ContactNo,
+      [String("Flight")],
+      "booking_confirmation"
+    );
+    // const send = await sendSMS.sendSMSForFlightBookingAgent(response);
+    await commonFunction.FlightBookingConfirmationMail(response);
+    // }
+    actionCompleteResponse(res, response, msg);
   } catch (error) {
     sendActionFailedResponse(res, {}, error.message);
   }
-}
+};
+
+//get all amadeus flight booking
+
+exports.allAmaduesAgentBooking = async (req, res) => {
+  try {
+    const response = await amadeusFlightBookingData.find();
+
+    actionCompleteResponse(
+      res,
+      response,
+      "Amadues flight booking fetch successfully"
+    );
+  } catch (error) {
+    sendActionFailedResponse(res, {}, error.message);
+  }
+};
+
+exports.updateAmadeusTicket = async (req, res) => {
+  const { bookingId, passengerDetails } = req.body;
+  console.log("req.body===========", req.body);
+  try {
+    const updatePromises = passengerDetails.map(async (passenger) => {
+      const result = await amadeusFlightBookingData.updateOne(
+        { _id: bookingId, "passengerDetails._id": passenger._id },
+        { $set: { "passengerDetails.$.TicketNumber": passenger.TicketNumber } }
+      );
+      console.log("result==========", result);
+      return result.modifiedCount;
+    });
+    console.log("updatePromises========", updatePromises);
+    const updateResults = await Promise.all(updatePromises);
+    console.log("updateResults==========", updateResults);
+    const depDate = new Date(updateResults.airlineDetails[0].Origin.DepTime);
+    const depTime = new Date(updateResults.airlineDetails[0].Origin.DepTime);
+    var arrTime = new Date(updateResults.airlineDetails[0].Origin.DepTime);
+    arrTime.setHours(arrTime.getHours() - 2);
+    const templates = [
+      String(firstName),
+      String(updateResults.pnr),
+      String(updateResults.airlineDetails[0].Airline.AirlineName),
+      String(depDate.toLocaleDateString("en-GB", options)),
+      String(depTime.toLocaleTimeString("en-GB")),
+      String(arrTime.toLocaleTimeString("en-GB")),
+      String(updateResults.totalAmount),
+    ];
+    await whatsApi.sendWhtsAppOTPAISensy(
+      "+91" + updateResults.passengerDetails[0].ContactNo,
+      templates,
+      "flightBooking"
+    );
+    const templateName = [
+      String(passengerDetails[0].firstName),
+      String(updateResults.pnr),
+      String(updateResults.airlineDetails[0].Airline.AirlineName),
+      String(depDate.toLocaleDateString("en-GB", options)),
+      String(depTime.toLocaleTimeString("en-GB")),
+      String(arrTime.toLocaleTimeString("en-GB")),
+      String(updateResults.totalAmount),
+    ];
+    await whatsApi.sendWhtsAppOTPAISensy(
+      "+91" + passengerDetails[0].ContactNo,
+      templateName,
+      "flightBooking"
+    );
+    await sendSMSUtils.sendSMSForFlightBooking(updateResults);
+    await commonFunction.FlightBookingConfirmationMail1(updateResults);
+    actionCompleteResponse(res, updateResults, "update Ticket");
+  } catch (error) {
+    sendActionFailedResponse(res, {}, error.message);
+  }
+};
+
+exports.updateAgentTicket = async (req, res, next) => {
+  try {
+    const { bookingId, passengerDetails } = req.body;
+    const isBookingExist = await amadeusFlightBookingData.findOne({
+      _id: bookingId,
+    });
+    if (!isBookingExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
+      });
+    }
+    var finalResult;
+    let options = { day: "2-digit", month: "2-digit", year: "numeric" };
+    let depDate, depTime, arrTime, templates;
+    for (const passenger of passengerDetails) {
+      const result = await updateUserAmadeusFlightBooking(
+        {
+          _id: bookingId,
+          "passengerDetails.firstName": passenger.firstName,
+        },
+        { $set: { "passengerDetails.$.TicketNumber": passenger.ticketNumber } }
+      );
+
+      if (result) {
+        // finalResult.push(result);
+        finalResult = result;
+        depDate = new Date(result.airlineDetails[0].Origin.DepTime);
+        depTime = new Date(result.airlineDetails[0].Origin.DepTime);
+        arrTime = new Date(result.airlineDetails[0].Origin.DepTime);
+        arrTime.setHours(arrTime.getHours() - 2);
+
+        templates = [
+          String(passenger.firstName),
+          String(result.pnr),
+          String(result.airlineDetails[0].Airline.AirlineName),
+          String(depDate.toLocaleDateString("en-GB", options)),
+          String(depTime.toLocaleTimeString("en-GB")),
+          String(arrTime.toLocaleTimeString("en-GB")),
+          String(result.totalAmount),
+        ];
+      }
+    }
+    const passengerContact = `+91${finalResult.passengerDetails[0].ContactNo}`;
+    await whatsApi.sendWhtsAppOTPAISensy(
+      passengerContact,
+      templates,
+      "flightBooking"
+    );
+    // Send SMS
+    await sendSMSUtils.sendSMSForFlightBooking(finalResult[0]);
+    // Send email confirmation
+    await commonFunction.FlightBookingConfirmationMail1(finalResult);
+
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.UPDATE_SUCCESS,
+      result: finalResult,
+    });
+  } catch (error) {
+    console.log("error while trying to update agent Flight booking! ", error);
+    return next(error);
+  }
+};
+
+exports.generatePdf = async (req, res, next) => {
+  try {
+    const { bookingId } = req.body;
+    const data = await amadeusFlightBookingData.findOne({ _id: bookingId });
+    console.log("==================", data);
+    // sendSMS.
+    const response = await commonFunction.FlightBookingConfirmationMail1(data);
+    // console.log("result",result);
+    actionCompleteResponse(res, response, "PDF Generated............");
+  } catch (error) {
+    console.log("error while trying to craete pdf", error);
+    return next(error);
+  }
+};
