@@ -23,35 +23,78 @@ const NetSchema = new mongoose.Schema({
   name: String,
 });
 
+const WeekdaySchema = new mongoose.Schema({
+  noOfAdult: Number,
+  noOfChildren: Number,
+  room_Price: Number,
+  isSingle: Boolean,
+  isDouble: Boolean,
+  isCP:Boolean,
+  isMAP:Boolean,
+  isEP:Boolean,
+  isJAP:Boolean
+}, { _id: false });
+
+const WeekendSchema = new mongoose.Schema({
+  noOfAdult: Number,
+  noOfChildren: Number,
+  room_Price: Number,
+  isSingle: Boolean,
+  isDouble: Boolean,
+  isCP:Boolean,
+  isMAP:Boolean,
+  isEP:Boolean,
+  isJAP:Boolean
+}, { _id: false });
+
+const PriceDetailsSchema = new mongoose.Schema({
+  gst: [GstSchema],
+  net: [NetSchema],
+  Weekday: [WeekdaySchema],
+  Weekend: [WeekendSchema],
+
+}, { _id: false });
+
+const RoomSchema = new mongoose.Schema({
+  description: String,
+  room_type: String,
+  roomsImages: [String],
+  totalRooms: Number,
+  availableRooms: Number,
+  priceDetails: PriceDetailsSchema,
+  roomAmineties: [String],
+
+}, { _id: false });
+
 const hotelInventorySchema = new mongoose.Schema(
   {
-    partnerId:{type:mongoose.Types.ObjectId,ref:'hotelPartnerDetail'},
-    hotelName: { type: String },
-    description: { type: String },
-    locality: { type: String },
-    hotelCity: { type: String },
-    hotelCountry: { type: String },
-    hotelState: { type: String },
-    panCard: { type: String },
+    partnerId: { type: mongoose.Types.ObjectId, ref: "hotelPartnerDetail" },
+    hotelName: String,
+    CompanyName: String,
+    gstNo:String,
+    description: String,
+    locality: String,
+    hotelCity: String,
+    hotelCountry: String,
+    hotelState: String,
+    panCard: String,
     rating: { type: Number, min: 0, max: 5 },
-    totalRooms: { type: Number },
-    availableRooms: { type: Number },
-    hotelImages: [{ type: String }],
-    typeOfRoom: [{ type: String }],
-    mealType: [
-      {
-        type: String,
-        enum: [mealtype.BREAKFAST, mealtype.DINNER, mealtype.LUNCH],
-      },
-    ],
-    cityCode: { type: String },
-    amenities: [{ type: String }],
-    hotelAddress: { type: String },
+    totalRooms: Number,
+    availableRooms: Number,
+    hotelImages: [String],
+    typeOfRoom: [String],
+    mealType: {
+      type: [String],
+      enum: [mealtype.BREAKFAST, mealtype.DINNER, mealtype.LUNCH],
+    },
+    cityCode: String,
+    amenities: [String],
+    hotelAddress: String,
     location: {
       type: { type: String, default: "Point" },
       coordinates: { type: [Number], default: [0, 0] },
     },
-    hotelCode: { type: String },
+    hotelCode: String,
     hotelPolicy: [String],
     facilities: [String],
     bookingPolicy: [String],
@@ -60,30 +103,10 @@ const hotelInventorySchema = new mongoose.Schema(
       enum: [status.ACTIVE, status.BLOCK, status.DELETE],
       default: status.ACTIVE,
     },
-    rooms: [
-      {
-        description: String,
-        noOfAdult: Number,
-        noOfChildren: Number,
-        room_type: String,
-        roomsImages: [],
-        room_Price: Number,
-        totalRooms: { type: Number },
-        availableRooms: { type: Number },
-        priceDetails: {
-          gst: [GstSchema],
-          net: [NetSchema],
-        },
-        roomAmineties: [String],
-      },
-    ],
+    rooms: [RoomSchema],
     safe2Stay: [String],
-    availableDate:{
-      type:String
-    },
-    startFrom:{
-      type:String
-    }
+    availableDate: String,
+    startFrom: String,
   },
   { timestamps: true }
 );

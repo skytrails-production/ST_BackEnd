@@ -136,7 +136,7 @@ verifcationToken = (req, res, next) => {
               }
               else {
                 req.userId = result._id;
-                console.log(req.userId,"req.userId")
+                // console.log(req.userId,"req.userId")
                 req.userDetails = result
                 next();
               }

@@ -16,11 +16,12 @@ module.exports = function (app) {
         res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
         next();
     });
-    // SchemaValidator(schemas.passportEnquirySchema)
-    app.post('/skyTrails/api/user/passport/createEnquiry',upload.array("images"),[authJwt.verifcationToken], passportEnquiryControler.createEnquiry);
+    app.post('/skyTrails/api/user/passport/createEnquiry',[authJwt.verifcationToken],upload.array("images"), passportEnquiryControler.createEnquiry);
     app.get('/skyTrails/api/user/passport/getAllPassportEnquiry',passportEnquiryControler.getAllPassportEnquiry);
     // ,[authJwt.verifcationToken]
     app.get('/skyTrails/api/user/passport/getPassportEnquiry',passportEnquiryControler.getPassportEnquiry);
     app.put('/skyTrails/api/user/passport/updateStatus',passportEnquiryControler.updateResolveStatus);
-    app.delete('/skyTrails/app/passport/deletePassportEnquiry',passportEnquiryControler.deletePassportEnquire)
+    app.delete('/skyTrails/app/passport/deletePassportEnquiry',passportEnquiryControler.deletePassportEnquiry);
+    app.post('/skyTrails/api/agent/passport/createPassportEnquiry',upload.array("images"),passportEnquiryControler.createPasportEnquiry);
+    app.put('/skyTrails/api/agent/passport/updatePassportEnquiry',passportEnquiryControler.updatePassportEnquiry);
   }

@@ -306,5 +306,5 @@ console.log("uuid===",uuid);
 
 
 const refeerralCode=commonFunction.generateReferralCode();
-console.log("refeerralCode============",refeerralCode);
+// console.log("refeerralCode============",refeerralCode);
 

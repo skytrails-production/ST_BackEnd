@@ -3,12 +3,25 @@ const status = require("../../enums/status");
 const mongoosePaginate = require("mongoose-paginate-v2");
 const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 const resolveStatus = require("../../enums/errorType");
+const applyType = require("../../enums/passportEnquiryType");
 // const visaType = require("../../enums/visaType");
 const genderType = require("../../enums/gender");
 mongoose.pluralize(null);
 const passportEnquirySchema = new mongoose.Schema(
   {
-    
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "userBtoC",
+    },
+    passportNumber:{
+      type: String,
+    },
+    issuedDate:{
+      type: String,
+    },
+    expiryDate:{
+      type: String,
+    },
     firstName: {
       type: String,
     },
@@ -31,20 +44,22 @@ const passportEnquirySchema = new mongoose.Schema(
     age: {
       type: String,
     },
-    document: [{
-      type: String,
-    }],
+    document: [
+      {
+        type: String,
+      },
+    ],
+    type: { type: String, enum: [applyType.CREATE, applyType.RENEW] },
     resolveStatus: {
       type: String,
-      enum: [
-        resolveStatus.PENDING,resolveStatus.RESOLVED
-      ],
-      default:resolveStatus.PENDING
+      enum: [resolveStatus.PENDING, resolveStatus.RESOLVED],
+      default: resolveStatus.PENDING,
     },
     status: {
       type: String,
       default: status.ACTIVE,
     },
+    via:{type:String,default:'USER'}
   },
   { timestamps: true }
 );

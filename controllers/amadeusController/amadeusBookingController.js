@@ -88,7 +88,7 @@ exports.amdsFlightBooking = async (req, res, next) => {
     let formattedDate = new Date().toLocaleDateString("en-GB", options);
     const TemplateNames = [
       String("FLightBooking"),
-      String(data.bookingId),
+      String(data.pnr),
       String(isUserExist.username),
       String(formattedDate),
     ];
@@ -374,8 +374,6 @@ console.log("result=====",result);
   }
 };
 
-
-
 exports.generatePdfOfUSer = async (req, res, next) => {
   try {
     const { bookingId } = req.body;
@@ -393,3 +391,4 @@ exports.generatePdfOfUSer = async (req, res, next) => {
     return next(error);
   }
 };
+

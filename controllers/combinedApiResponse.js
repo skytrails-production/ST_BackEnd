@@ -77,6 +77,21 @@ const getLowestFareFlights = (flights) => {
   return Object.values(uniqueFlights);
 };
 
+// Function to remove duplicates based on a key
+function removeDuplicates(arr, key) {
+  // console.log("arr==========",arr.length);
+  // console.log("key========",key);
+  const seen =[];
+  return arr.filter(item => {
+    // console.log("item[key]============",item.Segments[0][0].Airline[key]);
+    const duplicate = seen.includes(item.Segments[0][0].Airline[key]);
+    // console.log("duplicate=========",duplicate);
+    seen.push(item.Segments[0][0].Airline[key]);
+    // console.log("seen=============",seen);
+    // console.log("!duplicate=========",!duplicate);
+    return !duplicate;
+  });
+}
 
 exports.combinedAPI1 = async (req, res, next) => {
   try {
@@ -172,8 +187,9 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
 // console.log("amadeusResponse============",amadeusResponse);
 let tvoArray = tvoResponse.data.Response.ResponseStatus === 1 ? tvoResponse.data.Response.Results[0] : [];
 // Filter tvoArray to keep flights with the lowest BaseFare for each unique combination
-console.log("tvoArray==================",tvoArray.length);
-
+// console.log("tvoArray==================",tvoArray.length);
+tvoArray=removeDuplicates(tvoArray,`FlightNumber`);
+// console.log("tvoArray===============length=================",tvoArray.length);
 // tvoArray = getLowestFareFlights(tvoArray);
 // console.log("getLowestFareFlightstvoArray==================",tvoArray.length);
 
@@ -273,10 +289,13 @@ let jsonResult = await xmlToJson(amadeusResponse.data);
     var finalResult = [];
     var selectedArray = [];
     if (tvoArray.length > 0) {
+      // console.log("tvoArray.length===========",tvoArray.length);
       selectedArray = await tvoArray.filter((value) => value.IsLCC === true);
+      // console.log("finalFlattenedArray=================finalFlattenedArray====",finalFlattenedArray.length);
       if (selectedArray.length > 0) {
-        console.log("selectedArray.length===========",selectedArray.length);
+        // console.log("selectedArray.length===========",selectedArray.length);
         finalResult = finalFlattenedArray.concat(selectedArray);
+        // console.log("v======finalResult==========",finalResult.length);
       } else if (finalFlattenedArray.length <= 0) {
         finalResult = [...tvoArray];
       } else {
@@ -817,3 +836,4 @@ const generateAmadeusRequest = (data) => {
   </soapenv:Envelope>`;
   return soapRequest;
 };
+

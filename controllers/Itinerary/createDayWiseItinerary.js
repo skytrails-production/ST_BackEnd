@@ -5,7 +5,7 @@ const approvalStatus = require("../../enums/approveStatus");
 const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 const responseMessage = require("../../utilities/responses");
 const statusCode = require("../../utilities/responceCode");
-//**************************************WORK BY****************/
+//******************************************WORK BY*********************************************/
 //**********CHARU YADAV*****************//
 //**********NODE JS DEVELOPER, This is a services which we need mongodb queries to perform operation on db********//
 
@@ -19,6 +19,16 @@ const {
   deleteDayWiseItinerary,
   updateDayWiseItinerary,
 } = createDayWiseItineraryServices;
+const {
+    itineraryMarkupServices,
+} = require("../../services/itineraryServices/itineraryMarkup");
+const {
+    createItineraryMarkup,
+    finOneItineraryMarkup,
+    findAllItineraryMarkup,
+    deleteItineraryMarkup,
+    updateItineraryMarkup,
+} = itineraryMarkupServices;
 
 exports.createDayWiseActivity = async (req, res, next) => {
   try {
