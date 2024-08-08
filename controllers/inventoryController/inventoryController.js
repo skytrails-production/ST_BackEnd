@@ -400,8 +400,6 @@ exports.createHotelForm = async (req, res) => {
 
 exports.createhotelinventory = async (req, res, next) => {
   try {
-    // console.log("Incoming request body:", JSON.stringify(req.body, null, 2));
-    
     let {
       hotelName,
       description,
@@ -945,12 +943,10 @@ exports.uploadImagesOfInventory = async (req, res, next) => {
     if (req.files) {
       const hotelImageFiles = req.files.hotelImages || [];
       const roomImageFiles = req.files.roomsImages || [];
-      console.log("============req.files", req.files);
 
       hotelImageUrls = await Promise.all(
         hotelImageFiles.map(async (file) => {
           const url = await commonFunction.getImageUrlAWS(file);
-          console.log("hotelImage URL===========", url);
           return url;
         })
       );
@@ -958,13 +954,12 @@ exports.uploadImagesOfInventory = async (req, res, next) => {
       roomImageUrls = await Promise.all(
         roomImageFiles.map(async (file) => {
           const url = await commonFunction.getImageUrlAWS(file);
-          console.log("roomImage URL===========", url);
           return url;
         })
       );
 
       console.log("roomImageUrls===========", roomImageUrls);
-      console.log("hotelImageUrls===========", hotelImageUrls);
+      // console.log("hotelImageUrls===========", hotelImageUrls);
 
       if (rooms.length > 0) {
         const imagesPerRoom = Math.ceil(roomImageUrls.length / rooms.length);
@@ -977,13 +972,13 @@ exports.uploadImagesOfInventory = async (req, res, next) => {
             ...room,
             roomsImages: room.roomsImages ? room.roomsImages.concat(roomImageUrls.slice(start, end)) : roomImageUrls.slice(start, end),
           };
-          console.log(`updatedRoom [${index}]==========`, updatedRoom);
+          // console.log(`updatedRoom [${index}]==========`, updatedRoom);
           return updatedRoom;
         });
       }
     }
 
-    console.log("rooms before update===========", rooms);
+    // console.log("rooms before update===========", rooms);
 
     const obj = {
       hotelImages: hotelImageUrls,
@@ -994,8 +989,7 @@ exports.uploadImagesOfInventory = async (req, res, next) => {
 
     const result = await updatePartenerHotel({ _id: isHotelExist._id }, obj);
 
-    console.log("update result===========", result);
-
+    // console.log("update result===========", result);
     return res.status(statusCode.OK).send({
       statusCode: statusCode.ACCEPTED,
       responseMessage: responseMessage.UPLOAD_SUCCESS,
@@ -1009,86 +1003,86 @@ exports.uploadImagesOfInventory = async (req, res, next) => {
 };
 
 
-exports.uploadImagesOfInventory = async (req, res, next) => {
-  try {
-    const { hotelId } = req.body;
+// exports.uploadImagesOfInventory = async (req, res, next) => {
+//   try {
+//     const { hotelId } = req.body;
 
-    const isUserExist = await findhotelinventoryAuthData({ _id: req.userId });
-    if (!isUserExist) {
-      return res.status(statusCode.OK).send({
-        statusCode: statusCode.NotFound,
-        responseMessage: responseMessage.PARTNER_NOT_FOUND,
-      });
-    }
-    console.log("isUserExist===========", isUserExist._id);
+//     const isUserExist = await findhotelinventoryAuthData({ _id: req.userId });
+//     if (!isUserExist) {
+//       return res.status(statusCode.OK).send({
+//         statusCode: statusCode.NotFound,
+//         responseMessage: responseMessage.PARTNER_NOT_FOUND,
+//       });
+//     }
+//     console.log("isUserExist===========", isUserExist._id);
 
-    const isHotelExist = await findPartenerHotelData({ _id: hotelId, partnerId: isUserExist._id });
-    if (!isHotelExist) {
-      return res.status(statusCode.OK).send({
-        statusCode: statusCode.NotFound,
-        responseMessage: responseMessage.HOTEL_NOT_FOUND,
-      });
-    }
-    console.log("isHotelExist===========", isHotelExist._id);
+//     const isHotelExist = await findPartenerHotelData({ _id: hotelId, partnerId: isUserExist._id });
+//     if (!isHotelExist) {
+//       return res.status(statusCode.OK).send({
+//         statusCode: statusCode.NotFound,
+//         responseMessage: responseMessage.HOTEL_NOT_FOUND,
+//       });
+//     }
+//     console.log("isHotelExist===========", isHotelExist._id);
 
-    let hotelImageUrls = [];
-    let roomImageUrls = [];
-    let rooms = isHotelExist.rooms || [];
+//     let hotelImageUrls = [];
+//     let roomImageUrls = [];
+//     let rooms = isHotelExist.rooms || [];
 
-    if (req.files) {
-      const hotelImageFiles = req.files.hotelImages || [];
-      const roomImageFiles = req.files.roomsImages || [];
-      console.log("============req.files", req.files);
-      hotelImageUrls = await Promise.all(
-        hotelImageFiles.map(async (file) => {
-          const url = await commonFunction.getImageUrlAWS(file);
-          console.log("hotelImage URL===========", url);
-          return url;
-        })
-      );
-      roomImageUrls = await Promise.all(
-        roomImageFiles.map(async (file) => {
-          const url = await commonFunction.getImageUrlAWS(file);
-          console.log("roomImage URL===========", url);
-          return url;
-        })
-      );
-      if (rooms.length > 0) {
-        const imagesPerRoom = Math.ceil(roomImageUrls.length / rooms.length);
-        console.log("imagesPerRoom===========", imagesPerRoom);
+//     if (req.files) {
+//       const hotelImageFiles = req.files.hotelImages || [];
+//       const roomImageFiles = req.files.roomsImages || [];
+//       console.log("============req.files", req.files);
+//       hotelImageUrls = await Promise.all(
+//         hotelImageFiles.map(async (file) => {
+//           const url = await commonFunction.getImageUrlAWS(file);
+//           console.log("hotelImage URL===========", url);
+//           return url;
+//         })
+//       );
+//       roomImageUrls = await Promise.all(
+//         roomImageFiles.map(async (file) => {
+//           const url = await commonFunction.getImageUrlAWS(file);
+//           console.log("roomImage URL===========", url);
+//           return url;
+//         })
+//       );
+//       if (rooms.length > 0) {
+//         const imagesPerRoom = Math.ceil(roomImageUrls.length / rooms.length);
+//         console.log("imagesPerRoom===========", imagesPerRoom);
 
-        rooms = rooms.map((room, index) => {
-          const start = index * imagesPerRoom;
-          const end = start + imagesPerRoom;
-          const updatedRoom = {
-            ...room,
-            roomsImages: room.roomsImages.concat(roomImageUrls.slice(start, end)),
-          };
-          console.log(roomImageUrls.slice(start, end),`updatedRoom [${index}]==========`, updatedRoom,"=========",room.roomsImages);
-          return updatedRoom;
-        });
-      }
-    }
+//         rooms = rooms.map((room, index) => {
+//           const start = index * imagesPerRoom;
+//           const end = start + imagesPerRoom;
+//           const updatedRoom = {
+//             ...room,
+//             roomsImages: room.roomsImages.concat(roomImageUrls.slice(start, end)),
+//           };
+//           console.log(roomImageUrls.slice(start, end),`updatedRoom [${index}]==========`, updatedRoom,"=========",room.roomsImages);
+//           return updatedRoom;
+//         });
+//       }
+//     }
 
-    const obj = {
-      hotelImages: hotelImageUrls,
-      rooms: rooms
-    };
+//     const obj = {
+//       hotelImages: hotelImageUrls,
+//       rooms: rooms
+//     };
 
-    console.log("obj to update===========", obj);
+//     console.log("obj to update===========", obj);
 
-    const result = await updatePartenerHotel({ _id: isHotelExist._id }, obj);
+//     const result = await updatePartenerHotel({ _id: isHotelExist._id }, obj);
 
-    console.log("update result===========", result);
+//     console.log("update result===========", result);
 
-    return res.status(statusCode.OK).send({
-      statusCode: statusCode.ACCEPTED,
-      responseMessage: responseMessage.UPLOAD_SUCCESS,
-      result: result,
-    });
+//     return res.status(statusCode.OK).send({
+//       statusCode: statusCode.ACCEPTED,
+//       responseMessage: responseMessage.UPLOAD_SUCCESS,
+//       result: result,
+//     });
 
-  } catch (error) {
-    console.log("error while trying to upload images", error);
-    return next(error);
-  }
-};
+//   } catch (error) {
+//     console.log("error while trying to upload images", error);
+//     return next(error);
+//   }
+// };

@@ -218,6 +218,7 @@ require("./routes/grnRoutes/grnRoutes")(app);
 require("./routes/Itinerary/ItineraryRoutes")(app);
 require("./routes/btocRoutes/passportEnquiryRoutes")(app)
 require("./routes/notificationRoutes")(app)
+require("./routes/Flightinventory/flightinventoryRoutes")(app)
 mongoose
   .connect(configs.mongoUrl.DEVELOPMENT, {
     useNewUrlParser: true,

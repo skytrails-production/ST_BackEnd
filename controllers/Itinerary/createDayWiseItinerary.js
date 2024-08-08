@@ -32,13 +32,14 @@ const {
 
 exports.createDayWiseActivity = async (req, res, next) => {
   try {
-    const { destination, origin, dayAt,activities } = req.body;
+    const { destination, origin, dayAt,activities ,noOfDays} = req.body;
     console.log("req.body===========",req.body)
     const object = {
       destination,
       origin,
       dayAt,
-      activities
+      activities,
+      noOfDays
     };
     console.log("object=============",object)
     const result = await createDayWiseItinerary(object);
