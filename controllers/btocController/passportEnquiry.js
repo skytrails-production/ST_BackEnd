@@ -117,7 +117,7 @@ exports.createEnquiry = async (req, res, next) => {
       age--;
     }
     // Ensure images are uploaded
-    if (req.files.length >=1) {
+    if (req.file||req.files.length >= 1) {
       for (var image of req.files) {
         const secureUrl = await commonFunction.getPassPortImageUrlAWS(image);
         img.push(secureUrl);
@@ -287,9 +287,9 @@ exports.createPasportEnquiry = async (req, res, next) => {
     ) {
       age--;
     }
-    console.log("req.files===============",req.files)
+    console.log("req.files===============",req.file)
     // Ensure images are uploaded
-    if (req.files.length > 1) {
+    if (req.file||req.files.length >= 1) {
       for (var image of req.files) {
         const secureUrl = await commonFunction.getPassPortImageUrlAWS(image);
         img.push(secureUrl);

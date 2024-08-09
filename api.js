@@ -85,10 +85,17 @@ app.use(bodyparser.text({ type: 'text/xml' }));
 app.use(bodyparser.urlencoded({ limit: '20mb', extended: true }));
 app.use(cookieParser());
 
+
 // var corsOptions = {
 //   origin: "*",
 // };
 
+// middlware for cache bust
+app.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+  res.setHeader('Pragma', 'no-cache');
+  next();
+});
 // app.use(cors(corsOptions));
 const corsOptions = {
   origin: '*',

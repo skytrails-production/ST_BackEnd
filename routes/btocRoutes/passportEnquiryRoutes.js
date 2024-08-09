@@ -24,4 +24,4 @@ module.exports = function (app) {
     app.delete('/skyTrails/app/passport/deletePassportEnquiry',passportEnquiryControler.deletePassportEnquiry);
     app.post('/skyTrails/api/agent/passport/createPassportEnquiry',upload.array("images"),passportEnquiryControler.createPasportEnquiry);
     app.put('/skyTrails/api/agent/passport/updatePassportEnquiry',passportEnquiryControler.updatePassportEnquiry);
-  }
+  } 

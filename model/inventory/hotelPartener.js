@@ -32,7 +32,8 @@ const WeekdaySchema = new mongoose.Schema({
   isCP:Boolean,
   isMAP:Boolean,
   isEP:Boolean,
-  isJAP:Boolean
+  isJAP:Boolean,
+  isAP:Boolean
 }, { _id: false });
 
 const WeekendSchema = new mongoose.Schema({
@@ -44,7 +45,8 @@ const WeekendSchema = new mongoose.Schema({
   isCP:Boolean,
   isMAP:Boolean,
   isEP:Boolean,
-  isJAP:Boolean
+  isJAP:Boolean,
+  isAP:Boolean
 }, { _id: false });
 
 const PriceDetailsSchema = new mongoose.Schema({

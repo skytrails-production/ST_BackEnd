@@ -356,6 +356,265 @@ let jsonResult = await xmlToJson(amadeusResponse.data);
     return next(error);
   }
 };
+;
+exports.AMADEUSPriceSort = async (req, res, next) => {
+  try{
+    let tvoArray=[]
+    const data = req.body;
+       // console.log("===============", data);
+       data.formattedDate = moment(
+        data.Segments[0].PreferredDepartureTime,
+        "DD MMM, YY"
+      ).format("DDMMYY"); // Format the date as "DDMMYY"
+      // console.log("data.formattedDate==============", data.formattedDate);
+      data.totalPassenger = parseInt(data.AdultCount) + parseInt(data.ChildCount);
+      const flattenedArray = [];
+      let finalFlattenedArray = [];
+
+      const headers = {
+        "Content-Type": "text/xml;charset=UTF-8",
+        SOAPAction: "http://webservices.amadeus.com/FMPTBQ_23_4_1A",
+      };
+      const amadeusResponse=await axios.post(url,generateAmadeusRequest(data),{
+        headers,
+      }).catch((error)=>{
+        console.error("Error in Amadeus API request:", error);
+        return { data: {} };
+      })
+      let jsonResult =await xmlToJson(amadeusResponse.data);
+      if(amadeusResponse.status === 200 &&  !jsonResult["soapenv:Envelope"]["soapenv:Body"][
+        "Fare_MasterPricerTravelBoardSearchReply"
+      ]["errorMessage"]){
+        jsonResult=await xmlToJson(amadeusResponse.data)
+        const obj=jsonResult["soapenv:Envelope"]["soapenv:Body"][
+          "Fare_MasterPricerTravelBoardSearchReply"
+        ];
+        const recommendationObject = await obj.recommendation;
+        const baggageReference = await obj.serviceFeesGrp;
+      const freeBaggageAllowance = baggageReference?.freeBagAllowanceGrp;
+      let count = 0;
+      const segNumber=recommendationObject.map((item,index)=>{
+        return item.segmentFlightRef.length || 1;
+      })
+      segNumber.forEach((item, index) => {
+        count = count + item;
+      });
+      const baggaReferenceArray=recommendationObject.reduce((accumulator,item) => {
+        if(Array.isArray(item.segmentFlightRef)){
+          accumulator.push(...item.segmentFlightRef)
+
+        }
+        else if(item.segmentFlightRef && item.segmentFlightRef.referencingDetail){
+          accumulator.push({...item.segmentFlightRef});
+
+        }
+        return accumulator
+      },[]);
+    // console.log("baggaReferenceArray=============", obj.flightIndex);
+    const modifiedArray = [];
+    let tempIndex = 0;
+    for(let i=0;i<segNumber.length;i++){
+      for(let j=0;j<segNumber[i];j++){
+        modifiedArray.push({
+          ...obj.flightIndex.groupOfFlights[j + tempIndex],
+          ...obj.recommendation[i].paxFareProduct,
+          ...obj.recommendation[i].recPriceInfo,
+        })
+      }
+      tempIndex = tempIndex + segNumber[i];
+    }
+    flattenedArray.push(...modifiedArray);
+    const newFlattnedArray = flattenedArray.map((item, index) => {
+      return { ...item, baggage: baggaReferenceArray[index] };
+    });
+    finalFlattenedArray = newFlattnedArray.map((item, index) => {
+      const tempItemBaggage = item.baggage.referencingDetail[1].refNumber;
+
+      // Check if baggageReference.serviceCoverageInfoGrp exists
+      if (
+        !baggageReference.serviceCoverageInfoGrp ||
+        !baggageReference.serviceCoverageInfoGrp[tempItemBaggage - 1]
+      ) {
+        return { ...item, baggage: undefined };
+      }
+      const serviceCovInfoGrp =
+        baggageReference.serviceCoverageInfoGrp[tempItemBaggage - 1]
+          .serviceCovInfoGrp;
+
+      // Check if refInfo exists
+      const refInfo = serviceCovInfoGrp?.refInfo;
+      if (!refInfo) {
+        return { ...item, baggage: undefined };
+      }
+      const freeAllowanceLuggageIndex = Array.isArray(refInfo)
+        ? refInfo.map((info) => info.referencingDetail.refNumber)
+        : [refInfo.referencingDetail.refNumber];
+
+      return {
+        ...item,
+        baggage: freeBaggageAllowance[freeAllowanceLuggageIndex - 1]||freeBaggageAllowance,
+      };
+    });
+
+      }
+      var finalResult = [];
+      var selectedArray = [];
+      finalResult = [...finalFlattenedArray];
+      const length = {
+        finalFlattenedArray: finalFlattenedArray.length,
+        tvoArray: tvoArray.length,
+        finalResult: finalResult.length,
+        selectedArray: selectedArray.length,
+      };
+      for (const finalRep of finalResult) {
+        let totalPublishFare = 0;
+        if (finalRep.propFlightGrDetail) {
+          // Iterate over each key and calculate totalAmount separately
+          // for (const key of Object.keys(finalRep)) {
+          //   const obj = finalRep[key];
+          //   // if (obj.hasOwnProperty("paxFareDetail")) {
+          // const totalFare = parseInt(finalRep.monetaryDetail[0].amount);
+          // const totalTax = parseInt(finalRep.monetaryDetail[1].amount);
+          // const totalAmount = totalFare + totalTax;
+          // const totalFare =  parseInt(finalRep.paxFareDetail?.totalFareAmount-finalRep?.paxFareDetail?.totalTaxAmount);
+          // console.log("finalRep.paxFareDetail?.totalFareAmount=",typeof(finalRep.paxFareDetail?.totalFareAmount));
+          const totalFare =  Number(finalRep.paxFareDetail?.totalFareAmount)-Number(finalRep?.paxFareDetail?.totalTaxAmount);
+  // console.log("totalFar=========",typeof(totalFare));
+          const totalTax = parseInt(finalRep.monetaryDetail[1].amount);
+          const totalAmount = totalFare + totalTax;
+          // finalRep.totalAmount = totalAmount;
+          finalRep.TotalPublishFare = totalFare;
+  // finalRep.totalAmount = totalAmount;
+          finalRep.TotalPublishFare = parseInt(totalFare);
+          //   // }
+          // }
+          // finalRep.TotalPublishFare = totalPublishFare;
+        } else if (finalRep.Segments) {
+          const totalPublishFare = finalRep.Fare.BaseFare;
+          finalRep.TotalPublishFare = totalPublishFare;
+          // const totalPublishFare = finalRep.Fare.PublishedFare;
+          // finalRep.TotalPublishFare = totalPublishFare;
+        }
+      }
+
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.DATA_FOUND,
+        tvoTraceId: null,
+        result: finalResult,
+        length: length,
+        tvoArray:tvoArray
+      });
+      
+      
+
+  } catch (error) {
+    // console.error("Error while trying to get response", error);
+    return next(error);
+  }
+}
+//optimize performance
+exports.AMADEUSPriceSortOptimize = async (req, res, next) => {
+  try {
+    const data = req.body;
+    
+    // Format date
+    data.formattedDate = moment(data.Segments[0].PreferredDepartureTime, "DD MMM, YY").format("DDMMYY");
+
+    // Calculate total passengers
+    data.totalPassenger = parseInt(data.AdultCount) + parseInt(data.ChildCount);
+
+    // Define request headers
+    const headers = {
+      "Content-Type": "text/xml;charset=UTF-8",
+      SOAPAction: "http://webservices.amadeus.com/FMPTBQ_23_4_1A",
+    };
+
+    // Make API request
+    const amadeusResponse = await axios.post(url, generateAmadeusRequest(data), { headers })
+      .catch(error => {
+        console.error("Error in Amadeus API request:", error);
+        return { data: {} };
+      });
+
+    // Parse XML to JSON
+    let jsonResult = await xmlToJson(amadeusResponse.data);
+
+    if (amadeusResponse.status === 200 && !jsonResult["soapenv:Envelope"]["soapenv:Body"]["Fare_MasterPricerTravelBoardSearchReply"]["errorMessage"]) {
+      const obj = jsonResult["soapenv:Envelope"]["soapenv:Body"]["Fare_MasterPricerTravelBoardSearchReply"];
+      const { recommendation, serviceFeesGrp: baggageReference } = obj;
+
+      // Flatten recommendations
+      let flattenedArray = recommendation.flatMap((rec, i) => {
+        const segNumber = rec.segmentFlightRef.length || 1;
+        return Array.from({ length: segNumber }, (_, j) => ({
+          ...obj.flightIndex.groupOfFlights[j + (i > 0 ? recommendation.slice(0, i).reduce((sum, rec) => sum + rec.segmentFlightRef.length, 0) : 0)],
+          ...rec.paxFareProduct,
+          ...rec.recPriceInfo,
+        }));
+      });
+
+      // Add baggage info
+      const baggaReferenceArray = recommendation.flatMap(rec =>
+        Array.isArray(rec.segmentFlightRef) ? rec.segmentFlightRef : [rec.segmentFlightRef]
+      ).map(ref => ({ ...ref }));
+
+      const newFlattnedArray = flattenedArray.map((item, index) => {
+        const tempItemBaggage = item.baggage?.referencingDetail[1]?.refNumber;
+
+        if (!baggageReference?.serviceCoverageInfoGrp?.[tempItemBaggage - 1]) {
+          return { ...item, baggage: undefined };
+        }
+
+        const serviceCovInfoGrp = baggageReference.serviceCoverageInfoGrp[tempItemBaggage - 1].serviceCovInfoGrp;
+        const refInfo = serviceCovInfoGrp?.refInfo;
+
+        if (!refInfo) return { ...item, baggage: undefined };
+
+        const freeAllowanceLuggageIndex = Array.isArray(refInfo)
+          ? refInfo.map(info => info.referencingDetail.refNumber)
+          : [refInfo.referencingDetail.refNumber];
+
+        return {
+          ...item,
+          baggage: freeBaggageAllowance[freeAllowanceLuggageIndex - 1] || freeBaggageAllowance,
+        };
+      });
+
+      // Calculate total publish fare
+      newFlattnedArray.forEach(finalRep => {
+        if (finalRep.paxFareDetail) {
+          const totalFare = Number(finalRep.paxFareDetail.totalFareAmount) - Number(finalRep.paxFareDetail.totalTaxAmount);
+          const totalTax = parseInt(finalRep.monetaryDetail?.[1]?.amount || 0);
+          finalRep.TotalPublishFare = totalFare + totalTax;
+        } else if (finalRep.Segments) {
+          finalRep.TotalPublishFare = finalRep.Fare.BaseFare;
+        }
+      });
+
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.DATA_FOUND,
+        tvoTraceId: null,
+        result: newFlattnedArray,
+        length: {
+          finalFlattenedArray: newFlattnedArray.length,
+        },
+      });
+    } else {
+      return res.status(statusCode.ERROR).send({
+        statusCode: statusCode.ERROR,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
+        tvoTraceId: null,
+        result: [],
+        length: { finalFlattenedArray: 0 },
+      });
+    }
+  } catch (error) {
+    console.error("Error while processing request:", error);
+    return next(error);
+  }
+};
 
 exports.combineTVOAMADEUS = async (req, res, next) => {
   try {
