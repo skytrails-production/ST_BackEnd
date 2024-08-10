@@ -14,12 +14,6 @@ module.exports = function (app) {
 
   app.post("/skytrails/login/inventory/api", Controller.loginUser);
   app.post("/skytrails/register/inventory/api", Controller.registerUser);
-
-  // app.post(
-  //   "/skytrails/hotelform/inventory/api",
-  //   upload.array("hotelImages", 1), // Adjust field name and file limit as needed
-  //   Controller.createHotelForm
-  // );
   app.post(
     "/skytrails/hotelform/inventory/api",
     upload.fields([
@@ -28,7 +22,6 @@ module.exports = function (app) {
     ]),
     Controller.createHotelForm
   );
-  // app.post('/skyTrails/api/inventory/createInventory',upload.fields([{name: "hotelImages"},{name: "roomsImages"}]),Controller.createhotelinventory)
   app.post(
     "/skyTrails/api/inventory/createInventory",
     upload.fields([
@@ -49,10 +42,5 @@ module.exports = function (app) {
   app.put("/skyTrails/api/inventory/deletPartnerData",[authJwt.verifyTokenOfInvenPartner],becomePartnerController.deleteAccount);
   app.put("/skyTrails/api/inventory/changePassword",[authJwt.verifyTokenOfInvenPartner],becomePartnerController.changePassword);
   app.get("/skyTrails/api/inventory/getAllHotelInventoryofPartner",[authJwt.verifyTokenOfInvenPartner],Controller.getAllHotelInventoryofPartner);
-  app.put(
-    "/skyTrails/api/inventory/uploadInventoryImage",
-    upload.fields([
-      { name: 'hotelImages', maxCount: 50 },
-      { name: 'roomsImages', maxCount: 50 }
-    ]),[authJwt.verifyTokenOfInvenPartner], Controller.uploadImagesOfInventory);
+  app.put("/skyTrails/api/inventory/uploadInventoryImage",upload.fields([{ name: 'hotelImages', maxCount: 50 },{ name: 'roomsImages', maxCount: 50 }]),[authJwt.verifyTokenOfInvenPartner], Controller.uploadImagesOfInventory);
 };

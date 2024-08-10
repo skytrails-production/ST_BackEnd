@@ -1149,14 +1149,6 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
       referrerCode = referrerCode?.trim();  
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const mobileRegex = /^(?!0)\d{9,}(\d)(?!\1{4})\d*$/;
-// Check if the fullName is empty or just whitespace
-
-if (!fullName || fullName.trim() === '') {
-  return res.status(statusCode.Forbidden).send({
-    statusCode: statusCode.Forbidden,
-    message: responseMessage.USER_NAME_REQUIRED, 
-  });
-}
 
     const data = {
       email: email,
@@ -1239,12 +1231,15 @@ if (!fullName || fullName.trim() === '') {
         result: result,
       });
     }
-    if (!fullName) {
-      return res.status(statusCode.OK).send({
-        statusCode: statusCode.Forbidden,
-        message: responseMessage.FIELD_REQUIRED,
-      });
-    }
+    // Check if the fullName is empty or just whitespace
+
+if (!fullName || fullName.trim() === '') {
+  return res.status(statusCode.Forbidden).send({
+    statusCode: statusCode.Forbidden,
+    message: responseMessage.USER_NAME_REQUIRED, 
+  });
+}
+
     const refeerralCode =await commonFunction.generateReferralCode();
     const checkReward = await findReferralAmount({});
     var obj = {};

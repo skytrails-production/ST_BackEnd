@@ -79,16 +79,10 @@ const getLowestFareFlights = (flights) => {
 
 // Function to remove duplicates based on a key
 function removeDuplicates(arr, key) {
-  // console.log("arr==========",arr.length);
-  // console.log("key========",key);
   const seen =[];
   return arr.filter(item => {
-    // console.log("item[key]============",item.Segments[0][0].Airline[key]);
     const duplicate = seen.includes(item.Segments[0][0].Airline[key]);
-    // console.log("duplicate=========",duplicate);
     seen.push(item.Segments[0][0].Airline[key]);
-    // console.log("seen=============",seen);
-    // console.log("!duplicate=========",!duplicate);
     return !duplicate;
   });
 }
@@ -159,12 +153,10 @@ exports.combinedAPI1 = async (req, res, next) => {
 exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
   try {
     const data = req.body;
-    // console.log("===============", data);
     data.formattedDate = moment(
       data.Segments[0].PreferredDepartureTime,
       "DD MMM, YY"
     ).format("DDMMYY"); // Format the date as "DDMMYY"
-    // console.log("data.formattedDate==============", data.formattedDate);
     const api1Url = commonUrl.api.flightSearchURL;
     data.totalPassenger = parseInt(data.AdultCount) + parseInt(data.ChildCount);
 
@@ -176,22 +168,15 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
     };
     const [tvoResponse, amadeusResponse] = await Promise.all([
       axios.post(api1Url, data),
-    // const amadeusResponse=
      await axios.post(url, generateAmadeusRequest(data), { headers })
         .catch((error) => {
           console.error("Error in Amadeus API request:", error);
           return { data: {} };
         })
     ]);
-    // console.log("tvoResponse==========",tvoResponse.data.Response);
-// console.log("amadeusResponse============",amadeusResponse);
 let tvoArray = tvoResponse.data.Response.ResponseStatus === 1 ? tvoResponse.data.Response.Results[0] : [];
-// Filter tvoArray to keep flights with the lowest BaseFare for each unique combination
-// console.log("tvoArray==================",tvoArray.length);
+
 tvoArray=removeDuplicates(tvoArray,`FlightNumber`);
-// console.log("tvoArray===============length=================",tvoArray.length);
-// tvoArray = getLowestFareFlights(tvoArray);
-// console.log("getLowestFareFlightstvoArray==================",tvoArray.length);
 
 let jsonResult = await xmlToJson(amadeusResponse.data);
 // let finalFlattenedArray = [];
