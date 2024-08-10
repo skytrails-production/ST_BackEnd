@@ -79,10 +79,12 @@ wsServer.on('request', (request) => {
  * imports for routes
  */
 
-app.use(bodyparser.json({ limit: '10mb' }));
+// Set limit for JSON and URL-encoded data
+app.use(bodyparser.json({ limit: '50mb' })); // increase the limit to 50mb or any desired value
+app.use(bodyparser.urlencoded({ limit: '50mb', extended: true }));
+
 app.use(bodyparser.text({ type: 'text/xml' }));
 // app.use(bodyparser.urlencoded({ extended: true }));
-app.use(bodyparser.urlencoded({ limit: '20mb', extended: true }));
 app.use(cookieParser());
 
 

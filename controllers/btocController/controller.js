@@ -1141,9 +1141,22 @@ exports.loginWithMailMobileLogin = async (req, res, next) => {
 };
 exports.verifyUserOtpMailMobile = async (req, res, next) => {
   try {
-    const { otp, fullName, dob, email, referrerCode } = req.body;
+    let { otp, fullName, dob, email, referrerCode } = req.body;
+      // Trim spaces from input fields
+      fullName = fullName?.trim();
+      dob = dob?.trim();
+      email = email?.trim();
+      referrerCode = referrerCode?.trim();  
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const mobileRegex = /^(?!0)\d{9,}(\d)(?!\1{4})\d*$/;
+// Check if the fullName is empty or just whitespace
+
+if (!fullName || fullName.trim() === '') {
+  return res.status(statusCode.Forbidden).send({
+    statusCode: statusCode.Forbidden,
+    message: responseMessage.USER_NAME_REQUIRED, 
+  });
+}
 
     const data = {
       email: email,
@@ -1700,9 +1713,6 @@ async function shortenURL(url) {
   return shortURL;
 }
 
-
-
-
 exports.updateMihuruWallet= async (req, res) =>{
 
   try {
@@ -1781,5 +1791,27 @@ exports.checkFirstBooking=async(req,res,next)=>{
   } catch (error) {
     console.log("error while tryiong to find is first booking or not",error);
     return next(error);
+  }
+}
+
+exports.getUserById=async(req,res,next)=>{
+  try {
+    const {userId}=req.query;
+    const result=await findUser({_id:userId});
+    if(!result){
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      message: responseMessage.USERS_FOUND,
+      result: result,
+    });
+  } catch (error) {
+    console.log("error while trying to get user details",error);
+    return next(error)
+    
   }
 }
