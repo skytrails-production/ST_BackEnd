@@ -87,7 +87,7 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
                     <typeOfUnit>PX</typeOfUnit>
                 </unitNumberDetail>
                 <unitNumberDetail>
-                    <numberOfUnits>100</numberOfUnits>
+                    <numberOfUnits>10</numberOfUnits>
                     <typeOfUnit>RC</typeOfUnit>
                 </unitNumberDetail>
             </numberOfUnit>
@@ -141,7 +141,7 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
       SOAPAction: "http://webservices.amadeus.com/FMPTBQ_23_4_1A",
     };
 
-    // console.log("data", data);
+    // console.log("fare master pricer", data);
 
     const response = await axios.post(url, data, { headers });
 
@@ -275,7 +275,7 @@ exports.fareInformativePricingWithoutPNR = async (req, res) => {
       SOAPAction: "http://webservices.amadeus.com/TIPNRQ_23_1_1A",
     };
 
-      // console.log("data", data);
+      // console.log("fare informativeprice without pnr", data);
 
     const response = await axios.post(url, data, { headers });
     // console.log("response",response)
@@ -360,7 +360,7 @@ exports.fareCheckRule =async (req, res)=>{
             SOAPAction: "http://webservices.amadeus.com/FARQNQ_07_1_1A",
           };
 
-          // console.log(data,"data");
+          // console.log(data,"fareRule1");
 
           const response = await axios.post(url,data,{headers} );
 
@@ -455,7 +455,7 @@ exports.fareCheckRuleSecond =async (req, res)=>{
           SOAPAction: "http://webservices.amadeus.com/FARQNQ_07_1_1A",
         };
 
-        // console.log(data,"data");
+        // console.log(data,"farecheck rule 2");
 
         const response = await axios.post(url,data,{headers} );
 
@@ -556,7 +556,7 @@ exports.airSell =async (req, res) =>{
     </soapenv:Body>
     </soapenv:Envelope>`;
 
-    // console.log(data,"data");
+    // console.log(data,"airsell");
 
         const headers = {
             "Content-Type": "text/xml;charset=UTF-8",
@@ -631,7 +631,7 @@ exports.pnrAddMultiElements = async (req, res) =>{
             <soapenv:Body>${requestBody}</soapenv:Body>
         </soapenv:Envelope>`;
 
-        // console.log(data,"data");
+        // console.log(data,"pnr add multi element");
 
         const headers = {
             "Content-Type": "text/xml;charset=UTF-8",
@@ -745,7 +745,7 @@ exports.farePricePnrWithBookingClass = async (req, res) =>{
             SOAPAction: "http://webservices.amadeus.com/TPCBRQ_23_2_1A",
           };
 
-          // console.log(data,"Data");
+          // console.log(data,"Fare price with Booking class");
 
           const response = await axios.post(url,data,{headers} );
           // console.log(response,"response");
@@ -832,7 +832,7 @@ exports.ticketCreateTSTFromPricing = async (req, res) =>{
             </soapenv:Body>
         </soapenv:Envelope>`;
 
-        // console.log(data,"data");
+        // console.log(data,"Ticket Create api");
 
 
         const headers = {
@@ -926,7 +926,7 @@ exports.savePnrAddMultiElements = async (req, res) =>{
             </soapenv:Body>
         </soapenv:Envelope>`;
 
-        // console.log(data,"data");
+        // console.log(data,"save pnr ");
 
 
         const headers = {
@@ -1016,7 +1016,7 @@ exports.pnrRet = async (req, res) =>{
   </soapenv:Body>
   </soapenv:Envelope>`;
 
-  // console.log(data,"data");
+  // console.log(data,"pnr retrieve");
 
 
       const headers = {
@@ -1128,7 +1128,7 @@ exports.airRetrieveSeatMap = async (req, res) =>{
       </soapenv:Body>
       </soapenv:Envelope>`;
   
-      // console.log(data,"data");
+      // console.log(data,"seat airmap");
 
 // return;
 
@@ -1262,7 +1262,7 @@ exports.pnrRetrieve = async (req , res) =>{
       </soapenv:Body>
       </soapenv:Envelope>`;
   
-      // console.log(data,"data");
+      // console.log(data,"pnr retrieve without inser");
 
 
           const headers = {
@@ -1336,7 +1336,7 @@ exports.signOut = async (req, res) =>{
     </soapenv:Body>
     </soapenv:Envelope>`;
 
-    // console.log(data,"data");
+    // console.log(data,"signout");
 
 
         const headers = {

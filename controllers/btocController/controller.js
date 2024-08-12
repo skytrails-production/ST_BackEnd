@@ -1232,14 +1232,18 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
       });
     }
     // Check if the fullName is empty or just whitespace
-
 if (!fullName || fullName.trim() === '') {
   return res.status(statusCode.Forbidden).send({
     statusCode: statusCode.Forbidden,
     message: responseMessage.USER_NAME_REQUIRED, 
   });
 }
-
+if(!dob||!email){
+  return res.status(statusCode.Forbidden).send({
+    statusCode: statusCode.Forbidden,
+    message: responseMessage.FIELD_REQUIRED, 
+  });
+}
     const refeerralCode =await commonFunction.generateReferralCode();
     const checkReward = await findReferralAmount({});
     var obj = {};

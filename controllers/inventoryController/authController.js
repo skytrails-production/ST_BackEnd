@@ -12,6 +12,7 @@ const uuid = uuidv4();
 /**********************************SERVICES********************************** */
 const approveStatus = require("../../enums/approveStatus");
 
+
 const {
   hotelinventoryAuthServices,
 } = require("../../services/inventory/partnerAuthServices");
@@ -39,7 +40,8 @@ exports.signUp = async (req, res, next) => {
    
     // Ensure email is in lowercase and trimmed
     req.body.email = req.body.email.trim().toLowerCase();
-
+    req.body.managerName=req.body.managerName.trim();
+    req.body.hotelName=req.body.hotelName.trim()
     // Generate partner ID and password
     req.body.partnerId = commonFunction.generateReferralCode();
     const password = `${managerName}@1234`;

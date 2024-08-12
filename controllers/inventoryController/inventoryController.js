@@ -639,45 +639,6 @@ exports.updatePartnerHotel = async (req, res, next) => {
   }
 };
 
-// exports.changeHotelPrice = async (req, res, next) => {
-//   try {
-//     const { amount, hotelId, roomId ,netName} = req.body;
-//     const isHotelExist = await findPartenerHotelData({ _id: hotelId });
-//     if (!isHotelExist) {
-//       return res.status(statusCode.OK).send({
-//         statusCode: statusCode.NotFound,
-//         responseMessage: responseMessage.HOTEL_NOT_FOUND,
-//       });
-//     }
-//     // Find the room within the hotel's rooms array and update the price
-//     const room = isHotelExist.rooms.id(roomId);
-//     if (!room) {
-//       return res.status(404).send({
-//         statusCode: 404,
-//         responseMessage: "Room not found",
-//       });
-//     }
-//     // Update the net price details
-//     room.priceDetails.net.amount = amount;
-//     const netPrice=
-//     console.log("room.priceDetails.net",room.priceDetails.net,"============================",room);
-//     // Update query to set the net prices
-//     const result = await updatePartenerHotel(
-//       { _id: hotelId, 'rooms._id': roomId },
-//       { $set: { 'rooms.$.priceDetails.net.0.amount': amount } }
-//     );
-//     console.log("result===============",result);
-//     return res.status(statusCode.OK).send({
-//       statusCode: statusCode.NotFound,
-//       responseMessage: responseMessage.UPDATE_SUCCESS,
-//       result:result,
-//     });
-//   } catch (error) {
-//     console.log("Error while trying to update price ", error);
-//     return next(error);
-//   }
-// };
-
 exports.changeHotelPrice = async (req, res, next) => {
   try {
     const { amount, hotelId, roomId, netName } = req.body;
@@ -844,75 +805,6 @@ exports.getAllHotelInventoryofPartner = async (req, res, next) => {
   }
 };
 
-// exports.uploadImagesOfInventory = async (req, res, next) => {
-//   try {
-//     const { hotelId } = req.body;
-
-//     const isUserExist = await findhotelinventoryAuthData({ _id: req.userId });
-//     if (!isUserExist) {
-//       return res.status(statusCode.OK).send({
-//         statusCode: statusCode.NotFound,
-//         responseMessage: responseMessage.PARTNER_NOT_FOUND,
-//       });
-//     }
-//     console.log("isUserExist===========", isUserExist._id);
-
-//     const isHotelExist = await findPartenerHotelData({ _id: hotelId, partnerId: isUserExist._id });
-//     if (!isHotelExist) {
-//       return res.status(statusCode.OK).send({
-//         statusCode: statusCode.NotFound,
-//         responseMessage: responseMessage.HOTEL_NOT_FOUND,
-//       });
-//     }
-
-//     let hotelImageUrls = [];
-//     let roomImageUrls = [];
-//     let rooms = isHotelExist.rooms || [];
-
-//     if (req.files) {
-//       const hotelImageFiles = req.files.hotelImages || [];
-//       const roomImageFiles = req.files.roomsImages || [];
-//       console.log("============", req.files);
-
-//       hotelImageUrls = await Promise.all(
-//         hotelImageFiles.map(async (file) => await commonFunction.getImageUrlAWS(file))
-//       );
-
-//       roomImageUrls = await Promise.all(
-//         roomImageFiles.map(async (file) => await commonFunction.getImageUrlAWS(file))
-//       );
-
-//       if (rooms.length > 0) {
-//         const imagesPerRoom = Math.ceil(roomImageUrls.length / rooms.length);
-//         rooms = rooms.map((room, index) => {
-//           const start = index * imagesPerRoom;
-//           const end = start + imagesPerRoom;
-//           return {
-//             ...room,
-//             roomsImages: roomImageUrls.slice(start, end),
-//           };
-//         });
-//       }
-//     }
-
-//     const obj = {
-//       hotelImages: hotelImageUrls,
-//       rooms: rooms
-//     };
-
-//     const result = await updatePartenerHotel({ _id: isHotelExist._id }, obj);
-
-//     return res.status(statusCode.OK).send({
-//       statusCode: statusCode.ACCEPTED,
-//       responseMessage: responseMessage.UPLOAD_SUCCESS,
-//       result: result,
-//     });
-
-//   } catch (error) {
-//     console.log("error while trying to upload images", error);
-//     return next(error);
-//   }
-// };
 
 exports.uploadImagesOfInventory = async (req, res, next) => {
   try {

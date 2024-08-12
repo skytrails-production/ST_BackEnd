@@ -88,9 +88,9 @@ app.use(bodyparser.text({ type: 'text/xml' }));
 app.use(cookieParser());
 
 
-// var corsOptions = {
-//   origin: "*",
-// };
+var corsOptions = {
+  origin: "*",
+};
 
 // middlware for cache bust
 app.use((req, res, next) => {
@@ -99,10 +99,10 @@ app.use((req, res, next) => {
   next();
 });
 // app.use(cors(corsOptions));
-const corsOptions = {
-  origin: '*',
-  optionsSuccessStatus: 200
-};
+// const corsOptions = {
+//   origin: '*',
+//   optionsSuccessStatus: 200
+// };
 
 app.use(cors(corsOptions));
 app.use(helmet());
