@@ -56,7 +56,7 @@ exports.ssdcJobsCreate = async (req, res) => {
   const file = req?.file;
   const s3Params = {
     Bucket: process.env.AWS_BUCKET_NAME,
-    Key: file.originalname,
+    Key: `ssdcImages/${file.originalname}`,
     Body: file.buffer,
     ContentType: file.mimetype,
     ACL: "public-read",

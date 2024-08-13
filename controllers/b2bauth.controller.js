@@ -140,7 +140,7 @@ exports.RegisterUser = async (req, res) => {
   // console.log(reqData.password);
   const s3Params = {
     Bucket: process.env.AWS_BUCKET_NAME,
-    Key: file.originalname,
+    Key: `agentImages/${file.originalname}`,
     Body: file.buffer,
     ContentType: file.mimetype,
     ACL: "public-read",
@@ -236,7 +236,7 @@ exports.uploadAgentLogo = async (req, res) => {
   
     const s3Params = {
       Bucket: process.env.AWS_BUCKET_NAME,
-      Key: file.originalname, // Set the key as "logo.png" for the logo image
+      Key: `agentImages/${file.originalname}`,
       Body: file.buffer,
       ContentType: file.mimetype,
       ACL: "public-read",
@@ -1688,7 +1688,7 @@ exports.updateProfile = async (req, res) => {
     if (file) {
       const s3Params = {
         Bucket: process.env.AWS_BUCKET_NAME,
-        Key: file.originalname,
+        Key: `agentImages/${file.originalname}`,
         Body: file.buffer,
         ContentType: file.mimetype,
         ACL: "public-read",

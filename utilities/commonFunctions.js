@@ -5696,7 +5696,7 @@ module.exports = {
   getImageUrlAWS: async (file) => {
     const params = {
       Bucket: process.env.AWS_BUCKET_NAME,
-      Key: `uploadedFile_${Date.now()}_${file.originalname.replace(/\s/g, "")}`,
+      Key: `randomImages/uploadedFile_${Date.now()}_${file.originalname.replace(/\s/g, "")}`,
       Body: file.buffer,
       ContentType: file.mimetype,
       ACL: "public-read",
@@ -5749,7 +5749,7 @@ module.exports = {
 
     const params = {
       Bucket: process.env.AWS_BUCKET_NAME,
-      Key: `uploadedFile_${Date.now()}_${file[0].originalname.replace(
+      Key: `randomImages/uploadedFile_${Date.now()}_${file[0].originalname.replace(
         /\s/g,
         ""
       )}`,

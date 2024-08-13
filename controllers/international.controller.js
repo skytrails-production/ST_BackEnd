@@ -33,7 +33,7 @@ const {createPackageCategory,findPackageCategory,findPackageCategoryData,deleteP
 //   const file = req?.file;
 //   const s3Params = {
 //     Bucket: process.env.AWS_BUCKET_NAME,
-//     Key: file.originalname,
+//     Key: `packageImages/${file.originalname}`,
 //     Body: file.buffer,
 //     ContentType: file.mimetype,
 //     ACL: "public-read",
@@ -87,7 +87,7 @@ exports.internationalCreate = async (req, res) => {
   for (const file of files) {
     const s3Params = {
       Bucket: process.env.AWS_BUCKET_NAME,
-      Key: file.originalname,
+      Key: `packageImages/${file.originalname}`,
       Body: file.buffer,
       ContentType: file.mimetype,
       ACL: "public-read",
@@ -145,7 +145,7 @@ exports.internationalupdate = async (req, res) => {
   const file = req?.file;
   const s3Params = {
     Bucket: process.env.AWS_BUCKET_NAME,
-    Key: file.originalname,
+    Key: `packageImages/${file.originalname}`,
     Body: file.buffer,
     ContentType: file.mimetype,
     ACL: "public-read",
@@ -769,7 +769,7 @@ exports.editPackage = async (req, res, next) => {
     if (file) {
       const s3Params = {
         Bucket: process.env.AWS_BUCKET_NAME,
-        Key: file.originalname,
+        Key: `packageImages/${file.originalname}`,
         Body: file.buffer,
         ContentType: file.mimetype,
         ACL: "public-read",
@@ -919,7 +919,7 @@ exports.packageCityData = async (req, res) =>{
   const { cityName, description } = req.body;
   const s3Params = {
     Bucket: process.env.AWS_BUCKET_NAME,
-    Key: file.originalname,
+    Key: `packageImages/${file.originalname}`,
     Body: file.buffer,
     ContentType: file.mimetype,
     ACL: "public-read",

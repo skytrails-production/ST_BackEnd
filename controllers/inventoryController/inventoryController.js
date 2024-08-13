@@ -127,7 +127,7 @@ exports.createHotelForm1 = async (req, res) => {
   for (const file of files[0]) {
     const s3Params = {
       Bucket: process.env.AWS_BUCKET_NAME,
-      Key: file.originalname,
+      Key: `inventoryImages/${file.originalname}`,
       Body: file.buffer,
       ContentType: file.mimetype,
       ACL: "public-read",
