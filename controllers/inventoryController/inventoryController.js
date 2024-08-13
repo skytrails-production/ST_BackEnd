@@ -452,9 +452,6 @@ exports.createhotelinventory = async (req, res, next) => {
     safe2Stay =parseField(safe2Stay);
     bookingPolicy  = parseField(bookingPolicy);
     typeOfRoom =parseField(typeOfRoom);
-// console.log("safe2Stay======1",safe2Stay);
-// console.log("bookingPolicy======3",bookingPolicy);
-// console.log("typeOfRoom======5",typeOfRoom)
     let hotelImageUrls = [];
     let rooms = roomArr || [];
     // Process file uploads if present
@@ -463,11 +460,11 @@ exports.createhotelinventory = async (req, res, next) => {
       const roomImageFiles = req.files.roomsImages || [];
 
       hotelImageUrls = await Promise.all(
-        hotelImageFiles.map(async (file) => await commonFunction.getImageUrlAWS(file))
+        hotelImageFiles.map(async (file) => await commonFunction.getInventoryImageUrlAWS(file))
       );
 
       const roomImageUrls = await Promise.all(
-        roomImageFiles.map(async (file) => await commonFunction.getImageUrlAWS(file))
+        roomImageFiles.map(async (file) => await commonFunction.getInventoryImageUrlAWS(file))
       );
 
       // Distribute room images to each room
@@ -515,8 +512,6 @@ exports.createhotelinventory = async (req, res, next) => {
       availableDate,
       startFrom,
     };
-
-    // console.log("Object to be saved:", JSON.stringify(obj, null, 2));
 
     const result = await createPartenerHotel(obj);
     return res.status(statusCode.OK).send({
@@ -893,6 +888,82 @@ exports.uploadImagesOfInventory = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.uploadImagesOfRoom = async (req, res, next) => {
+  try {
+    const { hotelId } = req.body; // Assuming roomId is passed in the body
+    // Check if user exists
+    // const isUserExist = await findhotelinventoryAuthData({ _id: req.userId });
+    // if (!isUserExist) {
+    //   return res.status(statusCode.OK).send({
+    //     statusCode: statusCode.NotFound,
+    //     responseMessage: responseMessage.PARTNER_NOT_FOUND,
+    //   });
+    // }
+    // partnerId: isUserExist._id
+    // Check if hotel exists for the partner
+    const isHotelExist = await findPartenerHotelData({ _id: hotelId, });
+    if (!isHotelExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.HOTEL_NOT_FOUND,
+      });
+    }
+const roomData=isHotelExist.rooms
+    // Upload images to AWS and collect URLs
+    let imageUrls = [];
+    if(req.files||req.file){
+      // const imageUrl = await commonFunction.getImageUrlAWS(file);
+      const roomImageFiles = req.files || [];
+      const roomImageUrls = await Promise.all(
+        roomImageFiles.map(async (file) => await commonFunction.getInventoryImageUrlAWS(file))
+      );      
+      imageUrls=roomImageUrls;
+      console.log("imageUrls==========",imageUrls);
+      
+    }
+    console.log("roomData==========",roomData.length);
+    
+    for(var i=0;i<=roomData.length;i++){
+      console.log("0987654fgnm,.mnbvcxzxcvbnm,",roomData);
+       
+      const imagesPerRoom = Math.ceil(imageUrls.length / roomData.length);
+      console.log("imagesPerRoom=============",imagesPerRoom);r                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+    }
+    // if (roomData.length > 0) {
+    //   for (const file of isHotelExist.rooms) {
+    //     const imageUrl = await commonFunction.getImageUrlAWS(file);
+    //     imageUrls.push(imageUrl);
+    //   }
+
+    //   // Update hotel document with new image URLs
+    //   await updatePartenerHotel(  { _id: hotelId, "rooms._id": roomId },{ $push: { "rooms.$.roomImages": { $each: imageUrls } } })
+    //   return res.status(statusCode.OK).send({
+    //     statusCode: statusCode.Success,
+    //     responseMessage: responseMessage.IMAGES_UPLOADED_SUCCESSFULLY,
+    //     data: imageUrls,
+    //   });
+    // } else {
+    //   return res.status(statusCode.OK).send({
+    //     statusCode: statusCode.BadRequest,
+    //     responseMessage: responseMessage.NO_IMAGES_PROVIDED,
+    //   });
+    // }
+
+    // if(roomData.length>0){
+    //   const  imageUrl=await commonFunction.getImageUrlAWS(file)
+    // }
+  } catch (error) {
+    console.log("Error while trying to upload room images", error);
+    return next(error);
+  }
+};
+
+// Function to update the hotel document with new image URLs
+// const updateHotelWithRoomImages = async (hotelId, imageUrls) => {
+//   // Assuming Hotel is your hotel model
+//   await Hotel.updateOne({ _id: hotelId }, { $push: { roomImages: { $each: imageUrls } } });
+// };
 
 
 // exports.uploadImagesOfInventory = async (req, res, next) => {

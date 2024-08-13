@@ -6,7 +6,6 @@ const mealtype = require("../../enums/mealType");
 mongoose.pluralize(null);
 
 const GstSchema = new mongoose.Schema({
-  _id: false,
   amount: Number,
   amountType: String,
   currency: String,
@@ -14,8 +13,7 @@ const GstSchema = new mongoose.Schema({
   name: String,
 });
 
-const NetSchema = new mongoose.Schema({
-  _id: false,
+const NetSchema = new mongoose.Schema({  
   amount: Number,
   amountType: String,
   currency: String,
@@ -34,7 +32,7 @@ const WeekdaySchema = new mongoose.Schema({
   isEP:Boolean,
   isJAP:Boolean,
   isAP:Boolean
-}, { _id: false });
+});
 
 const WeekendSchema = new mongoose.Schema({
   noOfAdult: Number,
@@ -47,7 +45,7 @@ const WeekendSchema = new mongoose.Schema({
   isEP:Boolean,
   isJAP:Boolean,
   isAP:Boolean
-}, { _id: false });
+});
 
 const PriceDetailsSchema = new mongoose.Schema({
   gst: [GstSchema],
@@ -55,7 +53,7 @@ const PriceDetailsSchema = new mongoose.Schema({
   Weekday: [WeekdaySchema],
   Weekend: [WeekendSchema],
 
-}, { _id: false });
+});
 
 const RoomSchema = new mongoose.Schema({
   description: String,
@@ -66,7 +64,7 @@ const RoomSchema = new mongoose.Schema({
   priceDetails: PriceDetailsSchema,
   roomAmineties: [String],
 
-}, { _id: false });
+});
 
 const hotelInventorySchema = new mongoose.Schema(
   {

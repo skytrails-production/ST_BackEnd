@@ -43,4 +43,6 @@ module.exports = function (app) {
   app.put("/skyTrails/api/inventory/changePassword",[authJwt.verifyTokenOfInvenPartner],becomePartnerController.changePassword);
   app.get("/skyTrails/api/inventory/getAllHotelInventoryofPartner",[authJwt.verifyTokenOfInvenPartner],Controller.getAllHotelInventoryofPartner);
   app.put("/skyTrails/api/inventory/uploadInventoryImage",upload.fields([{ name: 'hotelImages', maxCount: 50 },{ name: 'roomsImages', maxCount: 50 }]),[authJwt.verifyTokenOfInvenPartner], Controller.uploadImagesOfInventory);
+  // app.put("/skyTrails/api/inventory/uploadInventoryRoomImage",upload.fields([{ name: 'roomsImages', maxCount: 50 }], Controller.uploadImagesOfRoom));
+  app.put("/skyTrails/api/inventory/uploadRoomImages",upload.array('roomsImages'),Controller.uploadImagesOfRoom)
 };
