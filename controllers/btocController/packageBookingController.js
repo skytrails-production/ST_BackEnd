@@ -402,11 +402,10 @@ if (item.packageId.select_tags.some(tag => tag.domestic)) {
         date_Of_journey: item.departureDate,
         isInternational: item.packageId.select_tags.some(tag => !tag.domestic && tag.international),
         inter_domes: inter_domes,
-        destination: item.packageId.destination.map(dest => dest.addMore).join(', '),
+        destination: item.packageId.destination[0].addMore,
         country: item.packageId.country
       };
     });
-
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.DATA_FOUND,

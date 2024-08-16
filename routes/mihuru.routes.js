@@ -20,5 +20,7 @@ module.exports = function (app) {
 
 
     app.post("/skyTrails/mihuru/initiateflightbooking", controller.initiateFlightBooking);
+    app.post("/skyTrails/mihuru/initiatehotelbooking", controller.initiateHotelBooking);
+    app.post("/skyTrails/mihuru/initiateholidaypackagebooking", controller.initiateHolidayPackageBooking);
     
 }

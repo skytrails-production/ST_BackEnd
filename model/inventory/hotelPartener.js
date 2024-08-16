@@ -62,8 +62,7 @@ const RoomSchema = new mongoose.Schema({
   totalRooms: Number,
   availableRooms: Number,
   priceDetails: PriceDetailsSchema,
-  roomAmineties: [String],
-
+  roomAmineties: [String]
 });
 
 const hotelInventorySchema = new mongoose.Schema(

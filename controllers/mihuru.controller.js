@@ -35,11 +35,11 @@ exports.signUp = async (req, res) => {
   try {
     const requestBody = req.body;
 
-    const userIP =requestIp.getClientIp(req)||"103.154.247.235";
+    const userIP =requestIp.getClientIp(req)!=="::1"?requestIp.getClientIp(req):"103.154.247.235";
 
     const userLocation = geoip.lookup(userIP);
     // const userLocation=geoip.lookup("192.168.10.10");
-    // console.log("location", userIP,userLocation);
+    console.log("location", userIP,userLocation);
 
     const data = {
       ...requestBody,
@@ -51,7 +51,7 @@ exports.signUp = async (req, res) => {
       latitude:userLocation?.ll[0],
       longitude:userLocation?.ll[1]
     };
-    // console.log(data,"data");
+    console.log(data,"data");
 
     // return;
 
@@ -154,13 +154,55 @@ exports.initiateFlightBooking = async (req , res) =>{
 
     const data=req.body;
 
-    const response = await axios.post(`${api.initiateBooking}`, data);
+    const response = await axios.post(`${api.initiateFlightBooking}`, data);
 
-    msg = "Initiate Booking";
+    msg = "Initiate Flight Booking";
     actionCompleteResponse(res, response.data, msg);
     
   } catch (error) {
     sendActionFailedResponse(res, { error }, error.message);
   }
+
+}
+
+
+//initiateHotelBooking
+
+exports.initiateHotelBooking = async (req, res) =>{
+
+  try {
+
+    const data=req.body;
+
+    const response = await axios.post(`${api.initiateHotelBooking}`, data);
+
+    msg = "Initiate Hotel Booking";
+    actionCompleteResponse(res, response.data, msg);
+    
+  } catch (error) {
+    sendActionFailedResponse(res, { error }, error.message);
+  }
+
+}
+
+
+
+//initiateHolidayPackageBooking
+
+exports.initiateHolidayPackageBooking = async (req, res) =>{
+
+  try {
+
+    const data=req.body;
+
+    const response = await axios.post(`${api.initiateHolidayPackageBooking}`, data);
+
+    msg = "Initiate Holiday Package Booking";
+    actionCompleteResponse(res, response.data, msg);
+    
+  } catch (error) {
+    sendActionFailedResponse(res, { error }, error.message);
+  }
+
 
 }

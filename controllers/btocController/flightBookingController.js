@@ -47,7 +47,7 @@ const {
 exports.flighBooking = async (req, res, next) => {
   try {
     const data = { ...req.body };
-    console.log("data=================",data,req)
+    // console.log("data=================",data,req)
     const isUserExist = await findUser({
       _id: req.userId,
       status: status.ACTIVE,
@@ -58,8 +58,9 @@ exports.flighBooking = async (req, res, next) => {
         message: responseMessage.USERS_NOT_FOUND,
       });
     }
+    
     data.userId = isUserExist._id;
-    data.bookingStatus = bookingStatus.BOOKED;
+    // data.bookingStatus = bookingStatus.BOOKED;
     const notObject={
       userId:isUserExist._id,
       title:"Flight Booking by User",
@@ -68,6 +69,7 @@ exports.flighBooking = async (req, res, next) => {
       to:isUserExist.userName,
     }
     await createPushNotification(notObject);
+    
     let options = { day: '2-digit', month: '2-digit', year: 'numeric' };
 // Format the date using the toLocaleDateString() function
 let formattedDate = new Date().toLocaleDateString('en-GB', options);
@@ -76,7 +78,14 @@ let formattedDate = new Date().toLocaleDateString('en-GB', options);
     // await whatsApi.sendWhatsAppMsgAdmin(AdminNumber,'adminbooking_alert');
     // await whatsApi.sendWhatsAppMsgAdmin(AdminNumber,'adminalert');
     const result = await createUserflightBooking(data);
-    const userName = `${data?.passengerDetails[0]?.firstName} ${data?.passengerDetails[0]?.lastName}`;
+    if(result.bookingStatus==bookingStatus.FAILED){
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.ReqTimeOut, 
+        responseMessage: responseMessage.BOOKING_FAILED,
+        // result,
+      });
+    }else{
+      const userName = `${data?.passengerDetails[0]?.firstName} ${data?.passengerDetails[0]?.lastName}`;
     const phone = '+91'+data?.passengerDetails[0]?.ContactNo;
     const url=`https://theskytrails.com/FlightEticket/${result._id}`;
     // await whatsApi.sendMessageWhatsApp(phone,userName,url,'flight');
@@ -87,12 +96,10 @@ let formattedDate = new Date().toLocaleDateString('en-GB', options);
     await whatsApi.sendWhtsAppOTPAISensy(phone,templates,"flightBooking");
     await sendSMSUtils.sendSMSForFlightBooking(data);
     await commonFunction.FlightBookingConfirmationMail(result);
-    return res.status(statusCode.OK).send({
-      statusCode: statusCode.OK, 
-      message: responseMessage.FLIGHT_BOOKED,
-      result,
-    });
-  } catch (error) {
+    return res.status(statusCode.OK).send({statusCode: statusCode.OK, message: responseMessage.FLIGHT_BOOKED,result, });
+ 
+    }
+     } catch (error) {
     console.log("error: ", error);
     return next(error);
   }

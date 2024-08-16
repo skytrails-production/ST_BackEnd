@@ -308,27 +308,31 @@ busCancelURL:
 
     //Mihuru api url 
     partnerAuthentication:
-    "https://uat.partners.mihuru.com/api/assistmodule/login/apiuser",
+    "https://uat.partners.mihuru.com/api/assistmodule/v2/login/apiuser",
     customerSignUp:
-    "https://uat.partners.mihuru.com/api/assistmodule/v1/signup",
+    "https://uat.partners.mihuru.com/api/assistmodule/v2/signup",
     submitOtp:
     "https://uat.partners.mihuru.com/api/assistmodule/v2/submitotp",
     travelPlanGenerator:
-    "https://uat.partners.mihuru.com/api/assistmodule/v1/confirmpersonaldetails",
+    "https://uat.partners.mihuru.com/api/assistmodule/v2/confirmpersonaldetails",
     resendOtp:
-    "https://uat.partners.mihuru.com/api/assistmodule/resendotp",
+    "https://uat.partners.mihuru.com/api/assistmodule/v2/resendotp",
     applicationStatus:
     "https://uat.partners.mihuru.com/api/application/status",
     emiTravelPlan:
-    "https://uat.partners.mihuru.com/api/TravelEMI/TravelPlanEMI",
-    initiateBooking:
-    "https://uat.partners.mihuru.com/api/flight/v1/initiateflightbooking",
-    applicationStatu:
-    "https://uat.partners.mihuru.com/api/application/status",
-    bookingCancel:
-    "https://uat.partners.mihuru.com/api/assistmodule/booking/cancellation/initiate",
+    "https://uat.partners.mihuru.com/api/TravelEMI/v2/TravelPlanEMI",
+    initiateFlightBooking:
+    "https://uat.partners.mihuru.com/api/booking/v2/initiate/flight",
+    initiateHotelBooking:
+    "https://uat.partners.mihuru.com/api/booking/v2/initiate/hotel",
+    initiateHolidayPackageBooking:
+    "https://uat.partners.mihuru.com/api/booking/v2/initiate/holidaypackage",
+    initiateBookingCancel:
+    "https://uat.partners.mihuru.com/api/assistmodule/booking/v2/cancellation/initiate",
+    bookingCancelProcess:
+    "https://uat.partners.mihuru.com/api/assistmodule/booking/v2/cancellation/process",
     genrateCustomerToken:
-    "https://uat.partners.mihuru.com/api/applicationtoken/currentapplicationtoken"
+    "https://uat.partners.mihuru.com/api/applicationtoken/v2/currentapplicationtoken"
 };
 exports.responseFlags = {
   ACTION_COMPLETE: 200,
