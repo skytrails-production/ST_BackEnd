@@ -12,7 +12,7 @@ const changeBookingDataSchema =
             ref: "userBtoC"
         },
         reason: {
-            type: String
+            type: String 
         },
         bookingId: {
             type: Number

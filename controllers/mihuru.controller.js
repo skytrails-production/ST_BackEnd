@@ -39,7 +39,7 @@ exports.signUp = async (req, res) => {
 
     const userLocation = geoip.lookup(userIP);
     // const userLocation=geoip.lookup("192.168.10.10");
-    console.log("location", userIP,userLocation);
+    // console.log("location", userIP,userLocation);
 
     const data = {
       ...requestBody,
@@ -51,7 +51,7 @@ exports.signUp = async (req, res) => {
       latitude:userLocation?.ll[0],
       longitude:userLocation?.ll[1]
     };
-    console.log(data,"data");
+    // console.log(data,"data");
 
     // return;
 

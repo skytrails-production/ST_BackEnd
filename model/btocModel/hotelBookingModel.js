@@ -70,6 +70,7 @@ const hotelBookingDetailSchema = new mongoose.Schema(
         },
         bookingStatus: {
             type: String,
+            enum:[bookingStatus.BOOKED,bookingStatus.CANCEL,bookingStatus.FAILED,bookingStatus.PENDING],
             default: bookingStatus.BOOKED
         },
         transactions:{

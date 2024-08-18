@@ -858,7 +858,7 @@ exports.makeCashfreePayment = async (req, res, next) => {
       });
     }
     const currentDate = new Date();
-    const newDate = new Date(currentDate.getTime() + 16 * 60000); // Adding 4 minutes in milliseconds (1 minute = 60,000 milliseconds)
+    const newDate = new Date(currentDate.getTime() + 16 * 60000); // Adding  minutes in milliseconds (1 minute = 60,000 milliseconds)
     const client_secret = process.env.CASHFREE_API_KEY;
     const clientId = process.env.CASHFREE_API_ID;
     const payUrl = process.env.CASHFREE_URL;
@@ -895,7 +895,6 @@ exports.makeCashfreePayment = async (req, res, next) => {
     };
     try {
       const {data} = await axios.request(options);
-      console.log("data==>>>>>>>>>>>>>>>>>>>", data);
       const objectData = {
         userId: isUserExist._id,
         amount: object.order_amount,

@@ -59,7 +59,14 @@ exports.busBooking = async (req, res, next) => {
     }
     data.userId=isUserExist._id
     const result = await createUserBusBooking(data);
-    const userName =`${result.passenger[0].firstName} ${result.passenger[0].lastName}`;
+    if(result.bookingStatus==bookingStatus.FAILED){
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.ReqTimeOut, 
+        responseMessage: responseMessage.BOOKING_FAILED,
+        // result,
+      });
+    }else{
+const userName =`${result.passenger[0].firstName} ${result.passenger[0].lastName}`;
     const notObject={
       userId:isUserExist._id,
       title:"Bus Booking by User",
@@ -96,6 +103,8 @@ await createPushNotification(notObject);
         });
         
     }
+    }
+    
     
   } catch (error) {
     console.log("error: ", error);

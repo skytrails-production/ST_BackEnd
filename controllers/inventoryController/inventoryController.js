@@ -954,7 +954,7 @@ exports.uploadImagesOfRoom = async (req, res, next) => {
     }
     // Distribute images among rooms
     const imagesPerRoom = Math.ceil(imageUrls.length / roomData.length);
-    console.log("imagesPerRoom=========",imagesPerRoom)
+    // console.log("imagesPerRoom=========",imagesPerRoom)
     for (let i = 0; i < roomData.length; i++) {
       const start = i * imagesPerRoom;
       const end = start + imagesPerRoom;

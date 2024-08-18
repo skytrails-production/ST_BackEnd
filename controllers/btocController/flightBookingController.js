@@ -75,8 +75,6 @@ exports.flighBooking = async (req, res, next) => {
 let formattedDate = new Date().toLocaleDateString('en-GB', options);
     const TemplateNames=[String(notObject.from),String(data.pnr),String(notObject.to),String(formattedDate)];
     await whatsApi.sendWhtsAppOTPAISensy(AdminNumber,TemplateNames,'admin_booking_Alert');
-    // await whatsApi.sendWhatsAppMsgAdmin(AdminNumber,'adminbooking_alert');
-    // await whatsApi.sendWhatsAppMsgAdmin(AdminNumber,'adminalert');
     const result = await createUserflightBooking(data);
     if(result.bookingStatus==bookingStatus.FAILED){
       return res.status(statusCode.OK).send({
@@ -171,7 +169,6 @@ exports.getUserFlightData = async (req, res, next) => {
     return next(error);
   }
 };
-
 
 exports.sendPDF=async(req,res,next)=>{
   try {

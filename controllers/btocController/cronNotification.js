@@ -58,16 +58,20 @@ const notifications = [
     body: `Book your dream trip today and pay at your convenience!🌟🗺️`,
   },
   {
-    message: `Chance to win a free vacation! 🏖 ✈`,
-    body: `Play now and answer a few fun questions on our social media!🌍✨`,
+    message: `Perfect Raksha Bandhan gift for your sister`,
+    body: `Surprise her with the gift of Adventure!
+Book now and make this Raksha Bandhan truly special!
+🌍✨`,
   },
   {
-    message: `FunTime!Test your knowledge `,
-    body: `win exciting prizes—play now in our app! 🎉🧳😄🛫`,
+    message: `Raksha Bandhan Special: Gift a memorable trip! ✈`,
+    body: `Unlock travel deals and craft unforgettable memories!
+Book now for a special Raksha Bandhan!`,
   },
   {
-    message: `Your Dream Trip is Calling! `,
-    body: `Take our quiz to discover your perfect getaway and win big! 🏝✨`,
+    message: `Raksha Bandhan par, boring gifts ko bye-bye bolo!`,
+    body: `Behen ko do "love aur adventure" ka gift 
+Book now—because your couch isn't a vacation!`,
   },
   {
     message: `Congratulations! username`,
@@ -77,21 +81,21 @@ const notifications = [
   //   message: `🤔 Soch kya rhe ho neeche daikho `,
   //   body: `The skytrails pr apko millega har services par 20% ka offer`,
   // },
+  // {
+  //   message: `🌊 Take your partner to a beach getaway!`,
+  //   body: `Enjoy 20% off on your travel packages! Book now`,
+  // },
+  // {
+  //   message: `Last Chance Alert! `,
+  //   body: `Don't miss out on our flash sale - book now before it's gone! ⏰✈`,
+  // },
+  // {
+  //   message: `Escape the ordinary!`,
+  //   body: `Explore our curated list of off-the-beaten-path destinations for your next adventure! 🗺🌟`,
+  // },
   {
-    message: `🌊 Take your partner to a beach getaway!`,
-    body: `Enjoy 20% off on your travel packages! Book now`,
-  },
-  {
-    message: `Last Chance Alert! `,
-    body: `Don't miss out on our flash sale - book now before it's gone! ⏰✈`,
-  },
-  {
-    message: `Escape the ordinary!`,
-    body: `Explore our curated list of off-the-beaten-path destinations for your next adventure! 🗺🌟`,
-  },
-  {
-    message: `Trip ki planning ho gayi? 📅`,
-    body: `SkyTrails ke sath apni next vacation plan karo aur enjoy karo! 🏖️✨`,
+    message: `Rakhi Deals for Long-Distance Siblings!`,
+    body: `Celebrate Rakhi despite the distance with special travel discounts. Plan your visit or dream trip now!`,
   },
 //   {
 //     message: `Thara Paisa 💸💵`,
@@ -101,80 +105,26 @@ const notifications = [
 // Thara Deal 🤗`,
 //   },
   {
-    message: `Knock-Knock! The Skytrails ✈`,
-    body: `Don't miss the latest offers and discounts on Hotel Bookings!🎉🤩`,
+    message: `बहना ने भाई की कलाई से प्यार बाँधा है 🧿`,
+    body: `"Celebrate the loving bond of Rakhi with exclusive travel offers. Plan your trip and create beautiful memories together. Book now!`,
   },
+//   {
+//     message: `Two things we love ❤️`,
+//     body: `1. username
+// 2. Giving 20% OFF* to username on all Bookings
+// CLAIM NOW`,
+//   },
   {
-    message: `Two things we love ❤️`,
-    body: `1. username
-2. Giving 20% OFF* to username on all Bookings
-CLAIM NOW`,
-  },
-  {
-    message: `New deals just landed! 🛬 `,
-    body: `Check out the hottest travel offers now on the Skytrails App.✈📲`,
+    message: `Behanon Ke Liye: Rakhi Travel Sale!`,
+    body: `Special discounts for sisters on Rakhi. Plan your trip!`,
   },
 ];
 
 
 
 const lastNotificationSent = new Map();
-// Define your cron job schedule. This example runs the job every day at 9:00 AM.
 
-// var task =cron.schedule('0 * * * *', async () => {
-//   try {
-//     // Fetch all users from the database
-//     const users = await eventBookingList({
-//       // 'contactNo.mobile_number': { $in: ['8115199076', '9354416602','9810704352'] },
-//       status: status.ACTIVE,
-//       deviceToken: { $exists: true, $ne: "" }
-//     });
-//     // const usereTokenExist=await userList({'contactNo.mobile_number': { $in: ['8115199076', '9354416602','9810704352'] },status: status.ACTIVE,deviceToken: { $exists: true, $ne: ""}});
-//     const current_Date=new Date();
-//      // Iterate through each user and send a notification
-//        // Merge the two arrays
-//     // const allUsers = [...users, ...usereTokenExist];
-//     for (const user of users) {
-//       if(user.createdAt.getTime()>=current_Date.getTime()){
-//           const notifications= `🎉Excited for PEFA 2024,${user.name}😎?`;
-//           const messageBody1=`📅 Time: 5 PM 😅 Date: Mar. 2, 2024
-//             📍 Location: CGC Mohali,Punjab
-//             📱Check to make sure you get the most out of TheSkyTrails app! Special deals are on the way. Don't pass this up! ✨
-//             See you there!
-//             TheSkyTrails Team`
-//             await pushNotification(user.deviceToken, notifications,messageBody1);
-//             console.log('Notification cron job executed successfully.messageBody1');
-//       }
-//       var task2=cron.schedule('0 8 * * *', async () => {
-//         try {
-//            const notificationMessage = "🚀एक सफ़र पे यूँ ही कभी चल दो तुम,✈️";
-//            const messageBody=`✨Check out our latest promotion! We're offering deals so good, even your coffee will do a double-take! ☕️✨`
-//            await mediapushNotification(user.deviceToken, notificationMessage,messageBody);
-//            console.log('Notification cron job executed successfully.TASK 2');
-//      // Stop the cron job after execution
-//             task2.stop();
-//          console.log('Notification cron job stopped.');
-//         } catch (error) {
-//           console.log("error when run second task",error);
-//         }
-//       });
-//       task2.start();
 
-//     }
-//     console.log('Notification cron job executed successfully.');
-//      // Stop the cron job after execution
-//      task.stop();
-//      console.log('Notification cron job stopped.');
-//   } catch (error) {
-//     console.error('Error occurred during notification cron job:', error);
-//   }
-// }, {
-//   scheduled: true,
-//   timezone: 'Asia/Kolkata' // Adjust timezone as per your requirement
-// });
-// task.start();
-
-// Define and schedule task2 separately
 var taskPromotionalNotification = cron.schedule("46 12 * * *",async () => {
   try {
     // 'phone.mobile_number':'8115199076'
