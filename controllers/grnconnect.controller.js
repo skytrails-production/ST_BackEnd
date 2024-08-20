@@ -4,6 +4,7 @@ const { api } = require("../common/const");
 
 const { userIPDetail } = require("../model/city.model");
 const requestIp = require('request-ip');
+const geoip = require('geoip-lite');
 
 const {
   actionCompleteResponse,
@@ -237,7 +238,7 @@ exports.hotelSearchWithPagination=async (req,res) =>{
 
 //searchMulitHotel
 
-exports.searchMulitHotel = async (req, res) => {
+exports.searchMultiHotel = async (req, res) => {
   try {
     let results = [];
     if (req?.body?.cityCode) {
@@ -337,7 +338,18 @@ exports.searchMulitHotel = async (req, res) => {
       };
       const response = await axios.post(`${baseurl}/api/v3/hotels/availability`, searchData, { headers });
       const msg = "Single Hotel Search Successfully!";
-      return actionCompleteResponse(res, response.data, msg);
+
+
+      response.data.hotels.forEach(hotel => {
+        hotel.search_id = response.data.search_id;
+      });
+  
+      // Remove search_id from the root level
+      delete response.data.search_id;
+  
+      // Optionally, prepare the modified data
+      const modifiedData = response.data;
+      return actionCompleteResponse(res, modifiedData, msg);
     }
   } catch (err) {
     sendActionFailedResponse(res, {}, err.message);
@@ -657,9 +669,15 @@ exports.getGrnAgentSingleBooking = async (req, res ) =>{
 
 exports.getCityAndHotelSearch = async (req, res) => {
   try {
+    const userIP = requestIp.getClientIp(req);
+    // const userIP="223.178.216.116"
+
+    const userLocation = geoip.lookup(userIP);
+    // console.log(userLocation,userIP,"userLocation")
+
     const keyword = req.query.keyword;
     const page = parseInt(req.query.page, 10) || 1;
-    const limit = parseInt(req.query.limit, 10) || 10;
+    const limit = parseInt(req.query.limit, 10) || 20;
     const skip = (page - 1) * limit;
 
     if (!keyword) {
@@ -667,10 +685,89 @@ exports.getCityAndHotelSearch = async (req, res) => {
     }
 
     // Perform city and hotel searches concurrently
-    const [cityList, hotelList] = await Promise.all([
-      GrnCityList.find({ cityName: { $regex: keyword, $options: "i" } }).select('-_id').skip(skip).limit(limit),
-      GrnHotelCityMap.find({ hotelName: { $regex: keyword, $options: "i" } }).select('-_id -longitude -latitude').skip(skip).limit(limit)
+    // const [cityList, hotelList] = await Promise.all([
+    //   GrnCityList.find({ cityName: { $regex: keyword, $options: "i" } }).select('-_id').skip(skip).limit(limit),
+    //   GrnHotelCityMap.find({ hotelName: { $regex: keyword, $options: "i" } }).select('-_id -longitude -latitude').skip(skip).limit(limit)
+    // ]);
+
+    let [cityList, hotelList] = await Promise.all([
+      GrnCityList.find({ cityName: { $regex: keyword, $options: "i" } })
+        .select('-_id')
+        .skip(skip)
+        .limit(limit),    
+      GrnHotelCityMap.aggregate([
+        {
+          $match: { hotelName: { $regex: keyword, $options: "i" } }
+        },
+        {
+          $lookup: {
+            from: "grnCountryList",
+            localField: "countryCode",
+            foreignField: "countryCode",
+            as: "countryDetails"
+          }
+        },
+        {
+          $unwind: "$countryDetails"
+        },
+        {
+          $addFields: {
+            // cityName: "$countryDetailsWithCity.cityName",
+            countryName: "$countryDetails.countryName"
+          }
+        },
+        {
+          $project: {
+            hotelCode: 1,
+            hotelName: 1,
+            cityCode: 1,
+            countryCode: 1,
+            countryName: 1,
+            // cityName:1,
+            address: 1,
+            latitude: 1,
+            longitude: 1
+          }
+        },
+        {
+          $skip: skip   // Applies the skip for pagination
+        },
+        {
+          $limit: limit // Applies the limit for pagination
+        }
+      ])
     ]);
+
+    cityList=cityList.sort((a, b) => {
+      // Replace 'CountryCode' with the actual property in your cityData model representing country code
+      const acountrycode = a.countryCode.trim().toUpperCase();
+      const bcountrycode = b.countryCode.trim().toUpperCase();
+      const userCountryCode = userLocation.country.trim().toUpperCase();
+
+      const aIsMatch = acountrycode === userCountryCode;
+      const bIsMatch = bcountrycode === userCountryCode;
+
+      // Sort by matching country code first, then by other criteria
+      if (aIsMatch && !bIsMatch) return -1;
+      if (!aIsMatch && bIsMatch) return 1;
+      return 0;
+    });
+    hotelList=hotelList.sort((a, b) => {
+        // Replace 'CountryCode' with the actual property in your cityData model representing country code
+        const acountrycode = a.countryCode.trim().toUpperCase();
+        const bcountrycode = b.countryCode.trim().toUpperCase();
+        const userCountryCode = userLocation.country.trim().toUpperCase();
+  
+        const aIsMatch = acountrycode === userCountryCode;
+        const bIsMatch = bcountrycode === userCountryCode;
+  
+        // Sort by matching country code first, then by other criteria
+        if (aIsMatch && !bIsMatch) return -1;
+        if (!aIsMatch && bIsMatch) return 1;
+        return 0;
+      });
+    
+
 
     // const response = [...cityList, ...hotelList];
     const message = cityList.length >= 1 ? "Search City and Hotel Successfully!" : "No Data Found!";

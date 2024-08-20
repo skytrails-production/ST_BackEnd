@@ -1715,9 +1715,10 @@ async function shortenURL(url) {
 exports.updateMihuruWallet= async (req, res) =>{
 
   try {
-    const {userId, amount,payment_id,payment_reference_id}=req.body;
+    const {PartnerTransactionId, amount,payment_id,payment_reference_id}=req.body;
     // console.log(req.body)
-
+   const userId=PartnerTransactionId;
+  //  console.log(userId,"userId")
     if (!userId || !amount || !payment_id || !payment_reference_id) {
 
       return actionCompleteResponse(res, {}, "Missing required fields");
