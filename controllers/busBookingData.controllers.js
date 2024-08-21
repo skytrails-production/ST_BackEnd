@@ -39,7 +39,7 @@ exports.addBusBookingData = async (req, res) => {
       const message = `Hello ${data.passenger[0]?.title} ${data.passenger[0]?.firstName} ${data.passenger[0]?.lastName} ,Thank you for booking your Bus stay with TheSkytrails. Your reservation is confirmed! Please click on url to see details:. Or You Can login: https://b2b.theskytrails.com/Login`
       await sendSMS.sendSMSBusBookingAgent(response);
       // await whatsAppMsg.sendWhatsAppMessage(data?.passenger[0]?.Phone, message);
-      await hawaiYatra.sendWhtsAppAISensy('+91'+data.phone,[String("Bus")],"booking_confirmation");
+      await whatsAppMsg.sendWhtsAppAISensy('+91'+data.phone,[String("Bus")],"booking_confirmation");
       await commonFunction.BusBookingConfirmationMail(response);
     }
     

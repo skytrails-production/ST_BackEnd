@@ -238,4 +238,51 @@ const pushNotification1 = async (deviceToken, title, body, imageUrl) => {
 
 };
 
-module.exports = { sendNotification, pushNotification,mediapushNotification,pushNotificationIOS,pushSimpleNotification,pushNotification1 };
+const customSoundPushNotification = async (deviceToken, title, body, imageUrl, sound) => {
+  const serverKey = fsmserverkey; // Replace with your actual server key
+  const fcm = new FCM(serverKey);
+
+  var message = {
+      to: deviceToken,
+      notification: {
+          title: title,
+          body: body,
+          imageUrl: imageUrl, // Include the image URL in the notification payload
+          image: imageUrl,
+          sound: sound, // Custom sound
+      },
+      data: {
+          imageUrl: imageUrl, // Include the image URL in the data payload
+      },
+      android: {
+          notification: {
+              style: 'bigPicture', // Use Big Picture Style
+              bigPicture: imageUrl, // Specify the Big Picture URL
+              sound: sound, // Custom sound for Android
+          },
+      },
+      apns: {
+          payload: {
+              aps: {
+                  sound: sound // Custom sound for iOS
+              }
+          }
+      }
+  };
+
+  const response = await new Promise((resolve, reject) => {
+      fcm.send(message, (err, response) => {
+          if (err) {
+              console.log("Error while push notification:", err);
+              reject(err);
+          } else {
+              console.log("Success while push notification:", response);
+              resolve(response);
+          }
+      });
+  });
+
+  return response;
+};
+
+module.exports = { sendNotification, pushNotification,mediapushNotification,pushNotificationIOS,pushSimpleNotification,pushNotification1 ,customSoundPushNotification};

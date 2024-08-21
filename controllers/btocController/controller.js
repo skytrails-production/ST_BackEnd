@@ -3,7 +3,7 @@ const statusCode = require("../../utilities/responceCode");
 const status = require("../../enums/status");
 const bcrypt = require("bcryptjs");
 const shortid = require("shortid");
-/**********************************SERVICES********************************** */
+/**********************************SERVICES***********************************/
 const { userServices } = require("../../services/userServices");
 const {
   createUser,

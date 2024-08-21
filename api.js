@@ -15,12 +15,11 @@ const Role = db.role;
 // const initializeRoutes = require("./routes");
 app.use(cors());
 const cron=require('./controllers/btocController/cronNotification');
-const WebSocket = require('websocket').server;
-const http = require('http'); 
-var admin=require('firebase-admin');
+const WebSocket = require("websocket").server;
+const http = require("http");
+var admin = require("firebase-admin");
 
 // require('./mongdbbackup');
-
 
 // const {initializeApp, applicationDefault } =require ('firebase-admin/app');
 // const { getMessaging } = require( "firebase-admin/messaging");
@@ -31,19 +30,14 @@ var admin=require('firebase-admin');
 //   projectId: 'potion-for-creators',
 // });
 const server = http.createServer(app);
-const commonFunction=require('./utilities/commonFunctions')
-
-
-
-
-
+const commonFunction = require("./utilities/commonFunctions");
 
 // $env:GOOGLE_APPLICATION_CREDENTIALS="D:\Desktop\TheSkyTrails\ST_BackEnd\firebase_google.json"
 // Create a WebSocket server and attach it to the HTTP server
 const wsServer = new WebSocket({
   httpServer: server,
   autoAcceptConnections: false,
-  maxReceivedFrameSize: 64 * 1024 * 1024,   // 64MiB
+  maxReceivedFrameSize: 64 * 1024 * 1024, // 64MiB
   maxReceivedMessageSize: 64 * 1024 * 1024, // 64MiB
   fragmentOutgoingMessages: false,
   keepalive: false,
@@ -51,21 +45,23 @@ const wsServer = new WebSocket({
 });
 
 // WebSocket server request event handling
-wsServer.on('request', (request) => {
+wsServer.on("request", (request) => {
   const connection = request.accept(null, request.origin);
   // console.log('WebSocket connection accepted');
 
-  connection.on('message', (message) => {
-    if (message.type === 'utf8') {
+  connection.on("message", (message) => {
+    if (message.type === "utf8") {
       const data = message.utf8Data;
-      // Handle WebSocket messages here                               
+      // Handle WebSocket messages here
       // console.log('Received message:', data);
-      connection.sendUTF('Message received: ' + data); // Example: Send a response
+      connection.sendUTF("Message received: " + data); // Example: Send a response
     }
   });
 
-  connection.on('close', (reasonCode, description) => {
-    console.log(`Connection closed with code ${reasonCode} and reason: ${description}`);
+  connection.on("close", (reasonCode, description) => {
+    console.log(
+      `Connection closed with code ${reasonCode} and reason: ${description}`
+    );
     // Handle disconnection
   });
 });
@@ -74,19 +70,17 @@ wsServer.on('request', (request) => {
 //   console.log('WebSocket server running on port 7000');
 // });
 
-
 /**
  * imports for routes
  */
 
 // Set limit for JSON and URL-encoded data
-app.use(bodyparser.json({ limit: '50mb' })); // increase the limit to 50mb or any desired value
-app.use(bodyparser.urlencoded({ limit: '50mb', extended: true }));
+app.use(bodyparser.json({ limit: "50mb" })); // increase the limit to 50mb or any desired value
+app.use(bodyparser.urlencoded({ limit: "50mb", extended: true }));
 
-app.use(bodyparser.text({ type: 'text/xml' }));
+app.use(bodyparser.text({ type: "text/xml" }));
 // app.use(bodyparser.urlencoded({ extended: true }));
 app.use(cookieParser());
-
 
 var corsOptions = {
   origin: "*",
@@ -94,9 +88,12 @@ var corsOptions = {
 
 // middlware for cache bust
 app.use((req, res, next) => {
-  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
-  res.setHeader('Pragma', 'no-cache');
-  next();
+  res.setHeader(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate, max-age=0"
+  );
+  res.setHeader("Pragma", "no-cache");
+  next();
 });
 // app.use(cors(corsOptions));
 // const corsOptions = {
@@ -168,7 +165,6 @@ require("./routes/hotelBookingData.routes")(app);
 // app.use('/faqs', faqRoutes);
 require("./routes/faqRoutes")(app);
 
-
 //Amadeus Api
 
 require("./routes/amadeus.routes")(app);
@@ -182,7 +178,6 @@ require("./routes/mihuru.routes")(app);
 //grn connect api
 require("./routes/grnconnect.routes")(app);
 
-
 //hotel inventory api
 
 require("./routes/inventoryRoutes/inventoryLoginRoutes")(app);
@@ -195,44 +190,39 @@ forumQueRoutes(app);
 const forumQueAnsCommRoutes = require("./routes/forumRoutes/forumQueAnsComm");
 forumQueAnsCommRoutes(app);
 
-
 require("./routes/offerRoutes/offer.routes")(app);
 require("./routes/visaEnquiry.routes")(app);
-const userRoutes=require("./routes/userRoutes")
-userRoutes(app)
+const userRoutes = require("./routes/userRoutes");
+userRoutes(app);
 //Set Up a WebSocket Client:  handling
 //import btoc userRoutes*********************************************
-const btocUserRoutes = require("./routes/btocRoutes/btocRoutes")
-btocUserRoutes(app)
-const subAdminRoutes=require('./routes/subAdminRoutes')
-subAdminRoutes(app)
-require("./routes/offlinequeryRoutes")(app)
-require("./routes/razorpayRoutes")(app)
-require("./routes/btocRoutes/transactionRoutes")(app)
-require("./routes/eventRoutes")(app)
-require("./routes/btocRoutes/eventBookingRoutes")(app)
-require("./routes/visaRoutes/documentCategory")(app)
-require("./routes/visaRoutes/documentType")(app)
-require("./routes/visaRoutes/visaCategoryRoutes")(app)
-require("./routes/visaRoutes/createRequireDocumentRoutes")(app)
-require("./routes/createCouponRoutes")(app)
-require("./routes/packageBannerRoutes")(app)
-const quizRoute=require("./routes/btocRoutes/quizRoutes");
-quizRoute(app)
+const btocUserRoutes = require("./routes/btocRoutes/btocRoutes");
+btocUserRoutes(app);
+const subAdminRoutes = require("./routes/subAdminRoutes");
+subAdminRoutes(app);
+require("./routes/offlinequeryRoutes")(app);
+require("./routes/razorpayRoutes")(app);
+require("./routes/btocRoutes/transactionRoutes")(app);
+require("./routes/eventRoutes")(app);
+require("./routes/btocRoutes/eventBookingRoutes")(app);
+require("./routes/visaRoutes/documentCategory")(app);
+require("./routes/visaRoutes/documentType")(app);
+require("./routes/visaRoutes/visaCategoryRoutes")(app);
+require("./routes/visaRoutes/createRequireDocumentRoutes")(app);
+require("./routes/createCouponRoutes")(app);
+require("./routes/packageBannerRoutes")(app);
+const quizRoute = require("./routes/btocRoutes/quizRoutes");
+quizRoute(app);
 require("./routes/ratingRoutes")(app);
 require("./routes/relationshipManagerRoutes")(app);
 require("./routes/blogRoutes")(app);
 require("./routes/amadeusRoutes/amadeusFlightBookingRoutes")(app);
 require("./routes/grnRoutes/grnRoutes")(app);
 require("./routes/Itinerary/ItineraryRoutes")(app);
-require("./routes/btocRoutes/passportEnquiryRoutes")(app)
-require("./routes/notificationRoutes")(app)
-require("./routes/Flightinventory/flightinventoryRoutes")(app)
-mongoose
-  .connect(configs.mongoUrl.DEVELOPMENT, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+require("./routes/btocRoutes/passportEnquiryRoutes")(app);
+require("./routes/notificationRoutes")(app);
+require("./routes/Flightinventory/flightinventoryRoutes")(app);
+mongoose.connect(configs.mongoUrl.DEVELOPMENT, {useNewUrlParser: true,useUnifiedTopology: true,})
   .then(() => {
     initial();
     console.log("DB Connected!!!");
@@ -296,16 +286,11 @@ process.on("unhandledRejection", (err) => {
   });
 });
 
-
-
-
-
-
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 
 const uuid = uuidv4();
 
-console.log("uuid===",uuid);
+console.log("uuid===", uuid);
 // const { v4: uuidv4 } = require('uuid');
 
 // // Generate a random UUID v4
@@ -313,8 +298,5 @@ console.log("uuid===",uuid);
 
 // console.log('Message ID:', messageId);
 
-
-
-const refeerralCode=commonFunction.generateReferralCode();
+const refeerralCode = commonFunction.generateReferralCode();
 // console.log("refeerralCode============",refeerralCode);
-

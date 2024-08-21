@@ -526,7 +526,6 @@ exports.approveStory=async(req,res,next)=>{
    
     const findUser=await findUserData({_id:isPostExist.userId});
    const notificationData= await findNotification({notificationType:'postapprove'});
-   console.log(findUser,"v=====================");
     const sentNotification=await pushNotification(findUser.deviceToken,notificationData.title, notificationData.description);
     console.log("sentNotification=",sentNotification);
     if(result){

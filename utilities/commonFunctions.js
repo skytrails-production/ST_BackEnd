@@ -113,20 +113,14 @@ module.exports = {
         
         </body>
         </html>`;
-    var transporter = nodemailerConfig.createTransport({
-      service: nodemailerConfig.service,
-      auth: {
-        user: nodemailerConfig.user,
-        pass: nodemailerConfig.pass,
-      },
-    });
+    
     var mailOptions = {
-      from: nodemailerConfig.user,
+      from: process.env.DEFAULT_ZOHO_EMAIL,
       to: to,
       subject: "Verification Mail",
       html: html,
     };
-    return await transporter.sendMail(mailOptions);
+    return await nodemailerConfig.sendMail(mailOptions);
   },
 
   sendSignUpEmailOtp: async (to, otp) => {
@@ -158,21 +152,15 @@ module.exports = {
         
         </body>
         </html>`;
-    var transporter = nodemailerConfig.createTransport({
-      service: nodemailerConfig.service,
-      auth: {
-        user: nodemailerConfig.user,
-        pass: nodemailerConfig.pass,
-      },
-    });
+    
     var mailOptions = {
-      from: nodemailerConfig.user,
+      from: process.env.DEFAULT_ZOHO_EMAIL,
       to: to,
       subject: "Verification Mail",
       html: html,
     };
     try {
-      const info = await transporter.sendMail(mailOptions);
+      const info = await nodemailerConfig.sendMail(mailOptions);
       // console.log("Email sent: " + info.response);
       return info;
     } catch (error) {
@@ -210,24 +198,16 @@ module.exports = {
 
   //       </body>
   //       </html>`;
-  //   var transporter = nodemailer.createTransport({
-  //     host: "smtp.gmail.com",
-  //     port: 587,
-  //     secure: false,
-  //     auth: {
-  //       user: nodemailerConfig.options.auth.user,
-  //       pass: nodemailerConfig.options.auth.pass,
-  //     },
-  //   });
+  
   //   var mailOptions = {
-  //     from: nodemailerConfig.options.auth.user,
+  //     from: process.env.DEFAULT_ZOHO_EMAIL,
   //     to: to.email,
   //     subject: "Hotel Booking Confirmation",
   //     html: html,
   //   };
   //   try {
   //     // Verify the connection
-  //     transporter.verify(function (error, success) {
+      // nodemailerConfig.verify(function (error, success) {
   //       if (error) {
   //         console.log("SMTP Connection Error: " + error);
   //       } else {
@@ -273,24 +253,16 @@ module.exports = {
         
         </body>
         </html>`;
-    var transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: nodemailerConfig.options.auth.user,
-        pass: nodemailerConfig.options.auth.pass,
-      },
-    });
+    
     var mailOptions = {
-      from: nodemailerConfig.options.auth.user,
+      from: process.env.DEFAULT_ZOHO_EMAIL,
       to: to.email,
       subject: "Bus Booking Confirmation",
       html: html,
     };
     try {
       // Verify the connection
-      transporter.verify(function (error, success) {
+      nodemailerConfig.verify(function (error, success) {
         if (error) {
           console.log("SMTP Connection Error: " + error);
         } else {
@@ -299,7 +271,7 @@ module.exports = {
       });
 
       // Send the email
-      const info = await transporter.sendMail(mailOptions);
+      const info = await nodemailerConfig.sendMail(mailOptions);
       // console.log("Email sent: " + info.response);
       return info;
     } catch (error) {
@@ -342,24 +314,17 @@ module.exports = {
         
         </body>
         </html>`;
-    var transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: nodemailerConfig.options.auth.user,
-        pass: nodemailerConfig.options.auth.pass,
-      },
-    });
+    
+
     var mailOptions = {
-      from: nodemailerConfig.options.auth.user,
+      from: process.env.DEFAULT_ZOHO_EMAIL,
       to: to.email,
       subject: "Visa Apply Confirmation Mail",
       html: html,
     };
     try {
       // Verify the connection
-      transporter.verify(function (error, success) {
+      nodemailerConfig.verify(function (error, success) {
         if (error) {
           console.log("SMTP Connection Error: " + error);
         } else {
@@ -368,7 +333,7 @@ module.exports = {
       });
 
       // Send the email
-      const info = await transporter.sendMail(mailOptions);
+      const info = await nodemailerConfig.sendMail(mailOptions);
       // console.log("Email sent: " + info.response);
       return info;
     } catch (error) {
@@ -808,20 +773,11 @@ module.exports = {
     // Use pdfFilePath in the email sending part of your code
     // ...
 
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: nodemailerConfig.options.auth.user,
-        pass: nodemailerConfig.options.auth.pass,
-      },
-      connectionTimeout: 60000,
-    });
+    
 
     const passengerEmail = to.passengerDetails[0].email;
     const mailOptions = {
-      from: nodemailerConfig.options.auth.user,
+      from: process.env.DEFAULT_ZOHO_EMAIL,
       to: passengerEmail,
       subject: "Flight Booking Confirmation Mail",
       html: flightMail(to),
@@ -830,10 +786,10 @@ module.exports = {
 
     try {
       // Verify the connection
-      await transporter.verify();
+      await nodemailerConfig.verify();
 
       // Send the email
-      const info = await transporter.sendMail(mailOptions);
+      const info = await nodemailerConfig.sendMail(mailOptions);
       // Clean up the temporary PDF file
       fs.unlinkSync(pdfFilePath);
 
@@ -1275,20 +1231,11 @@ module.exports = {
     // Use pdfFilePath in the email sending part of your code
     // ...
 
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: nodemailerConfig.options.auth.user,
-        pass: nodemailerConfig.options.auth.pass,
-      },
-      connectionTimeout: 120000,
-    });
+    
 
     const passengerEmail = email;
     const mailOptions = {
-      from: nodemailerConfig.options.auth.user,
+      from: process.env.DEFAULT_ZOHO_EMAIL,
       to: email,
       subject: "Flight Booking Confirmation Mail",
       html: flightMail(to),
@@ -1297,10 +1244,10 @@ module.exports = {
 
     try {
       // Verify the connection
-      await transporter.verify();
+      await nodemailerConfig.verify();
 
       // Send the email
-      const info = await transporter.sendMail(mailOptions);
+      const info = await nodemailerConfig.sendMail(mailOptions);
       // Clean up the temporary PDF file
       fs.unlinkSync(pdfFilePath);
 
@@ -1746,20 +1693,11 @@ module.exports = {
     // Use pdfFilePath in the email sending part of your code
     // ...
 
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: nodemailerConfig.options.auth.user,
-        pass: nodemailerConfig.options.auth.pass,
-      },
-      connectionTimeout: 60000,
-    });
+    
 
     const passengerEmail = markup.email;
     const mailOptions = {
-      from: nodemailerConfig.options.auth.user,
+      from: process.env.DEFAULT_ZOHO_EMAIL,
       to: passengerEmail,
       subject: "Flight Booking Confirmation Mail",
       html: flightMail(to),
@@ -1768,10 +1706,10 @@ module.exports = {
 
     try {
       // Verify the connection
-      await transporter.verify();
+      await nodemailerConfig.verify();
 
       // Send the email
-      const info = await transporter.sendMail(mailOptions);
+      const info = await nodemailerConfig.sendMail(mailOptions);
       // Clean up the temporary PDF file
       fs.unlinkSync(pdfFilePath);
 
@@ -2305,21 +2243,12 @@ module.exports = {
 
     fs.writeFileSync(pdfFilePath, pdfBytes);
 
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: nodemailerConfig.options.auth.user,
-        pass: nodemailerConfig.options.auth.pass,
-      },
-      connectionTimeout: 60000,
-    });
+    
 
     const passengerEmail = to.passenger[0]?.Email;
     // console.log("=================",passengerEmail,name)
     const mailOptions = {
-      from: nodemailerConfig.options.auth.user,
+      from: process.env.DEFAULT_ZOHO_EMAIL,
       to: passengerEmail,
       subject: "Bus Booking Confirmation Mail",
       html: busMail(to),
@@ -2328,10 +2257,10 @@ module.exports = {
 
     try {
       // Verify the connection
-      await transporter.verify();
+      await nodemailerConfig.verify();
 
       // Send the email
-      const info = await transporter.sendMail(mailOptions);
+      const info = await nodemailerConfig.sendMail(mailOptions);
       // console.log("Email sent: " + info.response);
 
       // Clean up the temporary PDF file
@@ -2866,21 +2795,12 @@ module.exports = {
 
     fs.writeFileSync(pdfFilePath, pdfBytes);
 
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: nodemailerConfig.options.auth.user,
-        pass: nodemailerConfig.options.auth.pass,
-      },
-      connectionTimeout: 60000,
-    });
+   
 
     const passengerEmail = email;
     // console.log("=================",passengerEmail,name)
     const mailOptions = {
-      from: nodemailerConfig.options.auth.user,
+      from: process.env.DEFAULT_ZOHO_EMAIL,
       to: passengerEmail,
       subject: "Bus Booking Confirmation Mail",
       html: busMail(to),
@@ -2889,10 +2809,10 @@ module.exports = {
 
     try {
       // Verify the connection
-      await transporter.verify();
+      await nodemailerConfig.verify();
 
       // Send the email
-      const info = await transporter.sendMail(mailOptions);
+      const info = await nodemailerConfig.sendMail(mailOptions);
       // console.log("Email sent: " + info.response);
 
       // Clean up the temporary PDF file
@@ -3568,19 +3488,10 @@ module.exports = {
 
     fs.writeFileSync(pdfFilePath, pdfBytes);
 
-    var transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: nodemailerConfig.options.auth.user,
-        pass: nodemailerConfig.options.auth.pass,
-      },
-      connectionTimeout: 60000,
-    });
+    
     const email = to.email;
     var mailOptions = {
-      from: nodemailerConfig.options.auth.user,
+      from: process.env.DEFAULT_ZOHO_EMAIL,
       to: email,
       subject: "Hotel Booking Confirmation Mail",
       html: hotelMail(to),
@@ -3588,7 +3499,7 @@ module.exports = {
     };
     try {
       // Verify the connection
-      transporter.verify(function (error, success) {
+      nodemailerConfig.verify(function (error, success) {
         if (error) {
           console.log("SMTP Connection Error: " + error);
         } else {
@@ -3597,7 +3508,7 @@ module.exports = {
       });
 
       // Send the email
-      const info = await transporter.sendMail(mailOptions);
+      const info = await nodemailerConfig.sendMail(mailOptions);
       // console.log("Email sent: " + info.response);
 
       fs.unlinkSync(pdfFilePath);
@@ -4268,19 +4179,10 @@ module.exports = {
 
     fs.writeFileSync(pdfFilePath, pdfBytes);
 
-    var transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: nodemailerConfig.options.auth.user,
-        pass: nodemailerConfig.options.auth.pass,
-      },
-      connectionTimeout: 60000,
-    });
+   
     const email = emailTicket;
     var mailOptions = {
-      from: nodemailerConfig.options.auth.user,
+      from: process.env.DEFAULT_ZOHO_EMAIL,
       to: email,
       subject: "Hotel Booking Confirmation Mail",
       html: hotelMail(to),
@@ -4288,7 +4190,7 @@ module.exports = {
     };
     try {
       // Verify the connection
-      transporter.verify(function (error, success) {
+      nodemailerConfig.verify(function (error, success) {
         if (error) {
           console.log("SMTP Connection Error: " + error);
         } else {
@@ -4297,7 +4199,7 @@ module.exports = {
       });
 
       // Send the email
-      const info = await transporter.sendMail(mailOptions);
+      const info = await nodemailerConfig.sendMail(mailOptions);
       // console.log("Email sent: " + info.response);
 
       fs.unlinkSync(pdfFilePath);
@@ -4797,19 +4699,10 @@ module.exports = {
 
     fs.writeFileSync(pdfFilePath, pdfBytes);
 
-    var transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: nodemailerConfig.options.auth.user,
-        pass: nodemailerConfig.options.auth.pass,
-      },
-      connectionTimeout: 60000,
-    });
+    
     const email = to?.holder?.email;
     var mailOptions = {
-      from: nodemailerConfig.options.auth.user,
+      from: process.env.DEFAULT_ZOHO_EMAIL,
       to: email,
       subject: "Hotel Booking Confirmation Mail",
       html: hotelGrnMail(to),
@@ -4817,7 +4710,7 @@ module.exports = {
     };
     try {
       // Verify the connection
-      transporter.verify(function (error, success) {
+      nodemailerConfig.verify(function (error, success) {
         if (error) {
           console.log("SMTP Connection Error: " + error);
         } else {
@@ -4826,7 +4719,7 @@ module.exports = {
       });
 
       // Send the email
-      const info = await transporter.sendMail(mailOptions);
+      const info = await nodemailerConfig.sendMail(mailOptions);
       // console.log("Email sent: " + info.response);
 
       fs.unlinkSync(pdfFilePath);
@@ -4858,24 +4751,16 @@ module.exports = {
   // Send mail for hotel booking cencel Request user to admin ////////////////////
 
   hotelBookingCencelRequestForAdmin: async (to) => {
-    var transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: nodemailerConfig.options.auth.user,
-        pass: nodemailerConfig.options.auth.pass,
-      },
-    });
+    
     var mailOptions = {
-      from: nodemailerConfig.options.auth.user,
+      from: process.env.DEFAULT_ZOHO_EMAIL,
       to: to.email,
       subject: "Hotel Booking Cancellation Request",
       text: to.message,
     };
     try {
       // Verify the connection
-      transporter.verify(function (error, success) {
+      nodemailerConfig.verify(function (error, success) {
         if (error) {
           console.log("SMTP Connection Error: " + error);
         } else {
@@ -4884,7 +4769,7 @@ module.exports = {
       });
 
       // Send the email
-      const info = await transporter.sendMail(mailOptions);
+      const info = await nodemailerConfig.sendMail(mailOptions);
       // console.log("Email sent: " + info.response);
       return info;
     } catch (error) {
@@ -4896,24 +4781,16 @@ module.exports = {
   // Send mail for flight Booking cencel Request user to admin =========
 
   flightBookingCencelRequestForAdmin: async (to) => {
-    var transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: nodemailerConfig.options.auth.user,
-        pass: nodemailerConfig.options.auth.pass,
-      },
-    });
+    
     var mailOptions = {
-      from: nodemailerConfig.options.auth.user,
+      from: process.env.DEFAULT_ZOHO_EMAIL,
       to: to.email,
       subject: "Flight Booking Cancellation Request",
       text: to.message,
     };
     try {
       // Verify the connection
-      transporter.verify(function (error, success) {
+      nodemailerConfig.verify(function (error, success) {
         if (error) {
           console.log("SMTP Connection Error: " + error);
         } else {
@@ -4921,7 +4798,7 @@ module.exports = {
         }
       });
       // Send the email
-      const info = await transporter.sendMail(mailOptions);
+      const info = await nodemailerConfig.sendMail(mailOptions);
       // console.log("Email sent: " + info.response);
       return info;
     } catch (error) {
@@ -4959,24 +4836,16 @@ module.exports = {
     
     </body>
     </html>`;
-    var transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: nodemailerConfig.options.auth.user,
-        pass: nodemailerConfig.options.auth.pass,
-      },
-    });
+    
     var mailOptions = {
-      from: nodemailerConfig.options.auth.user,
+      from: process.env.DEFAULT_ZOHO_EMAIL,
       to: to.email,
       subject: "Hotel Booking Confirmation",
       html: html,
     };
     try {
       // Verify the connection
-      transporter.verify(function (error, success) {
+      nodemailerConfig.verify(function (error, success) {
         if (error) {
           console.log("SMTP Connection Error: " + error);
         } else {
@@ -4985,7 +4854,7 @@ module.exports = {
       });
 
       // Send the email
-      const info = await transporter.sendMail(mailOptions);
+      const info = await nodemailerConfig.sendMail(mailOptions);
       // console.log("Email sent: " + info.response);
       return info;
     } catch (error) {
@@ -5021,107 +4890,87 @@ module.exports = {
 
     // </body>
     // </html>`;
-    var transporter = nodemailerConfig.createTransport({
-      service: nodemailerConfig.service,
-      auth: {
-        user: nodemailerConfig.user,
-        pass: nodemailerConfig.pass,
-      },
-    });
+    // var transporter = nodemailerConfig.createTransport({
+    //   service: nodemailerConfig.service,
+    //   auth: {
+    //     user: nodemailerConfig.user,
+    //     pass: nodemailerConfig.pass,
+    //   },
+    // });
     var mailOptions = {
-      from: nodemailerConfig.user,
+      from: process.env.DEFAULT_ZOHO_EMAIL,
       to: to,
       subject: "Reset Password",
       html: otpMail(otp),
     };
-    return await transporter.sendMail(mailOptions);
+    return await nodemailerConfig.sendMail(mailOptions);
   },
 
   sendEmailOtp: async (email, otp) => {
-    var transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: nodemailerConfig.options.auth.user,
-        pass: nodemailerConfig.options.auth.pass,
-      },
-    });
+    // var transporter = nodemailer.createTransport({
+    //   host: 'smtppro.zoho.in',
+    //   port: 465, // 465 or Use 587 for TLS if you prefer
+    //   secure: true, // Set to true if using port 465, false if using port 587
+    //   auth: {
+    //     user: process.env.ZOHO_EMAIL, // Use environment variables for sensitive info
+    //     pass: process.env.ZOHO_PASSWORD, // Use an app password if 2FA is enabled
+    //   },
+      
+    // });
+  
     var mailOptions = {
-      from: nodemailerConfig.user,
+      from: process.env.DEFAULT_ZOHO_EMAIL,
       to: email,
       subject: "Otp for verication",
       html: otpMail(otp),
     };
-    return await transporter.sendMail(mailOptions);
+    return await nodemailerConfig.sendMail(mailOptions);
   },
 
   sendAgentEmailResetPassword: async (email, token) => {
-    var transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: nodemailerConfigHawaiYatra.options.auth.userHawai,
-        pass: nodemailerConfigHawaiYatra.options.auth.passHawai,
-      },
-    });
+   
     var mailOptions = {
-      from: nodemailerConfigHawaiYatra.userHawai,
+      from: process.env.DEFAULT_ZOHO_EMAIL,
       to: email,
       subject: "Reset Subadmin Password",
       html: ResetPassword(token),
     };
-    return await transporter.sendMail(mailOptions);
+    return await nodemailerConfig.sendMail(mailOptions);
   },
 
   sendEmailResetPassword: async (email, token) => {
-    var transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: nodemailerConfigHawaiYatra.options.auth.userHawai,
-        pass: nodemailerConfigHawaiYatra.options.auth.passHawai,
-      },
-    });
+    
     var mailOptions = {
-      from: nodemailerConfigHawaiYatra.userHawai,
+      from: process.env.DEFAULT_ZOHO_EMAIL,
       to: email,
       subject: "Reset Subadmin Password",
       html: SubAdminResetPassword(token),
     };
-    return await transporter.sendMail(mailOptions);
+    return await nodemailerConfig.sendMail(mailOptions);
   },
 
   sendSubAdmin: async (to, userName, pass) => {
-    var transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: nodemailerConfig.options.auth.user,
-        pass: nodemailerConfig.options.auth.pass,
-      },
-    });
+    
     
     var mailOptions = {
-      from: nodemailerConfig.user,
+      from: process.env.DEFAULT_ZOHO_EMAIL,
       to: to,
       subject: "Congratulations,you are become member of theSkyTrais, ",
       html: welcomeMail(to, userName, pass),
     };
-    return await transporter.sendMail(mailOptions);
+    return await nodemailerConfig.sendMail(mailOptions);
   },
   sendRMCredential: async (to, userName, password) => {
     // console.log("to, userName, password=============",to, userName, password)
-    var transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: nodemailerConfig.options.auth.user,
-        pass: nodemailerConfig.options.auth.pass,
-      },
-    });
+    
     
     var mailOptions = {
-      from: nodemailerConfig.user,
+      from: process.env.DEFAULT_ZOHO_EMAIL,
       to: to,
       subject: "Congratulations,you are become member of theSkyTrais, ",
       html: welcomeMail(to, userName, password),
     };
-    return await transporter.sendMail(mailOptions);
+    return await nodemailerConfig.sendMail(mailOptions);
   },
   
   senConfirmationQuery: async (to) => {
@@ -5207,46 +5056,32 @@ module.exports = {
     
     </html>
     `;
-    var transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: nodemailerConfig.options.auth.user,
-        pass: nodemailerConfig.options.auth.pass,
-      },
-    });
+    
+
     var mailOptions = {
-      from: nodemailerConfig.user,
+      from: process.env.DEFAULT_ZOHO_EMAIL,
       to: to,
       subject: "Your query Submitted successfull, connect you soon",
       html: html,
     };
-    return await transporter.sendMail(mailOptions);
+    return await nodemailerConfig.sendMail(mailOptions);
   },
 
 
   ssdcConfirmationMail: async (to) => {
     try {
-      const transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com",
-        port: 587,
-        secure: false,
-        auth: {
-          user: nodemailerConfig.options.auth.user,
-          pass: nodemailerConfig.options.auth.pass,
-        },
-        connectionTimeout: 60000,
-      });
+      
 
       const userEmail = to.email;
       const mailOptions = {
-        from: nodemailerConfig.options.auth.user,
+        from: process.env.DEFAULT_ZOHO_EMAIL,
         to: userEmail,
         subject: "Interview successfully scheduled by SSDC.",
         html: ssdcMail(to),        
       };
 
       await transporter.verify();
-      const info = await transporter.sendMail(mailOptions);
+      const info = await nodemailerConfig.sendMail(mailOptions);
     
 
      
@@ -5260,27 +5095,18 @@ module.exports = {
 
   packageLandingPageMail: async (to) => {
     try {
-      const transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com",
-        port: 587,
-        secure: false,
-        auth: {
-          user: nodemailerConfig.options.auth.user,
-          pass: nodemailerConfig.options.auth.pass,
-        },
-        connectionTimeout: 60000,
-      });
+      
 
       const userEmail = to.email;
       const mailOptions = {
-        from: nodemailerConfig.options.auth.user,
+        from: process.env.DEFAULT_ZOHO_EMAIL,
         to: userEmail,
         subject: "Confirmation of Your Packaging Booking Enquiry.",
         html: packageLandingMail(to),        
       };
 
-      await transporter.verify();
-      const info = await transporter.sendMail(mailOptions);
+      await nodemailerConfig.verify();
+      const info = await nodemailerConfig.sendMail(mailOptions);
     
 
      
@@ -5668,13 +5494,7 @@ module.exports = {
 //     }
 //   },
   sendAgent: async (to, pass) => {
-    var transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: nodemailerConfigHawaiYatra.options.auth.userHawai,
-        pass: nodemailerConfigHawaiYatra.options.auth.passHawai,
-      },
-    });
+    
     // const transporter = nodemailer.createTransport({
     //   host: 'smtp.gmail.com',
     //   port: 587,
@@ -5685,12 +5505,12 @@ module.exports = {
     //   },
     // });
     var mailOptions = {
-      from: nodemailerConfig.user,
+      from: process.env.DEFAULT_ZOHO_EMAIL,
       to: to,
       html: welcomeAgentMail(to, pass),
       subject: "Congratulations, you are become member of Thehawaiyatra, ",
     };
-    return await transporter.sendMail(mailOptions);
+    return await nodemailerConfig.sendMail(mailOptions);
   },
 
   getImageUrlAWS: async (file) => {
@@ -6445,47 +6265,29 @@ module.exports = {
     
     </html>`
 
-    var transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-        port: 587,
-        secure: false,
-        auth: {
-          user: nodemailerConfig.options.auth.user,
-          pass: nodemailerConfig.options.auth.pass,
-        },
-        connectionTimeout: 60000,
-    });
+   
     const passengerEmail = to.email;
       const mailOptions = {
-        from: nodemailerConfig.options.auth.user,
+        from: process.env.DEFAULT_ZOHO_EMAIL,
         to: passengerEmail,
         subject: "Package Booking Confirmation Mail",
         html: htmlContent
       };
-      await transporter.verify();
-      const info = await transporter.sendMail(mailOptions);
+      await nodemailerConfig.verify();
+      const info = await nodemailerConfig.sendMail(mailOptions);
       // console.log("Email sent: " + info.response);
       return info;
   },
 
   sendResetPassMailInvetoryPartner: async (to, token) => {   
-    var transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-        port: 587,
-        secure: false,
-        auth: {
-          user: nodemailerConfig.options.auth.user,
-          pass: nodemailerConfig.options.auth.pass,
-        },
-        connectionTimeout: 60000,
-    });
+    
     var mailOptions = {
-      from: nodemailerConfig.userHawai,
+      from: process.env.DEFAULT_ZOHO_EMAIL,
       to: to,
       subject: "Verification Mail",
       html: InventoryPartnerResetPassword(token),
     };
-    return await transporter.sendMail(mailOptions);
+    return await nodemailerConfig.sendMail(mailOptions);
   },
 
   FlightBookingConfirmationMail1: async (to) => {
@@ -6675,20 +6477,11 @@ module.exports = {
     await browser.close();
 
     // Define nodemailer transporter
-    const transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: nodemailerConfig.options.auth.user,
-      pass: nodemailerConfig.options.auth.pass,
-    },
-    connectionTimeout: 120000,
-    });
+    
 
     // Define email options
     const mailOptions = {
-        from: process.env.EMAIL,
+        from: process.env.DEFAULT_ZOHO_EMAIL,
         to: 'charuyadav594@gmail.com',
         subject: 'Flight Booking Confirmation',
        html: flightMail(to),
@@ -6703,7 +6496,7 @@ module.exports = {
 
     // Send email
     try {
-        await transporter.sendMail(mailOptions);
+        await nodemailerConfig.sendMail(mailOptions);
         console.log('Email sent successfully.',pdfBuffer);
     } catch (error) {
         console.error('Error sending email:', error);
