@@ -267,21 +267,21 @@ busCancelURL:
   getcancleRequeststatus:
     "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/GetChangeRequestStatus/",
 
-  //utility--------------------------//start---------
-  utilityloginwebapiURL:
-    "http://utilitywebapi.bisplindia.in/api/Login/UserLogin",
+  // //utility--------------------------//start---------
+  // utilityloginwebapiURL:
+  //   "http://utilitywebapi.bisplindia.in/api/Login/UserLogin",
 
-  getServiceRechegeURL:
-    "http://utilitywebapi.bisplindia.in/api/Recharge/GetService",
+  // getServiceRechegeURL:
+  //   "http://utilitywebapi.bisplindia.in/api/Recharge/GetService",
 
-  getRechargePlanULR:
-    "https://utilitywebapi.bisplindia.in/api/Recharge/GetRechargePlanDetailNew",
+  // getRechargePlanULR:
+  //   "https://utilitywebapi.bisplindia.in/api/Recharge/GetRechargePlanDetailNew",
 
-  getPlanDetailURL:
-    "https://utilitywebapi.bisplindia.in/api/Recharge/GetRechargePlanDetail",
+  // getPlanDetailURL:
+  //   "https://utilitywebapi.bisplindia.in/api/Recharge/GetRechargePlanDetail",
 
-  rechageRequestURL:
-    " https://utilitywebapi.bisplindia.in/api/Recharge/Recharge",
+  // rechageRequestURL:
+  //   " https://utilitywebapi.bisplindia.in/api/Recharge/Recharge",
 
   getUserBalanceRequest:
     "https://utilitywebapi.bisplindia.in/api/Admin/GetUserBalance",
