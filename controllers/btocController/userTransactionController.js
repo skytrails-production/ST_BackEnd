@@ -959,7 +959,7 @@ exports.checkCashfreePaymentStatus = async (req, res, next) => {
       );
 
       return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
+        statusCode: statusCode.Unauthorized,
         responseMessage: responseMessage.PAYMENT_FAILURE,
       });
     }

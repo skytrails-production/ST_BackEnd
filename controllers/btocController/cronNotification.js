@@ -118,7 +118,7 @@ const notifications = [
 
 const lastNotificationSent = new Map();
 
-var taskPromotionalNotification = cron.schedule("46 12 * * *",async () => {
+var taskPromotionalNotification = cron.schedule("0 8 * * *",async () => {
   try {
     // 'phone.mobile_number':'8115199076'
     const users = await userList({
@@ -131,8 +131,8 @@ var taskPromotionalNotification = cron.schedule("46 12 * * *",async () => {
     // const messageBody = `✨Check out our latest promotion! We're offering deals so good, even your coffee will do a double-take! ☕️ Explore your journey with TheSkyTrails pvt ltd✨`;
     for (const user of users) {
       try { 
-        const notificationMessage = `Senorita, Bade Bade Deshon Mein…Koi Bhi Pal!`;
-        const messageBody = `In the grand realm of travel, book now and pay later. The adventure of a lifetime awaits! 🏞️💫`;
+        const notificationMessage = `Ek Trip Ki Kimat Tum Kya Jaano, Kaliya!`;
+        const messageBody = `Book now, and let your adventure unfold. Because life is too short to wait! ✈️✨`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
       // const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`
         // Check if a notification has been sent to this user recently
@@ -283,7 +283,7 @@ var taskPlatformNotification = cron.schedule("0 20 * * *",
     try {  
       // 'contactNo.mobile_number': { $in: ['8115199076', '9135219071'] },
       const users = await userList({
-        'phone.mobile_number': { $in: ['8115199076','9135219071','8384082560'] },
+        // 'phone.mobile_number': { $in: ['8115199076','9135219071','8384082560'] },
         status: status.ACTIVE,
         deviceToken: { $exists: true, $ne: "" },
       });
@@ -334,7 +334,7 @@ var taskPlatformNotification = cron.schedule("0 20 * * *",
 taskPlatformNotification.start();
 
 
-var taskPlatformNotification = cron.schedule("0 13 * * *",
+var taskPlatformNotification = cron.schedule("0 16 * * *",
   async () => {
     try {
       // 'contactNo.mobile_number': { $in: ['8115199076', '9135219071'] },
@@ -386,7 +386,7 @@ var taskPlatformNotification = cron.schedule("0 13 * * *",
 );
 taskPlatformNotification.start();
 
-var sendNotificationTask=cron.schedule("*/1 * * * *",async()=>{
+var sendNotificationTask=cron.schedule("1 */4 * * *",async()=>{
   try {
     const users = await userList({
       // 'phone.mobile_number': { $in: ['8115199076','9135219071','8384082560'] },
@@ -425,7 +425,7 @@ var sendNotificationTask=cron.schedule("*/1 * * * *",async()=>{
 })
 sendNotificationTask.start();
 
-const taskRandomNotification = cron.schedule("15 14 * * *",async () => {
+const taskRandomNotification = cron.schedule("15 18 * * *",async () => {
     try {
       const users = await userList({
         status: status.ACTIVE,

@@ -11,7 +11,7 @@ const {
   sendActionFailedResponse,
 } = require("../common/common");
 
-const { GrnCityList, GrnHotelCityMap,GrnCountryList,GrnHotelBooking, GrnLocationCityMap, GrnLocationMaster } = require("../model/grnconnectModel");
+const { GrnCityList, GrnHotelCityMap,GrnCountryList,GrnHotelBooking, GrnLocationCityMap, GrnLocationMaster, TboHotelCityList } = require("../model/grnconnectModel");
 const commonFunctions = require("../utilities/commonFunctions");
 
 const s3 = new aws.S3({
@@ -669,8 +669,8 @@ exports.getGrnAgentSingleBooking = async (req, res ) =>{
 
 exports.getCityAndHotelSearch = async (req, res) => {
   try {
-    const userIP = requestIp.getClientIp(req);
-    // const userIP="223.178.216.116"
+    // const userIP = requestIp.getClientIp(req);
+    const userIP="223.178.216.116"
 
     const userLocation = geoip.lookup(userIP);
     // console.log(userLocation,userIP,"userLocation")
@@ -850,3 +850,93 @@ exports.searchHotelByName = async (req, res) => {
     sendActionFailedResponse(res, error, error.message);
   }
 };
+
+
+
+
+//tboandGrnCityList
+
+exports.tboandGrnCityList = async (req, res) => {
+  try {
+    const keyword = req.query.keyword;
+
+    // Fetch data from both collections
+    const tboData = await TboHotelCityList.find({ cityName: { $regex: keyword, $options: "i" } }).lean();
+    const grnData = await GrnCityList.find({ cityName: { $regex: keyword, $options: "i" } }).lean();
+
+    // Create a map to handle merging and filtering duplicates
+    const mergedMap = new Map();
+
+    // Process TboHotelCityList data
+    tboData.forEach(tboItem => {
+      if (!mergedMap.has(tboItem.cityName)) {
+        mergedMap.set(tboItem.cityName, {
+          cityName: tboItem.cityName,
+          tboCityCode: tboItem.cityCode || null,
+          tboCountryName: tboItem.countryName || null,
+          tboCountryCode: tboItem.countryCode || null,
+          tbostateProvince:tboItem.stateProvince||null,
+          tbostateProvinceCode:tboItem.stateProvinceCode||null,
+          grnCityCode: null,
+          grnCountryName: null,
+          grnCountryCode: null
+        });
+      } else {
+        // Update existing entry with TboHotelCityList data
+        const existingItem = mergedMap.get(tboItem.cityName);
+        existingItem.tboCityCode = tboItem.cityCode || existingItem.tboCityCode;
+        existingItem.tboCountryName = tboItem.countryName || existingItem.tboCountryName;
+        existingItem.tboCountryCode = tboItem.countryCode || existingItem.tboCountryCode;
+        existingItem.tbostateProvince = tboItem.tbostateProvince || existingItem.tbostateProvince;
+        existingItem.tbostateProvinceCode = tboItem.tbostateProvinceCode || existingItem.tbostateProvinceCode;
+      }
+    });
+
+    // Process GrnCityList data
+    grnData.forEach(grnItem => {
+      if (!mergedMap.has(grnItem.cityName)) {
+        mergedMap.set(grnItem.cityName, {
+          cityName: grnItem.cityName,
+          tboCityCode: null,
+          tboCountryName: null,
+          tboCountryCode: null,
+          tbostateProvince:null,
+          tbostateProvinceCode:null,
+          grnCityCode: grnItem.cityCode || null,
+          grnCountryName: grnItem.countryName || null,
+          grnCountryCode: grnItem.countryCode || null
+        });
+      } else {
+        // Update existing entry with GrnCityList data
+        const existingItem = mergedMap.get(grnItem.cityName);
+        existingItem.grnCityCode = grnItem.cityCode || existingItem.grnCityCode;
+        existingItem.grnCountryName = grnItem.countryName || existingItem.grnCountryName;
+        existingItem.grnCountryCode = grnItem.countryCode || existingItem.grnCountryCode;
+      }
+    });
+
+    // Create an array from the map and handle merging duplicates based on country name and code
+    const mergedData = Array.from(mergedMap.values());
+
+    // Deduplicate based on exact matches of CountryName and CountryCode
+    let finalData = [];
+    const seen = new Map();
+
+    mergedData.forEach(item => {
+      const key = `${item.cityName}-${item.tboCountryName || item.grnCountryName}-${item.tboCountryCode || item.grnCountryCode}`;
+      if (!seen.has(key)) {
+        seen.set(key, true);
+        finalData.push(item);
+      }
+    });
+
+    finalData=finalData.sort((a, b) => a.cityName.localeCompare(b.cityName));
+    // Send response
+    actionCompleteResponse(res,  finalData , "success");
+
+  } catch (error) {
+    sendActionFailedResponse(res, error, error.message);
+  }
+}
+
+

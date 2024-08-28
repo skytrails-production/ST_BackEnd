@@ -1,5 +1,6 @@
 const Controller = require("../../controllers/inventoryController/inventoryController.js");
-const becomePartnerController=require("../../controllers/inventoryController/authController.js")
+const becomePartnerController=require("../../controllers/inventoryController/authController.js");
+const cityListController=require("../../controllers/inventoryController/cityListController.js")
 const multer = require("multer");
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage,limits: { fileSize: 50 * 1024 * 1024 } });
@@ -43,6 +44,9 @@ module.exports = function (app) {
   app.put("/skyTrails/api/inventory/changePassword",[authJwt.verifyTokenOfInvenPartner],becomePartnerController.changePassword);
   app.get("/skyTrails/api/inventory/getAllHotelInventoryofPartner",[authJwt.verifyTokenOfInvenPartner],Controller.getAllHotelInventoryofPartner);
   app.put("/skyTrails/api/inventory/uploadInventoryImage",upload.fields([{ name: 'hotelImages', maxCount: 50 },{ name: 'roomsImages', maxCount: 50 }]),[authJwt.verifyTokenOfInvenPartner], Controller.uploadImagesOfInventory);
-  // app.put("/skyTrails/api/inventory/uploadInventoryRoomImage",upload.fields([{ name: 'roomsImages', maxCount: 50 }], Controller.uploadImagesOfRoom));
-  app.put("/skyTrails/api/inventory/uploadRoomImages",upload.array('roomsImages'),Controller.uploadImagesOfRoom)
+  app.put("/skyTrails/api/inventory/uploadRoomImages",upload.array('roomsImages'),Controller.uploadImagesOfRoom);
+  app.get("/skyTrails/api/inventory/getStateList/:countryName",cityListController.getStateList);
+  app.get("/skyTrails/api/inventory/getCountryList",cityListController.getCountryList);
+  app.get("/skyTrails/api/inventory/getCityList/:stateName",cityListController.getCityList);
+  app.get("/skyTrails/api/inventory/getStateList1/:countryName",cityListController.getStateAggregateList);
 };

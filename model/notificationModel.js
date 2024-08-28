@@ -30,4 +30,4 @@ const notificationSchema = new mongoose.Schema({
 notificationSchema.plugin(aggregatePaginate);
 
 notificationSchema.plugin(mongoosePaginate);
-module.exports = mongoose.model("notifiactionContent", notificationSchema);
+module.exports = mongoose.model("notificationContent", notificationSchema);

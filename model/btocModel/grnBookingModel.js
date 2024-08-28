@@ -17,8 +17,8 @@ const userGrnHotelBookingSchema=new mongoose.Schema({
     booking_id:String,
     booking_reference:String,
     checkin:String,
-    checkout:String,
-    totalAmount:Number,
+    checkout:String,    
+    total:Number,
     holder:{
       client_nationality:String,
       pan_number:String,

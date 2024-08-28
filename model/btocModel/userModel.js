@@ -10,6 +10,36 @@ const mongoosePaginate = require("mongoose-paginate-v2");
 const { number } = require("joi");
 mongoose.pluralize(null);
 
+const mihuruWalletSchema = new mongoose.Schema({
+  paymentId: {
+    type: String,
+    default: "Sky",
+  },
+  paymentReferenceId: {
+    type: String,
+    default: "Sky",
+  },
+  paymentAmount: {
+    type: Number,
+    default: 0,
+  },
+  availableLimit: {
+    type: Number,
+    default: 0,
+  },
+  remark: {
+    type: String,
+    default: "check down payment",
+  },
+  status: {
+    type: String,
+    default: "PaymentUnchecked",
+    enum: ["PaymentCompleted", "PaymentUnchecked", "PaymentFailed", "MandateRejected"],
+  },
+  
+});
+
+
 const usersSchema = new Schema({
     username: { type: String },
     email: { type: String },
@@ -133,11 +163,7 @@ const usersSchema = new Schema({
       type: Number,
       default:0
     },
-    mihuruWallet:{
-      amount:Number,
-      payment_id:String,
-      payment_reference_id:String
-    },
+    mihuruWallet:mihuruWalletSchema,
     bio: {
       type: String,
       default: "",

@@ -64,5 +64,9 @@ module.exports = function (app) {
 
     app.get("/skyTrails/grnconnect/locationamelist",controller.getAllhotelLocationName);
 
+
+    //grn and tbo city list
+    app.get("/skyTrails/grnconnect/tboandgrncitylist",controller.tboandGrnCityList);
+
     
 }

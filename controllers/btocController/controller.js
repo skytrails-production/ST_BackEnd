@@ -1715,11 +1715,11 @@ async function shortenURL(url) {
 exports.updateMihuruWallet= async (req, res) =>{
 
   try {
-    const {PartnerTransactionId, amount,payment_id,payment_reference_id}=req.body;
+    const {partnerTransactionId,paymentId,paymentReferenceId,paymentAmount,availableLimit,remark,status}=req.body;
     // console.log(req.body)
-   const userId=PartnerTransactionId;
+   const userId=partnerTransactionId;
   //  console.log(userId,"userId")
-    if (!userId || !amount || !payment_id || !payment_reference_id) {
+    if (!userId || !paymentAmount || !paymentId || !paymentReferenceId) {
 
       return actionCompleteResponse(res, {}, "Missing required fields");
     }
@@ -1731,17 +1731,20 @@ exports.updateMihuruWallet= async (req, res) =>{
     }
     const mihuruData=user?.mihuruWallet;
 
-    if (mihuruData.payment_id === payment_id && mihuruData.payment_reference_id === payment_reference_id) {
+    if (mihuruData.paymentId === paymentId && mihuruData.paymentReferenceId === paymentReferenceId) {
       // Payment already added
       return actionCompleteResponse(res, mihuruData, "Payment Already Added"); 
     }
     
     // console.log(user?.mihuruWallet);
-     const updatedMihuruWallet=Number(mihuruData?.amount)+Number(amount);
+     const updatedMihuruWallet=Number(mihuruData?.paymentAmount)+Number(paymentAmount);
     const response=await User.findByIdAndUpdate(userId,{ $set: { 
-      'mihuruWallet.amount': updatedMihuruWallet,
-          'mihuruWallet.payment_id': payment_id,
-          'mihuruWallet.payment_reference_id': payment_reference_id
+      'mihuruWallet.paymentAmount': updatedMihuruWallet,
+          'mihuruWallet.paymentId': paymentId,
+          'mihuruWallet.paymentReferenceId': paymentReferenceId,
+          'mihuruWallet.availableLimit':availableLimit,
+          'mihuruWallet.status':status,
+          'mihuruWallet.remark':remark,
      } }, 
       { new: true });
     
@@ -1815,3 +1818,80 @@ exports.getUserById=async(req,res,next)=>{
     
   }
 }
+
+
+
+//*****************SOCIAL LOGIN***************** */
+exports.socialLogin = async (req, res, next) => {
+  try {
+    const {
+      socialId,
+      socialType,
+      deviceType,
+      deviceToken,
+      username,
+      email,
+      mobileNumber,
+      password,
+      userId,
+    } = req.body;
+    if (req.body.email) {
+      req.body.email = req.body.email.toLowerCase();
+    }
+    const user = await User.findOne({
+      $or: [{ _id: userId }, { email: email }],
+    });
+    if (!user) {
+      const hashedPass = bcrypt.hashSync(password, 10);
+
+      const data = {
+        socialId: socialId,
+        socialType: socialType,
+        deviceType: deviceType,
+        deviceToken: deviceToken,
+        username: username,
+        email: email,
+        isSocial: true,
+        isOnline: true,
+        otpVerification: true,
+        firstTime: false,
+        phone: {
+          mobile_number: mobileNumber,
+        },
+        password: hashedPass || "",
+      };
+      // const result = await User.create(data)
+      return res.status(200).send({
+        message: "Your account created successfully.",
+        result: result,
+      });
+    }
+    let token = await commonFunction.getToken({
+      id: userInfo._id,
+      email: userInfo.email,
+      userType: userInfo.userType,
+    });
+    const data = {
+      socialId: socialId,
+      socialType: socialType,
+      deviceType: deviceType,
+      deviceToken: deviceToken,
+      username: username,
+      email: email,
+      isSocial: true,
+      isOnline: true,
+      otpVerification: true,
+      firstTime: false,
+      phone: {
+        mobile_number: mobileNumber,
+      },
+    };
+    await User.findOneAndUpdate({ _id: user._id }, data, { new: true });
+    return res
+      .status(200)
+      .json({ message: "Social login successful.", result: user, token });
+  } catch (error) {
+    console.log("error========>>>>>>", error);
+    return next(error);
+  }
+};

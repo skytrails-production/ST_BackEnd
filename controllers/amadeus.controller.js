@@ -80,60 +80,82 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
                 </AMA_SecurityHostedUser>
             </soap:Header>        ​
             <soapenv:Body>
-            <Fare_MasterPricerTravelBoardSearch xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd="http://www.w3.org/2001/XMLSchema&quot;>
-            <numberOfUnit xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A&quot;>
-                <unitNumberDetail>
-                    <numberOfUnits>1</numberOfUnits>
-                    <typeOfUnit>PX</typeOfUnit>
-                </unitNumberDetail>
-                <unitNumberDetail>
-                    <numberOfUnits>10</numberOfUnits>
-                    <typeOfUnit>RC</typeOfUnit>
-                </unitNumberDetail>
-            </numberOfUnit>
-            <paxReference xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A&quot;>
-                <ptc>ADT</ptc>
-                <traveller>
-                    <ref>1</ref>
-                </traveller>
-            </paxReference>
-           
-            <fareOptions xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A&quot;>
-                <pricingTickInfo>
-                    <pricingTicketing>
-                        <priceType>RP</priceType>
-                        <priceType>ET</priceType>
-                        <priceType>RU</priceType>
-                        <priceType>TAC</priceType>
-                    </pricingTicketing>
-                </pricingTickInfo>
-            </fareOptions>
-             <travelFlightInfo>
-                <cabinId>
-                 <cabin>Y</cabin>
-                </cabinId>
-              </travelFlightInfo>
-            <itinerary xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A&quot;>
-                <requestedSegmentRef>
-                    <segRef>1</segRef>
-                </requestedSegmentRef>
-                <departureLocalization>
-                    <departurePoint>
-                        <locationId>${req.body.from}</locationId>
-                    </departurePoint>
-                </departureLocalization>
-                <arrivalLocalization>
-                    <arrivalPointDetails>
-                        <locationId>${req.body.to}</locationId>
-                    </arrivalPointDetails>
-                </arrivalLocalization>
-                <timeDetails>
-                    <firstDateTimeDetail>
-                        <date>${req.body.date}</date>
-                    </firstDateTimeDetail>
-                </timeDetails>
-            </itinerary>
-        </Fare_MasterPricerTravelBoardSearch>
+            <Fare_MasterPricerTravelBoardSearch
+    xmlns="http://xml.amadeus.com/FMPTBQ_18_1_1A">
+    <numberOfUnit>
+        <unitNumberDetail>
+            <numberOfUnits>250</numberOfUnits>
+            <typeOfUnit>RC</typeOfUnit>
+        </unitNumberDetail>
+        <unitNumberDetail>
+            <numberOfUnits>1</numberOfUnits>
+            <typeOfUnit>PX</typeOfUnit>
+        </unitNumberDetail>
+    </numberOfUnit>
+    <paxReference>
+        <ptc>ADT</ptc>
+        <traveller>
+            <ref>1</ref>
+        </traveller>
+    </paxReference>
+
+    <fareOptions>
+        <pricingTickInfo>
+            <pricingTicketing>
+                <priceType>RP</priceType>
+                <priceType>RU</priceType>
+                <priceType>TAC</priceType>
+                <priceType>ET</priceType>
+                <priceType>RF</priceType>
+            </pricingTicketing>
+        </pricingTickInfo>
+    </fareOptions>
+    <travelFlightInfo>
+        <cabinId>
+            <cabin>M</cabin>
+        </cabinId>
+    </travelFlightInfo>
+    <itinerary>
+        <requestedSegmentRef>
+            <segRef>1</segRef>
+        </requestedSegmentRef>
+        <departureLocalization>
+            <departurePoint>
+                <locationId>DEL</locationId>
+            </departurePoint>
+        </departureLocalization>
+        <arrivalLocalization>
+            <arrivalPointDetails>
+                <locationId>DXB</locationId>
+            </arrivalPointDetails>
+        </arrivalLocalization>
+        <timeDetails>
+            <firstDateTimeDetail>
+                <date>101124</date>
+            </firstDateTimeDetail>
+        </timeDetails>
+    </itinerary>
+    <itinerary>
+        <requestedSegmentRef>
+            <segRef>2</segRef>
+        </requestedSegmentRef>
+        <departureLocalization>
+            <departurePoint>
+                <locationId>DXB</locationId>
+            </departurePoint>
+        </departureLocalization>
+        <arrivalLocalization>
+            <arrivalPointDetails>
+                <locationId>DEL</locationId>
+            </arrivalPointDetails>
+        </arrivalLocalization>
+        <timeDetails>
+            <firstDateTimeDetail>
+                <date>201124</date>
+            </firstDateTimeDetail>
+        </timeDetails>
+    </itinerary>
+</Fare_MasterPricerTravelBoardSearch>
             </soapenv:Body>
         </soapenv:Envelope>`;
     const headers = {
@@ -147,38 +169,38 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
 
     const responseData = extractDataFromResponse(response);
     const jsonResult = await xmlToJson(response.data);
-    const obj =
-      jsonResult["soapenv:Envelope"]["soapenv:Body"][
-        "Fare_MasterPricerTravelBoardSearchReply"
-      ];
+    // const obj =
+    //   jsonResult["soapenv:Envelope"]["soapenv:Body"][
+    //     "Fare_MasterPricerTravelBoardSearchReply"
+    //   ];
     
     // console.log(obj)
 
-      const recommendationObject=obj.recommendation
-      console.log(recommendationObject?.length,"length")
-      let newData=[];
-      if(recommendationObject?.length>=1){
-const segNumber=recommendationObject.map((item,index)=>{
-    return item.segmentFlightRef.length || 1 
-});
+//       const recommendationObject=obj.recommendation
+//       console.log(recommendationObject?.length,"length")
+//       let newData=[];
+//       if(recommendationObject?.length>=1){
+// const segNumber=recommendationObject.map((item,index)=>{
+//     return item.segmentFlightRef.length || 1 
+// });
 
 
-const flattenedArray = segNumber.flatMap((item, index) => {
-    const modifiedArray = [];
-    for (let i = 0; i < item; i++) {
-        modifiedArray.push({...obj.flightIndex.groupOfFlights[i], ...recommendationObject[index].paxFareProduct});
-    }
-    return modifiedArray;
-});
-newData=flattenedArray;
+// const flattenedArray = segNumber.flatMap((item, index) => {
+//     const modifiedArray = [];
+//     for (let i = 0; i < item; i++) {
+//         modifiedArray.push({...obj.flightIndex.groupOfFlights[i], ...recommendationObject[index].paxFareProduct});
+//     }
+//     return modifiedArray;
+// });
+// newData=flattenedArray;
 
-}else{
-  const modifiedArray = [];
-  console.log(obj);
-  // return;
-  modifiedArray.push({...obj.flightIndex.groupOfFlights, ...recommendationObject.paxFareProduct})
-  newData=modifiedArray;
-}
+// }else{
+//   const modifiedArray = [];
+//   console.log(obj);
+//   // return;
+//   modifiedArray.push({...obj.flightIndex.groupOfFlights, ...recommendationObject.paxFareProduct})
+//   newData=modifiedArray;
+// }
 // console.log(flattenedArray);
 
 
