@@ -73,8 +73,11 @@ const {
 const {
   userWalletHistoryServices,
 } = require("../../services/btocServices/userWalletHistoryServices");
-const { actionCompleteResponse, sendActionFailedResponse } = require("../../common/common");
-const User = require("../../model/btocModel/userModel")
+const {
+  actionCompleteResponse,
+  sendActionFailedResponse,
+} = require("../../common/common");
+const User = require("../../model/btocModel/userModel");
 const {
   createUserWalletHistory,
   findUserWalletHistory,
@@ -83,12 +86,46 @@ const {
   updateUserWalletHistory,
   countTotalUserWalletHistory,
 } = userWalletHistoryServices;
-const { hotelBookingServicess } = require("../../services/hotelBookingServices");
-const { aggregatePaginateHotelBookingList, aggregatePaginateHotelBookingList1, findhotelBooking, findhotelBookingData, deletehotelBooking, updatehotelBooking, hotelBookingList, countTotalBooking } = hotelBookingServicess;
-const { userBusBookingServices } = require('../../services/btocServices/busBookingServices');
-const { createUserBusBooking, findUserBusBooking, getUserBusBooking, findUserBusBookingData, deleteUserBusBooking, userBusBookingList, updateUserBusBooking, paginateUserBusBookingSearch } = userBusBookingServices
-const { userflightBookingServices } = require('../../services/btocServices/flightBookingServices');
-const { createUserflightBooking, findUserflightBooking, getUserflightBooking, findUserflightBookingData, deleteUserflightBooking, userflightBookingList, updateUserflightBooking, paginateUserflightBookingSearch, aggregatePaginateGetBooking } = userflightBookingServices
+const {
+  hotelBookingServicess,
+} = require("../../services/hotelBookingServices");
+const {
+  aggregatePaginateHotelBookingList,
+  aggregatePaginateHotelBookingList1,
+  findhotelBooking,
+  findhotelBookingData,
+  deletehotelBooking,
+  updatehotelBooking,
+  hotelBookingList,
+  countTotalBooking,
+} = hotelBookingServicess;
+const {
+  userBusBookingServices,
+} = require("../../services/btocServices/busBookingServices");
+const {
+  createUserBusBooking,
+  findUserBusBooking,
+  getUserBusBooking,
+  findUserBusBookingData,
+  deleteUserBusBooking,
+  userBusBookingList,
+  updateUserBusBooking,
+  paginateUserBusBookingSearch,
+} = userBusBookingServices;
+const {
+  userflightBookingServices,
+} = require("../../services/btocServices/flightBookingServices");
+const {
+  createUserflightBooking,
+  findUserflightBooking,
+  getUserflightBooking,
+  findUserflightBookingData,
+  deleteUserflightBooking,
+  userflightBookingList,
+  updateUserflightBooking,
+  paginateUserflightBookingSearch,
+  aggregatePaginateGetBooking,
+} = userflightBookingServices;
 
 //******************************************User SignUp api*************************/
 exports.login = async (req, res, next) => {
@@ -1063,13 +1100,13 @@ exports.loginWithMailMobileLogin = async (req, res, next) => {
 
         const userMobile =
           isExist.phone.country_code + isExist.phone.mobile_number;
-        const templateParams=[String(isExist.username),String(otp)]
+        const templateParams = [String(isExist.username), String(otp)];
         const sent = await whatsappAPIUrl.sendWhtsAppOTPAISensy(
           userMobile,
           templateParams,
           "user_OTP"
         );
-        await sendSMS.sendSMSForOtp(email, otp);
+        // await sendSMS.sendSMSForOtp(email, otp);
         const token = await commonFunction.getToken({
           _id: setUnVerified._id,
           phone: setUnVerified.phone.mobile_number,
@@ -1103,12 +1140,12 @@ exports.loginWithMailMobileLogin = async (req, res, next) => {
       //   otp,
       //   "loginotp"
       // );
-      const templateParams=[String(var1),String(otp)]
-        const sent = await whatsappAPIUrl.sendWhtsAppOTPAISensy(
-          userMobile,
-          templateParams,
-          "user_OTP"
-        );
+      const templateParams = [String(var1), String(otp)];
+      const sent = await whatsappAPIUrl.sendWhtsAppOTPAISensy(
+        userMobile,
+        templateParams,
+        "user_OTP"
+      );
       await sendSMS.sendSMSForOtp(createNewUser.phone.mobile_number, otp);
       const token = await commonFunction.getToken({
         _id: createNewUser._id,
@@ -1142,11 +1179,11 @@ exports.loginWithMailMobileLogin = async (req, res, next) => {
 exports.verifyUserOtpMailMobile = async (req, res, next) => {
   try {
     let { otp, fullName, dob, email, referrerCode } = req.body;
-      // Trim spaces from input fields
-      fullName = fullName?.trim();
-      dob = dob?.trim();
-      email = email?.trim();
-      referrerCode = referrerCode?.trim();  
+    // Trim spaces from input fields
+    fullName = fullName?.trim();
+    dob = dob?.trim();
+    email = email?.trim();
+    referrerCode = referrerCode?.trim();
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const mobileRegex = /^(?!0)\d{9,}(\d)(?!\1{4})\d*$/;
 
@@ -1232,19 +1269,19 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
       });
     }
     // Check if the fullName is empty or just whitespace
-if (!fullName || fullName.trim() === '') {
-  return res.status(statusCode.Forbidden).send({
-    statusCode: statusCode.Forbidden,
-    message: responseMessage.USER_NAME_REQUIRED, 
-  });
-}
-if(!dob||!email){
-  return res.status(statusCode.Forbidden).send({
-    statusCode: statusCode.Forbidden,
-    message: responseMessage.FIELD_REQUIRED, 
-  });
-}
-    const refeerralCode =await commonFunction.generateReferralCode();
+    if (!fullName || fullName.trim() === "") {
+      return res.status(statusCode.Forbidden).send({
+        statusCode: statusCode.Forbidden,
+        message: responseMessage.USER_NAME_REQUIRED,
+      });
+    }
+    if (!dob || !email) {
+      return res.status(statusCode.Forbidden).send({
+        statusCode: statusCode.Forbidden,
+        message: responseMessage.FIELD_REQUIRED,
+      });
+    }
+    const refeerralCode = await commonFunction.generateReferralCode();
     const checkReward = await findReferralAmount({});
     var obj = {};
     var updateData = {};
@@ -1264,7 +1301,7 @@ if(!dob||!email){
         otpExpireTime: "",
         firstTime: false,
         referralCode: refeerralCode,
-        balance:checkReward.signUpAmount
+        balance: checkReward.signUpAmount,
       };
       updateData = await updateUser({ _id: updation._id }, obj);
     } else if (mobileRegex.test(phoneNumber)) {
@@ -1282,12 +1319,12 @@ if(!dob||!email){
         otp: "",
         firstTime: false,
         referralCode: refeerralCode,
-        balance:checkReward.signUpAmount
+        balance: checkReward.signUpAmount,
       };
       updateData = await updateUser({ _id: updation._id }, obj);
     }
     updateData = await updateUser({ _id: updation._id }, obj);
-    if (referrerCode&&referrerCode!==" ") {
+    if (referrerCode && referrerCode !== " ") {
       const isRefererExist = await findUser({ referralCode: referrerCode });
       if (!isRefererExist) {
         return res.status(statusCode.OK).send({
@@ -1546,7 +1583,7 @@ exports.resendOtpMailMobile = async (req, res, next) => {
 exports.shareReferralCodeSMSWHTSAPP = async (req, res, next) => {
   try {
     const { countryCode, contactNumber } = req.body;
-    const userContact=`+${countryCode}${contactNumber}`
+    const userContact = `+${countryCode}${contactNumber}`;
     const isUserExist = await findUserData({
       _id: req.userId,
       status: status.ACTIVE,
@@ -1569,7 +1606,7 @@ exports.shareReferralCodeSMSWHTSAPP = async (req, res, next) => {
     // result.shortReferralLink = await shortenURL(referralLink);
     // result.shortReferralLinkIOS = await shortenURL(referralLinkIOS);
     // result.trial = await shortenURL("theskytrails.com");
-const var3=`IOS=${referralLinkIOS} and Andriod=${referralLink}`
+    const var3 = `IOS=${referralLinkIOS} and Andriod=${referralLink}`;
     const data = await whatsappAPIUrl.sendWhatsAppMsgRM(
       contact,
       isUserExist.referralCode,
@@ -1577,7 +1614,13 @@ const var3=`IOS=${referralLinkIOS} and Andriod=${referralLink}`
       combineReferral,
       "sharerefcode"
     );
-    const sendWhats=await whatsappAPIUrl.sendWhtsAppAISensy(contact,isUserExist.referralCode,checkReward.refereeAmount,var3,"shareReferral");
+    const sendWhats = await whatsappAPIUrl.sendWhtsAppAISensy(
+      contact,
+      isUserExist.referralCode,
+      checkReward.refereeAmount,
+      var3,
+      "shareReferral"
+    );
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.LINK_GENERATED,
@@ -1690,14 +1733,14 @@ exports.getUserBalance = async (req, res, next) => {
         responseMessage: responseMessage.USERS_NOT_FOUND,
       });
     }
-    const result={
-      balance:isUserExist.balance,
-      _id:isUserExist._id
-    }
+    const result = {
+      balance: isUserExist.balance,
+      _id: isUserExist._id,
+    };
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.CREATED_SUCCESS,
-      result: result
+      result: result,
     });
   } catch (error) {
     console.log("error while trying to redeemCoin", error);
@@ -1712,50 +1755,64 @@ async function shortenURL(url) {
   return shortURL;
 }
 
-exports.updateMihuruWallet= async (req, res) =>{
-
+exports.updateMihuruWallet = async (req, res) => {
   try {
-    const {partnerTransactionId,paymentId,paymentReferenceId,paymentAmount,availableLimit,remark,status}=req.body;
+    const {
+      partnerTransactionId,
+      paymentId,
+      paymentReferenceId,
+      paymentAmount,
+      availableLimit,
+      remark,
+      status,
+    } = req.body;
     // console.log(req.body)
-   const userId=partnerTransactionId;
-  //  console.log(userId,"userId")
+    const userId = partnerTransactionId;
+    //  console.log(userId,"userId")
     if (!userId || !paymentAmount || !paymentId || !paymentReferenceId) {
-
       return actionCompleteResponse(res, {}, "Missing required fields");
     }
 
-    const user=await User.findById(userId);
+    const user = await User.findById(userId);
 
     if (!user) {
-      return actionCompleteResponse(res, mihuruData, "User not found"); 
+      return actionCompleteResponse(res, mihuruData, "User not found");
     }
-    const mihuruData=user?.mihuruWallet;
+    const mihuruData = user?.mihuruWallet;
 
-    if (mihuruData.paymentId === paymentId && mihuruData.paymentReferenceId === paymentReferenceId) {
+    if (
+      mihuruData.paymentId === paymentId &&
+      mihuruData.paymentReferenceId === paymentReferenceId
+    ) {
       // Payment already added
-      return actionCompleteResponse(res, mihuruData, "Payment Already Added"); 
+      return actionCompleteResponse(res, mihuruData, "Payment Already Added");
     }
-    
+
     // console.log(user?.mihuruWallet);
-     const updatedMihuruWallet=Number(mihuruData?.paymentAmount)+Number(paymentAmount);
-    const response=await User.findByIdAndUpdate(userId,{ $set: { 
-      'mihuruWallet.paymentAmount': updatedMihuruWallet,
-          'mihuruWallet.paymentId': paymentId,
-          'mihuruWallet.paymentReferenceId': paymentReferenceId,
-          'mihuruWallet.availableLimit':availableLimit,
-          'mihuruWallet.status':status,
-          'mihuruWallet.remark':remark,
-     } }, 
-      { new: true });
-    
-   actionCompleteResponse(res, response, "Update Mihuru Wallet Successfully");    
+    const updatedMihuruWallet =
+      Number(mihuruData?.paymentAmount) + Number(paymentAmount);
+    const response = await User.findByIdAndUpdate(
+      userId,
+      {
+        $set: {
+          "mihuruWallet.paymentAmount": updatedMihuruWallet,
+          "mihuruWallet.paymentId": paymentId,
+          "mihuruWallet.paymentReferenceId": paymentReferenceId,
+          "mihuruWallet.availableLimit": availableLimit,
+          "mihuruWallet.status": status,
+          "mihuruWallet.remark": remark,
+        },
+      },
+      { new: true }
+    );
+
+    actionCompleteResponse(res, response, "Update Mihuru Wallet Successfully");
   } catch (err) {
-    sendActionFailedResponse(res, {err}, err.message);   
+    sendActionFailedResponse(res, { err }, err.message);
   }
+};
 
-}
-
-exports.checkFirstBooking=async(req,res,next)=>{
+exports.checkFirstBooking = async (req, res, next) => {
   try {
     const isUserExist = await findUserData({
       _id: req.userId,
@@ -1767,24 +1824,24 @@ exports.checkFirstBooking=async(req,res,next)=>{
         responseMessage: responseMessage.USERS_NOT_FOUND,
       });
     }
-     // Check for existing bookings
-     const hotelBooking = await findhotelBooking({ userId: req.userId });
-     const busBooking = await findUserBusBookingData({ userId: req.userId });
-     const flightBooking = await findUserflightBooking({ userId: req.userId });
- 
-     if (hotelBooking || busBooking || flightBooking) {
-       return res.status(statusCode.OK).send({
-         statusCode: statusCode.OK,
-         responseMessage: responseMessage.USER_BOOKING_ALREADY_EXIST,
-         result: {
-           isFirstBooking: false,
-           hotelBooking: hotelBooking ? hotelBooking : null,
-           busBooking: busBooking ? busBooking : null,
-           flightBooking: flightBooking ? flightBooking : null,
-         },
-       });
-     }
-     return res.status(statusCode.OK).send({
+    // Check for existing bookings
+    const hotelBooking = await findhotelBooking({ userId: req.userId });
+    const busBooking = await findUserBusBookingData({ userId: req.userId });
+    const flightBooking = await findUserflightBooking({ userId: req.userId });
+
+    if (hotelBooking || busBooking || flightBooking) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.USER_BOOKING_ALREADY_EXIST,
+        result: {
+          isFirstBooking: false,
+          hotelBooking: hotelBooking ? hotelBooking : null,
+          busBooking: busBooking ? busBooking : null,
+          flightBooking: flightBooking ? flightBooking : null,
+        },
+      });
+    }
+    return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.USER_FIRST_BOOKING,
       result: {
@@ -1792,16 +1849,16 @@ exports.checkFirstBooking=async(req,res,next)=>{
       },
     });
   } catch (error) {
-    console.log("error while tryiong to find is first booking or not",error);
+    console.log("error while tryiong to find is first booking or not", error);
     return next(error);
   }
-}
+};
 
-exports.getUserById=async(req,res,next)=>{
+exports.getUserById = async (req, res, next) => {
   try {
-    const {userId}=req.query;
-    const result=await findUser({_id:userId});
-    if(!result){
+    const { userId } = req.query;
+    const result = await findUser({ _id: userId });
+    if (!result) {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.USERS_NOT_FOUND,
@@ -1813,85 +1870,147 @@ exports.getUserById=async(req,res,next)=>{
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to get user details",error);
-    return next(error)
-    
+    console.log("error while trying to get user details", error);
+    return next(error);
   }
-}
-
-
+};
 
 //*****************SOCIAL LOGIN***************** */
 exports.socialLogin = async (req, res, next) => {
   try {
     const {
+      username,
+      dob,
+      email,
+      profilePic,
+      referrerCode,
       socialId,
       socialType,
+      mobile_number,
       deviceType,
       deviceToken,
-      username,
-      email,
-      mobileNumber,
-      password,
-      userId,
     } = req.body;
     if (req.body.email) {
       req.body.email = req.body.email.toLowerCase();
     }
-    const user = await User.findOne({
-      $or: [{ _id: userId }, { email: email }],
-    });
-    if (!user) {
-      const hashedPass = bcrypt.hashSync(password, 10);
+    const isUserExist = await findUser({ email: email });
 
-      const data = {
-        socialId: socialId,
-        socialType: socialType,
-        deviceType: deviceType,
-        deviceToken: deviceToken,
-        username: username,
-        email: email,
-        isSocial: true,
-        isOnline: true,
-        otpVerification: true,
+    if (!isUserExist) {
+      const object = {
+        username,
+        dob,
+        email,
+        profilePic,
+        referrerCode,
+        socialId,
+        socialType,
+        deviceType,
+        deviceToken,
+        phone: { mobile_number: mobile_number || "" },
+        otpVerified: true,
         firstTime: false,
-        phone: {
-          mobile_number: mobileNumber,
-        },
-        password: hashedPass || "",
+        isSocial: true,
       };
-      // const result = await User.create(data)
-      return res.status(200).send({
-        message: "Your account created successfully.",
+      let result = await createUser(object);
+      result = result.toObject();
+      const token = await commonFunction.getToken({
+        _id: result._id,
+        email: result.email,
+      });
+      result.token = token;
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.SOCIAL_LOGIN_SUCCESS,
         result: result,
       });
     }
-    let token = await commonFunction.getToken({
-      id: userInfo._id,
-      email: userInfo.email,
-      userType: userInfo.userType,
-    });
-    const data = {
-      socialId: socialId,
-      socialType: socialType,
-      deviceType: deviceType,
-      deviceToken: deviceToken,
-      username: username,
-      email: email,
-      isSocial: true,
-      isOnline: true,
-      otpVerification: true,
+    const obj = {
+      username,
+      dob,
+      profilePic,
+      email,
+      referrerCode,
+      socialId,
+      socialType,
+      deviceType,
+      deviceToken,
+      otpVerified: true,
       firstTime: false,
-      phone: {
-        mobile_number: mobileNumber,
-      },
+      isSocial: true,
     };
-    await User.findOneAndUpdate({ _id: user._id }, data, { new: true });
-    return res
-      .status(200)
-      .json({ message: "Social login successful.", result: user, token });
+    let result = await updateUser({ _id: isUserExist._id }, obj);
+    const token = await commonFunction.getToken({
+      _id: result._id,
+      email: result.email,
+    });
+    result = result.toObject();
+    result.token = token;
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.SOCIAL_LOGIN_SUCCESS,
+      result: result,
+    });
   } catch (error) {
-    console.log("error========>>>>>>", error);
+    console.log("error while trying to social login", error);
     return next(error);
   }
 };
+
+exports.addMobileNumber = async (req, res, next) => {
+  try {
+    const { mobile_number } = req.body;
+    const otp = commonFunction.getOTP();
+    const otpExpireTime = new Date().getTime() + 300000;
+    const isUserExist = await findUserData({ _id: req.userId });
+    if (!isUserExist) {
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+    const isExistMobile = await findUser({
+      "phone.mobile_number": mobile_number,
+      _id: { $ne: isUserExist._id },
+    });
+    if (isExistMobile) {
+      return res
+        .status(statusCode.Conflict)
+        .send({ message: responseMessage.NUMBER_EXIST });
+    }
+    const token = await commonFunction.getToken({
+      _id: isUserExist._id,
+      mobile_number: mobile_number,
+    });
+    let result = await updateUser(
+      { _id: isUserExist._id },
+      {
+        $set: {
+          "phone.mobile_number": mobile_number,
+          otp: otp,
+          otpExpireTime: otpExpireTime,
+          otpVerified:false,
+        },
+      }
+    );
+    const userMobile = isUserExist.phone.country_code + isUserExist.phone.mobile_number;
+    await sendSMS.sendSMSForOtp(mobile_number, otp);
+    const templateParams = [String(isUserExist.username), String(otp)];
+    const sent = await whatsappAPIUrl.sendWhtsAppOTPAISensy(
+      userMobile,
+      templateParams,
+      "user_OTP"
+    );
+    result = result.toObject();
+    result.token = token;
+    return res
+      .status(statusCode.OK)
+      .send({ message: responseMessage.LOGIN_SUCCESS, result: token });
+  } catch (error) {
+    console.log(
+      "error while trying to updtae mobileNumber on user Acoount",
+      error
+    );
+    return next(error);
+  }
+};
+

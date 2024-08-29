@@ -24,7 +24,7 @@ module.exports = function (app) {
    app.post("/api/auth/signin", controller.signin);
   app.post("/api/auth/signout", controller.signout);
   app.post("/skytrails/api/admin/approveAgent",SchemaValidator(schemas.approveAgentSchema),controller.approveAgent)
-  app.post("/skytrails/api/user/socialLogin", SchemaValidator(schemas.socialLoginSchema),controller.socialLogin);
+  app.post("/skytrails/api/admin/socialLogin", SchemaValidator(schemas.socialLoginSchema),controller.socialLogin);
   app.post("/skytrails/api/admin/createSubAdmin", SchemaValidator(schemas.subAdminSchema),[authJwt.verifcationToken],subAdminController.createSubAdmin);
   app.put("/skytrails/api/admin/updateSubAdmin",upload.single('images'), SchemaValidator(schemas.updateSubAdmin),[authJwt.verifcationToken],subAdminController.updateSubAdmin);
   app.delete("/skytrails/api/admin/deleteSubAdmin", SchemaValidator(schemas.updateSubAdmin),[authJwt.verifcationToken],subAdminController.deleteSubAdmin);

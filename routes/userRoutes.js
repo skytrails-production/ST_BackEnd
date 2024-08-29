@@ -70,5 +70,7 @@ module.exports = function (app) {
   app.put("/skytrails/api/user/resendOtp1",SchemaValidator(schemas.btoCuserLoginSchema),userController.resendOtpMailMobile);
   app.get("/skyTrails/api/user/getValueOfCoin",userController.getValueOfCoin);
   app.post("/skyTrails/api/user/updatemihuruwallet", userController.updateMihuruWallet);
-  app.get("/skyTrails/api/user/checkFirstBooking",[authJwt.verifcationToken],userController.checkFirstBooking)
+  app.get("/skyTrails/api/user/checkFirstBooking",[authJwt.verifcationToken],userController.checkFirstBooking);
+  app.post("/skyTrails/api/user/socialLogin",userController.socialLogin);
+  app.put("/skyTrails/api/user/addPhoneNumber",[authJwt.verifcationToken],userController.addMobileNumber)
 };

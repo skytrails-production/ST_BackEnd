@@ -147,6 +147,22 @@ const TboHotelCityListSchema = new mongoose.Schema({
 });
 
 
+const combineHotelCityListSchema = new mongoose.Schema({
+  cityName: String,
+  tboCityCode:Number,
+  tboCountryName:String,
+  tboCountryCode:String,
+  tbostateProvince:String,
+  tbostateProvinceCode:String,
+  grnCityCode:Number,
+  grnCountryName:String,
+  grnCountryCode:String,
+});
+
+
+
+
+
 grnHotelBookingDetailSchema.plugin(mongoosePaginate);
 
 grnHotelBookingDetailSchema.plugin(aggregatePaginate);
@@ -164,6 +180,8 @@ GrnLocationMasterSchema.plugin(mongoosePaginate);
 GrnLocationMasterSchema.plugin(aggregatePaginate);
 TboHotelCityListSchema.plugin(mongoosePaginate);
 TboHotelCityListSchema.plugin(aggregatePaginate);
+combineHotelCityListSchema.plugin(mongoosePaginate);
+combineHotelCityListSchema.plugin(aggregatePaginate);
 
 const GrnCityList = mongoose.model("grnCityList", GrnCityListSchema);
 const GrnHotelCityMap = mongoose.model(
@@ -187,6 +205,9 @@ const TboHotelCityList = mongoose.model(
 );
 
 const GrnHotelBooking= mongoose.model("agentGrnHotelBookingDetail", grnHotelBookingDetailSchema);
-const GrnCountryList=mongoose.model("grnCountryList",GrnCountryListSehema)
+const GrnCountryList=mongoose.model("grnCountryList",GrnCountryListSehema);
 
-module.exports = { GrnCityList, GrnHotelCityMap,GrnCountryList,GrnHotelBooking, GrnLocationCityMap ,GrnLocationMaster, TboHotelCityList};
+
+const CombineHotelCityList = mongoose.model("combineHotelCityList", combineHotelCityListSchema);
+
+module.exports = { GrnCityList, GrnHotelCityMap,GrnCountryList,GrnHotelBooking, GrnLocationCityMap ,GrnLocationMaster, TboHotelCityList,CombineHotelCityList};

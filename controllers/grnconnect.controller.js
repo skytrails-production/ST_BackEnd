@@ -11,7 +11,7 @@ const {
   sendActionFailedResponse,
 } = require("../common/common");
 
-const { GrnCityList, GrnHotelCityMap,GrnCountryList,GrnHotelBooking, GrnLocationCityMap, GrnLocationMaster, TboHotelCityList } = require("../model/grnconnectModel");
+const { GrnCityList, GrnHotelCityMap,GrnCountryList,GrnHotelBooking, GrnLocationCityMap, GrnLocationMaster, TboHotelCityList, CombineHotelCityList } = require("../model/grnconnectModel");
 const commonFunctions = require("../utilities/commonFunctions");
 
 const s3 = new aws.S3({
@@ -931,6 +931,27 @@ exports.tboandGrnCityList = async (req, res) => {
     });
 
     finalData=finalData.sort((a, b) => a.cityName.localeCompare(b.cityName));
+
+    // const sortCitiesByExactMatch=(finalData,keyword)=>{
+
+    const term = keyword.toLowerCase();
+
+    finalData= finalData.sort((a, b) => {
+        // Convert city names to lowercase for case-insensitive comparison
+        const cityNameA = a.cityName.toLowerCase();
+        const cityNameB = b.cityName.toLowerCase();
+
+        // Check for exact matches
+        const isExactMatchA = cityNameA === term;
+        const isExactMatchB = cityNameB === term;
+
+        // Sort exact matches to the top
+        if (isExactMatchA && !isExactMatchB) return -1;
+        if (!isExactMatchA && isExactMatchB) return 1;
+
+        // For non-exact matches, retain original order
+        return 0;
+    });
     // Send response
     actionCompleteResponse(res,  finalData , "success");
 
@@ -940,3 +961,58 @@ exports.tboandGrnCityList = async (req, res) => {
 }
 
 
+//combineHotelCityList
+
+exports.combineHotelCityList=async (req, res) =>{
+
+  try{
+
+    const grnCities = await GrnCityList.find();
+    const tboCities = await TboHotelCityList.find();
+
+    // console.log(tboCities,"hhhh")
+
+
+    const tboCityMap = new Map();
+        tboCities.forEach(city => {
+            const key = `${city.cityName.toLowerCase()}_${city.countryCode.toLowerCase()}`;
+            tboCityMap.set(key, city);
+        });
+
+
+        // Merge cities
+        const mergedCities = [];
+        grnCities.forEach(grnCity => {
+            const key = `${grnCity.cityName.toLowerCase()}_${grnCity.countryCode.toLowerCase()}`;
+            const tboCity = tboCityMap.get(key);
+
+            if (tboCity) {
+                const mergedCity = {
+                    cityName: grnCity.cityName,
+                    tboCityCode: tboCity.cityCode,
+                    tboCountryName: tboCity.countryName,
+                    tboCountryCode: tboCity.countryCode,
+                    tbostateProvince: tboCity.stateProvince,
+                    tbostateProvinceCode: tboCity.stateProvinceCode,
+                    grnCityCode: grnCity.cityCode,
+                    grnCountryName: grnCity.countryName,
+                    grnCountryCode: grnCity.countryCode
+                };
+
+                mergedCities.push(mergedCity);
+            }
+        });
+
+        // Insert merged cities into a new MongoDB collection
+        // const mergedCollection = db.collection('MergedCityList');
+    
+        await CombineHotelCityList.insertMany(mergedCities);
+      // console.log(grnCities);
+
+    actionCompleteResponse(res , "success");
+
+  } catch (error) {
+    sendActionFailedResponse(res, error, error.message);
+  }
+
+}

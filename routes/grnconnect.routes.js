@@ -68,5 +68,8 @@ module.exports = function (app) {
     //grn and tbo city list
     app.get("/skyTrails/grnconnect/tboandgrncitylist",controller.tboandGrnCityList);
 
+
+    // app.get("/skyTrails/combinehotelcityList", controller.combineHotelCityList);
+
     
 }

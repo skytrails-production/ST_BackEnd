@@ -7,37 +7,11 @@ const userType=require("../../enums/userType")
 const approveStatus = require("../../enums/approveStatus");
 const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 const mongoosePaginate = require("mongoose-paginate-v2");
+const mihuruPaymentType=require("../../enums/MihuruPaymentType")
 const { number } = require("joi");
 mongoose.pluralize(null);
 
-const mihuruWalletSchema = new mongoose.Schema({
-  paymentId: {
-    type: String,
-    default: "Sky",
-  },
-  paymentReferenceId: {
-    type: String,
-    default: "Sky",
-  },
-  paymentAmount: {
-    type: Number,
-    default: 0,
-  },
-  availableLimit: {
-    type: Number,
-    default: 0,
-  },
-  remark: {
-    type: String,
-    default: "check down payment",
-  },
-  status: {
-    type: String,
-    default: "PaymentUnchecked",
-    enum: ["PaymentCompleted", "PaymentUnchecked", "PaymentFailed", "MandateRejected"],
-  },
-  
-});
+
 
 
 const usersSchema = new Schema({
@@ -76,6 +50,10 @@ const usersSchema = new Schema({
       type: String,
     },
     isOnline: {
+      type: Boolean,
+      default: false,
+    },
+    isSocial: {
       type: Boolean,
       default: false,
     },
@@ -158,12 +136,37 @@ const usersSchema = new Schema({
       type: String,
       default: "",
     },
-    deviceType:{type: String,},
+    deviceType:{type: String},
     balance: {
       type: Number,
       default:0
     },
-    mihuruWallet:mihuruWalletSchema,
+    mihuruWallet:{
+      paymentId: {
+        type: String,
+        default: "Sky",
+      },
+      paymentReferenceId: {
+        type: String,
+        default: "Sky",
+      },
+      paymentAmount: {
+        type: Number,
+        default: 0,
+      },
+      availableLimit: {
+        type: Number,
+        default: 0,
+      },
+      remark: {
+        type: String,
+        default: "check down payment",
+      },
+      status: {
+        type: String,
+        enum: [mihuruPaymentType.PAYMENTCOMP,mihuruPaymentType.PAYMENTFAILED,mihuruPaymentType.PAYMENTREJECT,mihuruPaymentType.PAYMENTUNCHECK],
+        default:mihuruPaymentType.PAYMENTUNCHECK,
+      }},
     bio: {
       type: String,
       default: "",
@@ -201,6 +204,7 @@ const usersSchema = new Schema({
 );
 usersSchema.plugin(mongoosePaginate);
 usersSchema.plugin(aggregatePaginate);
+usersSchema.index({ location: "2dsphere" });
 
 const User = mongoose.model("userBtoC", usersSchema);
 module.exports = User;
