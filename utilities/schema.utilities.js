@@ -429,7 +429,7 @@ const schemas = {
     child: joi.number().required(),
     packageType: joi.string().required(),
     departureDate: joi.string().required(),
-    noOfPeople: joi.number().required(),
+    noOfPeople: joi.number().optional(),
   }),
   changeUserRequest: joi.object().keys({
     reason: joi.string().required(),

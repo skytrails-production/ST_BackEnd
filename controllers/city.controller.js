@@ -22,7 +22,7 @@ exports.searchCityData = async (req, res) => {
     const userIP = requestIp.getClientIp(req);
 
     const userLocation = geoip.lookup(userIP);
-    // console.log("location", userLocation);
+    // console.log("location", userLocation)
 
     var regex = new RegExp(escapeRegex(req.query.keyword), "gi");
     const response = await cityData.find({$or:[{ name: regex },{AirportCode:regex}]});
@@ -62,10 +62,25 @@ exports.cityBusProductionData = async (req, res) =>{
 
 // exports.searchCityBusData = async (req, res) => {
 //   try {
-//     var regex = new RegExp(escapeRegex(req.query.keyword), "gi");
-//     const response = await cityBusData.find({ CityName: regex });
+
+//     const keyword=req.query.keyword;
+//     var regex = new RegExp(escapeRegex(keyword), "gi");
+//     const response = await cityBusData.find({ CityName: regex }).select('-_id -__v');
+
+//     const keywordLower = keyword.toLowerCase();
+
+ 
+//     const startWithKeyword = response.filter(item => item.CityName.toLowerCase().startsWith(keywordLower));
+//     const containsKeyword = response.filter(item => item.CityName.toLowerCase().includes(keywordLower) && !item.CityName.toLowerCase().startsWith(keywordLower));
+
+
+//     const sortedStartWithKeyword = startWithKeyword.sort((a, b) => a.CityName.localeCompare(b.CityName));
+//     const sortedContainsKeyword = containsKeyword.sort((a, b) => a.CityName.localeCompare(b.CityName));
+
+//     // Combine results: starting with exact matches, followed by other matches
+//     const sortedResponse = sortedStartWithKeyword.concat(sortedContainsKeyword);
 //     const msg = "data searched successfully";
-//     actionCompleteResponse(res, response, msg);
+//     actionCompleteResponse(res, sortedResponse, msg);
 //   } catch (error) {
 //     sendActionFailedResponse(res, {}, error.message);
 //   }
@@ -73,16 +88,37 @@ exports.cityBusProductionData = async (req, res) =>{
 
 //production
 
+
 exports.searchCityBusData = async (req, res) => {
   try {
-    var regex = new RegExp(escapeRegex(req.query.keyword), "gi");
-    const response = await cityBusProductionData.find({ CityName: regex });
-    const msg = "data searched successfully";
-    actionCompleteResponse(res, response, msg);
+    const keyword = req.query.keyword;
+    const regex = new RegExp(escapeRegex(keyword), "gi");
+
+    // Fetch data from the database
+    const response = await cityBusProductionData.find({ CityName: regex }).select('-__v -_id');
+
+
+    const keywordLower = keyword.toLowerCase();
+
+ 
+    const startWithKeyword = response.filter(item => item.CityName.toLowerCase().startsWith(keywordLower));
+    const containsKeyword = response.filter(item => item.CityName.toLowerCase().includes(keywordLower) && !item.CityName.toLowerCase().startsWith(keywordLower));
+
+
+    const sortedStartWithKeyword = startWithKeyword.sort((a, b) => a.CityName.localeCompare(b.CityName));
+    const sortedContainsKeyword = containsKeyword.sort((a, b) => a.CityName.localeCompare(b.CityName));
+
+    // Combine results: starting with exact matches, followed by other matches
+    const sortedResponse = sortedStartWithKeyword.concat(sortedContainsKeyword);
+
+    const msg = "Data searched successfully";
+    actionCompleteResponse(res, sortedResponse, msg);
   } catch (error) {
     sendActionFailedResponse(res, {}, error.message);
   }
 };
+
+
 
 
 exports.hotelCitySearch = async (req, res) => {
@@ -131,7 +167,7 @@ exports.searchCityFlight= async (req, res) =>{
       AirportCode: item.AirportCode,
       name: item.name,
       CityCode: item.CityCode,
-      CountryCode: item.CountryCode,
+      CountryCode: item.CountryCode,    
       CountryName:item.CountryName
     }));
     const msg = "All data retrieved successfully";

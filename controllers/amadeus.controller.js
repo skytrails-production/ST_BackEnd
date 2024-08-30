@@ -16,6 +16,7 @@ const { response } = require("express");
 const successMsg = "success";
 const failMsg ="error";
 
+//today work on this
 exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
     
   // Generate new UUID for each request
@@ -126,7 +127,7 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
         </departureLocalization>
         <arrivalLocalization>
             <arrivalPointDetails>
-                <locationId>DXB</locationId>
+                <locationId>BOM</locationId>
             </arrivalPointDetails>
         </arrivalLocalization>
         <timeDetails>
@@ -141,7 +142,7 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
         </requestedSegmentRef>
         <departureLocalization>
             <departurePoint>
-                <locationId>DXB</locationId>
+                <locationId>BOM</locationId>
             </departurePoint>
         </departureLocalization>
         <arrivalLocalization>

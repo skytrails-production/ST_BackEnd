@@ -1041,8 +1041,7 @@ exports.loginWithMailMobileLogin = async (req, res, next) => {
     } else if (mobileRegex.test(phoneNumber)) {
       // Perform actions for login with mobile number
       const isExist = await findUser({ "phone.mobile_number": email });
-      const var1 =
-        isExist && isExist.username !== "" ? isExist.username : "Dear";
+      const var1 = isExist && isExist.username !== undefined && isExist.username !== ""? isExist.username : "Dear";
       if (email === "9999123232") {
         let updatedNumber = await updateUser(
           { "phone.mobile_number": email, status: status.ACTIVE },
@@ -1106,7 +1105,7 @@ exports.loginWithMailMobileLogin = async (req, res, next) => {
           templateParams,
           "user_OTP"
         );
-        // await sendSMS.sendSMSForOtp(email, otp);
+        await sendSMS.sendSMSForOtp(email, otp);
         const token = await commonFunction.getToken({
           _id: setUnVerified._id,
           phone: setUnVerified.phone.mobile_number,
@@ -1994,7 +1993,9 @@ exports.addMobileNumber = async (req, res, next) => {
     );
     const userMobile = isUserExist.phone.country_code + isUserExist.phone.mobile_number;
     await sendSMS.sendSMSForOtp(mobile_number, otp);
-    const templateParams = [String(isUserExist.username), String(otp)];
+    const var1 =isExist && isExist.username !== "" ? isExist.username : "Dear";
+    const templateParams = [String(var1), String(otp)];
+    // const templateParams = [String(isUserExist.username), String(otp)];
     const sent = await whatsappAPIUrl.sendWhtsAppOTPAISensy(
       userMobile,
       templateParams,

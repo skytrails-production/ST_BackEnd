@@ -131,7 +131,7 @@ exports.packageBooking = async (req, res, next) => {
     };
     await createPushNotification(notObject);
     const contactNo = "+91" + phone;
-    const url = `https://theskytrails.com/holidayInfo/${packageId}`;
+    const url = `https://theskytrails.com/holidaypackages/packagedetails/${packageId}`;
     const populatedResult = await findPackagePopulate({ _id: result._id });
     await sendSMS.sendSMSPackageEnquiry(phone, fullName);
     await whatsApi.sendMessageWhatsApp(
