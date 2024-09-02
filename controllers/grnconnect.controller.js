@@ -340,13 +340,15 @@ exports.searchMultiHotel = async (req, res) => {
       const msg = "Single Hotel Search Successfully!";
 
 
+      if(response.data.hotels){
+
       response.data.hotels.forEach(hotel => {
         hotel.search_id = response.data.search_id;
       });
   
       // Remove search_id from the root level
       delete response.data.search_id;
-  
+    }
       // Optionally, prepare the modified data
       const modifiedData = response.data;
       return actionCompleteResponse(res, modifiedData, msg);

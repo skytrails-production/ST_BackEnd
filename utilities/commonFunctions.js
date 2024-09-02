@@ -1884,7 +1884,7 @@ module.exports = {
   </div>
 
   <div style="width: 100%; display: flex; white-space: nowrap; justify-content: space-between; padding: 5px 0 1px 5px; box-sizing: border-box;">
-    <div style="width: 100%; max-width: 300px; box-sizing: border-box;">
+    <div style="width: 100%; max-width: 200px; box-sizing: border-box;">
       <p>
         <strong>From:</strong>
       </p>
@@ -1898,7 +1898,7 @@ module.exports = {
         <strong>PNR:</strong>
       </p>
     </div>
-    <div style="width: 100%; max-width: 300px; box-sizing: border-box;">
+    <div style="width: 100%; max-width: 400px; box-sizing: border-box;">
       <p>
         ${to.origin}
       </p>
@@ -1913,7 +1913,7 @@ module.exports = {
         ${to.pnr}
       </p>
     </div>
-    <div style="width: 100%; max-width: 300px; box-sizing: border-box;">
+    <div style="width: 100%; max-width: 200px; box-sizing: border-box;">
       <p>
         <strong>To:</strong>
       </p>
@@ -1931,7 +1931,7 @@ module.exports = {
         <span style="color:red; font-size: 16px;"><b>*</b></span>including Tax and coupon if applicable 
       </p>
     </div>
-    <div style="width: 100%; max-width: 300px; box-sizing: border-box;">
+    <div style="width: 100%; max-width: 400px; box-sizing: border-box;">
       <p>
         ${to.destination}
       </p>
@@ -2003,7 +2003,7 @@ module.exports = {
                       ${boardingTimeFormatted}
                     </p>
                     <p>
-                      1234567890
+                      ${to?.BoardingPoint?.Contactnumber ||'.'}
                     </p>
                   </div>
                 </div>
