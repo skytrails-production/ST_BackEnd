@@ -110,10 +110,6 @@ const notifications = [
 // 2. Giving 20% OFF* to username on all Bookings
 // CLAIM NOW`,
 //   },
-  {
-    message: `Behanon Ke Liye: Rakhi Travel Sale!`,
-    body: `Special discounts for sisters on Rakhi. Plan your trip!`,
-  },
 ];
 
 const lastNotificationSent = new Map();
@@ -334,59 +330,59 @@ var taskPlatformNotification = cron.schedule("0 20 * * *",
 taskPlatformNotification.start();
 
 
-var taskPlatformNotification = cron.schedule("0 16 * * *",
-  async () => {
-    try {
-      // 'contactNo.mobile_number': { $in: ['8115199076', '9135219071'] },
-      const users = await userList({
-        // 'phone.mobile_number': { $in: ['8115199076','9135219071','8384082560'] },
-        status: status.ACTIVE,
-        deviceToken: { $exists: true, $ne: "" },
-      });
+// var taskPlatformNotification = cron.schedule("0 16 * * *",
+//   async () => {
+//     try {
+//       // 'contactNo.mobile_number': { $in: ['8115199076', '9135219071'] },
+//       const users = await userList({
+//         // 'phone.mobile_number': { $in: ['8115199076','9135219071','8384082560'] },
+//         status: status.ACTIVE,
+//         deviceToken: { $exists: true, $ne: "" },
+//       });
       
-    const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
-      for (const user of users) {
-        try {
-          // Task 2 logic
+//     const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
+//       for (const user of users) {
+//         try {
+//           // Task 2 logic
 
-          // const notificationMessage = `Hey ${user.username}, Great news! 🆕📱`;
-          // const messageBody = `We just updated the Skytrails app, and it's amazing🤩! 
-          // Now you can find super cool deals on flights✈ and hotels🏨📱 
+//           // const notificationMessage = `Hey ${user.username}, Great news! 🆕📱`;
+//           // const messageBody = `We just updated the Skytrails app, and it's amazing🤩! 
+//           // Now you can find super cool deals on flights✈ and hotels🏨📱 
           
-          // Update your app now and let's get your wanderlust fix!`;
-          const notificationMessage = `Aaj Phir ₹500 Bachane Ki Tamanna Hai!`;
-      const messageBody = `Save ₹500 on your first booking. Make your travel dreams come true!`;
-          await pushSimpleNotification(
-            user.deviceToken,
-            notificationMessage,
-            messageBody,
-            // imageurl
-          );
+//           // Update your app now and let's get your wanderlust fix!`;
+//           const notificationMessage = `Aaj Phir ₹500 Bachane Ki Tamanna Hai!`;
+//       const messageBody = `Save ₹500 on your first booking. Make your travel dreams come true!`;
+//           await pushSimpleNotification(
+//             user.deviceToken,
+//             notificationMessage,
+//             messageBody,
+//             // imageurl
+//           );
           
-        } catch (pushError) {
-          // Handle if any user is not registered
-          console.error(
-            "Error while sending push notification to user:",
-            pushError
-          );
-          // continue to the next user even if one fails
-          continue;
-        }
-      }
-      // Stop the cron job after execution
-      taskPlatformNotification.stop();
-    } catch (error) {
-      console.log("error when running task2", error);
-    }
-  },
-  {
-    scheduled: true,
-    timezone: "Asia/Kolkata", // Timezone setting
-  }
-);
-taskPlatformNotification.start();
+//         } catch (pushError) {
+//           // Handle if any user is not registered
+//           console.error(
+//             "Error while sending push notification to user:",
+//             pushError
+//           );
+//           // continue to the next user even if one fails
+//           continue;
+//         }
+//       }
+//       // Stop the cron job after execution
+//       taskPlatformNotification.stop();
+//     } catch (error) {
+//       console.log("error when running task2", error);
+//     }
+//   },
+//   {
+//     scheduled: true,
+//     timezone: "Asia/Kolkata", // Timezone setting
+//   }
+// );
+// taskPlatformNotification.start();
 
-var sendNotificationTask=cron.schedule("1 */4 * * *",async()=>{
+var sendNotificationTask=cron.schedule("1 */9 * * *",async()=>{
   try {
     const users = await userList({
       // 'phone.mobile_number': { $in: ['8115199076','9135219071','8384082560'] },
@@ -436,7 +432,6 @@ const taskRandomNotification = cron.schedule("15 18 * * *",async () => {
 
       const imageurl = `https://skytrails.s3.amazonaws.com/notification.jpg`;
       const notification = notifications[Math.floor(Math.random() * notifications.length)];
-      console.log("notification==========",notification);
       for (const user of users) {
         try {
           const notificationMessage = notification.message.replace('username', user.username);

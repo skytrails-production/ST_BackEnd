@@ -1,7 +1,7 @@
 const aws = require("aws-sdk");
 const axios = require("axios");
 const { api } = require("../common/const");
-
+const moment = require("moment");
 const { userIPDetail } = require("../model/city.model");
 const requestIp = require('request-ip');
 const geoip = require('geoip-lite');
@@ -1018,3 +1018,334 @@ exports.combineHotelCityList=async (req, res) =>{
   }
 
 }
+
+
+
+
+
+
+
+// exports.combineTboGRnSearchResults = async (req, res) => {
+//   try {
+//     const countNights = (checkin, checkout) => {
+//       const checkinDate = new Date(checkin);
+//       const checkoutDate = new Date(checkout);
+//       const differenceInMs = checkoutDate - checkinDate;
+//       const millisecondsPerDay = 24 * 60 * 60 * 1000;
+//       return Math.round(differenceInMs / millisecondsPerDay) || 1;
+//     };
+
+//     const transformRooms = (rooms) => {
+//       return rooms.map(room => {
+//         const hasChildren = Array.isArray(room.children_ages) && room.children_ages.length > 0;
+//         return {
+//           NoOfAdults: room.adults,
+//           NoOfChild: hasChildren ? room.children_ages.length : 0,
+//           ChildAge: hasChildren ? room.children_ages : null
+//         };
+//       });
+//     };
+
+//     // Function to handle the additional promise
+//     const additionalPromise = async () => {
+//       // console.log(moment(req.body.checkin, "YYYY-MM-DD").format("DD/MM/YYYY"));
+//       const data = {
+//         CheckInDate: moment(req.body.checkin, "YYYY-MM-DD").format("DD/MM/YYYY"),
+//         NoOfNights: countNights(req.body.checkin, req.body.checkout),
+//         NoOfRooms: req.body.rooms.length,
+//         RoomGuests: transformRooms(req.body.rooms),
+//         CountryCode: req.body.client_nationality,
+//         GuestNationality: req.body.client_nationality,
+//         CityId: req.body.tboCityCode,
+//         TokenId: req.body.TokenId,
+//         EndUserIp: req.body.EndUserIp,
+//         ResultCount: null,
+//         PreferredCurrency: "INR",
+//         MaxRating: 5,
+//         MinRating: 0,
+//         ReviewScore: null,
+//         IsNearBySearchAllowed: false,
+//         // other required fields
+//       };
+     
+      
+//       // console.log("response", data)
+//         const response = await axios.post(`${api.hotelSearchURL}`, data);
+//         // console.log("response", response?.data?.HotelSearchResult)
+//         const modifyData={
+//           TraceId:response?.data?.HotelSearchResult?.TraceId,
+//           HotelResults:response?.data?.HotelSearchResult?.HotelResults
+
+//         }
+//         return modifyData;       
+//     };
+
+  
+
+//     // Function to handle the GRN search
+//     const grnSearchPromise = async () => {
+//       if (req?.body?.cityCode) {
+//         const totalPage = await GrnHotelCityMap.countDocuments({ cityCode: req?.body?.cityCode });
+//         const page = Math.ceil(totalPage / 100);
+//         const limit = 100;
+//         const promises = [];
+
+//         for (let i = 1; i <= page; i++) {
+//           promises.push(async () => {
+           
+//               const hotelCode = await exports.grnHotelCityMapWithPagination(req.body.cityCode, i, limit);
+//               const searchData = {
+//                 rooms: req.body.rooms,
+//                 rates: req.body.rates,
+//                 hotel_codes: hotelCode,
+//                 currency: req.body.currency,
+//                 client_nationality: req.body.client_nationality,
+//                 checkin: req.body.checkin,
+//                 checkout: req.body.checkout,
+//                 cutoff_time: 30000,
+//                 version: req.body.version
+//               };
+//               const response = await axios.post(`${baseurl}/api/v3/hotels/availability`, searchData, { headers });
+//               // console.log(response.data,"grn")
+//               return response.data;
+//           });
+
+          
+//         }
+
+//         const results = await Promise.all(promises.map(p => p()));
+//         // console.log("results",results)
+//         // return;
+//         const validResults = results.filter(result => result && !result.errors);
+
+//         function removeKeys(obj, keys) {
+//           let newObj = { ...obj };
+//           keys.forEach(key => {
+//             delete newObj[key];
+//           });
+//           return newObj;
+//         }
+
+//         let keysToRemove = ['hotels', 'search_id', 'no_of_hotels'];
+//         let updatedObj = removeKeys(validResults?.[0], keysToRemove);
+
+//         let modifiedResults = validResults.reduce((acc, result) => {
+//           result?.hotels?.forEach(hotel => {
+//             acc.push({
+//               ...hotel,
+//               search_id: result?.search_id,
+//             });
+//           });
+//           return acc;
+//         }, []);
+
+//         modifiedResults = modifiedResults.sort((a, b) => a?.min_rate?.price - b?.min_rate?.price);
+//         modifiedResults = modifiedResults.filter(hotel => hotel.images.url!= "");
+
+//         return {
+//           hotels: modifiedResults,
+//           no_of_hotels: modifiedResults.length,
+//           ...updatedObj
+//         };
+//       } 
+//     };
+
+//     // Execute both promises in parallel
+//     const [additionalDataResult, grnResults] = await Promise.all([
+//       additionalPromise(),
+//       grnSearchPromise()
+//     ]);
+
+//     // Combine results as needed
+//     const finalResults = {
+//       ...grnResults, // Assuming you want to merge GRN results with additionalDataResult
+//       additionalData: additionalDataResult
+//     };
+
+//     let combineData=[...finalResults?.hotels,...finalResults?.additionalData?.HotelResults];
+//       combineData=combineData.sort((a, b) => a?.min_rate?.price || a?.Price?.PublishedPrice  - b?.min_rate?.price ||b?.Price?.PublishedPrice);
+
+
+//     const mainData={
+//       // Hotels:[...finalResults?.hotels,...finalResults?.additionalData?.HotelResults],
+//       Hotels:combineData,
+//       no_of_hotels: combineData.length,
+//       checkin: finalResults?.checkin,
+//       checkout: finalResults?.checkout,
+//       no_of_adults: finalResults?.no_of_adults,
+//       no_of_nights: finalResults?.no_of_nights,
+//       no_of_rooms: finalResults?.no_of_rooms,
+//          }
+
+//     const msg = "Multiple Hotel Search Successfully!";
+//     return actionCompleteResponse(res, mainData, msg);
+
+//   } catch (err) {
+//     console.error('Error in combineTboGRnSearchResults:', err.message);
+//     sendActionFailedResponse(res, {}, err.message);
+//   }
+// };
+
+
+
+
+
+//
+
+
+exports.combineTboGRnSearchResults = async (req, res) => {
+  try {
+    const countNights = (checkin, checkout) => {
+      const checkinDate = new Date(checkin);
+      const checkoutDate = new Date(checkout);
+      const differenceInMs = checkoutDate - checkinDate;
+      const millisecondsPerDay = 24 * 60 * 60 * 1000;
+      return Math.max(Math.round(differenceInMs / millisecondsPerDay), 1);
+    };
+
+    const transformRooms = (rooms) => rooms.map(room => {
+      const hasChildren = Array.isArray(room.children_ages) && room.children_ages.length > 0;
+      return {
+        NoOfAdults: room.adults,
+        NoOfChild: hasChildren ? room.children_ages.length : 0,
+        ChildAge: hasChildren ? room.children_ages : null
+      };
+    });
+
+    const additionalPromise = async () => {
+      try {
+        const data = {
+          CheckInDate: moment(req.body.checkin, "YYYY-MM-DD").format("DD/MM/YYYY"),
+          NoOfNights: countNights(req.body.checkin, req.body.checkout),
+          NoOfRooms: req.body.rooms.length,
+          RoomGuests: transformRooms(req.body.rooms),
+          CountryCode: req.body.client_nationality,
+          GuestNationality: req.body.client_nationality,
+          CityId: req.body.tboCityCode,
+          TokenId: req.body.TokenId,
+          EndUserIp: req.body.EndUserIp,
+          ResultCount: null,
+          PreferredCurrency: "INR",
+          MaxRating: 5,
+          MinRating: 0,
+          ReviewScore: null,
+          IsNearBySearchAllowed: false,
+        };
+        
+        const response = await axios.post(`${api.hotelSearchURL}`, data);
+        const modifyData = {
+          TraceId: response?.data?.HotelSearchResult?.TraceId,
+          HotelResults: response?.data?.HotelSearchResult?.HotelResults
+        };
+        return modifyData;
+      } catch (error) {
+        console.error('Error fetching additional data:', error.message);
+        return null; // Return null if there's an error
+      }
+    };
+
+    const grnSearchPromise = async () => {
+      if (req.body.cityCode) {
+        try {
+          const totalPage = await GrnHotelCityMap.countDocuments({ cityCode: req.body.cityCode });
+          const page = Math.ceil(totalPage / 100);
+          const limit = 100;
+          const promises = [];
+
+          for (let i = 1; i <= page; i++) {
+            promises.push(async () => {
+              const hotelCode = await exports.grnHotelCityMapWithPagination(req.body.cityCode, i, limit);
+              const searchData = {
+                rooms: req.body.rooms,
+                rates: req.body.rates,
+                hotel_codes: hotelCode,
+                currency: req.body.currency,
+                client_nationality: req.body.client_nationality,
+                checkin: req.body.checkin,
+                checkout: req.body.checkout,
+                cutoff_time: 30000,
+                version: req.body.version
+              };
+              const response = await axios.post(`${baseurl}/api/v3/hotels/availability`, searchData, { headers });
+              return response.data;
+            });
+          }
+
+          const results = await Promise.all(promises.map(p => p()));
+          const validResults = results.filter(result => result && !result.errors);
+
+          let keysToRemove = ['hotels', 'search_id', 'no_of_hotels'];
+          let updatedObj = removeKeys(validResults?.[0], keysToRemove);
+
+          let modifiedResults = validResults.reduce((acc, result) => {
+            result?.hotels?.forEach(hotel => {
+              acc.push({ ...hotel, search_id: result?.search_id });
+            });
+            return acc;
+          }, []);
+
+          modifiedResults = modifiedResults
+            .filter(hotel => hotel.images.url !== "")
+            .sort((a, b) => (a?.min_rate?.price || a?.Price?.PublishedPrice) - (b?.min_rate?.price || b?.Price?.PublishedPrice));
+
+          return {
+            hotels: modifiedResults,
+            no_of_hotels: modifiedResults.length,
+            ...updatedObj
+          };
+        } catch (error) {
+          console.error('Error fetching GRN data:', error.message);
+          return null; // Return null if there's an error
+        }
+      }
+      return null; // Return null if no cityCode is provided
+    };
+
+    const [additionalDataResult, grnResults] = await Promise.all([
+      additionalPromise(),
+      grnSearchPromise()
+    ]);
+
+    // Combine results
+    let combineData = [];
+
+    if (additionalDataResult?.HotelResults) {
+      combineData = [...combineData, ...additionalDataResult.HotelResults];
+    }
+
+    if (grnResults?.hotels) {
+      combineData = [...combineData, ...grnResults.hotels];
+    }
+
+    combineData = combineData
+      .sort((a, b) => (a?.min_rate?.price || a?.Price?.PublishedPrice) - (b?.min_rate?.price || b?.Price?.PublishedPrice));
+
+    const mainData = {
+      Hotels: combineData,
+      no_of_hotels: combineData.length,
+      checkin: req.body.checkin,
+      checkout: req.body.checkout,
+      no_of_adults: req.body.rooms.reduce((sum, room) => sum + room.adults, 0),
+      no_of_nights: countNights(req.body.checkin, req.body.checkout),
+      no_of_rooms: req.body.rooms.length,
+    };
+
+    const msg = "Multiple Hotel Search Successfully!";
+    return actionCompleteResponse(res, mainData, msg);
+
+  } catch (err) {
+    console.error('Error in combineTboGRnSearchResults:', err.message);
+    return sendActionFailedResponse(res, {}, err.message);
+  }
+};
+
+
+
+
+const removeKeys = (obj, keys) => {
+  let newObj = { ...obj };
+  keys.forEach(key => {
+    delete newObj[key];
+  });
+  return newObj;
+};
