@@ -90,5 +90,5 @@ module.exports = function (app) {
   app.get("/skyTrails/api/packages/packagesCategory1", controller.beachesPackagesCategoryArr1);
 
   app.post("/skyTrails/api/packagesenquiry",controller.packagesEnquiry);
-
+  // app.put("/skyTrails/api/admin/package/approveMultiplePackages",controller.approveMultiplePackages)
 };

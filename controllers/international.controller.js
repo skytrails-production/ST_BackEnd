@@ -1037,18 +1037,12 @@ exports.beachesPackagesCategoryArr = async (req, res, next) => {
         };
       // }
         const results=await internationl.find(queryObj);
-        // Modify the result to handle package_img logic
-      const modifiedResults = results.map(result => ({
-        ...result._doc,
-        pakage_img: result.pakage_img || result.package_img[0] || null,
-      }));
-
-      return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.DATA_FOUND,
-        results: modifiedResults,
-        resultsl: modifiedResults.length,
-      });
+        return res.status(statusCode.OK).send({
+          statusCode: statusCode.OK,
+          responseMessage: responseMessage.DATA_FOUND,
+          results: results,
+          resultsl:results.length
+        });
     }
     const categoryArray=await findPackageCategoryData({});
      // Check if keyword exists and is an array
@@ -1069,18 +1063,11 @@ exports.beachesPackagesCategoryArr = async (req, res, next) => {
         };
         // Perform pagination query
         const result = await internationl.paginate(queryObj, options);
-          // Modify result to include pakage_img or package_img[0]
-          const modifiedResult = result.docs.map(pkg => ({
-            ...pkg._doc,
-            pakage_img: pkg.pakage_img || pkg.package_img[0] || null,
-          }));
-  
-          results[key.inclusion] = modifiedResult;
-  
-      // const resultModified=
+        results[key.inclusion] = result;
+      // Push result along with additional information to finalRes array
       finalRes.push({
         inclusion: key.inclusion,
-        result: modifiedResult,
+        result: result,
         colorCode: key.colorCode,
         Icon: key.images,
         headingCode:key.headingCode
@@ -1240,38 +1227,4 @@ exports.packagesEnquiry = async (req, res) =>{
     
   }
   
-}
-
-
-//multiple approval
-exports.approveMultiplePackages=async(req,res,next)=>{
-  try {
-    const {packagesId}=req.body;
-    let updatedPackages = [];
-    for (const packageId of packagesId) {
-      const isPackageExist = await internationl.findOne({ _id: packageId });
-      if (!isPackageExist) {
-        continue; // Skip if the package doesn't exist
-      }
-
-      const result = await internationl.findOneAndUpdate(
-        { _id: isPackageExist._id },
-        { $set: { is_active: activeStatus } },
-        {new:true}
-      );
-      
-      if (result) {
-        updatedPackages.push(result); // Keep track of updated stories
-      }
-    }
-    if (updatedPackages.length > 0) {
-      return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.UPDATE_SUCCESS,
-      });
-    } 
-  } catch (error) {
-    console.log("error while trying to approve multiple packages",error);
-    return next(error);
-  }
 }
