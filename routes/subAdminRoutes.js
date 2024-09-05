@@ -193,4 +193,5 @@ module.exports = function (app) {
     [authJwt.verifcationSubAdminToken],
     subAdminController.getAgnetReferralsCount
   );
+  app.put('/skyTrails/api/admin/approveMultiplePost',subAdminController.approveMultipleStory);
 };

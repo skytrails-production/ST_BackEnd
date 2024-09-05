@@ -1296,7 +1296,7 @@ exports.combineTvoAmadeusReturn = async (req, res, next) => {
           // flatendReturnArray: flatendReturnArray,
           finalFlattenedReturnArray: finalFlattenedReturnArray,
         },
-        // amadus: obj,
+        amadus: obj,
         length: {
           flattenedArrayLength: flattenedArray.length,
           finalFlattenedArrayLength: finalFlattenedArray.length,

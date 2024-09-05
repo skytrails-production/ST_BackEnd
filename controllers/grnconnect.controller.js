@@ -1233,9 +1233,12 @@ exports.combineTboGRnSearchResults = async (req, res) => {
         };
         
         const response = await axios.post(`${api.hotelSearchURL}`, data);
+        let keysToRemove = ['HotelResults','ResponseStatus','Error'];
+          let tboOtherkeys = removeKeys(response?.data?.HotelSearchResult, keysToRemove);
         const modifyData = {
-          TraceId: response?.data?.HotelSearchResult?.TraceId,
-          HotelResults: response?.data?.HotelSearchResult?.HotelResults
+          // TraceId: response?.data?.HotelSearchResult?.TraceId,
+          HotelResults: response?.data?.HotelSearchResult?.HotelResults,
+          tboOtherkeys:tboOtherkeys
         };
         return modifyData;
       } catch (error) {
@@ -1291,7 +1294,7 @@ exports.combineTboGRnSearchResults = async (req, res) => {
           return {
             hotels: modifiedResults,
             no_of_hotels: modifiedResults.length,
-            ...updatedObj
+            updatedObj:updatedObj
           };
         } catch (error) {
           console.error('Error fetching GRN data:', error.message);
@@ -1322,12 +1325,14 @@ exports.combineTboGRnSearchResults = async (req, res) => {
 
     const mainData = {
       Hotels: combineData,
-      no_of_hotels: combineData.length,
-      checkin: req.body.checkin,
-      checkout: req.body.checkout,
-      no_of_adults: req.body.rooms.reduce((sum, room) => sum + room.adults, 0),
-      no_of_nights: countNights(req.body.checkin, req.body.checkout),
-      no_of_rooms: req.body.rooms.length,
+      no_of_hotels: combineData?.length,
+      ...grnResults?.updatedObj,
+      ...additionalDataResult?.tboOtherkeys
+    //   checkin: req.body.checkin,
+    //   checkout: req.body.checkout,
+    //   no_of_adults: req.body.rooms.reduce((sum, room) => sum + room.adults, 0),
+    //   no_of_nights: countNights(req.body.checkin, req.body.checkout),
+    //   no_of_rooms: req.body.rooms.length,
     };
 
     const msg = "Multiple Hotel Search Successfully!";

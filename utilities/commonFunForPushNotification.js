@@ -1,9 +1,10 @@
 const axios = require("axios"); // Make sure to import axios if not already done.
 const FCM = require("fcm-node");
-const { initializeApp } = require("firebase-admin/app");
-const app = initializeApp();
-const fsmserverkey = process.env.FIREBASESERVERKEY;
-// initializeApp();
+// const { initializeApp } = require("firebase-admin/app");
+// const app = initializeApp();
+const admin = require('../config/googleServices'); // Update with the correct path
+
+
 const sendNotification = async (notifDetails) => {
   try {
     const formData = {
@@ -44,12 +45,6 @@ const sendNotification = async (notifDetails) => {
     return 0;
   }
 };
-
-// Initialize Firebase Admin SDK
-// const serviceAccount = require("path/to/serviceAccountKey.json");
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount),
-// });
 
 const pushNotificationIOS = async (deviceToken, title, body) => {
   try {
@@ -176,7 +171,7 @@ const pushSimpleNotification = async (deviceToken, title, body) => {
   const serverKey = fsmserverkey; // Replace with your actual server key
   const fcm = new FCM(serverKey);
   var message = {
-    to: deviceToken,
+    token: deviceToken,
     content_avilable: true,
     notification: {
       title: title,
@@ -285,4 +280,26 @@ const customSoundPushNotification = async (deviceToken, title, body, imageUrl, s
   return response;
 };
 
-module.exports = { sendNotification, pushNotification,mediapushNotification,pushNotificationIOS,pushSimpleNotification,pushNotification1 ,customSoundPushNotification};
+const pushNotificationAfterDepricate=async(deviceToken,title,body)=>{
+    var message = {
+      token: deviceToken,
+      notification: {
+          title: title,
+          body: body,
+          // sound: sound, // Custom sound
+      }
+  };
+  try {
+    console.log("pushNotificationAfterDepricate",deviceToken,title,body)
+    const response = await admin.messaging().send(message);
+    console.log("Success while push notification pushSimpleNotification:", response);
+    return response;
+    //   res.status(200).json({ success: true, messageId: response });
+  } catch (error) {
+    console.log("Error while push notification:", error);
+   return error.message;
+  }
+
+  // const endPoint="https://fcm.googleapis.com/fcm/"
+}
+module.exports = { sendNotification, pushNotification,mediapushNotification,pushNotificationIOS,pushSimpleNotification,pushNotification1 ,customSoundPushNotification,pushNotificationAfterDepricate};

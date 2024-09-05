@@ -923,5 +923,55 @@ exports.getSubAdminDashboard=async(req,res,next)=>{
 }
 
 
+exports.approveMultipleStory=async(req,res,next)=>{
+  try {
+    const {storiyIds}=req.body;
+    let updatedStories = [];
+    for (const storyId of storiyIds) {
+      const isPostExist = await findforumQue({ _id: storyId });
+      if (!isPostExist) {
+        continue; // Skip if the post doesn't exist
+      }
+
+      const result = await updateforumQue(
+        { _id: isPostExist._id },
+        { status: storyStatus.ACTIVE }
+      );
+
+      const findUser = await findUserData({ _id: isPostExist.userId });
+      const notificationData = await findNotification({
+        notificationType: "postapprove",
+      });
+
+      // const sentNotification = await pushNotification(
+      //   findUser.deviceToken,
+      //   notificationData.title,
+      //   notificationData.description
+      // );
+      // console.log("sentNotification=", sentNotification);
+
+      if (result) {
+        updatedStories.push(result); // Keep track of updated stories
+      }
+    }
+
+    if (updatedStories.length > 0) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.UPDATE_SUCCESS,
+        result: updatedStories,
+      });
+    } else {
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.POST_NOT_FOUND,
+      });
+    }
+  } catch (error) {
+    console.log("Error while approving stories", error);
+    return next(error);
+  }
+};
+
 
 

@@ -22,7 +22,8 @@ const {
   pushNotification,
   mediapushNotification,
   pushSimpleNotification,
-  pushNotification1
+  pushNotification1,
+  pushNotificationAfterDepricate
 } = require("../../utilities/commonFunForPushNotification"); // Assuming you have a controller to send notifications
 const {
   eventBookingServices,
@@ -421,7 +422,7 @@ var sendNotificationTask=cron.schedule("1 */9 * * *",async()=>{
 })
 sendNotificationTask.start();
 
-const taskRandomNotification = cron.schedule("15 18 * * *",async () => {
+ const taskRandomNotification = cron.schedule("15 17 * * *",async () => {
     try {
       const users = await userList({
         status: status.ACTIVE,
@@ -437,7 +438,7 @@ const taskRandomNotification = cron.schedule("15 18 * * *",async () => {
           const notificationMessage = notification.message.replace('username', user.username);
           const messageBody = notification.body.replace(/username/g, user.username);
 
-          await pushSimpleNotification(
+          await pushNotificationAfterDepricate(
             user.deviceToken,
             notificationMessage,
             messageBody,
