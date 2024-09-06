@@ -35,6 +35,25 @@ const mealDynamicSchema=new mongoose.Schema({
 });
 
 
+const seatDynamicSchema = new mongoose.Schema({
+  AirlineCode: String,
+  FlightNumber: String,
+  CraftType: String,
+  Origin: String,
+  Destination: String,
+  AvailabilityType: Number,
+  Description: Number,
+  Code: String,
+  RowNo: String,
+  SeatNo: String,
+  SeatType: Number,
+  SeatWayType: Number,
+  Compartment: Number,
+  Deck: Number,
+  Currency: String,
+  Price: Number
+});
+
 const flightBookingData = new mongoose.Schema(
     {
       userId: {
@@ -102,7 +121,8 @@ const flightBookingData = new mongoose.Schema(
         }
       },
       baggage: [baggageSchema],
-      mealDynamic:[mealDynamicSchema],      
+      mealDynamic:[mealDynamicSchema],     
+      seatDynamic:[seatDynamicSchema], 
       passengerDetails: {
         type: [
           {

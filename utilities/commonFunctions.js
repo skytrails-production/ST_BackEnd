@@ -756,6 +756,8 @@ module.exports = {
     // Create a new PDF document
     const browser = await puppeteer.launch({ headless: "new", timeout: 0 });
     const page = await browser.newPage();
+  
+  //  await page.setDefaultNavigationTimeout(60000); // Set a 60-second timeout
 
     // Save the PDF to a temporary file
     await page.setContent(htmlContent);

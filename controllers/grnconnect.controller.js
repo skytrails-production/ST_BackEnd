@@ -1323,6 +1323,7 @@ exports.combineTboGRnSearchResults = async (req, res) => {
     combineData = combineData
       .sort((a, b) => (a?.min_rate?.price || a?.Price?.PublishedPrice) - (b?.min_rate?.price || b?.Price?.PublishedPrice));
 
+      
     const mainData = {
       Hotels: combineData,
       no_of_hotels: combineData?.length,

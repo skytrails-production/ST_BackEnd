@@ -31,7 +31,7 @@ const sendSMSUtils = require("../../utilities/sendSms");
 const {
   userflightBookingServices,
 } = require("../../services/btocServices/flightBookingServices");
-const { aggregatePaginate } = require("../../model/role.model");
+const { aggregatePaginate, findById } = require("../../model/role.model");
 const {
   createUserflightBooking,
   findUserflightBooking,
@@ -212,4 +212,37 @@ return res
 console.log("error while get data",error);
 return next(error);
   }
+}
+
+
+
+
+
+
+// getFlightBookingByUserId
+
+
+
+exports.getFlightBookingByUserId =async (req, res,next) =>{
+
+  try{
+
+  const id=req.params.id;
+  
+ const result=await findUserflightBooking({_id:id});
+
+  // console.log(result,"id");;
+  // return
+
+  await commonFunction.FlightBookingConfirmationMail(result);
+  return res.status(statusCode.OK).send({statusCode: statusCode.OK, message: responseMessage.FLIGHT_BOOKED,result, });
+
+
+   } catch (error) {
+  console.log("error: ", error);
+  return next(error);
+}
+ 
+  
+
 }

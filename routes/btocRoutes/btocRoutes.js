@@ -92,6 +92,12 @@ module.exports = function (app) {
     app.post("/skyTrails/api/user/wallet/redeemCoin",[authJwt.verifcationToken],Controller.redeemCoin);
     app.get("/skyTrails/api/user/getSkyCoins",[authJwt.verifcationToken],Controller.getUserBalance);
     app.get("/skyTrails/api/user/getUserById",Controller.getUserById);
+
+
+
+    //get flight booking by userId
+
+    app.get('/skyTrails/api/user/flightBooking/:id',flightBookingController.getFlightBookingByUserId);
   
 
 }
