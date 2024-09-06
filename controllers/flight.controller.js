@@ -70,8 +70,14 @@ exports.tokenGenerator = async (req, res) => {
     const response = await axios.post(`${api.tokenURL}`, data);
 
     msg = "Token Generated";
+    // const TokenId=response?.data?.TokenId
+    const result={
+      TokenId:response?.data?.TokenId,
+      Error:response?.data?.Error,
+      Status:response?.data?.Status
+    }
 
-    actionCompleteResponse(res, response.data, msg);
+    actionCompleteResponse(res, result, msg);
   } catch (err) {
     console.log(err);
     sendActionFailedResponse(res, {}, err.message);
