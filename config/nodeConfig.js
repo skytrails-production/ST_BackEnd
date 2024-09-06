@@ -18,25 +18,53 @@ const openapiKey="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";
 //   }
 // });
 
+//Zoho mailing
+
+// const nodemailerConfig = nodemailer.createTransport({
+//   host: 'smtppro.zoho.in',
+//   port: 465, // 465 or 587 for TLS
+//   secure:true, 
+//   auth: {
+//     user: process.env.ZOHO_EMAIL,
+//     pass: process.env.ZOHO_PASSWORD,
+//   }
+// });
+
+// const nodemailerConfigHawaiYatra=nodemailer.createTransport({
+//   // service: 'smtp.zoho.com',
+//   host: 'smtppro.zoho.com',
+//   port: 465, // 465 or 587 for TLS
+//   secure: true,  
+//   auth: {
+//     userHawai: process.env.ZOHO_EMAIL,
+//     passHawai: process.env.ZOHO_PASSWORD,   
+//   }
+// });
+
+
+
+
+//ZohoZeptoMailing 
+
 const nodemailerConfig = nodemailer.createTransport({
-  host: 'smtppro.zoho.in',
+  host: 'smtp.zeptomail.in',
   port: 465, // 465 or 587 for TLS
   secure:true, 
   auth: {
-    user: process.env.ZOHO_EMAIL,
-    pass: process.env.ZOHO_PASSWORD,
+    user: process.env.ZEPTO_MAIL_USERNAME,
+    pass: process.env.ZEPTO_MAIL_PASSWORD,
   }
 });
 
 const nodemailerConfigHawaiYatra=nodemailer.createTransport({
   // service: 'smtp.zoho.com',
-  host: 'smtppro.zoho.com',
+  host: 'smtp.zeptomail.in',
   port: 465, // 465 or 587 for TLS
   secure: true,  
   auth: {
-    userHawai: process.env.ZOHO_EMAIL,
-    passHawai: process.env.ZOHO_PASSWORD,   
-  }
+    user: process.env.ZEPTO_MAIL_USERNAME,
+    pass: process.env.ZEPTO_MAIL_PASSWORD,
+     }
 });
 
 module.exports = {nodemailerConfig,nodemailerConfigHawaiYatra};
