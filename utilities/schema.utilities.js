@@ -482,6 +482,7 @@ const schemas = {
   sendPDFSchema: joi.object().keys({
     ticketId: joi.string().required(),
     email: joi.string().required(),
+    username: joi.string().required(),
   }),
   bookingFailed: joi.object().keys({
     paymentId: joi.string().required(),

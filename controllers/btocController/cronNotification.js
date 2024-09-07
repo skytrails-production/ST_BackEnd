@@ -115,7 +115,7 @@ const notifications = [
 
 const lastNotificationSent = new Map();
 
-var taskPromotionalNotification = cron.schedule("0 8 * * *",async () => {
+var taskPromotionalNotification = cron.schedule("30 8 * * *",async () => {
   try {
     // 'phone.mobile_number':'8115199076'
     const users = await userList({
@@ -141,7 +141,7 @@ var taskPromotionalNotification = cron.schedule("0 8 * * *",async () => {
           );
           continue; // Skip sending notification
         }
-        await pushSimpleNotification(
+        await pushNotificationAfterDepricate(
           user.deviceToken,
           notificationMessage,
           messageBody,
@@ -297,7 +297,7 @@ var taskPlatformNotification = cron.schedule("0 20 * * *",
           // Update your app now and let's get your wanderlust fix!`;
           const notificationMessage = `CODE:Sky500`;
       const messageBody = `Hey ${user.username}! 🎬✨ Get ready to be the hero of your travel story! Use CODE: SKY500 and save big on your bookings. Let your adventure begin, superstar! ✈️🏖️🚎🏩🌟`;
-          await pushSimpleNotification(
+          await pushNotificationAfterDepricate(
             user.deviceToken,
             notificationMessage,
             messageBody,
@@ -397,7 +397,7 @@ var sendNotificationTask=cron.schedule("1 */9 * * *",async()=>{
         const notificationMessage = notification.title.replace('username', user.username);
         const messageBody = notification.description.replace(/username/g, user.username);
 
-        await pushSimpleNotification(
+        await pushNotificationAfterDepricate(
           user.deviceToken,
           notificationMessage,
           messageBody,

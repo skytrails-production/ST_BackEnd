@@ -69,7 +69,7 @@ module.exports = function (app) {
     app.post('/skyTrails/api/user/makepayment',[authJwt.verifcationToken],userTransactionsController.makePayment);
     app.post('/skyTrails/api/user/payVerify',[authJwt.verifcationToken],SchemaValidator(schemas.paymentUrlSchema),userTransactionsController.payVerify);
     app.post('/skyTrails/api/user/createSearchHistory',[authJwt.verifcationToken],SchemaValidator(schemas.searchSchema),userSearchHistoryController.createSearchHistory);
-    app.post('/skyTrails/api/user/sendTicketPDF',[authJwt.verifcationToken],SchemaValidator(schemas.sendPDFSchema),flightBookingController.sendPDF);
+    app.post('/skyTrails/api/user/sendTicketPDF',SchemaValidator(schemas.sendPDFSchema),flightBookingController.sendPDF);
     app.post('/skyTrails/api/user/userBookingFailed',[authJwt.verifcationToken],SchemaValidator(schemas.bookingFailed),userBookingFailed.bookingFailedUser)
     app.get('/skyTrails/api/user/getWebBanner',webAdvertismentController.getWebAdvertisement);
     app.get('/skyTrails/flight/bookings/:bookingId',flightBookingController.getFlightBookingById);
@@ -95,7 +95,7 @@ module.exports = function (app) {
 
 
 
-    //get flight booking by userId
+    //booking by id
 
     app.get('/skyTrails/api/user/flightBooking/:id',flightBookingController.getFlightBookingByUserId);
   

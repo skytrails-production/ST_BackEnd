@@ -222,6 +222,7 @@ require("./routes/Itinerary/ItineraryRoutes")(app);
 require("./routes/btocRoutes/passportEnquiryRoutes")(app);
 require("./routes/notificationRoutes")(app);
 require("./routes/Flightinventory/flightinventoryRoutes")(app);
+require("./routes/combineRoutes")(app)
 mongoose.connect(configs.mongoUrl.DEVELOPMENT, {useNewUrlParser: true,useUnifiedTopology: true,})
   .then(() => {
     initial();

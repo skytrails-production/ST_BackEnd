@@ -1973,8 +1973,8 @@ exports.addMobileNumber = async (req, res, next) => {
     });
     if (isExistMobile) {
       return res
-        .status(statusCode.Conflict)
-        .send({ message: responseMessage.NUMBER_EXIST });
+        .status(statusCode.OK)
+        .send({ statusCode:statusCode.Conflict,responseMessage: responseMessage.NUMBER_EXIST });
     }
     const token = await commonFunction.getToken({
       _id: isUserExist._id,
@@ -1993,7 +1993,7 @@ exports.addMobileNumber = async (req, res, next) => {
     );
     const userMobile = isUserExist.phone.country_code + isUserExist.phone.mobile_number;
     await sendSMS.sendSMSForOtp(mobile_number, otp);
-    const var1 =isExist && isExist.username !== "" ? isExist.username : "Dear";
+    const var1 =isUserExist && isUserExist.username !== "" ? isUserExist.username : "Dear";
     const templateParams = [String(var1), String(otp)];
     // const templateParams = [String(isUserExist.username), String(otp)];
     const sent = await whatsappAPIUrl.sendWhtsAppOTPAISensy(
@@ -2005,7 +2005,7 @@ exports.addMobileNumber = async (req, res, next) => {
     result.token = token;
     return res
       .status(statusCode.OK)
-      .send({ message: responseMessage.LOGIN_SUCCESS, result: token });
+      .send({statusCode: statusCode.OK,responseMessage: responseMessage.LOGIN_SUCCESS, result: token });
   } catch (error) {
     console.log(
       "error while trying to updtae mobileNumber on user Acoount",

@@ -1322,6 +1322,35 @@ exports.combineTvoAmadeusReturn = async (req, res, next) => {
 };
 
 
+exports.combineTvoKafila=async(req,res,next)=>{
+  try {
+    const data = req.body;
+    const kafilaUrl="http://fhapip.ksofttechnology.com/api/FSearch";
+    const api1Url = commonUrl.api.flightSearchURL;
+    const [tvoResponse, KafilaResponse] = await Promise.all([
+       axios.post(api1Url, data),
+       axios.post(kafilaUrl,generateKafilaRequest(data))
+    ]);
+    let tvoArray =
+    tvoResponse.data.Response.ResponseStatus === 1
+      ? tvoResponse.data.Response.Results[0]
+      : [];
+
+  tvoArray = removeDuplicates(tvoArray, `FlightNumber`);
+  
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result:{KafilaResponse:KafilaResponse.data,tvoResponse:tvoArray},
+    });
+  } catch (error) {
+    console.log("error while trying to combine both apis tvo and kafila",error);
+    return next(error);
+    
+  }
+}
+
+
 const generateAmadeusRequest = (data) => {
   // Generate the SOAP request XML based on the provided data
   // Generate new values for messageId, uniqueId, NONCE, TIMESTAMP, and hashedPassword
@@ -1607,3 +1636,40 @@ const generateAmadeusReturn = (data) => {
   </soapenv:Envelope>`;
   return soapRequest;
 };
+
+const generateKafilaRequest=(data)=>{
+  const formattedDate = moment(data.Segments[0].PreferredDepartureTime).format('YYYY-MM-DD');
+const KafilaAgentId="1126824"
+const pyload={
+ "Trip": "D1",
+ "Adt": 1,
+ "Chd": 0,
+ "Inf": 0,
+ "Sector": [
+ {
+ "Src": data.Segments[0].Origin,
+ "Des": data.Segments[0].Destination,
+ "DDate": formattedDate
+ }
+ ],
+ "PF": "",
+ "PC": "",
+ "Routing": "ALL",
+ "Ver": "1.0.0.0",
+ "Auth": {
+ "AgentId": KafilaAgentId,
+ "Token": data.KafilaToken,
+ },
+ "Env": "D",
+ "Module": "B2B",
+ "OtherInfo": {
+ "PromoCode": " ",
+ "FFlight": "",
+ "FareType": "",
+ "TraceId": "",
+ "IsUnitTesting": false,
+ "TPnr": false
+ }
+}
+ return pyload;
+  }

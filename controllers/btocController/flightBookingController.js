@@ -66,7 +66,7 @@ exports.flighBooking = async (req, res, next) => {
       title:"Flight Booking by User",
       description:`New Flight ticket booking by user on our platform🎊.🙂`,
       from:'FLightBooking',
-      to:isUserExist.userName,
+      to:isUserExist.username,
     }
     await createPushNotification(notObject);
     
@@ -174,7 +174,7 @@ exports.sendPDF=async(req,res,next)=>{
   try {
     const {ticketId,email}=req.body;
     const isUserExist = await findUser({
-      _id: req.userId,
+      _id: req.body.username,
       status: status.ACTIVE,
     });
     if (!isUserExist) {
@@ -184,7 +184,14 @@ exports.sendPDF=async(req,res,next)=>{
       });
     }
     const result=await findUserflightBooking({_id:ticketId});
-    // console.log("==================",result)
+    const phone = '+91'+result?.passengerDetails[0]?.ContactNo;
+     const userName = `${result?.passengerDetails[0]?.firstName} ${result?.passengerDetails[0]?.lastName}`;
+     let options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+       const depDate=new Date(result.airlineDetails[0].Origin.DepTime);
+    const depTime=new Date(result.airlineDetails[0].Origin.DepTime);
+    const arrTime=new Date(result.airlineDetails[0].Destination.ArrTime);
+    const templates=[String(userName),String(result.pnr),String(result.airlineDetails[0].Airline.AirlineName),String(depDate.toLocaleDateString('en-GB', options)),String(depTime.toLocaleTimeString('en-GB')),String(arrTime.toLocaleTimeString('en-GB')),String(result.totalAmount)];
+    await whatsApi.sendWhtsAppOTPAISensy('9870249076',templates,"flightBooking");
     await commonFunction.FlightBookingConfirmationMailWithNewEmail(result,email);
     return res
     .status(statusCode.OK)

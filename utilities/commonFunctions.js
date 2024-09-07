@@ -4923,7 +4923,7 @@ module.exports = {
     var mailOptions = {
       from: process.env.DEFAULT_ZOHO_EMAIL,
       to: email,
-      subject: "Otp for verication",
+      subject: "Your OTP for Email Verification",
       html: otpMail(otp),
     };
     return await nodemailerConfig.sendMail(mailOptions);
