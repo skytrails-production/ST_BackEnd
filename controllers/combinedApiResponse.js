@@ -1337,12 +1337,25 @@ exports.combineTvoKafila=async(req,res,next)=>{
       : [];
 
   tvoArray = removeDuplicates(tvoArray, `FlightNumber`);
-  
+  let kafilaArray=KafilaResponse.data;
+  if(tvoArray.length>0&&kafilaArray.length>0){
+
+  }else if(tvoArray.length<0&&kafilaArray.length>0){
+
+  }else if(tvoArray.length>0&&kafilaArray.length<0){
+    
+  }else{
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.NotFound,
+      responseMessage: responseMessage.DATA_NOT_FOUND
+    });
+  }
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.DATA_FOUND,
-      result:{KafilaResponse:KafilaResponse.data,tvoResponse:tvoArray},
+      result:{KafilaResponse:kafilaArray,tvoResponse:tvoArray},
     });
+
   } catch (error) {
     console.log("error while trying to combine both apis tvo and kafila",error);
     return next(error);

@@ -60,7 +60,7 @@ const notifications = [
   },
   {
     message: `Your ₹500 Discount Awaits!`,
-    body: `SFirst booking? Get upto ₹500 off and start your journey right!🌍✨`,
+    body: `SkyFirst booking? Get upto ₹500 off and start your journey right!🌍✨`,
   },
   {
     message: `Booking Just Got Easier!`,
@@ -103,7 +103,7 @@ const notifications = [
 //   },
   {
     message: `Mere Haath Mein…Tera Booking Confirmation!`,
-    body: `ravel now, pay later. Hold onto your booking and let the journey begin!`,
+    body: `Travel now, pay later. Hold onto your booking and let the journey begin!`,
   },
 //   {
 //     message: `Two things we love ❤️`,

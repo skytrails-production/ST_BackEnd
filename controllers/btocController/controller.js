@@ -1218,7 +1218,7 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
       });
     }
     if (!isUserExist) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.USERS_NOT_FOUND,
       });
