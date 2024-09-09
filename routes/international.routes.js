@@ -62,6 +62,7 @@ module.exports = function (app) {
   app.get("/skyTrails/latestPackages",controller.latestPackages);
   app.get("/skyTrails/beachesPackages", controller.beachesPackages);
   app.get("/skyTrails/domesticAndInternationalPackages", controller.domesticAndInternational);
+  app.get("/skyTrails/packages/domesticandinternation",controller.domesticAndInternationalWithPagination)
    app.get("/skyTrails/countryPackage",controller.countryPackage);
 
   app.put('/skyTrails/international/editPackage',upload.single("images"),controller.editPackage);

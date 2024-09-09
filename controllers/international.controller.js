@@ -517,6 +517,10 @@ exports.beachesPackages = async (req, res) => {
 
 exports.domesticAndInternational = async (req, res) => {
   try {
+
+    const limit = parseInt(req.query.limit, 10) || 50; // Default to 20 if not provided
+    const page = parseInt(req.query.page, 10) || 1; // Default to page 1 if not provided
+    const skip = (page - 1) * limit; // Calculate the number of documents to skip
     const { country } = req.query;
 
     if (!country) {
@@ -534,7 +538,11 @@ exports.domesticAndInternational = async (req, res) => {
       
     }
 
-    const packages = await internationl.find({ $and: [{ is_active: 1 }, query] });
+    const count = await internationl.countDocuments({ $and: [{ is_active: 1 }, query] });
+    // console.log(count,"count");
+    const packages = await internationl.find({ $and: [{ is_active: 1 }, query] }).sort({ updatedAt: -1 }).skip(skip).limit(limit);
+
+    console.log(count,"count");
 
     if (packages.length > 0) {
       // const msg = `आपने किया है ${country === 'India' ? 'देशी' : 'विदेशी'} पैकेजं सर्च`;
@@ -552,8 +560,64 @@ exports.domesticAndInternational = async (req, res) => {
   }
 };
 
+
+exports.domesticAndInternationalWithPagination = async (req, res) => {
+  try {
+
+    const limit = parseInt(req.query.limit, 10) || 20; // Default to 20 if not provided
+    const page = parseInt(req.query.page, 10) || 1; // Default to page 1 if not provided
+    const skip = (page - 1) * limit; // Calculate the number of documents to skip
+    const { country } = req.query;
+
+    if (!country) {
+      return res.status(400).json({ error: "Country parameter is required." });
+    }
+
+    let query;
+
+    if (country === "All") {
+      // Handle query for all packages 
+      query = {};      
+    } else {
+      // Handle query for other countries
+      query = { country: country };
+      
+    }
+
+    const count = await internationl.countDocuments({ $and: [{ is_active: 1 }, query] });
+    // console.log(count,"count");
+    const packages = await internationl.find({ $and: [{ is_active: 1 }, query] }).sort({ updatedAt: -1 }).skip(skip).limit(limit);
+
+     // Calculate total pages
+  const totalPages = Math.ceil(count / limit);
+
+  // Build the response object
+  const data = {
+    packages,
+    totalPages,
+    skipPackage:skip,
+    currentPage: page,
+    totalRecords: count
+  };
+
+    if (packages.length > 0) {
+      // const msg = `आपने किया है ${country === 'India' ? 'देशी' : 'विदेशी'} पैकेजं सर्च`;
+      const msg = `packages found for ${
+        country === "All" ?  "All Countries":country }`;
+      actionCompleteResponse(res, data, msg);
+    } else {
+      const msg = `No packages found for ${
+        country === country ? country : "All Countries"
+      } countries`;
+      actionCompleteResponse(res, [], msg);
+    }
+  } catch (error) {
+    sendActionFailedResponse(res, {}, error.message);
+  }
+};
+
  
-//package search by country
+// package search by country
 
 exports.countryPackage = async (req, res) => {
   try {
