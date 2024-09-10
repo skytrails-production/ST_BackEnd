@@ -1172,7 +1172,8 @@ exports.searchTboGrnCombineHotelCityWise = async (req, res) => {
         let keysToRemove = ['HotelResults','ResponseStatus','Error'];
           let tboOtherkeys = removeKeys(response?.data?.HotelSearchResult, keysToRemove);
           // if (!hotelName === undefined) return;
-          const filteredHotels = response?.data?.HotelSearchResult?.HotelResults.filter(hotel => hotel.HotelName !== undefined);
+          const filterTboHotels=response?.data?.HotelSearchResult?.HotelResults;
+          const filteredHotels = filterTboHotels?.filter(hotel => hotel.HotelName !== undefined);
         const modifyData = {
           // TraceId: response?.data?.HotelSearchResult?.TraceId,
           HotelResults: filteredHotels,
