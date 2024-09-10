@@ -24,26 +24,23 @@ const userSerachesServices = {
         return await userSerachesModel.findOneAndUpdate(query, updateObj, { new: true });
     },
 
-    paginateUserSearchHistory: async (body) => {
-        // userType: { $ne: [userType.ADMIN,userType.SUBADMIN] }
-        let query = { userType: { $nin: [userType.ADMIN, userType.SUBADMIN] } }
-        const { page, limit, usersType1, search } = body;
+    paginateUserSearchHistory:async(body)=>{
+        let query = { userType: { $nin: [userType.ADMIN, userType.SUBADMIN] } };
+        const { page, limit, search } = body;
         if (search) {
-            query.$or = [
-                // { username: { $regex: search, $options: 'i' } },
-                // { email: { $regex: search, $options: 'i' } },
-                { _id: { $regex: search, $options: 'i' } },
-                { status: { $regex: search, $options: 'i' } }
-            ]
+          const searchRegex = new RegExp(search, 'i');
+          query.$or = [
+            { origin: searchRegex },
+            { destination: searchRegex },
+            { status: searchRegex },
+            { journeyType: searchRegex },
+            { searchType: searchRegex },
+          ];
         }
-        if (usersType1) {
-            query.userType = usersType1
-        }
-
         let options = {
-            page: Number(page) || 1,
-            limit: Number(limit) || 8,
-            sort: { createdAt: -1 },
+          page: Number(page) || 1,
+          limit: Number(limit) || 8,
+          sort: { createdAt: -1 },
         };
         return await userSerachesModel.paginate(query, options);
     },

@@ -36,11 +36,13 @@ const subAdminServices = {
         let query = { userType:userType.SUBADMIN}
         const { page, limit, search } = body;
         if (search) {
+            const searchRegex = new RegExp(search, 'i');
             query.$or = [
-                { username: { $regex: search, $options: 'i' } },
-                { email: { $regex: search, $options: 'i' } },
-                { _id: { $regex: search, $options: 'i' } },
-                { status: { $regex: search, $options: 'i' } }
+                { userName: searchRegex},
+                { email: searchRegex},
+                { contactNumber:searchRegex},
+                { status:searchRegex},
+                {authType:searchRegex}
             ]
         }
 

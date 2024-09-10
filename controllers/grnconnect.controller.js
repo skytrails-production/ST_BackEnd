@@ -1173,7 +1173,12 @@ exports.searchTboGrnCombineHotelCityWise = async (req, res) => {
           let tboOtherkeys = removeKeys(response?.data?.HotelSearchResult, keysToRemove);
           // if (!hotelName === undefined) return;
           const filterTboHotels=response?.data?.HotelSearchResult?.HotelResults;
-          const filteredHotels = filterTboHotels?.filter(hotel =>  hotel.hasOwnProperty('HotelName') );
+          // console.log(filterTboHotels.length,"first")
+          // const filteredHotels = filterTboHotels?.filter(hotel =>  hotel.hasOwnProperty('HotelName') );
+          // const filteredHotels = filterTboHotels?.filter(hotel => hotel.HotelName!==undefined)
+          const filteredHotels = filterTboHotels?.filter(hotel => hotel && 'HotelName' in hotel && hotel.HotelName);
+
+          // console.log(filteredHotels.length)
         const modifyData = {
           // TraceId: response?.data?.HotelSearchResult?.TraceId,
           HotelResults: filteredHotels,
