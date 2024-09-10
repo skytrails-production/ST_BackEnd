@@ -1213,25 +1213,25 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
       };
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
-        message: responseMessage.OTP_VERIFY,
+        responseMessage: responseMessage.OTP_VERIFY,
         result: result,
       });
     }
     if (!isUserExist) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
-        message: responseMessage.USERS_NOT_FOUND,
+        responseMessage: responseMessage.USERS_NOT_FOUND,
       });
     }
 
     if (isUserExist.otp !== otp) {
-      return res.status(statusCode.badRequest).json({
+      return res.status(statusCode.OK).json({
         statusCode: statusCode.badRequest,
-        message: responseMessage.INCORRECT_OTP,
+        responseMessage: responseMessage.INCORRECT_OTP,
       });
     }
     if (new Date().getTime() > isUserExist.otpExpireTime) {
-      return res.status(statusCode.badRequest).json({
+      return res.status(statusCode.OK).json({
         statusCode: statusCode.badRequest,
         message: responseMessage.OTP_EXPIRED,
       });
@@ -1263,21 +1263,21 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
       };
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
-        message: responseMessage.OTP_VERIFY,
+        responseMessage: responseMessage.OTP_VERIFY,
         result: result,
       });
     }
     // Check if the fullName is empty or just whitespace
     if (!fullName || fullName.trim() === "") {
-      return res.status(statusCode.Forbidden).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.Forbidden,
-        message: responseMessage.USER_NAME_REQUIRED,
+        responseMessage: responseMessage.USER_NAME_REQUIRED,
       });
     }
     if (!dob || !email) {
-      return res.status(statusCode.Forbidden).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.Forbidden,
-        message: responseMessage.FIELD_REQUIRED,
+        responseMessage: responseMessage.FIELD_REQUIRED,
       });
     }
     const refeerralCode = await commonFunction.generateReferralCode();
@@ -1289,7 +1289,7 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
       if (isNumberExist) {
         return res.status(statusCode.OK).send({
           statusCode: statusCode.Conflict,
-          message: responseMessage.EMAIL_ALREADY_EXIST,
+          responseMessage: responseMessage.EMAIL_ALREADY_EXIST,
         });
       }
       obj = {
@@ -1308,7 +1308,7 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
       if (isNumberExist) {
         return res.status(statusCode.OK).send({
           statusCode: statusCode.Conflict,
-          message: responseMessage.MOBILE_EXIST,
+          responseMessage: responseMessage.MOBILE_EXIST,
         });
       }
       obj = {
@@ -1328,7 +1328,7 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
       if (!isRefererExist) {
         return res.status(statusCode.OK).send({
           statusCode: statusCode.badRequest,
-          message: responseMessage.INCORRECT_REFERRAL,
+          responseMessage: responseMessage.INCORRECT_REFERRAL,
         });
       }
       const checkReward = await findReferralAmount({});
@@ -1380,7 +1380,7 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
     };
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
-      message: responseMessage.REGISTER_SUCCESS,
+      responseMessage: responseMessage.REGISTER_SUCCESS,
       result: result,
     });
   } catch (error) {

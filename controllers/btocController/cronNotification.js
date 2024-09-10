@@ -101,10 +101,10 @@ const notifications = [
 // Thari Flight ✈️
 // Thara Deal 🤗`,
 //   },
-  {
-    message: `Mere Haath Mein…Tera Booking Confirmation!`,
-    body: `Travel now, pay later. Hold onto your booking and let the journey begin!`,
-  },
+  // {
+  //   message: `Mere Haath Mein…Tera Booking Confirmation!`,
+  //   body: `Travel now, pay later. Hold onto your booking and let the journey begin!`,
+  // },
 //   {
 //     message: `Two things we love ❤️`,
 //     body: `1. username
@@ -275,12 +275,12 @@ taskPromotionalNotification.start(); // Start the task2
 // taskEventNotification1.start(); // Start the task2
 
 // Define and schedule task2 separately
-var taskPlatformNotification = cron.schedule("0 20 * * *",
+var taskPlatformNotification = cron.schedule("42 14 * * *",
   async () => {
     try {  
       // 'contactNo.mobile_number': { $in: ['8115199076', '9135219071'] },
       const users = await userList({
-        // 'phone.mobile_number': { $in: ['8115199076','9135219071','8384082560'] },
+        'phone.mobile_number': { $in: ['7017757907','8115199076'] },
         status: status.ACTIVE,
         deviceToken: { $exists: true, $ne: "" },
       });

@@ -927,7 +927,10 @@ exports.internationalgetAdminAll = async (req, res) => {
             },
             { country: { $regex: new RegExp(req.query.keyword, "i") } },
           ],
-        })
+        
+        },
+        
+      )
         .exec();
       // console.log(pakage,"data")
     }
