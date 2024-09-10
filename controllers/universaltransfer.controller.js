@@ -28,10 +28,11 @@ exports.staticData = async (req, res) => {
   exports.GetDestinationSearchStaticDatacitywise = async (req, res) => {    
     try {
       const data ={
+        "ClientId":tokenGenerator.ClientId,
         "EndUserIp":req.body.EndUserIp,
         "TokenId": req.body.TokenId,
         "CountryCode" : req.body.CountryCode || "GB",
-        "SearchType" :"1"
+        "SearchType" :req.body.SearchType
         };
        
       const response = await axios.post(`${api.GetDestinationSearchStaticData}`, data);
@@ -48,6 +49,7 @@ exports.staticData = async (req, res) => {
       const data ={
         "EndUserIp":req.body.EndUserIp,
         "TokenId": req.body.TokenId,
+        "ClientId":tokenGenerator.ClientId,
         "CountryCode" : req.body.CountryCode || "GB",
         "SearchType" :"2"
         } ;

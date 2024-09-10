@@ -1145,7 +1145,7 @@ exports.searchTboandGrnCityList = async  (req, res) => {
 exports.searchTboGrnCombineHotelCityWise = async (req, res) => {
   try {
 
-    if (req.body.cityCode) {
+    if (req?.body?.cityCode || req?.body?.tboCityCode) {
 
     const additionalPromise = async () => {
       try {
@@ -1171,9 +1171,11 @@ exports.searchTboGrnCombineHotelCityWise = async (req, res) => {
         // console.log(response?.data,"response")
         let keysToRemove = ['HotelResults','ResponseStatus','Error'];
           let tboOtherkeys = removeKeys(response?.data?.HotelSearchResult, keysToRemove);
+          // if (!hotelName === undefined) return;
+          const filteredHotels = response?.data?.HotelSearchResult?.HotelResults.filter(hotel => hotel.HotelName !== undefined);
         const modifyData = {
           // TraceId: response?.data?.HotelSearchResult?.TraceId,
-          HotelResults: response?.data?.HotelSearchResult?.HotelResults,
+          HotelResults: filteredHotels,
           tboOtherkeys:tboOtherkeys
         };
         return modifyData;

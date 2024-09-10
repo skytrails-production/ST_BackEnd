@@ -542,7 +542,7 @@ exports.domesticAndInternational = async (req, res) => {
     // console.log(count,"count");
     const packages = await internationl.find({ $and: [{ is_active: 1 }, query] }).sort({ updatedAt: -1 }).skip(skip).limit(limit);
 
-    console.log(count,"count");
+    // console.log(count,"count");
 
     if (packages.length > 0) {
       // const msg = `आपने किया है ${country === 'India' ? 'देशी' : 'विदेशी'} पैकेजं सर्च`;
@@ -563,8 +563,9 @@ exports.domesticAndInternational = async (req, res) => {
 
 exports.domesticAndInternationalWithPagination = async (req, res) => {
   try {
+    // console.log("data")
 
-    const limit = parseInt(req.query.limit, 10) || 20; // Default to 20 if not provided
+    const limit = parseInt(req.query.limit, 10) || 162; // Default to 20 if not provided
     const page = parseInt(req.query.page, 10) || 1; // Default to page 1 if not provided
     const skip = (page - 1) * limit; // Calculate the number of documents to skip
     const { country } = req.query;
@@ -590,10 +591,19 @@ exports.domesticAndInternationalWithPagination = async (req, res) => {
 
      // Calculate total pages
   const totalPages = Math.ceil(count / limit);
+  const modifiedData = packages.map(item => ({
+    _id: item?._id,
+    pakage_amount: item?.pakage_amount,
+    pakage_title:item?.pakage_title,
+    package_img:item?.package_img[0],
+    pakage_img:item?.pakage_img,
+    days:item?.days
+  }));
 
   // Build the response object
   const data = {
-    packages,
+    packages:modifiedData,
+    // packages,
     totalPages,
     skipPackage:skip,
     currentPage: page,
@@ -649,9 +659,9 @@ exports.agentPackages = async (req, res) => {
     const { userId, isActive } = req.params;  
     
     if (userId) {
-      console.log("query");
+      // console.log("query");
       const query = isActive? { is_active: isActive, userId: userId } : { userId: userId };
-      console.log(query,"query");
+      // console.log(query,"query");
        packages = await internationl.find(query);
     //  console.log("Vpackages",packages.length);
     }
@@ -691,7 +701,7 @@ exports.agentLeads = async (req, res) =>{
 
   try {
     const agent=req.params;
-    console.log("agent", agent)
+    // console.log("agent", agent)
     const agentPackagesData=await internationl.find(agent);
     const filterData = agentPackagesData.map((item) => item._id);
 
@@ -901,7 +911,7 @@ exports.internationalgetAdminAll = async (req, res) => {
       .pagintion(pagintionData);
 
     let pakage = await apiSearch.query;
-    console.log(pakage.length,"package")
+    // console.log(pakage.length,"package")
     if (pakage.length === 0) {
       // console.log(req.query)
       // pakage=await internationl.find({ 'destination.addMore': req.query.keyword }).exec();
@@ -1238,11 +1248,11 @@ exports.beachesPackagesCategoryArr1 = async (req, res, next) => {
           select:{pakage_amount:1,pakage_title:1,pakage_img:1,days:1}
         };
         // Perform pagination query
-        console.log("Selecting fields:", 'pakage_amount pakage_img pakage_title days');
+        // console.log("Selecting fields:", 'pakage_amount pakage_img pakage_title days');
         const result = await internationl.paginate(queryObj, options, {
           
         });
-        console.log("Query Result:", result);results[key.inclusion] = result;
+        // console.log("Query Result:", result);results[key.inclusion] = result;
       // Push result along with additional information to finalRes array
       // console.log("result============",result);
       // const modifiedobject={}
