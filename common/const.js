@@ -221,51 +221,61 @@ busCancelURL:
   sightsettingSendChangeRequest:
     " http://api.tektravels.com/BookingEngineService_SightSeeingBook/SightseeingService.svc/rest/SendChangeRequest",
 
-  // ==============================================> UNIVERSAL TRANSFER <===================================================//
+  
 
-  // STATIC DATA
+      // ==============================================> TRANSFER api start <===================================================//
+
+  // Transfer static data
+
+  //country list
 
   staticData:
-    "http://api.tektravels.com/SharedServices/SharedData.svc/rest/CountryList",
+  "http://api.tektravels.com/SharedServices/SharedData.svc/rest/CountryList",
 
-  // GetDestinationSearchStaticData(CityWise)
+// GetDestinationSearchStaticData citywise or hotelwise
 
-  GetDestinationSearchStaticData:
-    "http://api.tektravels.com/SharedServices/StaticData.svc/rest/GetDestinationSearchStaticData",
+getDestinationSearchStaticData:
+  "http://api.tektravels.com/SharedServices/StaticData.svc/rest/GetDestinationSearchStaticData",
 
-  // GetTransferStaticData(Hotelwise)
+// getTransferStaticData
 
-  GetTransferStaticData:
-    "http://sharedapi.tektravels.com/staticdata.svc/rest/GetTransferStaticData",
+getTransferStaticData:
+  "http://sharedapi.tektravels.com/staticdata.svc/rest/GetTransferStaticData",
 
-  // TRANSFERSEARCH
-  transfersearch:
-    "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/Search",
+// Transfer search
+transferSearch:
+  "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/Search",
 
-  // GetCancellationPolicy
-  GetCancellationPolicy:
-    "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/GetCancellationPolicy/",
+// get Cancellation Policy
+getCancellationPolicy:
+  "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/GetCancellationPolicy/",
 
-  //BOOKING
-  booking:
-    "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/Book/",
+//Booking
+  transferBooking:
+  "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/Book/",
 
-  // GenerateVoucher
-  GenerateVoucher:
-    "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/GenerateVoucher/",
+// Generate Voucher
+generateVoucher:
+  "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/GenerateVoucher/",
 
-  // RETRIEVE BOOKING DETAIL
-  retrieveBookingDetails:
-    "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/GetBookingDetail/",
+//Retrieve Booking Detail
+retrieveBookingDetails:
+  "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/GetBookingDetail/",
 
-  //  send cancle request
+//Send Cancel Request
 
-  sendcancleRequest:
-    "http://b2b.tektravels.com/BETransferService/InternalTransferService.svc/rest/SendChangeRequest/",
+sendCancelRequest:
+  "http://b2b.tektravels.com/BETransferService/InternalTransferService.svc/rest/SendChangeRequest/",
 
-  // get cancle request status
-  getcancleRequeststatus:
-    "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/GetChangeRequestStatus/",
+// get cancle request status Get Cancel Request Status
+getCancelRequeststatus:
+  "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/GetChangeRequestStatus/",
+
+
+
+   // ==============================================> TRANSFER api end <===================================================//
+
+
 
   // //utility--------------------------//start---------
   utilityloginwebapiURL:

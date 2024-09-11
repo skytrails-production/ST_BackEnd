@@ -1,46 +1,67 @@
 const controller = require("../controllers/universaltransfer.controller");
 
+
 module.exports = function (app) {
   app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
     next();
   });
-  app.post("/skyTrails/universaltransfer/staticData", controller.staticData);
+
+  //country data
+  app.post("/skytrails/transfer/staticData", controller.staticData);
+
+  //get destination search static data
   app.post(
-    "/skyTrails/universaltransfer/GetDestinationSearchStaticDatacitywise",
-    controller.GetDestinationSearchStaticDatacitywise
+    "/skytrails/transfer/getdestinationsearchstaticdata",
+    controller.getDestinationSearchStaticData
   );
+ 
+//get transfer static data
   app.post(
-    "/skyTrails/universaltransfer/GetDestinationSearchStaticDataHotelwise",
-    controller.GetDestinationSearchStaticDataHotelwise
-  );
-  app.post(
-    "/skyTrails/universaltransfer/GetTransferStaticData",
+    "/skytrails/transfer/GetTransferStaticData",
     controller.GetTransferStaticData
   );
+
+  //search transfer data
   app.post(
-    "/skyTrails/universaltransfer/transfersearch",
-    controller.transfersearch
+    "/skytrails/transfer/search",
+    controller.transferSearch
   );
+
+  //get cancellation policy
+  
   app.post(
-    "/skyTrails/universaltransfer/GetCancellationPolicy",
-    controller.GetCancellationPolicy
+    "/skytrails/transfer/getcancellationpolicy",
+    controller.getCancellationPolicy
   );
-  app.post("/skyTrails/universaltransfer/booking", controller.booking);
+
+
+
+  //Transfer Booking
+  app.post("/skytrails/transfer/booking", controller.transferBooking);
+
+
+  //generate Voucher
   app.post(
-    "/skyTrails/universaltransfer/GenerateVoucher",
-    controller.GenerateVoucher
+    "/skytrails/transfer/generatevoucher",
+    controller.generateVoucher
   );
+
+  //Retrieve Booking details
   app.post(
-    "/skyTrails/universaltransfer/retrieveBookingDetails",
+    "/skytrails/transfer/retrievebookingdetails",
     controller.retrieveBookingDetails
   );
+
+  //send change request
   app.post(
-    "/skyTrails/universaltransfer/SendChangeRequest",
-    controller.SendChangeRequest
+    "/skytrails/transfer/sendchangerequest",
+    controller.sendChangeRequest
   );
+
+  //get cancel request status
   app.post(
-    "/skyTrails/universaltransfer/getcancleRequeststatus",
-    controller.getcancleRequeststatus
+    "/skytrails/transfer/getcancleRequeststatus",
+    controller.getcancelRequeststatus
   );
 };

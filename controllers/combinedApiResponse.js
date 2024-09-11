@@ -1333,122 +1333,8 @@ function parseDate(dateStr) {
   return new Date(dateStr).getTime();
 }
 
-exports.combineTvoKafila1Rough = async (req, res, next) => {
-  try {
-    const data = req.body;
-    let finalFlightList = [];
-    let kafilaFlight;
-    const kafilaUrl = "http://stage1.ksofttechnology.com/api/FSearch";
-    const api1Url = commonUrl.api.flightSearchURL;
-    const [tvoResponse, KafilaResponse] = await Promise.all([
-      axios.post(api1Url, data),
-      axios.post(kafilaUrl, generateKafilaRequest(data)),
-    ]);
-    let tvoArray =
-      tvoResponse.data.Response.ResponseStatus === 1
-        ? tvoResponse.data.Response.Results[0]
-        : [];
-    tvoArray = removeDuplicates(tvoArray, `FlightNumber`);
-    let kafilaArray = KafilaResponse.data;
-    console.log(
-      "kafilaArray.Schedules[0].length============",
-      kafilaArray.Schedules[0].length,tvoArray.length
-    );  
-    let result=[]
-    let kafilaFlightNo=[];
-    let kafilaDepDate=[];
-    let tvoFlightNo=[];
-    let tvoDepDate=[];
-    let kafilaMappedResult=[];
-    if (tvoArray.length > 0 && kafilaArray.Schedules[0].length > 0) {
-      const kafilaFlightMap = kafilaArray.Schedules[0].reduce((map, flight) => {
-        const key = `${flight.Itinerary[0].FNo}-${flight.Itinerary[0].DDate}`;
-        kafilaFlightNo=`${flight.Itinerary[0].FNo}`;
-        kafilaDepDate=`${flight.Itinerary[0].DDate}`;
-        map[key] = flight;
-        return map;
-      }, {});
-      kafilaMappedResult.push(kafilaFlightMap);
-      console.log("kafilaFlightNo========",kafilaFlightNo.length)
-      tvoArray.forEach((tvoFlight) => {
-        const key = `${tvoFlight.Segments[0][0].Airline.FlightNumber}-${tvoFlight.Segments[0][0].Origin.DepTime}`;
-        tvoDepDate.push(`${tvoFlight.Segments[0][0].Origin.DepTime}`);
-        tvoFlightNo.push(`${tvoFlight.Segments[0][0].Airline.FlightNumber}`);
-        
-        kafilaFlight = kafilaFlightMap[key];
-        result.push(key)
-
-        if (kafilaFlight) {
-          console.log("enter===",kafilaFlight.Fare.GrandTotal,"parseFloat(kafilaFlight.Fare.GrandTotal)=",parseFloat(kafilaFlight.Fare.GrandTotal));
-          console.log("tvoFlight.Fare.OfferedFare==========",tvoFlight.Fare.OfferedFare,"parseFloat(tvoFlight.Fare.OfferedFare)==",parseFloat(tvoFlight.Fare.OfferedFare))
-          console.log("parseFloat(kafilaFlight.Fare.GrandTotal) < parseFloat(tvoFlight.Fare.OfferedFare)=",parseFloat(kafilaFlight.Fare.GrandTotal) > parseFloat(tvoFlight.Fare.OfferedFare))
-          if (parseFloat(tvoFlight.Fare.OfferedFare)<=parseFloat(kafilaFlight.Fare.GrandTotal) ) {
-            finalFlightList.push(tvoFlight)
-          }else{
-            console.log("==========kafila farr is low",);
-            finalFlightList.push(kafilaFlight)
-          }
-        }
-        //   // Compare fares and push the flight with the lowest fare
-        //   console.log("parseFloat(kafilaFlight.Fare.GrandTotal) < parseFloat(tvoFlight.Fare.OfferedFare)=",parseFloat(kafilaFlight.Fare.GrandTotal) < parseFloat(tvoFlight.Fare.OfferedFare));
-        //   console.log("tvoFlight.Fare.OfferedFare===",tvoFlight.Fare.OfferedFare);
-        //   console.log("kafilaFlight.Fare.GrandTotal========",kafilaFlight.Fare.GrandTotal);
-          
-        //   if (parseFloat(kafilaFlight.Fare.GrandTotal) < parseFloat(tvoFlight.Fare.OfferedFare)) {
-        //     finalFlightList.push(kafilaFlight); // Kafila has a lower fare
-
-        //   } else {
-        //     finalFlightList.push(tvoFlight); // TVO has a lower fare
-        //   }
-        // } else {
-        //   // If no matching flight in Kafila, just add the TVO flight
-        //   finalFlightList.push(tvoFlight);
-        // }
-//       });
-// console.log("finalFlightList.length",finalFlightList.length);
-
-//       // Return the final list of flights with the lowest fares
-      // return finalFlightList;
-      // console.log(
-      //   "combinedArray===========1",
-      //   tvoArray.length,
-      //   kafilaArray.Schedules[0].length,
-      //   combinedArray.length
-      // );
-      // for(let flight of combinedArray){
-
-      })
-     
-    // }
-    // else{
-    //   return res.status(statusCode.OK).send({
-    //     statusCode: statusCode.NotFound,
-    //     responseMessage: responseMessage.DATA_NOT_FOUND
-    //   });
-    // }
-    return res.status(statusCode.OK).send({
-      statusCode: statusCode.OK,
-      responseMessage: responseMessage.DATA_FOUND,
-      result: { KafilaResponse: kafilaArray, tvoResponse: tvoArray,result,kafilaFlightNo,kafilaMappedResult ,kafilaFlight,finalFlightList},
-    });
-  }
-  // else{
-  //   return res.status(statusCode.OK).send({
-  //         statusCode: statusCode.NotFound,
-  //         responseMessage: responseMessage.DATA_NOT_FOUND
-  //       });
-  // }
-} catch (error) {
-    console.log(
-      "error while trying to combine both apis tvo and kafila",
-      error
-    );
-    return next(error);
-  }
-};
-
 //combine tvo and kafila and sort as per price ***********************************
-exports.combineTvoKafila=async(req,res,next)=>{
+exports.combineTvoKafila1=async(req,res,next)=>{
   try {
     const data = req.body;
     let finalResArray  = []; // Array to hold the final result
@@ -1521,6 +1407,88 @@ const sortedFinalRes= finalResArray.sort((a, b) => {
     return next(error);
   }
 }
+exports.combineTvoKafila = async (req, res, next) => {
+  try {
+    const data = req.body;
+    let finalResArray = []; // Array to hold the final result
+    let flightKeySet = new Set(); // Set to track unique flight keys
+    const kafilaUrl = "http://stage1.ksofttechnology.com/api/FSearch";
+    const api1Url = commonUrl.api.flightSearchURL;
+
+    const [tvoResponse, KafilaResponse] = await Promise.all([
+      axios.post(api1Url, data),
+      axios.post(kafilaUrl, generateKafilaRequest(data)),
+    ]);
+    let tvoArray = tvoResponse.data.Response.ResponseStatus === 1
+      ? tvoResponse.data.Response.Results[0]
+      : [];
+    tvoArray = removeDuplicates(tvoArray, `FlightNumber`);
+
+    let kafilaArray = KafilaResponse.data.Schedules[0] || [];
+
+    // Step 1: Create a Map of TVO flights for efficient comparison
+    const tvoMap = new Map();
+    tvoArray.forEach((tvoFlight) => {
+      const key = `${tvoFlight.Segments[0][0].Airline.FlightNumber}-${tvoFlight.Segments[0][0].Origin.DepTime}`;
+      tvoMap.set(key, tvoFlight);
+    });
+
+    // Step 2: Compare Kafila flights with TVO flights
+    kafilaArray.forEach((kafilaFlight) => {
+      const key = `${kafilaFlight.Itinerary[0].FNo}-${kafilaFlight.Itinerary[0].DDate}`;
+      const matchingTvoFlight = tvoMap.get(key);
+
+      if (matchingTvoFlight) {
+        const tvoFare = matchingTvoFlight.Fare.OfferedFare;
+        const kafilaFare = kafilaFlight.Fare.GrandTotal;
+
+        if (kafilaFare < tvoFare) {
+          finalResArray.push(kafilaFlight); // Kafila flight is cheaper
+          flightKeySet.add(key); // Add key to the set
+        } else {
+          finalResArray.push(matchingTvoFlight); // TVO flight is cheaper
+          flightKeySet.add(key); // Add key to the set
+        }
+
+        // Remove the matched flight from TVO map
+        tvoMap.delete(key);
+      } else {
+        // No matching TVO flight, push Kafila flight
+        finalResArray.push(kafilaFlight);
+        flightKeySet.add(key); // Add key to the set
+      }
+    });
+
+    // Step 3: Handle unmatched TVO flights
+    tvoMap.forEach((unmatchedTvoFlight) => {
+      const key = `${unmatchedTvoFlight.Segments[0][0].Airline.FlightNumber}-${unmatchedTvoFlight.Segments[0][0].Origin.DepTime}`;
+      if (!flightKeySet.has(key)) {
+        // If the key is not already in the set, push the unmatched TVO flight
+        finalResArray.push(unmatchedTvoFlight);
+        flightKeySet.add(key); // Add key to the set
+      }
+    });
+    // Step 4: Sort the final result array by fare (ascending order)
+    const sortedFinalRes = finalResArray.sort((a, b) => {
+      const fareA = a.Fare ? (a.Fare.OfferedFare || a.Fare.GrandTotal) : 0;
+      const fareB = b.Fare ? (b.Fare.OfferedFare || b.Fare.GrandTotal) : 0;
+      return fareA - fareB; // Sort in ascending order of fare
+    });
+
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: {
+        Param: KafilaResponse.data.Param,
+        tvoTraceId: tvoResponse.data.Response.TraceId,
+        sortedFinalRes,
+      },
+    });
+  } catch (error) {
+    console.log("error while trying to combine both apis tvo and kafila", error);
+    return next(error);
+  }
+};
 
 
 const generateAmadeusRequest = (data) => {

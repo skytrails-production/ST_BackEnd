@@ -1,11 +1,14 @@
 const axios = require("axios");
 const { tokenGenerator, api } = require("../common/const");
-const db = require("../model");
+
 const {
   actionCompleteResponse,
   sendActionFailedResponse,
 } = require("../common/common");
 
+
+
+//get static country data 
 
 exports.staticData = async (req, res) => {    
     try {
@@ -16,7 +19,7 @@ exports.staticData = async (req, res) => {
        };
        
       const response = await axios.post(`${api.staticData}`, data);
-      msg = "static Data get Successfully!";
+      msg = "Get static data successfully!";
       actionCompleteResponse(res, response.data, msg);
     } catch (err) {
       console.log(err);
@@ -25,18 +28,21 @@ exports.staticData = async (req, res) => {
   };
 
 
-  exports.GetDestinationSearchStaticDatacitywise = async (req, res) => {    
+
+  //get destination search static data
+
+  exports.getDestinationSearchStaticData = async (req, res) => {    
     try {
       const data ={
         "ClientId":tokenGenerator.ClientId,
         "EndUserIp":req.body.EndUserIp,
         "TokenId": req.body.TokenId,
-        "CountryCode" : req.body.CountryCode || "GB",
+        "CountryCode" : req.body.CountryCode,
         "SearchType" :req.body.SearchType
         };
        
-      const response = await axios.post(`${api.GetDestinationSearchStaticData}`, data);
-      msg = "Get Destination Search Static Data (citywise) Successfully!";
+      const response = await axios.post(`${api.getDestinationSearchStaticData}`, data);
+      msg = "Get destination search static data Successfully!";
       actionCompleteResponse(res, response.data, msg);
     } catch (err) {
       console.log(err);
@@ -44,37 +50,22 @@ exports.staticData = async (req, res) => {
     }
   };
 
-  exports.GetDestinationSearchStaticDataHotelwise = async (req, res) => {    
-    try {
-      const data ={
-        "EndUserIp":req.body.EndUserIp,
-        "TokenId": req.body.TokenId,
-        "ClientId":tokenGenerator.ClientId,
-        "CountryCode" : req.body.CountryCode || "GB",
-        "SearchType" :"2"
-        } ;
-       
-      const response = await axios.post(`${api.GetDestinationSearchStaticData}`, data);
-      msg = "Get Transfer Static Data (Hotelwise) Successfully!";
-      actionCompleteResponse(res, response.data, msg);
-    } catch (err) {
-      console.log(err);
-      sendActionFailedResponse(res, {}, err.message);
-    }
-  };
+ 
+
+//get transfer data
 
   exports.GetTransferStaticData = async (req, res) => {    
     try {
       const data ={
-        "CityId": req.body.CityId || "126632",
+        "CityId": req.body.CityId,
         "ClientId": tokenGenerator.ClientId,
         "EndUserIp":req.body.EndUserIp,
-        "TransferCategoryType":"2",
+        "TransferCategoryType":req.body.TransferCategoryType,
         "TokenId": req.body.TokenId,
         };
             
-      const response = await axios.post(`${api.GetTransferStaticData}`, data);
-      msg = "Get Transfer Static Data Successfully!";
+      const response = await axios.post(`${api.getTransferStaticData}`, data);
+      msg = "Get transfer static data successfully!";
       actionCompleteResponse(res, response.data, msg);
     } catch (err) {
       console.log(err);
@@ -83,23 +74,24 @@ exports.staticData = async (req, res) => {
   };
 
 
-// not working
-  exports.transfersearch = async (req, res) => {    
+// Transfer Searching
+
+  exports.transferSearch = async (req, res) => {    
     try {
       const data ={
         "TransferTime": req.body.TransferTime,
-        "TransferDate": req.body.TransferDate || "2021-01-07",
-        "AdultCount": req.body.AdultCount || 1,
-        "PreferredLanguage":req.body.PreferredLanguage || 4,
-        "AlternateLanguage": req.body.AlternateLanguage|| 4,
-        "PreferredCurrency": req.body.PreferredCurrency || "INR",
-        "IsBaseCurrencyRequired":req.body.IsBaseCurrencyRequired || false,
-        "PickUpCode": req.body.PickUpCode || 1,
-        "PickUpPointCode": req.body.PickUpPointCode || "LGW",
-        "CityId": req.body.CityId || "126632",
-        "DropOffCode": req.body.DropOffCode || 1,
-        "DropOffPointCode":req.body.DropOffPointCode || "LHR",
-        "CountryCode": req.body.CountryCode || "IN",
+        "TransferDate": req.body.TransferDate,
+        "AdultCount": req.body.AdultCount,
+        "PreferredLanguage":req.body.PreferredLanguage,
+        "AlternateLanguage": req.body.AlternateLanguage,
+        "PreferredCurrency": req.body.PreferredCurrency,
+        "IsBaseCurrencyRequired":req.body.IsBaseCurrencyRequired,
+        "PickUpCode": req.body.PickUpCode,
+        "PickUpPointCode": req.body.PickUpPointCode,
+        "CityId": req.body.CityId,
+        "DropOffCode": req.body.DropOffCode,
+        "DropOffPointCode":req.body.DropOffPointCode,
+        "CountryCode": req.body.CountryCode,
         "EndUserIp": req.body.EndUserIp,
         "TokenId":req.body.TokenId,
      } 
@@ -141,8 +133,9 @@ exports.staticData = async (req, res) => {
 // Russian = 13,
 // Spanish = 14
 
-      const response = await axios.post(`${api.transfersearch}`, data);
-      msg = "transfer search  Successfully!";
+      const response = await axios.post(`${api.transferSearch}`, data);
+      console.log(response,"api")
+      msg = "Transfer search  successfully!";
       actionCompleteResponse(res, response.data, msg);
     } catch (err) {
       console.log(err);
@@ -151,22 +144,24 @@ exports.staticData = async (req, res) => {
   };
 
 
-  exports.GetCancellationPolicy = async (req, res) => {    
+
+  //get cancellation Policy
+
+
+  exports.getCancellationPolicy = async (req, res) => {    
     try {
       const data ={
-        "ResultIndex": req.body.ResultIndex || 1,
-        "TransferCode": req.body.TransferCode || "0|0|0",
-        "VehicleIndex": [
-        ...req.body.VehicleIndex
-        ],
-        "BookingMode": 5,
+        "ResultIndex": req.body.ResultIndex,
+        "TransferCode": req.body.TransferCode,
+        "VehicleIndex":req.body.VehicleIndex,
+        "BookingMode": req.body.BookingMode,
         "EndUserIp": req.body.EndUserIp,
         "TokenId": req.body.TokenId,
-        "AgencyId": req.body.AgencyId,
+        // "AgencyId": req.body.AgencyId,
         "TraceId": req.body.TraceId,
        };
             
-      const response = await axios.post(`${api.GetCancellationPolicy}`, data);
+      const response = await axios.post(`${api.getCancellationPolicy}`, data);
       msg = "Get Transfer Static Data Successfully!";
       actionCompleteResponse(res, response.data, msg);
     } catch (err) {
@@ -178,102 +173,16 @@ exports.staticData = async (req, res) => {
 
   //=======================================================> Booking <===========================================/
 
-  exports.booking = async (req, res) => {    
-    try {
-      const data = {
-        "IsVoucherBooking": false,
-        "NumOfPax": 1,
-       
-        "PaxInfo": [
-        {
-        "PaxId": 0,
-        "Title": "Mr.",
-        "FirstName": "ABC",
-        "LastName": "DEF",
-        "PaxType": 0,
-        "Age": 0,
-        "ContactNumber": "919874563210",
-        "PAN": null
-        }
-        ],
-        "PickUp": {
-        "PickUpDetailName": "London Gatwick Airport",
-        "PickUpDetailCode": "LGW",
-        "Description": "6E-123",
-        "Remarks": "",
-        "Time": "1030",                                       // format:(hhmm)
-        "PickUpDate": "07/01/2021",
-        "AddressLine1": null,
-        "City": null,
-        "Country": null,
-        "ZipCode": null,
-        "AddressLine2": null
-        },
-        "DropOff": {
-        "DropOffDetailName": "London Heathrow Airport",
-        "DropOffDetailCode": "LHR",
-        "Description": "SG-456",
-        "Remarks": "",
-        "Time": "0000",                                       //format:(hhmm)
+//booking 
 
-        "PickUpDate": null,
-        "AddressLine1": null,
-        "City": null,
-        "Country": null,
-        "ZipCode": null,
-        "AddressLine2": null
-        },
-        "Vehicles": [
-        {
-        "VehicleIndex": 1,
-        "Vehicle": "Car",
-        "VehicleCode": "CR",
-        "VehicleMaximumPassengers": 1,
-        "VehicleMaximumLuggage": 1,
-        "Language": "NotSpecified",
-        "LanguageCode": 0,
-        "TransferPrice": {
-        "CurrencyCode": "INR",
-        "BasePrice": 10086.22,
-        "Tax": 0.0,
-        "Discount": 0.0,
-        "PublishedPrice": 11094.84,
-        "PublishedPriceRoundedOff": 11095.0,
-        "OfferedPrice": 11094.84,
-        "OfferedPriceRoundedOff": 11095.0,
-        "AgentCommission": 0.0,
-        "AgentMarkUp": 0.0,
-        "ServiceTax": 0.0,
-        "TDS": 0.0,
-        "TCS": 563.82,
-        "PriceType": 0,
-        "SubagentCommissionInPriceDetailResponse": 0.0,
-        "SubagentCommissionTypeInPriceDetailResponse": 0,
-        "DistributorCommissionInPriceDetailResponse": 0.0,
-        "DistributorCommissionTypeInPriceDetailResponse": 0,
-        "ServiceCharge": 0.0,
-        "TotalGSTAmount": 0.0
-        }
-        }
-        ],
-        "ResultIndex": 1,
-        "TransferCode": "0|0|0",
-        "VehicleIndex": [
-        1
-        ],
-        "BookingMode": 5,
-        "OccupiedPax": [
-        {
-        "AdultCount":  1,
-        }
-        ],
-        "EndUserIp": req.body.EndUserIp,
-        "TokenId": req.body.TokenId,
-        "TraceId": req.body.TraceId
-       };
+
+
+  exports.transferBooking = async (req, res) => {    
+    try {
+      const data = req.body;
  
-      const response = await axios.post(`${api.booking}`, data);
-      msg = "booking Successfully!";
+      const response = await axios.post(`${api.transferBooking}`, data);
+      msg = "Booking successfully!";
       actionCompleteResponse(res, response.data, msg);
     } catch (err) {
       console.log(err);
@@ -281,7 +190,11 @@ exports.staticData = async (req, res) => {
     }
   };
 
-  exports.GenerateVoucher = async (req, res) => {    
+
+
+  //generate Voucher
+
+  exports.generateVoucher = async (req, res) => {    
     try {
       const data ={
         "BookingId": req.body.BookingId,
@@ -290,7 +203,7 @@ exports.staticData = async (req, res) => {
         "TokenId": req.body.TokenId,
         };
  
-      const response = await axios.post(`${api.GenerateVoucher}`, data);
+      const response = await axios.post(`${api.generateVoucher}`, data);
       msg = "Voucher Generated Successfully!";
       actionCompleteResponse(res, response.data, msg);
     } catch (err) {
@@ -299,6 +212,10 @@ exports.staticData = async (req, res) => {
     }
   };
   
+
+
+  //retrieve booking details
+
 
   exports.retrieveBookingDetails = async (req, res) => {    
     try {
@@ -310,25 +227,29 @@ exports.staticData = async (req, res) => {
         };
  
       const response = await axios.post(`${api.retrieveBookingDetails}`, data);
-      msg = " Successfully get booking details";
+      msg = " Successfully get booking details!";
       actionCompleteResponse(res, response.data, msg);
     } catch (err) {
       console.log(err);
       sendActionFailedResponse(res, {}, err.message);
     }
   };
+
+
+  //send change request
+
   
-  exports.SendChangeRequest = async (req, res) => {    
+  exports.sendChangeRequest = async (req, res) => {    
     try {
       const data ={
-        "RequestType": 4,
-        "Remarks": "cancelling confirmed from service",
+        "RequestType": req.body.RequestType,
+        "Remarks": req.body.Remarks,
         "BookingId": req.body.BookingId,
         "EndUserIp":req.body.EndUserIp,
         "TokenId": req.body.TokenId,
         };
  
-      const response = await axios.post(`${api.sendcancleRequest}`, data);
+      const response = await axios.post(`${api.sendCancelRequest}`, data);
       msg = " Successfully send cancle request";
       actionCompleteResponse(res, response.data, msg);
     } catch (err) {
@@ -337,15 +258,19 @@ exports.staticData = async (req, res) => {
     }
   };
 
-  exports.getcancleRequeststatus = async (req, res) => {    
+
+  //get cancel request status
+
+  exports.getcancelRequeststatus = async (req, res) => {    
     try {
       const data ={
-        "ChangeRequestId": req.body.changeRequestId,
+        "ChangeRequestId": req.body.ChangeRequestId,
         "EndUserIp":req.body.EndUserIp,
         "TokenId": req.body.TokenId,
         };
      
-      const response = await axios.post(`${api.getcancleRequeststatus}`, data);
+      const response = await axios.post(`${api.getCancelRequeststatus}`, data);
+      console.log(response.data)
       msg = " Successfully get  cancle request status";
       actionCompleteResponse(res, response.data, msg);
     } catch (err) {
