@@ -235,6 +235,7 @@ exports.internationalgetAll = async (req, res) => {
     let pagintionData = 10;
 
     const apiSearch = new Internationalapi(internationl.find({is_active:1}).find(), req.query)
+    .sort({createdAt: -1 })
       .search()
       .filter()
       .pagintion(pagintionData);
@@ -320,7 +321,7 @@ exports.crmPackage= async (req, res) => {
   try {
     let pagintionData = 10; 
 
-    let pakage = await internationl.find({is_active:1});
+    let pakage = await internationl.find({is_active:1}).sort({createdAt: -1 });
     // console.log(pakage.length,"package")
 
     for (let p = 0; p < pakage.length; p++) {
@@ -383,7 +384,7 @@ exports.crmPackage= async (req, res) => {
 exports.inactivePackages = async (req, res) =>{
   try {
 
-    const data=await internationl.find({is_active:0});
+    const data=await internationl.find({is_active:0}).sort({createdAt: -1 });
 
     msg = "Search inActive packages successfully";
     actionCompleteResponse(res, data, msg);
@@ -498,7 +499,7 @@ exports.beachesPackages = async (req, res) => {
 
     // console.log('Generated Query:', query);
 
-    const packages = await internationl.find({ $and: [{ is_active: 1 }, query] });
+    const packages = await internationl.find({ $and: [{ is_active: 1 }, query] }).sort({createdAt: -1 });
 
     if (packages.length > 0) {
       const msg =
@@ -637,7 +638,7 @@ exports.countryPackage = async (req, res) => {
       return res.status(400).json({ error: 'Country parameter is required.' });
     }
 
-    const packages = await internationl.find({ $and: [{ is_active: 1 }, {'country':country}] });
+    const packages = await internationl.find({ $and: [{ is_active: 1 }, {'country':country}] }).sort({createdAt: -1 });
 
     if (packages.length > 0) {
       const msg =`packages found for ${country}`;
@@ -662,7 +663,7 @@ exports.agentPackages = async (req, res) => {
       // console.log("query");
       const query = isActive? { is_active: isActive, userId: userId } : { userId: userId };
       // console.log(query,"query");
-       packages = await internationl.find(query);
+       packages = await internationl.find(query).sort({createdAt: -1 });
     //  console.log("Vpackages",packages.length);
     }
     
@@ -684,7 +685,7 @@ exports.agentAllPackage= async (req, res) => {
     
     if (userId) {
 
-       packages = await internationl.find({userId:userId});
+       packages = await internationl.find({userId:userId}).sort({createdAt: -1 });
     //  console.log("Vpackages",packages.length);
     }
     
@@ -705,8 +706,8 @@ exports.agentLeads = async (req, res) =>{
     const agentPackagesData=await internationl.find(agent);
     const filterData = agentPackagesData.map((item) => item._id);
 
-    const userBookings = await UserBooking.find({ packageId: { $in: filterData } });
-    const agentBookings = await packagebookingSchema.find({ pakageid: { $in: filterData } })
+    const userBookings = await UserBooking.find({ packageId: { $in: filterData } }).sort({createdAt: -1 });
+    const agentBookings = await packagebookingSchema.find({ pakageid: { $in: filterData } }).sort({createdAt: -1 })
 
     const response = {
       agentPackages: agentPackagesData,

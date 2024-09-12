@@ -19,7 +19,7 @@ module.exports = function (app) {
 //get transfer static data
   app.post(
     "/skytrails/transfer/GetTransferStaticData",
-    controller.GetTransferStaticData
+    controller.getTransferStaticData
   );
 
   //search transfer data

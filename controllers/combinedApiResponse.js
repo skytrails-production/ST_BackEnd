@@ -1407,6 +1407,7 @@ const sortedFinalRes= finalResArray.sort((a, b) => {
     return next(error);
   }
 }
+
 exports.combineTvoKafila = async (req, res, next) => {
   try {
     const data = req.body;
@@ -1489,7 +1490,6 @@ exports.combineTvoKafila = async (req, res, next) => {
     return next(error);
   }
 };
-
 
 const generateAmadeusRequest = (data) => {
   // Generate the SOAP request XML based on the provided data

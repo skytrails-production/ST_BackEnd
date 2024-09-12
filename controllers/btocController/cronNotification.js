@@ -59,33 +59,29 @@ const notifications = [
     body: `Don’t let payments hold you back. Travel now, pay at your convenience!✈️`,
   },
   {
-    message: `Your ₹500 Discount Awaits!`,
-    body: `SkyFirst booking? Get upto ₹500 off and start your journey right!🌍✨`,
+    message: `Like Jolly LLB, we'll make you laugh and save you money!`,
+    body: `Amazing offers are available. Book now!`,
   },
   {
-    message: `Booking Just Got Easier!`,
-    body: `Smooth and hassle-free bookings await you. Start your journey in just a few clicks!`,
+    message: `Yeh Dosti Hum Nahi Todenge! 🤝`,
+    body: `Plan a group trip with your besties and create lifelong memories together.`,
   },
   {
-    message: `Adventure First, Payments Later!`,
-    body: `Explore new destinations without upfront costs. Pay later, travel now!`,
+    message: `Kuch Kuch Hota Hai! 💘`,
+    body: `Find your perfect travel companion and embark on a romantic getaway.`,
   },
   {
     message: `Book Now, Pay When You Can!`,
     body: `No need to delay your travels. Book now and choose a payment plan that works for you!`,
   },
-  // {
-  //   message: `🤔 Soch kya rhe ho neeche daikho `,
-  //   body: `The skytrails pr apko millega har services par 20% ka offer`,
-  // },
-  // {
-  //   message: `🌊 Take your partner to a beach getaway!`,
-  //   body: `Enjoy 20% off on your travel packages! Book now`,
-  // },
-  // {
-  //   message: `Last Chance Alert! `,
-  //   body: `Don't miss out on our flash sale - book now before it's gone! ⏰✈`,
-  // },
+  {
+    message: `username,Dil Chahta Hai Travel! 🎶`,
+    body: `Explore new horizons and create unforgettable memories. Your next adventure awaits!`,
+  },
+  {
+    message: `We're the 'Friends' of your travel plans.`,
+    body: `Okay, maybe we're not as iconic as the actual 'Friends,' but we're definitely your go-to for travel.`,
+  },
   // {
   //   message: `Escape the ordinary!`,
   //   body: `Explore our curated list of off-the-beaten-path destinations for your next adventure! 🗺🌟`,

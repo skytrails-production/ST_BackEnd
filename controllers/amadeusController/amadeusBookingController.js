@@ -83,7 +83,7 @@ exports.amdsFlightBooking = async (req, res, next) => {
       });
     }
     data.userId = isUserExist._id;
-    data.bookingStatus = bookingStatus.BOOKED;
+    // data.bookingStatus = bookingStatus.BOOKED;
     // Format the date using the toLocaleDateString() function
     let formattedDate = new Date().toLocaleDateString("en-GB", options);
     const TemplateNames = [

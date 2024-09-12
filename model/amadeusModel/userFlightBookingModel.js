@@ -149,7 +149,8 @@ const flightBookingSchema = new mongoose.Schema(
     },
     bookingStatus: {
       type: String,
-      default: bookingStatus.BOOKED,
+      enum:[bookingStatus.BOOKED,bookingStatus.CANCEL,bookingStatus.FAILED,bookingStatus.PENDING],
+      default: bookingStatus.BOOKED
     },
     status: {
       type: String,

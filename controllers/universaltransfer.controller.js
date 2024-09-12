@@ -1,5 +1,6 @@
 const axios = require("axios");
 const { tokenGenerator, api } = require("../common/const");
+const xml2js = require('xml2js');
 
 const {
   actionCompleteResponse,
@@ -54,24 +55,78 @@ exports.staticData = async (req, res) => {
 
 //get transfer data
 
-  exports.GetTransferStaticData = async (req, res) => {    
-    try {
-      const data ={
-        "CityId": req.body.CityId,
-        "ClientId": tokenGenerator.ClientId,
-        "EndUserIp":req.body.EndUserIp,
-        "TransferCategoryType":req.body.TransferCategoryType,
-        "TokenId": req.body.TokenId,
-        };
+  // exports.getTransferStaticData = async (req, res) => {    
+  //   try {
+  //     const data ={
+  //       "CityId": req.body.CityId,
+  //       "ClientId": tokenGenerator.ClientId,
+  //       "EndUserIp":req.body.EndUserIp,
+  //       "TransferCategoryType":req.body.TransferCategoryType,
+  //       "TokenId": req.body.TokenId,
+  //       };
             
+  //     const response = await axios.post(`${api.getTransferStaticData}`, data);
+  //     msg = "Get transfer static data successfully!";
+  //     actionCompleteResponse(res, response.data, msg);
+  //   } catch (err) {
+  //     console.log(err);
+  //     sendActionFailedResponse(res, {}, err.message);
+  //   }
+  // };
+
+
+
+  exports.getTransferStaticData = async (req, res) => {    
+    try {
+      const data = {
+        CityId: req.body.CityId,
+        ClientId: tokenGenerator.ClientId,
+        EndUserIp: req.body.EndUserIp,
+        TransferCategoryType: req.body.TransferCategoryType,
+        TokenId: req.body.TokenId,
+      };
+    
+      // Fetch the XML data from the API
       const response = await axios.post(`${api.getTransferStaticData}`, data);
-      msg = "Get transfer static data successfully!";
-      actionCompleteResponse(res, response.data, msg);
-    } catch (err) {
-      console.log(err);
-      sendActionFailedResponse(res, {}, err.message);
-    }
-  };
+      const xmlData = response?.data?.TransferStaticData;
+  
+      // Create an XML parser instance
+      const parser = new xml2js.Parser({ explicitArray: false });
+  
+      // Parse the XML data to JSON
+      parser.parseString(xmlData, (err, result) => {
+        if (err) {
+          throw new Error('Error parsing XML');
+        }
+  
+        // Transform the parsed XML into the desired JSON format
+        const transformedData = {
+              ArrayOfBasicAirportPropertyInfo: result.ArrayOfBasicAirportPropertyInfo.BasicAirportPropertyInfo.map(info => ({
+                AirportCode: info.$.AirportCode,
+                AirportName: info.$.AirportName,
+                CityCode: info.$.CityCode,
+                cityName: info.$.cityName,
+                TBOCityId: info.$.TBOCityId,
+                CountryCode: info.$.CountryCode
+              }))          
+        };
+
+        const modifiedData={
+          Error:response?.data?.Error,
+          Status:response?.data?.Status,
+          TokenId:response?.data?.TokenId,
+          TransferStaticData:transformedData
+        }
+
+
+        // Send the transformed JSON data as the response
+      actionCompleteResponse(res, modifiedData, "Get transfer static data successfully!");
+    });
+  } catch (err) {
+    console.log(err);
+    sendActionFailedResponse(res, {}, err.message);
+  }
+};
 
 
 // Transfer Searching
@@ -95,6 +150,9 @@ exports.staticData = async (req, res) => {
         "EndUserIp": req.body.EndUserIp,
         "TokenId":req.body.TokenId,
      } 
+
+    //  console.log(data,"data");
+    //  return;
 //  Mandatory                                            
 // -PickUpCode should be a blow number or
 // 0 = Accommodation
@@ -134,7 +192,7 @@ exports.staticData = async (req, res) => {
 // Spanish = 14
 
       const response = await axios.post(`${api.transferSearch}`, data);
-      console.log(response,"api")
+      // console.log(response,"api")
       msg = "Transfer search  successfully!";
       actionCompleteResponse(res, response.data, msg);
     } catch (err) {
@@ -157,10 +215,12 @@ exports.staticData = async (req, res) => {
         "BookingMode": req.body.BookingMode,
         "EndUserIp": req.body.EndUserIp,
         "TokenId": req.body.TokenId,
-        // "AgencyId": req.body.AgencyId,
+        "AgencyId": tokenGenerator?.TokenAgencyId,
         "TraceId": req.body.TraceId,
        };
             
+      //  console.log("get cancellation",data,"data");
+      //  return;
       const response = await axios.post(`${api.getCancellationPolicy}`, data);
       msg = "Get Transfer Static Data Successfully!";
       actionCompleteResponse(res, response.data, msg);
@@ -180,6 +240,8 @@ exports.staticData = async (req, res) => {
   exports.transferBooking = async (req, res) => {    
     try {
       const data = req.body;
+      // console.log("Booking",data);
+      // return;
  
       const response = await axios.post(`${api.transferBooking}`, data);
       msg = "Booking successfully!";
@@ -198,7 +260,7 @@ exports.staticData = async (req, res) => {
     try {
       const data ={
         "BookingId": req.body.BookingId,
-        "AgencyId": req.body.AgencyId,
+        "AgencyId": tokenGenerator?.TokenAgencyId,
         "EndUserIp":req.body.EndUserIp,
         "TokenId": req.body.TokenId,
         };
@@ -221,10 +283,13 @@ exports.staticData = async (req, res) => {
     try {
       const data ={
         "BookingId": req.body.BookingId,
-        "AgencyId": req.body.AgencyId,
+        "AgencyId": tokenGenerator?.TokenAgencyId,
         "EndUserIp":req.body.EndUserIp,
         "TokenId": req.body.TokenId,
         };
+
+        // console.log(data,"Get Booking");
+        // return;
  
       const response = await axios.post(`${api.retrieveBookingDetails}`, data);
       msg = " Successfully get booking details!";
@@ -270,7 +335,7 @@ exports.staticData = async (req, res) => {
         };
      
       const response = await axios.post(`${api.getCancelRequeststatus}`, data);
-      console.log(response.data)
+      // console.log(response.data)
       msg = " Successfully get  cancle request status";
       actionCompleteResponse(res, response.data, msg);
     } catch (err) {
@@ -279,3 +344,4 @@ exports.staticData = async (req, res) => {
     }
   };
  
+  
