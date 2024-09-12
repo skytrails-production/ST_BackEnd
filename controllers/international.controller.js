@@ -235,7 +235,6 @@ exports.internationalgetAll = async (req, res) => {
     let pagintionData = 10;
 
     const apiSearch = new Internationalapi(internationl.find({is_active:1}).find(), req.query)
-    .sort({createdAt: -1 })
       .search()
       .filter()
       .pagintion(pagintionData);
