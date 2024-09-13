@@ -47,6 +47,7 @@ exports.uploadDocuments = async (req, res) =>{
       ContentType: file.mimetype,
       ACL: "public-read",
     };
+    let data1;
     s3.upload(s3Params, async (err, data) => {
       if (err) {
         res.status(500).send(err);

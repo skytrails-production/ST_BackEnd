@@ -84,7 +84,6 @@ exports.updateadvertisementController = async (req, res, next) => {
         return next(error);
     }
 }
-// approvalStatus:{$nin:[approvalStatus.PENDING,approvalStatus.REJECT]},
 exports.getadvertisementController = async (req, res, next) => {
     try {
         const { page, limit } = req.query;

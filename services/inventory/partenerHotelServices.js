@@ -40,8 +40,38 @@ const partenerHotelServices={
             page: Number(page) || 1,
             limit: Number(limit) || 8,
             sort: { createdAt: -1 },
+            populate: {
+                path: 'partnerId', // The key to populate, e.g., 'hotelOwner'
+                select: 'channelMngrName managerName partnerId email phoneNumber', // The fields to include from the populated key
+            },
         };
         return await partenerHotelModel.paginate(query, options);
-    }
+    },
+    paginateHotelData: async (body) => {
+        // userType: { $ne: [userType.ADMIN,userType.SUBADMIN] }
+        let query = {};
+        const { page, limit, search } = body;
+        if (search) {
+          const searchRegex = new RegExp(search, 'i');
+          query.$or = [
+            { hotelName: searchRegex },
+            { hotelCity: searchRegex },
+            { status: searchRegex },
+            { hotelCountry: searchRegex },
+            { locality: searchRegex },
+            { hotelAddress: searchRegex },
+          ];
+        }
+        let options = {
+          page: Number(page) || 1,
+          limit: Number(limit) || 15,
+          populate: {
+                path: 'partnerId', // The key to populate, e.g., 'hotelOwner'
+                select: 'channelMngrName managerName partnerId email phoneNumber', // The fields to include from the populated key
+            },
+          sort: { createdAt: -1 },
+        };
+        return await partenerHotelModel.paginate(query, options);
+      },
 }
 module.exports ={partenerHotelServices}

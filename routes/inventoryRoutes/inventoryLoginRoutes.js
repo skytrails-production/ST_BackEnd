@@ -13,16 +13,7 @@ module.exports = function (app) {
     next();
   });
 
-  app.post("/skytrails/login/inventory/api", Controller.loginUser);
-  app.post("/skytrails/register/inventory/api", Controller.registerUser);
-  app.post(
-    "/skytrails/hotelform/inventory/api",
-    upload.fields([
-      { name: "hotelImages", maxCount: 10 },
-      { name: "roomsImages", maxCount: 10 },
-    ]),
-    Controller.createHotelForm
-  );
+  
   app.post(
     "/skyTrails/api/inventory/createInventory",
     upload.fields([

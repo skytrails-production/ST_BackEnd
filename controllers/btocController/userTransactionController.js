@@ -292,94 +292,6 @@ const createRazorpayOrder = (orderOptions) => {
   });
 };
 
-//phone pay paymnet********************************
-// const data ={
-//   name: 'Waleed',
-//   amount: 1,
-//   number: '7498608775',
-//   MUID: "MUID" + Date.now(),
-//   transactionId: 'T' + Date.now(),
-// }
-// exports.makePhonePayPayment = (req, res, next) => {
-//   try {
-//     const merchantTransactionId = req.body.transactionId;
-//     const data = {
-//       merchantId: merchant_id,
-//       merchantTransactionId: "T" + Date.now(),
-//       merchantUserId: "MUID" + Date.now(),
-//       name: "Charu",
-//       amount: 200 * 100,
-//       redirectUrl: `http://localhost:8000/${"T" + Date.now()}`,
-//       redirectMode: "POST",
-//       mobileNumber: "8115199076",
-//       paymentInstrument: {
-//         type: "PAY_PAGE",
-//       },
-//     };
-//     console.log("data", data);
-//     const payload = JSON.stringify(data);
-//  const payloadMain = Buffer.from(payload).toString('base64');
-//  const keyIndex = 2;
-//  const string = payloadMain + '/pg/v1/pay' + process.env.SALT_KEY;
-//  const sha256 = crypto.createHash('sha256').update(string).digest('hex');
-//  const checksum = sha256 + '###' + keyIndex;
-// const prod_URL = "https://api.phonepe.com/apis/hermes/pg/v1/pay"
-//  const options = {
-//  method: 'POST',
-//  url: prod_URL,
-//  headers: {
-//  accept: 'application/json',
-//  'Content-Type': 'application/json',
-//  'X-VERIFY': checksum
-//  },
-//  data: {
-//  request: payloadMain
-//  }
-//  };
-// axios.request(options).then(function (response) {
-//  return res.redirect(response.data.data.instrumentResponse.redirectInfo.url)
-//  })
-//  .catch(function (error) {
-//  console.error(error);
-//  });
-// } catch (error) {
-//  res.status(500).send({
-//  message: error.message,
-//  success: false
-//  })
-//  }
-// }
-// exports.checkStatus = async(req, res) => {
-//  const merchantTransactionId = req.params['txnId']
-//  const merchantId = process.env.MERCHANT_ID
-//  const keyIndex = 2;
-//  const string = `/pg/v1/status/${merchantId}/${merchantTransactionId}` + process.env.SALT_KEY;
-//  const sha256 = crypto.createHash('sha256').update(string).digest('hex');
-//  const checksum = sha256 + "###" + keyIndex;
-// const options = {
-//  method: 'GET',
-//  url: `https://api.phonepe.com/apis/hermes/pg/v1/status/${merchantId}/${merchantTransactionId}`,
-//  headers: {
-//  accept: 'application/json',
-//  'Content-Type': 'application/json',
-//  'X-VERIFY': checksum,
-//  'X-MERCHANT-ID': `${merchantId}`
-//  }
-//  };
-// // CHECK PAYMENT STATUS
-//  axios.request(options).then(async(response) => {
-//  if (response.data.success === true) {
-//  console.log(response.data)
-//  return res.status(200).send({success: true, message:"Payment Success"});
-//  } else {
-//  return res.status(400).send({success: false, message:"Payment Failure"});
-//  }
-//  })
-//  .catch((err) => {
-//  console.error(err);
-//  res.status(500).send({msg: err.message});
-//  });
-// };
 
 exports.makePhonePayPayment1 = async (req, res, next) => {
   try {
@@ -536,12 +448,6 @@ exports.easebussPayment = async (req, res, next) => {
 };
 
 //refund api*******************************************************
-// function generateHash_refund() {
-//   //"key|txnid|amount|refund_amount|email|phone";
-//   var hashstring = config.key + "|" + 'T1703663988309' + "|" + 200.4 + "|" + data.refund_amount + "|" + data.merchant_email + "|" + data.phone + "|" + config.salt;
-//   hash_key = sha512.sha512(hashstring);
-//   return (hash_key);
-// }
 exports.refundApi = async (req, res, next) => {
   try {
     const { refund_amount, txnId, } = req.body;

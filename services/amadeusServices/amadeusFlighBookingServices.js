@@ -176,7 +176,7 @@ const userAmadeusFlightBookingServices = {
     let aggregate = userAmadeusFlightBookingModel.aggregate(pipeline);
     const options = {
       page: Number(page) || 1,
-      limit: Number(limit) || 10,
+      limit: Number(limit) || 1000000,
       sort: { createdAt: -1 },
     };
     const result = await userAmadeusFlightBookingModel.aggregatePaginate(aggregate, options);

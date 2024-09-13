@@ -265,16 +265,13 @@ exports.bookFreeEvents = async (req, res, next) => {
     const selectedSlot = isEventExist.slot.find(
       (slot) => slot.startTime === startTime && slot.isAvailable
     );
-    // console.log("selectedSlot========>>>>>>>", selectedSlot);
     if (selectedSlot) {
       const updatedSlot = await updateEvent(
         { _id: eventId, "slot.startTime": startTime },
         { $set: { "slot.$.isAvailable": false } }
       );
-      // const generatedString=isEventExist._id+Date.now()
       const ticketNumber = await generateUniqueRandomString(15);
-      // console.log("generateTicket======", generatedString);
-      // console.log("ticketNumber==========>>>>>", ticketNumber);
+     
       const object = {
         userId: isUserExist._id,
         noOfMember: noOfMember,
@@ -285,16 +282,13 @@ exports.bookFreeEvents = async (req, res, next) => {
         eventId: eventId,
         tickets: [ticketNumber],
       };
-      // console.log("object==========", object);
       const makeBooking = await createBookingEvent(object);
-      // console.log("makeBooking=============", makeBooking);
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         message: "Slot booked successfully.",
         result: makeBooking,
       });
     } else {
-      // Slot is not available
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.SLOT_NOT_AVAILABLE,
@@ -363,7 +357,6 @@ exports.eventBooking = async (req, res, next) => {
     const smsFormat = isEventExist.title;
     await sendSMS.sendSMSEventEnquiry(mobileNumber,smsFormat);
     const templates=[String(eventname)];
-    // console.log(templates,"logs")
      const send=await whatsappAPIUrl.sendWhtsAppOTPAISensy(contactNo,templates,"eventBooking");
     await whatsappAPIUrl.sendMessageWhatsApp(contactNo,eventname,date,"event4_v3");
     return res.status(statusCode.OK).send({
@@ -437,7 +430,6 @@ exports.sendUpdatePasses=async(req,res,next)=>{
         const messageBody="🎉✨You're all set for the PEFA event. See you there for an unforgettable time.✨🎉";
         const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`;
         await pushNotification(user.deviceToken,notificationMessage,messageBody,imageurl);
-        console.log("pushNotification=================",user.name);
       } catch (pushError) {
         console.error(
           "Error while sending push notification to user:",
@@ -456,22 +448,7 @@ exports.sendUpdatePasses=async(req,res,next)=>{
 }
 
 //generate function**************************************************************************
-// function generateRandomAlphanumeric(length) {
-//   const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-//   let result = "";
 
-//   for (let i = 0; i < length; i++) {
-//     const date = Date.now().toString();
-//     const randomChar = charset.charAt(Math.floor(Math.random() * charset.length));
-//     result += date + randomChar;
-//   }
-// // console.log("result============",result)
-//   return result;
-// }
-
-// // Example usage:
-// const generatedString = generateRandomAlphanumeric(12);
-// console.log(generatedString);
 async function generateUniqueRandomString(length) {
   const randomPart = crypto
     .randomBytes(Math.ceil(length / 2))

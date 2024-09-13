@@ -3,6 +3,7 @@ const controller = require("../controllers/auth.controller");
 const agentController=require("../controllers/b2bauth.controller")
 const subAdminController=require("../controllers/subAdminController");
 const addWebBanner=require('../controllers/btocController/webAdvertisemnetController');
+const inventoryController=require('../controllers/inventoryController/inventoryController')
 const { authJwt } = require("../middleware");
 const SchemaValidator = require("../utilities/validations.utilities");
 const schemas = require('../utilities/schema.utilities');
@@ -90,5 +91,6 @@ app.post('/skyTrails/api/admin/createDailyQuiz',controller.createDailyQuiz);
 app.put('/skyTrails/api/admin/updateQuizStatus',controller.dailyQuizStatus);
 app.delete("/skyTrails/api/admin/deleteAgent",agentController.deleteAgent);
 app.get('/skyTrails/api/admin/getAllPackageEnquiryOnCRM',packageControlelr.packageEnquiryListForCrm);
-app.put("/skyTrails/api/admin/approvePartnerAccountStatus",SchemaValidator(schemas.partnerApprovalSchema),controller.approvePartnerAccount)
+app.put("/skyTrails/api/admin/approvePartnerAccountStatus",SchemaValidator(schemas.partnerApprovalSchema),controller.approvePartnerAccount);
+app.get('/skyTrails/api/admin/inventory/getAllInhouseHotels',inventoryController.getAllHotelInventoryList);
 };

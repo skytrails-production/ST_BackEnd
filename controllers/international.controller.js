@@ -108,6 +108,7 @@ exports.internationalCreate = async (req, res) => {
         userId:reqData.userId,
         pakage_title: reqData.pakage_title,
         package_img: imageUrls,
+        pakage_img:imageUrls[0],
         destination: reqData.destination,
         country: reqData.country,
         days: reqData.days,
@@ -990,6 +991,15 @@ exports.internationalgetAdminAll = async (req, res) => {
   }
 };
 
+exports.getAllPackagesList=async(req,res,next)=>{
+  try {
+    
+  } catch (error) {
+    console.log("error while trying to get package List",error);
+    return next(error);
+  }
+}
+
 
 exports.packageCityData = async (req, res) =>{ 
   const file = req.file; // Access the uploaded file
@@ -1284,10 +1294,7 @@ exports.beachesPackagesCategoryArr1 = async (req, res, next) => {
   }
 };
 
-
-
 //b2c landing page packages enquiry data
-
 exports.packagesEnquiry = async (req, res) =>{
 
   try {

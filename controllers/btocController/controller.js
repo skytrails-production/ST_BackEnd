@@ -1991,7 +1991,7 @@ exports.addMobileNumber = async (req, res, next) => {
         },
       }
     );
-    const userMobile = isUserExist.phone.country_code + isUserExist.phone.mobile_number;
+    const userMobile = +91 + mobile_number;
     await sendSMS.sendSMSForOtp(mobile_number, otp);
     const var1 =isUserExist && isUserExist.username !== "" ? isUserExist.username : "Dear";
     const templateParams = [String(var1), String(otp)];
@@ -2015,3 +2015,15 @@ exports.addMobileNumber = async (req, res, next) => {
   }
 };
 
+exports.addProfileContactDetail=async(req,res,next)=>{
+  try {
+    const updateUser=await updateUser({_id:req.params.userId},{'phone.mobile_number':req.params.mobile_number});
+    const token = await commonFunction.getToken({
+      _id: updateUser._id,
+      mobile_number: req.params.mobile_number,
+    });
+    return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.LOGIN_SUCCESS, result: token });
+  } catch (error) {
+    
+  }
+}

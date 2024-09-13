@@ -21,6 +21,7 @@ const internationlSchema = mongoose.Schema(
       pakage_img: {
         type: String,
         require: false,
+        default:""
       },
       package_img: {
         type: Array,

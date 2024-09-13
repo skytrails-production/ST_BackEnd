@@ -155,10 +155,7 @@ exports.combinedAPI1 = async (req, res, next) => {
 exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
   try {
     const data = req.body;
-    data.formattedDate = moment(
-      data.Segments[0].PreferredDepartureTime,
-      "DD MMM, YY"
-    ).format("DDMMYY"); // Format the date as "DDMMYY"
+    data.formattedDate = moment(data.Segments[0].PreferredDepartureTime).format("DDMMYY"); // Format the date as "DDMMYY"
     const api1Url = commonUrl.api.flightSearchURL;
     data.totalPassenger = parseInt(data.AdultCount) + parseInt(data.ChildCount);
 
@@ -1568,19 +1565,19 @@ const generateAmadeusRequest = (data) => {
                       </traveller>
                        `;
     }
-    soapRequest += `</paxReference>`;
+  soapRequest += `</paxReference>`;
   }
-
   if (data.InfantCount > 0) {
+    soapRequest += `<paxReference xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A">
+    <ptc>INF</ptc>`
     for (let i = 0; i < data.InfantCount; i++) {
-      soapRequest += `<paxReference xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A">
-      <ptc>INF</ptc>
+      soapRequest += `
                       <traveller>
                           <ref>${i + 1}</ref>
                           <infantIndicator>${i + 1}</infantIndicator>
                       </traveller>`;
     }
-    soapRequest += `</paxReference>`;
+  soapRequest += `</paxReference>`;
   }
   soapRequest += `
  
