@@ -107,7 +107,7 @@ exports.updateCityListWithCountryNames = async (req, res) => {
       }
     }
 
-    console.log("All cities updated with country names");
+    // console.log("All cities updated with country names");
     res.status(200).send("All cities updated with country names");
   } catch (error) {
     console.error("Error:", error);
@@ -1322,27 +1322,29 @@ exports.searchTboGrnCombineHotelCityWise = async (req, res) => {
         };
       });
 
-
       // Step 1: Filter hotels with category 5
-const category5Hotels = uniqueHotels?.filter(hotel => (hotel?.category||hotel?.HotelCategory) === 5);
-// console.log(category5Hotels.length,"length");
-// Step 2: Sort category 5 hotels by price in descending order
-const sortedCategory5Hotels = category5Hotels?.sort((a, b) => a.price - b.price);
+      const category5Hotels = uniqueHotels?.filter(
+        (hotel) => (hotel?.category || hotel?.HotelCategory) === 5
+      );
+      // console.log(category5Hotels.length,"length");
+      // Step 2: Sort category 5 hotels by price in descending order
+      const sortedCategory5Hotels = category5Hotels?.sort(
+        (a, b) => a.price - b.price
+      );
 
-// Step 3: Select the top 5 hotels from the sorted list
-const top5Hotels = sortedCategory5Hotels.slice(0, 5);
-// console.log(top5Hotels.length,"length");
-const top5HotelsWithFeature = top5Hotels.map(hotel => ({
-  ...hotel,         // Spread existing hotel properties
-  featureHotel: true // Add the new featureHotel property
-}));
+      // Step 3: Select the top 5 hotels from the sorted list
+      const top5Hotels = sortedCategory5Hotels?.slice(0, 5);
+      // console.log(top5Hotels.length,"length");
+      const top5HotelsWithFeature = top5Hotels?.map((hotel) => ({
+        ...hotel, // Spread existing hotel properties
+        featureHotel: true, // Add the new featureHotel property
+      }));
 
-// Step 4: Filter out hotels with category 5 from the original list
-// const hotelsNotInCategory5 = uniqueHotels?.filter(hotel => hotel?.category !== 5);
+      // Step 4: Filter out hotels with category 5 from the original list
+      // const hotelsNotInCategory5 = uniqueHotels?.filter(hotel => hotel?.category !== 5);
 
-// Combine top 5 hotels with the rest
-const finalList = [...top5HotelsWithFeature, ...uniqueHotels];
-
+      // Combine top 5 hotels with the rest
+      const finalList = [...top5HotelsWithFeature, ...uniqueHotels];
 
       const mainData = {
         // Hotels: uniqueHotels,
@@ -1374,16 +1376,16 @@ const finalList = [...top5HotelsWithFeature, ...uniqueHotels];
       );
       const msg = "Single Hotel Search Successfully!";
 
-      if (response.data.hotels) {
-        response.data.hotels.forEach((hotel) => {
-          hotel.search_id = response.data.search_id;
+      if (response?.data?.hotels) {
+        response?.data?.hotels.forEach((hotel) => {
+          hotel?.search_id = response?.data?.search_id;
         });
 
         // Remove search_id from the root level
         delete response.data.search_id;
       }
       // Optionally, prepare the modified data
-      const modifiedData = response.data;
+      const modifiedData = response?.data;
       return actionCompleteResponse(res, modifiedData, msg);
     }
   } catch (err) {
@@ -1436,7 +1438,7 @@ const cityListFunction = async (keyword) => {
   const mergedMap = new Map();
 
   // Process TboHotelCityList data
-  tboData.forEach((tboItem) => {
+  tboData?.forEach((tboItem) => {
     if (!mergedMap.has(tboItem.cityName)) {
       mergedMap.set(tboItem.cityName, {
         cityName: tboItem.cityName,
@@ -1451,7 +1453,7 @@ const cityListFunction = async (keyword) => {
       });
     } else {
       // Update existing entry with TboHotelCityList data
-      const existingItem = mergedMap.get(tboItem.cityName);
+      const existingItem = mergedMap?.get(tboItem.cityName);
       existingItem.tboCityCode = tboItem.cityCode || existingItem.tboCityCode;
       existingItem.tboCountryName =
         tboItem.countryName || existingItem.tboCountryName;
@@ -1465,7 +1467,7 @@ const cityListFunction = async (keyword) => {
   });
 
   // Process GrnCityList data
-  grnData.forEach((grnItem) => {
+  grnData?.forEach((grnItem) => {
     if (!mergedMap.has(grnItem.cityName)) {
       mergedMap.set(grnItem.cityName, {
         cityName: grnItem.cityName,
@@ -1496,7 +1498,7 @@ const cityListFunction = async (keyword) => {
   let finalData = [];
   const seen = new Map();
 
-  mergedData.forEach((item) => {
+  mergedData?.forEach((item) => {
     const key = `${item.cityName}-${
       item.tboCountryName || item.grnCountryName
     }-${item.tboCountryCode || item.grnCountryCode}`;
@@ -1506,13 +1508,13 @@ const cityListFunction = async (keyword) => {
     }
   });
 
-  finalData = finalData.sort((a, b) => a.cityName.localeCompare(b.cityName));
+  finalData = finalData?.sort((a, b) => a.cityName.localeCompare(b.cityName));
 
   // const sortCitiesByExactMatch=(finalData,keyword)=>{
 
   const term = keyword.toLowerCase();
 
-  finalData = finalData.sort((a, b) => {
+  finalData = finalData?.sort((a, b) => {
     // Convert city names to lowercase for case-insensitive comparison
     const cityNameA = a.cityName.toLowerCase();
     const cityNameB = b.cityName.toLowerCase();
