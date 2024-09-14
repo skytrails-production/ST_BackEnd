@@ -1332,12 +1332,16 @@ const sortedCategory5Hotels = category5Hotels?.sort((a, b) => b.price - a.price)
 // Step 3: Select the top 5 hotels from the sorted list
 const top5Hotels = sortedCategory5Hotels.slice(0, 5);
 // console.log(top5Hotels.length,"length");
+const top5HotelsWithFeature = top5Hotels.map(hotel => ({
+  ...hotel,         // Spread existing hotel properties
+  featureHotel: true // Add the new featureHotel property
+}));
 
 // Step 4: Filter out hotels with category 5 from the original list
 // const hotelsNotInCategory5 = uniqueHotels?.filter(hotel => hotel?.category !== 5);
 
 // Combine top 5 hotels with the rest
-const finalList = [...top5Hotels, ...uniqueHotels];
+const finalList = [...top5HotelsWithFeature, ...uniqueHotels];
 
 
       const mainData = {
