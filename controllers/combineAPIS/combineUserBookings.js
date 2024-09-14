@@ -62,7 +62,7 @@ const {
 exports.getAmadeusTvo = async (req, res, next) => {
   try {
     const { page, limit, search, fromDate, toDate } = req.query;
-    let result={}
+    let result={docs:[]}
     const isUserExist = await findUser({
       _id: req.userId,
       status: status.ACTIVE,
@@ -83,7 +83,7 @@ exports.getAmadeusTvo = async (req, res, next) => {
     };
   
     const tvoBookingresult = await aggregatePaginateGetBooking(queryData);
-    result.docs=tvoBookingresult.docs;
+    
     result.totalDocs=tvoBookingresult.totalDocs;
     result.totalTvoPages=tvoBookingresult.totalPages;
     if (tvoBookingresult.docs.length == 0) {
@@ -99,10 +99,10 @@ exports.getAmadeusTvo = async (req, res, next) => {
           message: responseMessage.DATA_NOT_FOUND,
         });
       }
-      result.docs=amadeusresult.docs;
-      result.totalDocs=result.totalDocs+amadeusresult.totalDocs;
-      result.totalAmadeusPages=amadeusresult.totalPages;
-    //    result.docs={tvoBookingresult,amadeusresult};
+      
+    result.docs = [...tvoBookingresult.docs, ...amadeusresult.docs];
+    result.totalDocs += amadeusresult.totalDocs;
+    result.totalAmadeusPages = amadeusresult.totalPages;
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.FLIGHT_BOOKED,

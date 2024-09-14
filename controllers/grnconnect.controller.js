@@ -1196,6 +1196,7 @@ exports.searchTboGrnCombineHotelCityWise = async (req, res) => {
           const promises = [];
 
           for (let i = 1; i <= page; i++) {
+            console.log(page)
             promises.push(async () => {
               const hotelCode = await exports.grnHotelCityMapWithPagination(
                 req?.body?.cityCode,

@@ -1,17 +1,9 @@
-// exports.tokenGenerator = {
-//   ClientId: "ApiIntegrationNew",
-//   UserName: "Theskytrails12",
-//   Password: "Skytrails@1234",
-//   TokenAgencyId: 57537,
-//   TokenMemberId: 57679,
-// };
-
 exports.tokenGenerator = {
-  ClientId: "tboprod",
-  UserName: "DELT2196",
-  Password: "#Trav@sky657",
-  TokenAgencyId: 93124,
-  TokenMemberId: 115872,
+  ClientId: process.env.TBO_CLIENT_ID,
+  UserName: process.env.TBO_USERNAME,
+  Password: process.env.TBO_PASSWORD,
+  TokenAgencyId: process.env.TBO_TOKEN_AGENCY_ID,
+  TokenMemberId: process.env.TBO_TOKEN_MEMBER_ID,
 };
 
 exports.api = {
