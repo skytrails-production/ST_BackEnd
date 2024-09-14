@@ -1327,7 +1327,7 @@ exports.searchTboGrnCombineHotelCityWise = async (req, res) => {
 const category5Hotels = uniqueHotels?.filter(hotel => (hotel?.category||hotel?.HotelCategory) === 5);
 // console.log(category5Hotels.length,"length");
 // Step 2: Sort category 5 hotels by price in descending order
-const sortedCategory5Hotels = category5Hotels?.sort((a, b) => b.price - a.price);
+const sortedCategory5Hotels = category5Hotels?.sort((a, b) => a.price - b.price);
 
 // Step 3: Select the top 5 hotels from the sorted list
 const top5Hotels = sortedCategory5Hotels.slice(0, 5);
