@@ -3,7 +3,8 @@ const controller = require("../controllers/auth.controller");
 const agentController=require("../controllers/b2bauth.controller")
 const subAdminController=require("../controllers/subAdminController");
 const addWebBanner=require('../controllers/btocController/webAdvertisemnetController');
-const inventoryController=require('../controllers/inventoryController/inventoryController')
+const inventoryController=require('../controllers/inventoryController/inventoryController');
+const authCancellationController=require("../controllers/authCancellation")
 const { authJwt } = require("../middleware");
 const SchemaValidator = require("../utilities/validations.utilities");
 const schemas = require('../utilities/schema.utilities');
@@ -93,4 +94,5 @@ app.delete("/skyTrails/api/admin/deleteAgent",agentController.deleteAgent);
 app.get('/skyTrails/api/admin/getAllPackageEnquiryOnCRM',packageControlelr.packageEnquiryListForCrm);
 app.put("/skyTrails/api/admin/approvePartnerAccountStatus",SchemaValidator(schemas.partnerApprovalSchema),controller.approvePartnerAccount);
 app.get('/skyTrails/api/admin/inventory/getAllInhouseHotels',inventoryController.getAllHotelInventoryList);
+app.post('/skyTrails/api/admin/flight/cancelChangeFlight',authCancellationController.changeOrCancelByTbo)
 };

@@ -73,16 +73,20 @@ exports.flighBooking = async (req, res, next) => {
     let options = { day: '2-digit', month: '2-digit', year: 'numeric' };
 // Format the date using the toLocaleDateString() function
 let formattedDate = new Date().toLocaleDateString('en-GB', options);
-    const TemplateNames=[String(notObject.from),String(data.pnr),String(notObject.to),String(formattedDate)];
-    await whatsApi.sendWhtsAppOTPAISensy(AdminNumber,TemplateNames,'admin_booking_Alert');
+
     const result = await createUserflightBooking(data);
     if(result.bookingStatus==bookingStatus.FAILED){
+      const TemplateNames=['Flight',String(data.pnr),String(notObject.to),String(formattedDate)];
+      await whatsApi.sendWhtsAppOTPAISensy(AdminNumber,TemplateNames,'adminBookingFailure');
       return res.status(statusCode.OK).send({
         statusCode: statusCode.ReqTimeOut, 
         responseMessage: responseMessage.BOOKING_FAILED,
         // result,
       });
+
     }else{
+      const TemplateNames=[String(notObject.from),String(data.pnr),String(notObject.to),String(formattedDate)];
+      await whatsApi.sendWhtsAppOTPAISensy(AdminNumber,TemplateNames,'admin_booking_Alert');
       const userName = `${data?.passengerDetails[0]?.firstName} ${data?.passengerDetails[0]?.lastName}`;
     const phone = '+91'+data?.passengerDetails[0]?.ContactNo;
     const url=`https://theskytrails.com/FlightEticket/${result._id}`;
@@ -220,15 +224,6 @@ console.log("error while get data",error);
 return next(error);
   }
 }
-
-
-
-
-
-
-// getFlightBookingByUserId
-
-
 
 exports.getFlightBookingByUserId =async (req, res,next) =>{
 

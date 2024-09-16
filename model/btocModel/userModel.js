@@ -136,6 +136,7 @@ const usersSchema = new Schema({
       type: String,
       default: "",
     },
+    deviceTokens:{ type: [String], default: [] }, 
     deviceType:{type: String},
     balance: {
       type: Number,

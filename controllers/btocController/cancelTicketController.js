@@ -23,7 +23,23 @@ const { cancelUserBookingServices } = require("../../services/btocServices/cance
 const {getBusData, createcancelFlightBookings, findCancelFlightBookings,updatecancelFlightBookings, aggregatePaginatecancelFlightBookingsList, countTotalcancelFlightBookings, createHotelCancelRequest, updateHotelCancelRequest, findCancelHotelBookings,getHotelCancelRequesrByAggregate1, countTotalHotelCancelled, createBusCancelRequest,findCancelBusBookings, updateBusCancelRequest, getBusCancelRequestByAggregate1, countTotalBusCancelled } = cancelUserBookingServices;
 const{pushNotificationServices}=require('../../services/pushNotificationServices');
 const{createPushNotification,findPushNotification,findPushNotificationData,deletePushNotification,updatePushNotification,countPushNotification}=pushNotificationServices;
-
+const {
+    userAmadeusFlightBookingServices,
+  } = require("../../services/amadeusServices/amadeusFlighBookingServices");
+  const {
+    createUserAmadeusFlightBooking,
+    findUserAmadeusFlightBooking,
+    getUserAmadeusFlightBooking,
+    findUserAmadeusFlightBookingData,
+    deleteUserAmadeusFlightBooking,
+    listUserAmadeusFlightBookings,
+    updateUserAmadeusFlightBooking,
+    paginateUserAmadeusFlightBookingSearch,
+    countTotalUserAmadeusFlightBookings,
+    aggregatePaginateGetUserAmadeusFlightBooking,
+    aggregatePaginateGetUserAmadeusFlightBooking1,
+    aggrPagGetUserAmadeusFlightBooking,
+  } = userAmadeusFlightBookingServices;
 
 //**********************************************************API********************************************** */
 exports.cancelUserFlightBooking = async (req, res, next) => {
@@ -33,14 +49,15 @@ exports.cancelUserFlightBooking = async (req, res, next) => {
         if (!isUserExist) {
             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
         }
-        const isBookingExist = await findUserflightBooking({
-            userId: isUserExist._id,
-            bookingId: bookingId,
-            
-        });
-        if (!isBookingExist) {
-            return res.status(statusCode.OK).send({ statusCode: statusCode.OK, message: responseMessage.BOOKING_NOT_FOUND });
-        }
+        let  isBookingExist = await findUserflightBooking({
+              userId: isUserExist._id,
+              bookingId: Number(bookingId),
+            });
+          
+          if(!isBookingExist||isBookingExist==null){
+            return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, message: responseMessage.BOOKING_NOT_FOUND });
+          }
+
         const isAlreadyRequested=await findCancelFlightBookings({userId:isUserExist._id,flightBookingId:isBookingExist._id});
         if(isAlreadyRequested){
             return res.status(statusCode.OK).send({ statusCode: statusCode.Conflict, responseMessage: responseMessage.ALREADY_REQUESTED});
@@ -54,13 +71,14 @@ exports.cancelUserFlightBooking = async (req, res, next) => {
             amount:isBookingExist.totalAmount
         }
         const result = await createcancelFlightBookings(object);
-        const notObject={
-            userId:isUserExist._id,
-            title:"Cacel ticket Request by User",
-            description:`New Cancel ticket request form user on our platform🎊.😒`,
-            from:'flightCancelRequest',
-            to:isUserExist.userName,
-          }
+        const notObject = {
+            userId: isUserExist._id,
+            title: "Cancel Ticket Request by User",
+            description: `New cancel ticket request from the user on our platform. 🎊`,
+            from: 'flightCancelRequest',
+            to: isUserExist.userName,
+          };
+          
           await createPushNotification(notObject);
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.CANCEL_REQUEST_SEND, result: result });
     } catch (error) {

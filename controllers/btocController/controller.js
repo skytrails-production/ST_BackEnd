@@ -863,7 +863,8 @@ exports.getAppLink = async (req, res, next) => {
 };
 exports.updateDeviceToken = async (req, res, next) => {
   try {
-    const { deviceToken, deviceType } = req.body;
+    let { deviceToken, deviceType } = req.body;
+    let deviceTokens=[];
     const isUserExist = await findUserData({
       _id: req.userId,
       status: status.ACTIVE,
@@ -874,6 +875,12 @@ exports.updateDeviceToken = async (req, res, next) => {
         message: responseMessage.USERS_NOT_FOUND,
       });
     }
+    // Check if the deviceToken already exists in the array
+    if (!isUserExist.deviceTokens.includes(deviceToken)) {
+      // Add the deviceToken to the array
+      deviceTokens.push(deviceToken);
+    }
+    req.body.deviceTokens=deviceTokens
     const result = await updateUser({ _id: isUserExist._id }, req.body);
     const updateEventDeviceToken = await updateBookingEvent(
       { userId: isUserExist._id },

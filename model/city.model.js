@@ -10,7 +10,8 @@ const cityData = mongoose.model(
       name: { type: String },
       CityCode: { type: String },
       CountryCode: { type: String },
-      CountryName:{ type: String}
+      CountryName:{ type: String},
+      state: String,
     },
     {
       timestamps: true,

@@ -9,7 +9,7 @@ const bookingStatus = require("../enums/bookingStatus");
 const genderType=require("../enums/gender");
 const status = require("../enums/status");
 const approveStatus = require("../enums/approveStatus");
-// const bookingType=require("../enums/")
+// const bookingType=require("../enums/");
 const schemas = {
   flightBookingSchema: joi.object().keys({
     userId: joi.string().required(),
@@ -362,6 +362,7 @@ const schemas = {
     flightBookingId: joi.string().required(),
     bookingId: joi.number().required(),
     pnr: joi.string().optional(),
+    cancellationPartyType:joi.string().optional()
   }),
 
   cancelUserHotelBookingSchema: joi.object().keys({

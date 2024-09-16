@@ -10,9 +10,7 @@ function generateRandomBytes(length) {
   return crypto.randomBytes(length);
 }
 const commonUrl = require("../../common/const");
-
-
-
+const moment = require('moment');
 const tvoFlightBooking = require("../../routes/btocRoutes/btocRoutes");
 const amadeusFlightBooking = require("../../routes/amadeusRoutes/amadeusFlightBookingRoutes");
 const { userServices } = require("../../services/userServices");
@@ -62,7 +60,7 @@ const {
 exports.getAmadeusTvo = async (req, res, next) => {
   try {
     const { page, limit, search, fromDate, toDate } = req.query;
-    let result={docs:[]}
+    let result={}
     const isUserExist = await findUser({
       _id: req.userId,
       status: status.ACTIVE,
@@ -81,9 +79,7 @@ exports.getAmadeusTvo = async (req, res, next) => {
       toDate,
       userId: isUserExist._id,
     };
-  
     const tvoBookingresult = await aggregatePaginateGetBooking(queryData);
-    
     result.totalDocs=tvoBookingresult.totalDocs;
     result.totalTvoPages=tvoBookingresult.totalPages;
     if (tvoBookingresult.docs.length == 0) {
@@ -103,6 +99,7 @@ exports.getAmadeusTvo = async (req, res, next) => {
     result.docs = [...tvoBookingresult.docs, ...amadeusresult.docs];
     result.totalDocs += amadeusresult.totalDocs;
     result.totalAmadeusPages = amadeusresult.totalPages;
+   
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.FLIGHT_BOOKED,
@@ -113,3 +110,4 @@ exports.getAmadeusTvo = async (req, res, next) => {
     return next(error);
   }
 };
+

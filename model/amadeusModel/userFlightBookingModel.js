@@ -166,6 +166,8 @@ const flightBookingSchema = new mongoose.Schema(
       default: offerType.FLIGHTS,
     },
     dateOfJourney: { type: String },
+    bookingPartyType:{type:String,default:'AMADEUS'},
+    isAmadeusBooking:{type:Boolean,default:true}
   },
   { timestamps: true }
 );

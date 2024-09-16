@@ -126,8 +126,8 @@ var taskPromotionalNotification = cron.schedule("30 8 * * *",async () => {
     });
     for (const user of users) {
       try { 
-        const notificationMessage = `Ek Trip Ki Kimat Tum Kya Jaano, Kaliya!`;
-        const messageBody = `Book now, and let your adventure unfold. Because life is too short to wait! ✈️✨`;
+        const notificationMessage = `Book Now, Pay When You Can!`;
+        const messageBody = `No need to delay your travels. Book now.✈️✨`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
         const lastSent = lastNotificationSent.get(user._id);
         if (lastSent && Date.now() - lastSent < 3600000) {

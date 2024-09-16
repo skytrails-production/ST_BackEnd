@@ -24,8 +24,21 @@ exports.searchCityData = async (req, res) => {
     const userLocation = geoip.lookup(userIP);
     // console.log("location", userLocation)
 
-    var regex = new RegExp(escapeRegex(req.query.keyword), "gi");
-    const response = await cityData.find({$or:[{ name: regex },{AirportCode:regex}]});
+    var regex = new RegExp(`^${escapeRegex(req.query.keyword)}`, "i");
+    let response = await cityData.find({$or:[{ AirportCode: regex },{name:regex}, {state:regex}]});
+
+
+    // console.log(response.length);
+    if(response.length===1){
+      const value=response[0]?.state || response[0]?.CountryCode
+     const addResponse = await cityData.find({$or:[{ state:value  },{CountryCode:value}]});
+      // response=[...response, ...addResponse]
+
+      response = combineUnique(response, addResponse, 'id');
+    }
+
+
+
 
      // Sort the search results based on matching country code
      const sortedResponse = response.sort((a, b) => {
@@ -52,6 +65,26 @@ exports.searchCityData = async (req, res) => {
   }
 };
 
+
+
+
+const combineUnique = (array1, array2, uniqueKey) => {
+  // Create a Set to track unique keys
+  const seen = new Set();
+  
+  // Create a combined array with unique items
+  const uniqueArray = [...array1, ...array2].filter(item => {
+    const key = item[uniqueKey];
+    if (seen.has(key)) {
+      return false; // Duplicate
+    } else {
+      seen.add(key);
+      return true; // Unique
+    }
+  });
+
+  return uniqueArray;
+};
 
 exports.cityBusProductionData = async (req, res) =>{
   const result=await cityBusProductionData.insertMany(req.body);
