@@ -49,7 +49,7 @@ exports.busBooking = async (req, res, next) => {
     const contactNo =`${isUserExist.phone.country_code}${isUserExist.phone.mobile_number}`
     if (!isUserExist) {
       return res
-        .status(statusCode.NotFound)
+        .status(statusCode.OK)
         .send({
           statusCode: statusCode.NotFound,
           responseMessage: responseMessage.USERS_NOT_FOUND,
@@ -115,7 +115,7 @@ exports.getBusBookingList = async (req, res, next) => {
     });
     if (!isUserExist) {
       return res
-        .status(statusCode.NotFound)
+        .status(statusCode.OK)
         .send({
           statusCode: statusCode.NotFound,
           message: responseMessage.USERS_NOT_FOUND,
@@ -159,7 +159,7 @@ exports.getUserBusData = async (req, res, next) => {
     });
     // console.log("isUSerExist", isUserExist);
     if (!isUserExist) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.USERS_NOT_FOUND,
       });

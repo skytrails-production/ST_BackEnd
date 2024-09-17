@@ -1,5 +1,6 @@
-const Controller=require('../../controllers/amadeusController/amadeusBookingController')
-const amadeusCancelController=require('../../controllers/amadeusController/amadeusCancelRequest')
+const Controller=require('../../controllers/amadeusController/amadeusBookingController');
+const amadeusCancelController=require('../../controllers/amadeusController/amadeusCancelRequest');
+const amadeusChangeControler=require('../../controllers/amadeusController/amadeusChangeRequest')
 const schemas = require('../../utilities/schema.utilities');
 const SchemaValidator = require('../../utilities/validations.utilities');
 // const upload=require('../../utilities/uploadHandler')
@@ -22,5 +23,6 @@ module.exports = function (app) {
     app.get('/skyTrails/api/amadeus/user/getAllflightBooking',Controller.getAllUserFlightBooking);
     app.put('/skyTrails/api/amadeus/user/UpdateTicket',Controller.UpdateTicket);
     app.put('/skyTrails/api/amadeus/user/generatePdfOfUSer',Controller.generatePdfOfUSer);
-    app.post('/skyTrails/api/amadeus/user/amadeusCancelUserFlightBooking',[authJwt.verifcationToken],amadeusCancelController.cancelUserFlightTicket)
+    app.post('/skyTrails/api/amadeus/user/amadeusCancelUserFlightBooking',[authJwt.verifcationToken],amadeusCancelController.cancelUserFlightTicket);
+    app.post('/skyTrails/api/amadeus/user/changeUserFlightBooking',[authJwt.verifcationToken],amadeusChangeControler.amdsChangeFlight)
 }

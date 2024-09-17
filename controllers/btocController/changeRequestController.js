@@ -7,9 +7,11 @@ const userType = require("../../enums/userType");
 /**********************************SERVICES********************************** */
 const{pushNotificationServices}=require('../../services/pushNotificationServices');
 const{createPushNotification,findPushNotification,findPushNotificationData,deletePushNotification,updatePushNotification,countPushNotification}=pushNotificationServices;
+const { cancelUserBookingServices } = require("../../services/btocServices/cancelBookingServices");
+const {getBusData, createcancelFlightBookings, findCancelFlightBookings,updatecancelFlightBookings, aggregatePaginatecancelFlightBookingsList, countTotalcancelFlightBookings, createHotelCancelRequest, updateHotelCancelRequest, findCancelHotelBookings,getHotelCancelRequesrByAggregate1, countTotalHotelCancelled, createBusCancelRequest,findCancelBusBookings, updateBusCancelRequest, getBusCancelRequestByAggregate1, countTotalBusCancelled } = cancelUserBookingServices;
 
 const {changeUserBookingServices}=require("../../services/btocServices/changeRequestServices");
-const {createUserFlightChangeRequest,flightchangeRequestUserList1,createUserHotelChangeRequest,hotelchangeRequestUserList,createUserBusChangeRequest,buschangeRequestUserList}=changeUserBookingServices;
+const {createUserFlightChangeRequest,flightchangeRequestUserList1,findamadeusChangeFlightRequest,createUserHotelChangeRequest,hotelchangeRequestUserList,createUserBusChangeRequest,buschangeRequestUserList}=changeUserBookingServices;
 const { userServices } = require('../../services/userServices');
 const { createUser, findUser, getUser, findUserData, updateUser, paginateUserSearch, countTotalUser } = userServices;
 const { userflightBookingServices } = require('../../services/btocServices/flightBookingServices');
@@ -26,16 +28,24 @@ exports.createFlightTicketChangeRequest=async(req,res,next)=>{
         const  {reason,bookingId,flightBookingId,contactNumber,changerequest,pnr}=req.body;
         const isUserExist = await findUser({ _id: req.userId,status:status.ACTIVE, userType:userType.USER });
         if (!isUserExist) {
-            return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
+            return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
         }
         const currentDate = new Date().toISOString();
         console.log("currentDate:", currentDate);
         const isBookingExist=await findUserflightBooking({ userId: isUserExist._id,bookingId: bookingId,_id:flightBookingId,status:status.ACTIVE});
 
         if (!isBookingExist) {
-            return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.BOOKING_NOT_FOUND });
+            return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, message: responseMessage.BOOKING_NOT_FOUND });
         }else if(isBookingExist.airlineDetails[0].Origin.DepTime<=currentDate){
-            return res.status(statusCode.badRequest).send({statusCode:statusCode.badRequest,responseMessage:responseMessage.CHANGE_NOT_ALLOW})
+            return res.status(statusCode.OK).send({statusCode:statusCode.badRequest,responseMessage:responseMessage.CHANGE_NOT_ALLOW})
+        }
+        const isAlreadyChangeRequested=await findamadeusChangeFlightRequest({userId:isUserExist._id,flightBookingId:isBookingExist._id});
+        if(isAlreadyChangeRequested){
+            return res.status(statusCode.OK).send({ statusCode: statusCode.Conflict, responseMessage: responseMessage.ALREADY_CHANGE_REQUESTED});
+        }
+        const isAlreadyCancelRequested=await findCancelFlightBookings({userId:isUserExist._id,flightBookingId:isBookingExist._id});
+        if(isAlreadyCancelRequested){
+            return res.status(statusCode.OK).send({ statusCode: statusCode.Conflict, responseMessage: responseMessage.ALREADY_REQUESTED});
         }
         const object={
             userId:isUserExist._id,
@@ -69,13 +79,12 @@ exports.getUserFlightChangeRequest=async(req,res,next)=>{
     try {
         const {page, limit, search, fromDate, toDate}=req.query;
         const isUserExist = await findUser({ _id: req.userId,status:status.ACTIVE,otpVerified:true });
-        console.log("isAgentExists", isUserExist);
         if (!isUserExist) {
-            return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
+            return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
         }
         const result=flightchangeRequestUserList1(req.query);
         if(!result||result.length==0){
-            return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.DATA_NOT_FOUND });
+            return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, message: responseMessage.DATA_NOT_FOUND });
         }
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.DATA_FOUND, result: result });
     } catch (error) {

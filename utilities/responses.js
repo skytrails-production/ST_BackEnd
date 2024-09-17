@@ -124,6 +124,7 @@ module.exports = {
 	REFERRALCODE_APPLIED:"Referral code applied successfully.",
 	URL_MANDATORY:"Url mandatory.",
 	ALREADY_REQUESTED:"Your cancellation request already in our queue,please wait we update you soon.",
+	ALREADY_CHANGE_REQUESTED:"Your change request already in our queue,please wait we update you soon.",
 	REWARD_DSTRIBUTED:"Reward sent to agent.",
 	ALREADY_REWARD_DSTRIBUTED:"Already reward distributed for revenue.",
 	No_REVENUE:"No reward generate for this agent.",

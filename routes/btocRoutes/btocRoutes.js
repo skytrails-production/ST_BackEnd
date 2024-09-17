@@ -61,7 +61,7 @@ module.exports = function (app) {
     app.get('/skyTrails/api/user/getCancelUserBusBooking',[authJwt.verifcationToken],userCancelController.getCancelUserBusBooking);
     app.post('/skyTrails/api/user/packageBookingEnquiry',[authJwt.verifcationToken],SchemaValidator(schemas.packageBookingSchema),packageController.packageBooking);
     app.get('/skyTrails/api/user/getPackageBookigs',[authJwt.verifcationToken],packageController.getPackageBookigs);
-     app.post('/skyTrails/api/user/changeUserFlightBooking',[authJwt.verifcationToken],SchemaValidator(schemas.changeUserRequest),changeRequestController.createFlightTicketChangeRequest)
+    app.post('/skyTrails/api/user/changeUserFlightBooking',[authJwt.verifcationToken],SchemaValidator(schemas.changeUserRequest),changeRequestController.createFlightTicketChangeRequest)
     // app.post('/skyTrails/api/user/cancelUserBusBooking',[authJwt.verifcationToken],SchemaValidator(schemas.cancelUserBusBookingSchema),changeRequestController.cancelUserBusBooking)
     app.get('/skyTrails/api/user/getChangelUserFlightBooking',[authJwt.verifcationToken],changeRequestController.getUserFlightChangeRequest);
     // app.get('/skyTrails/api/user/getCancelUserHotelBooking',changeRequestController.getCancelUserHotelBooking);
@@ -92,6 +92,7 @@ module.exports = function (app) {
     app.post("/skyTrails/api/user/wallet/redeemCoin",[authJwt.verifcationToken],Controller.redeemCoin);
     app.get("/skyTrails/api/user/getSkyCoins",[authJwt.verifcationToken],Controller.getUserBalance);
     app.get("/skyTrails/api/user/getUserById",Controller.getUserById);
+    app.put('/skyTrails/api/admin/flight/updateProcessStatus',userCancelController.updateProcesStatus)
 
 
 

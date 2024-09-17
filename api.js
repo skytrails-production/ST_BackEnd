@@ -139,6 +139,7 @@ app.get("/", (req, res) => {
 // initializeRoutes(app);
 
 // routes
+require("./routes/kafila.routes")(app);
 require("./routes/auth.routes")(app);
 require("./routes/user.routes")(app);
 require("./routes/flight.routes")(app);

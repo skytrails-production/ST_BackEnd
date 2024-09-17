@@ -96,6 +96,9 @@ const changeUserBookingServices = {
         return await userChangeFlightModel.aggregatePaginate(aggregate, options)
 
     },
+    findamadeusChangeFlightRequest:async(object)=>{
+        return await userChangeFlightModel.findOne(object)
+    },
     createUserHotelChangeRequest: async (insertObj) => {
         return await userChangeHotelModel.create(insertObj);
     },

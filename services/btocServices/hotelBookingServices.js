@@ -21,7 +21,7 @@ const userhotelBookingModelServices = {
     },
 
     findUserhotelBookingModelData: async (query) => {
-        return await hotelBookingModel.findOne(query)
+        return await hotelBookingModel.find(query)
     },
 
     deleteUserhotelBookingModel: async (query) => {

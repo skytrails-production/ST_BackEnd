@@ -37,7 +37,8 @@ const userGrnBookingModelServices = {
 
     paginateUserGrnBooking: async (body) => {
         // userType: { $ne: [userType.ADMIN,userType.SUBADMIN] }
-        let query = { userType: { $nin: [userType.ADMIN, userType.SUBADMIN] } }
+        // let query = { userType: { $nin: [userType.ADMIN, userType.SUBADMIN] } }
+        let query={};
         const { page, limit, usersType1, search } = body;
         if (search) {
             query.$or = [

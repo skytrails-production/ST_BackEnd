@@ -1081,3 +1081,4 @@ const addImageToResults = (results) => {
 // console.log(result);
 //   return result;
 // };
+

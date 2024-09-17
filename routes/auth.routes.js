@@ -94,5 +94,5 @@ app.delete("/skyTrails/api/admin/deleteAgent",agentController.deleteAgent);
 app.get('/skyTrails/api/admin/getAllPackageEnquiryOnCRM',packageControlelr.packageEnquiryListForCrm);
 app.put("/skyTrails/api/admin/approvePartnerAccountStatus",SchemaValidator(schemas.partnerApprovalSchema),controller.approvePartnerAccount);
 app.get('/skyTrails/api/admin/inventory/getAllInhouseHotels',inventoryController.getAllHotelInventoryList);
-app.post('/skyTrails/api/admin/flight/cancelChangeFlight',authCancellationController.changeOrCancelByTbo)
+app.post('/skyTrails/api/admin/flight/cancelChangeFlight',authCancellationController.changeOrCancelByTbo);
 };

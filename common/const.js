@@ -6,6 +6,18 @@ exports.tokenGenerator = {
   TokenMemberId: process.env.TBO_TOKEN_MEMBER_ID,
 };
 
+
+
+exports.kafilaTokenGenerator={
+  P_TYPE: "API",
+  R_TYPE: "FLIGHT",
+  R_NAME: "GetToken",
+  AID: "1126824",
+  UID: "test",
+  PWD: "test",
+  Version: "1.0.0.0.0.0"
+}
+
 exports.api = {
   //Common Token ,Agencybalance and Logout API's
   // tokenURL:
@@ -267,9 +279,10 @@ getCancelRequeststatus:
 
    // ==============================================> TRANSFER api end <===================================================//
 
+ //-------------------------- Start  Utility------------------------
 
 
-  // //utility--------------------------//start---------
+ 
   utilityloginwebapiURL:
     "http://utilitywebapi.bisplindia.in/api/Login/UserLogin",
 
@@ -306,6 +319,10 @@ getCancelRequeststatus:
      saveBillPaymentURL:"https://utilitywebapi.bisplindia.in/api/Bill/SaveBillPayment",
  
  
+      //-------------------------- End  Utility------------------------
+
+
+    //---------------------------------------Start Mihuru Api's -------------------------
 
 
     //Mihuru api url 
@@ -334,7 +351,28 @@ getCancelRequeststatus:
     bookingCancelProcess:
     "https://uat.partners.mihuru.com/api/assistmodule/booking/v2/cancellation/process",
     genrateCustomerToken:
-    "https://uat.partners.mihuru.com/api/applicationtoken/v2/currentapplicationtoken"
+    "https://uat.partners.mihuru.com/api/applicationtoken/v2/currentapplicationtoken",
+
+
+
+
+    // --------------------------------------- End Mihuru Api's ----------------------------
+//*******************************KAFILA API***************************************/
+kafilatokenURL:
+"http://stage1.ksofttechnology.com/api/Freport",
+kafilaGetFlight:"http://stage1.ksofttechnology.com/api/FSearch",
+kafilaRoundTripGetFlight:"http://stage1.ksofttechnology.com/api/FSearch",
+kafilaFareCheck:"http://stage1.ksofttechnology.com/api/FFareCheck",
+kafilaSSR:" http://stage1.ksofttechnology.com/api/FAncl",
+kafilaPnrCreation:"http://stage1.ksofttechnology.com/api/FPNR",
+kafilaGetBookingDetails:" http://stage1.ksofttechnology.com/api/Freport",
+kafilaCncelCharges:"http://stage1.ksofttechnology.com/api/FCancel",
+kafilaCancelSubmit:"http://stage1.ksofttechnology.com/api/Freport",
+
+
+
+// --------------------------------------- End Mihuru Api's ----------------------------
+
 };
 exports.responseFlags = {
   ACTION_COMPLETE: 200,

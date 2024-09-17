@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema } = require("mongoose");
 const status = require('../../enums/status');
-const bookingStatus = require("../../enums/bookingStatus");
+const approveStatus = require("../../enums/approveStatus");
 const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 const mongoosePaginate = require('mongoose-paginate-v2');
 mongoose.pluralize(null);
@@ -29,9 +29,10 @@ const cancelBookingDataSchema = new mongoose.Schema(
             enum:[status.ACTIVE,status.BLOCK,status.DELETE],
             default: status.ACTIVE
         },
-        bookingStatus: {
+        processStatus: {
             type: String,
-            enums: [bookingStatus.BOOKED, bookingStatus.CANCEL, bookingStatus.PENDING],
+            enums: [approveStatus.APPROVED, approveStatus.REJECT, approveStatus.PENDING],
+            default:approveStatus.PENDING
             
         },
     }, { timestamps: true }

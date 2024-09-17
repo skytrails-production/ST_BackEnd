@@ -497,7 +497,6 @@ exports.uploadImagesOfInventory = async (req, res, next) => {
         responseMessage: responseMessage.PARTNER_NOT_FOUND,
       });
     }
-    console.log("isUserExist===========", isUserExist._id);
 
     const isHotelExist = await findPartenerHotelData({
       _id: hotelId,
@@ -509,7 +508,6 @@ exports.uploadImagesOfInventory = async (req, res, next) => {
         responseMessage: responseMessage.HOTEL_NOT_FOUND,
       });
     }
-    console.log("isHotelExist===========", isHotelExist._id);
 
     let hotelImageUrls = [];
     let roomImageUrls = [];
@@ -533,12 +531,10 @@ exports.uploadImagesOfInventory = async (req, res, next) => {
         })
       );
 
-      console.log("roomImageUrls===========", roomImageUrls);
       // console.log("hotelImageUrls===========", hotelImageUrls);
 
       if (rooms.length > 0) {
         const imagesPerRoom = Math.ceil(roomImageUrls.length / rooms.length);
-        console.log("imagesPerRoom===========", imagesPerRoom);
 
         rooms = rooms.map((room, index) => {
           const start = index * imagesPerRoom;
@@ -549,7 +545,6 @@ exports.uploadImagesOfInventory = async (req, res, next) => {
               ? room.roomsImages.concat(roomImageUrls.slice(start, end))
               : roomImageUrls.slice(start, end),
           };
-          // console.log(`updatedRoom [${index}]==========`, updatedRoom);
           return updatedRoom;
         });
       }

@@ -72,6 +72,9 @@ const {
 
 const {amadeusCncellationServices}=require("../../services/amadeusServices/amadeusFlightCancelRequest");
 const {createamadeusCancelFlightBookings,findamadeusCancelFlightBookings,aggregatePaginatecancelFlightBookingsList,aggPagamadeusCancelFlightBookingsList1,countTotalamadeusCancelFlightBookings}=amadeusCncellationServices;
+const {changeAmadeusUserBookingServices}=require('../../services/amadeusServices/amadeysFlightChangeRequestServices');
+const {createAmdeusUserFlightChangeRequest,flightAmdeuschangeRequestUserList,flightAmdeusChangeRequestUserList1,amdeusFindOneChangeRequestDetail,countAmdeusChangeFlightRequest}=changeAmadeusUserBookingServices;
+
 //**********************************************************API's**********************************************/
 exports.cancelUserFlightTicket = async (req, res, next) => {
   try {
@@ -91,6 +94,10 @@ exports.cancelUserFlightTicket = async (req, res, next) => {
       if(isAlreadyRequested){
           return res.status(statusCode.OK).send({ statusCode: statusCode.Conflict, responseMessage: responseMessage.ALREADY_REQUESTED});
       }
+      const isAlreadyChangeRequested=await amdeusFindOneChangeRequestDetail({userId:isUserExist._id,flightBookingId:isBookingExist._id})
+      if(isAlreadyChangeRequested){
+        return res.status(statusCode.OK).send({ statusCode: statusCode.Conflict, responseMessage: responseMessage.ALREADY_CHANGE_REQUESTED});
+    }
       const object = {
           userId: isUserExist._id,
           reason: reason,
@@ -130,8 +137,20 @@ exports.cancelUserFlightTicket = async (req, res, next) => {
 
 exports.getUserCancelFlights = async (req, res, next) => {
   try {
-  
-  } catch (error) {
+    const { page, limit, search, fromDate, toDate,userId } = req.query;
+    const isUserExist = await findUser({ _id: req.userId,status:status.ACTIVE,otpVerified:true });
+    // console.log("isAgentExists", isUserExist);
+    if (!isUserExist) {
+        return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
+    }
+    req.query.userId=isUserExist._id;
+    const result =await aggregatePaginatecancelFlightBookingsList(req.query);
+    // console.log("result========",result);
+    if (!result) {
+        return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.DATA_NOT_FOUND });
+    }
+    return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.DATA_FOUND, result: result });
+} catch (error) {
     console.log("error while trying to get userFlight booking! ", error);
     return next(error);
   }
@@ -139,7 +158,12 @@ exports.getUserCancelFlights = async (req, res, next) => {
 
 exports.getCancelFlightBookingId = async (req, res, next) => {
   try {
-    
+    const {cancelRequestId}=req.query;
+    const result=await findamadeusCancelFlightBookings({_id:cancelRequestId});
+    if (!result) {
+      return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.DATA_NOT_FOUND });
+  }
+  return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.DATA_FOUND, result: result });
   } catch (error) {
     console.log("error while trying to get userFlight booking! ", error);
     return next(error);

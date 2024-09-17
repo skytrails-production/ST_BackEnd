@@ -21,6 +21,9 @@ const { userhotelBookingModelServices } = require('../../services/btocServices/h
 const { createUserhotelBookingModel, findUserhotelBookingModel, getUserhotelBookingModel, deleteUserhotelBookingModel, userhotelBookingModelList, updateUserhotelBookingModel, paginateUserhotelBookingModelSearch,countTotalhotelBooking,aggregatePaginateHotelBookingList } = userhotelBookingModelServices
 const { cancelUserBookingServices } = require("../../services/btocServices/cancelBookingServices");
 const {getBusData, createcancelFlightBookings, findCancelFlightBookings,updatecancelFlightBookings, aggregatePaginatecancelFlightBookingsList, countTotalcancelFlightBookings, createHotelCancelRequest, updateHotelCancelRequest, findCancelHotelBookings,getHotelCancelRequesrByAggregate1, countTotalHotelCancelled, createBusCancelRequest,findCancelBusBookings, updateBusCancelRequest, getBusCancelRequestByAggregate1, countTotalBusCancelled } = cancelUserBookingServices;
+const {changeUserBookingServices}=require("../../services/btocServices/changeRequestServices");
+const {createUserFlightChangeRequest,findamadeusChangeFlightRequest,flightchangeRequestUserList1,createUserHotelChangeRequest,hotelchangeRequestUserList,createUserBusChangeRequest,buschangeRequestUserList}=changeUserBookingServices;
+
 const{pushNotificationServices}=require('../../services/pushNotificationServices');
 const{createPushNotification,findPushNotification,findPushNotificationData,deletePushNotification,updatePushNotification,countPushNotification}=pushNotificationServices;
 const {
@@ -47,7 +50,7 @@ exports.cancelUserFlightBooking = async (req, res, next) => {
         const { reason, flightBookingId, bookingId, pnr } = req.body;
         const isUserExist = await findUser({ _id: req.userId,status:status.ACTIVE, userType:userType.USER });
         if (!isUserExist) {
-            return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
+            return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
         }
         let  isBookingExist = await findUserflightBooking({
               userId: isUserExist._id,
@@ -61,6 +64,10 @@ exports.cancelUserFlightBooking = async (req, res, next) => {
         const isAlreadyRequested=await findCancelFlightBookings({userId:isUserExist._id,flightBookingId:isBookingExist._id});
         if(isAlreadyRequested){
             return res.status(statusCode.OK).send({ statusCode: statusCode.Conflict, responseMessage: responseMessage.ALREADY_REQUESTED});
+        }
+        const isAlreadyChangeRequested=await findamadeusChangeFlightRequest({userId:isUserExist._id,flightBookingId:isBookingExist._id});
+        if(isAlreadyChangeRequested){
+            return res.status(statusCode.OK).send({ statusCode: statusCode.Conflict, responseMessage: responseMessage.ALREADY_CHANGE_REQUESTED});
         }
         const object = {
             userId: isUserExist._id,
@@ -114,13 +121,13 @@ exports.getCancelUserFlightBooking = async (req, res, next) => {
         const isUserExist = await findUser({ _id: req.userId,status:status.ACTIVE,otpVerified:true });
         // console.log("isAgentExists", isUserExist);
         if (!isUserExist) {
-            return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
+            return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
         }
         req.query.userId=isUserExist._id;
         const result =await aggregatePaginatecancelFlightBookingsList(req.query);
         // console.log("result========",result);
         if (!result) {
-            return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.DATA_NOT_FOUND });
+            return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.DATA_NOT_FOUND });
         }
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.DATA_FOUND, result: result });
     } catch (error) {
@@ -134,7 +141,7 @@ exports.cancelUserHotelBooking = async (req, res, next) => {
         const { reason, hotelBookingId, bookingId } = req.body;
         const isUserExist = await findUser({ _id: req.userId, status: status.ACTIVE });
     if (!isUserExist) {
-      return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.USERS_NOT_FOUND });
+      return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.USERS_NOT_FOUND });
     }
         const isBookingExist = await findUserhotelBookingModel({
             userId: isUserExist._id,
@@ -174,13 +181,13 @@ exports.getCancelUserHotelBooking = async (req, res, next) => {
         const { page, limit, search, fromDate ,userId} = req.query;
         const isUserExist = await findUser({ _id: req.userId, status: status.ACTIVE });
         if (!isUserExist) {
-          return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.USERS_NOT_FOUND });
+          return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.USERS_NOT_FOUND });
         }
         req.query.userId=isUserExist._id;
         const result =await getHotelCancelRequesrByAggregate1(req.query);
         // console.log("result========",result);
         if (!result) {
-            return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.DATA_NOT_FOUND });
+            return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.DATA_NOT_FOUND });
         }
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.DATA_FOUND, result: result });
     } catch (error) {
@@ -194,7 +201,7 @@ exports.cancelUserBusBooking=async(req,res,next)=>{
         const { reason, busBookingId, busId, pnr } = req.body;
         const isUserExist = await findUser({ _id: req.userId, status: status.ACTIVE });
         if (!isUserExist) {
-          return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.USERS_NOT_FOUND });
+          return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.USERS_NOT_FOUND });
         }
         const isBookingExist=await findUserBusBooking({
             userId: isUserExist._id,
@@ -224,7 +231,7 @@ exports.cancelUserBusBooking=async(req,res,next)=>{
           }
           await createPushNotification(notObject);
         if(!result){
-            return res.status(statusCode.InternalError).send({statusCode: statusCode.InternalError,responseMessage:responseMessage.INTERNAL_ERROR})
+            return res.status(statusCode.OK).send({statusCode: statusCode.InternalError,responseMessage:responseMessage.INTERNAL_ERROR})
         } 
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.CANCEL_REQUEST_SEND, result: result });
     } catch (error) {
@@ -238,16 +245,47 @@ exports.getCancelUserBusBooking=async(req,res,next)=>{
         const { page, limit, search, fromDate, toDate,userId } =  req.query;
         const isUserExist = await findUser({ _id: req.userId, status: status.ACTIVE });
         if (!isUserExist) {
-          return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.USERS_NOT_FOUND });
+          return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.USERS_NOT_FOUND });
         }
         req.query.userId=isUserExist._id;
         const result=await getBusCancelRequestByAggregate1(req.query);
         if (!result) {
-            return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.DATA_NOT_FOUND });
+            return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.DATA_NOT_FOUND });
         }
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.DATA_FOUND, result: result });
     } catch (error) {
         console.log("error",error);
+        return next(error);
+    }
+}
+
+exports.updateProcesStatus=async(req,res,next)=>{
+    try {
+        const {procesStatus,requestId,type}=req.body;
+        // Convert type to lowercase to handle case insensitivity
+        const lowerCaseType =type.toLowerCase();   
+        let result;
+        if(lowerCaseType==='flight'){
+            result= await updatecancelFlightBookings({_id:requestId},{$set:{processStatus:procesStatus}});
+        }else if(lowerCaseType==='bus'){
+            result= await updateBusCancelRequest({_id:requestId},{$set:{processStatus:procesStatus}});
+        }else{
+            result= await updateHotelCancelRequest({_id:requestId},{$set:{processStatus:procesStatus}});
+        }
+        if (result) {
+            return res.status(statusCode.OK).send({
+              statusCode: statusCode.OK,
+              responseMessage: responseMessage.UPDATE_SUCCESS,
+              result: result,
+            });
+          } else {
+            return res.status(statusCode.OK).send({
+              statusCode: statusCode.badRequest,
+              responseMessage: responseMessage.UPLOAD_FAILURE,
+            });
+          }
+    } catch (error) {
+        console.log("error while trying to update process status",error);
         return next(error);
     }
 }

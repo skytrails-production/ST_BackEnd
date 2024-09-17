@@ -74,7 +74,7 @@ exports.hotelBooking = async (req, res, next) => {
       status: status.ACTIVE,
     });
     if (!isUserExist) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.USERS_NOT_FOUND,
       });
@@ -164,7 +164,7 @@ exports.getAllHotelBookingList = async (req, res, next) => {
       status: status.ACTIVE,
     });
     if (!isUserExist) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.USERS_NOT_FOUND,
       });
@@ -200,7 +200,7 @@ exports.getUserHotelData = async (req, res, next) => {
     });
     // console.log("isUSerExist", isUserExist);
     if (!isUserExist) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.USERS_NOT_FOUND,
       });

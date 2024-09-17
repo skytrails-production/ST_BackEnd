@@ -524,7 +524,7 @@ exports.hotelBooking = async (req, res) => {
     const userIP = requestIp.getClientIp(req);
     const userBookingIpDetails = {
       userIp: userIP,
-      bookingType: "HotelBookinGrn",
+      bookingType: "HotelBookingGrn",
     };
 
     await userIPDetail.create(userBookingIpDetails);
@@ -1428,10 +1428,10 @@ const cityListFunction = async (keyword) => {
   // const skip = (page - 1) * limit; // Calculate the number of records to skip
 
   const tboData = await TboHotelCityList.find({
-    cityName: { $regex: keyword, $options: "i" },
+    cityName: { $regex: `^${keyword}`, $options: "i" },
   }).lean();
   const grnData = await GrnCityList.find({
-    cityName: { $regex: keyword, $options: "i" },
+    cityName: { $regex: `^${keyword}`, $options: "i" },
   }).lean();
 
   // Create a map to handle merging and filtering duplicates

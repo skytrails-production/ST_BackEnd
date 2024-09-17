@@ -56,7 +56,38 @@ const {
   aggregatePaginateGetUserAmadeusFlightBooking1,
   aggrPagGetUserAmadeusFlightBooking,
 } = userAmadeusFlightBookingServices;
+const {
+  userGrnBookingModelServices,
+} = require("../../services/btocServices/grnBookingServices");
+const {
+  createUserGrnBooking,
+  findUserGrnBooking,
+  findUserGrnBookingList,
+  getUserGrnBooking,
+  deleteUserGrnBooking,
+  userGrnBooking,
+  updateGrnBooking,
+  paginateUserGrnBooking,
+  countTotalUserGrnBooking,
+  aggrPagiGrnBookingList,
+} = userGrnBookingModelServices;
 
+const {
+  userhotelBookingModelServices,
+} = require("../../services/btocServices/hotelBookingServices");
+const {
+  createUserhotelBookingModel,
+  findUserhotelBookingModel,
+  getUserhotelBookingModel,
+  deleteUserhotelBookingModel,
+  userhotelBookingModelList,
+  updateUserhotelBookingModel,
+  paginateUserhotelBookingModelSearch,
+  findUserhotelBookingModelData,
+  countTotalhotelBooking,
+  aggregatePaginateHotelBookingList,
+} = userhotelBookingModelServices;
+//*****************************API"S******************************************************/
 exports.getAmadeusTvo = async (req, res, next) => {
   try {
     const { page, limit, search, fromDate, toDate } = req.query;
@@ -66,7 +97,7 @@ exports.getAmadeusTvo = async (req, res, next) => {
       status: status.ACTIVE,
     });
     if (!isUserExist) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.USERS_NOT_FOUND,
       });
@@ -102,7 +133,7 @@ exports.getAmadeusTvo = async (req, res, next) => {
    
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
-        responseMessage: responseMessage.FLIGHT_BOOKED,
+        responseMessage: responseMessage.DATA_FOUND,
         result,
       });
   } catch (error) {
@@ -110,4 +141,53 @@ exports.getAmadeusTvo = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.getCombineHotelBookingList=async(req,res,next)=>{
+  try {
+    const { page, limit, search, fromDate, toDate } = req.query;
+    let result=[]
+    const isUserExist = await findUser({
+      _id: req.userId,
+      status: status.ACTIVE,
+    });
+    if (!isUserExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+    const queryData = {
+      page,
+      limit,
+      search,
+      fromDate,
+      toDate,
+      userId: isUserExist._id,
+    };
+    const tboHotelBookings=await findUserhotelBookingModelData(queryData);
+    if (tboHotelBookings.length == 0) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        message: responseMessage.DATA_NOT_FOUND,
+      });
+    }
+    const grnHotelBookings=await userGrnBooking(queryData);
+    result= tboHotelBookings.concat(array2)
+    if (grnHotelBookings.length == 0) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        message: responseMessage.DATA_NOT_FOUND,
+      });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result,
+    });
+  } catch (error) {
+    console.log("error while trying to combine booking history",error);
+    return next(error);
+    
+  }
+}
 

@@ -53,7 +53,7 @@ exports.flighBooking = async (req, res, next) => {
       status: status.ACTIVE,
     });
     if (!isUserExist) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.USERS_NOT_FOUND,
       });
@@ -116,7 +116,7 @@ exports.getUserflightBooking = async (req, res, next) => {
     });
     console.log("======",isUserExist)
     if (!isUserExist) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.USERS_NOT_FOUND,
       });
@@ -153,7 +153,7 @@ exports.getUserFlightData = async (req, res, next) => {
       status: status.ACTIVE,
     });
     if (!isUserExist) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.USERS_NOT_FOUND,
       });
@@ -182,7 +182,7 @@ exports.sendPDF=async(req,res,next)=>{
       status: status.ACTIVE,
     });
     if (!isUserExist) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.USERS_NOT_FOUND,
       });
