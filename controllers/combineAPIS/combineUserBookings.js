@@ -144,7 +144,6 @@ exports.getAmadeusTvo = async (req, res, next) => {
 
 exports.getCombineHotelBookingList=async(req,res,next)=>{
   try {
-    const { page, limit, search, fromDate, toDate } = req.query;
     let result=[]
     const isUserExist = await findUser({
       _id: req.userId,
@@ -156,29 +155,9 @@ exports.getCombineHotelBookingList=async(req,res,next)=>{
         message: responseMessage.USERS_NOT_FOUND,
       });
     }
-    const queryData = {
-      page,
-      limit,
-      search,
-      fromDate,
-      toDate,
-      userId: isUserExist._id,
-    };
-    const tboHotelBookings=await findUserhotelBookingModelData(queryData);
-    if (tboHotelBookings.length == 0) {
-      return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
-        message: responseMessage.DATA_NOT_FOUND,
-      });
-    }
-    const grnHotelBookings=await userGrnBooking(queryData);
-    result= tboHotelBookings.concat(array2)
-    if (grnHotelBookings.length == 0) {
-      return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
-        message: responseMessage.DATA_NOT_FOUND,
-      });
-    }
+    const tboHotelBookings=await findUserhotelBookingModelData({ userId: isUserExist._id});
+    const grnHotelBookings=await userGrnBooking({ userId: isUserExist._id});
+    result= tboHotelBookings.concat(grnHotelBookings)
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.DATA_FOUND,

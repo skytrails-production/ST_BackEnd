@@ -14,5 +14,6 @@ module.exports = function (app) {
 
   app.post("/skyTrails/api/combine/combineApiRes", combineApiController.combineTvoKafila);//get category
   app.get('/skyTrails/api/amadeus/user/getCombineBookingHistory',[authJwt.verifcationToken],combineBookingDetailsCOntroller.getAmadeusTvo);
-  app.get('/skyTrails/api/user/getCombineHotelBookingHistory',[authJwt.verifcationToken],combineBookingDetailsCOntroller.getCombineHotelBookingList)
+  app.get('/skyTrails/api/user/getCombineHotelBookingHistory',[authJwt.verifcationToken],combineBookingDetailsCOntroller.getCombineHotelBookingList);
+  app.post("/skyTrails/api/combine/combineRoundTripApiRes", combineApiController.combineTvoKafilaRoundTrip);
 };

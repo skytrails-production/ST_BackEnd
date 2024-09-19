@@ -3,7 +3,10 @@ const nodeCrypto = require("crypto");
 const xml2js = require("xml2js");
 const { v4: uuidv4 } = require("uuid");
 const crypto = require("crypto");
-const { tokenGenerator, api } = require("../common/const");
+const {
+  kafilaTokenGenerator,
+api
+} = require("../common/const");
 const {
   actionCompleteResponse,
   sendActionFailedResponse,
@@ -1331,88 +1334,15 @@ function parseDate(dateStr) {
 }
 
 //combine tvo and kafila and sort as per price ***********************************
-exports.combineTvoKafila1=async(req,res,next)=>{
-  try {
-    const data = req.body;
-    let finalResArray  = []; // Array to hold the final result
-    let kafilaFlight=[];
-    const kafilaUrl = "http://stage1.ksofttechnology.com/api/FSearch";
-    const api1Url = commonUrl.api.flightSearchURL;
-    const [tvoResponse, KafilaResponse] = await Promise.all([
-      axios.post(api1Url, data),
-      axios.post(kafilaUrl, generateKafilaRequest(data)),
-    ]);
-    let tvoArray =
-      tvoResponse.data.Response.ResponseStatus === 1
-        ? tvoResponse.data.Response.Results[0]
-        : [];
-    tvoArray = removeDuplicates(tvoArray, `FlightNumber`);
-    let kafilaArray =KafilaResponse.data.Schedules[0] || [];
-    console.log(
-      "kafilaArray.Schedules[0].length============",
-      kafilaArray.length,tvoArray.length
-    );  
-      // Step 1: Compare flights based on FlightNumber and FlightTime
-      const tvoMap = new Map();
-      tvoArray.forEach((tvoFlight) => {
-        const key = `${tvoFlight.Segments[0][0].Airline.FlightNumber}-${tvoFlight.Segments[0][0].Origin.DepTime}`;
-       tvoMap.set(key, tvoFlight);
-      });
-      kafilaArray.forEach((kafilaFlight) => {
-        const key = `${kafilaFlight.Itinerary[0].FNo}-${kafilaFlight.Itinerary[0].DDate}`;
-        const matchingTvoFlight = tvoMap.get(key);
-        if (matchingTvoFlight) {
-          // Step 2: Compare fares
-          const tvoFare = matchingTvoFlight.Fare.OfferedFare;
-          const kafilaFare = kafilaFlight.Fare.GrandTotal;
-          // Step 3: Push the flight with the lower fare to finalResArray
-          if (kafilaFare < tvoFare) {
-            finalResArray.push(kafilaFlight); // Kafila flight is cheaper
-          } else {
-            finalResArray.push(matchingTvoFlight); // TVO flight is cheaper
-          }
-  
-          // Remove the compared TVO flight from the map to avoid duplicate entries
-          tvoMap.delete(key);
-        } else {
-          console.log(" finalResArray.push(kafilaFlight);")
-          // If no matching TVO flight, push the Kafila flight
-          finalResArray.push(kafilaFlight);
-        }
-      });
-  
-      // Step 4: Push remaining unmatched TVO flights to the result array
-      tvoMap.forEach((unmatchedTvoFlight) => {
-        finalResArray.push(unmatchedTvoFlight);
-      });
- // Step 5: Sort finalResArray by fare (ascending order)
-const sortedFinalRes= finalResArray.sort((a, b) => {
-  const fareA = a.Fare ? (a.Fare.OfferedFare || a.Fare.GrandTotal) : 0;
-  const fareB = b.Fare ? (b.Fare.OfferedFare || b.Fare.GrandTotal) : 0;
-  return fareA - fareB; // Sort in ascending order of fare
-});
-    return res.status(statusCode.OK).send({
-      statusCode: statusCode.OK,
-      responseMessage: responseMessage.DATA_FOUND,
-      result: { kafilaData:KafilaResponse.data,KafilaResponse: kafilaArray, tvoResponse: tvoArray,finalResArray,sortedFinalRes},
-    });
-  } catch (error) {
-    console.log(
-      "error while trying to combine both apis tvo and kafila",
-      error
-    );
-    return next(error);
-  }
-}
-
 exports.combineTvoKafila = async (req, res, next) => {
   try {
     const data = req.body;
     let finalResArray = []; // Array to hold the final result
     let flightKeySet = new Set(); // Set to track unique flight keys
-    const kafilaUrl = "http://stage1.ksofttechnology.com/api/FSearch";
+    const kafilaUrl = api.kafilaGetFlight||"http://stage1.ksofttechnology.com/api/FSearch";
     const api1Url = commonUrl.api.flightSearchURL;
-
+    const getToken=await kafilaToken();
+    data.KafilaToken=getToken.TokenId
     const [tvoResponse, KafilaResponse] = await Promise.all([
       axios.post(api1Url, data),
       axios.post(kafilaUrl, generateKafilaRequest(data)),
@@ -1439,7 +1369,6 @@ exports.combineTvoKafila = async (req, res, next) => {
       if (matchingTvoFlight) {
         const tvoFare = matchingTvoFlight.Fare.OfferedFare;
         const kafilaFare = kafilaFlight.Fare.GrandTotal;
-
         if (kafilaFare < tvoFare) {
           finalResArray.push(kafilaFlight); // Kafila flight is cheaper
           flightKeySet.add(key); // Add key to the set
@@ -1487,6 +1416,64 @@ exports.combineTvoKafila = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.combineTvoKafilaRoundTrip=async(req,res,next)=>{
+  try {
+    const data = req.body;
+    let finalResArray = []; // Array to hold the final result
+    let flightKeySet = new Set();
+    const kafilaUrl = api.kafilaGetFlight||"http://stage1.ksofttechnology.com/api/FSearch";
+    const api1Url = commonUrl.api.flightSearchURL;
+    const getToken=await kafilaToken();
+    data.KafilaToken=getToken.TokenId
+    const [tvoResponse, KafilaResponse] = await Promise.all([
+      axios.post(api1Url, data),
+      axios.post(kafilaUrl, generateKafilaRoundTripRequest(data)),
+    ]);
+    let tvoArray = tvoResponse.data.Response.ResponseStatus === 1? tvoResponse.data.Response.Results: [];
+    let tvoArray1 = removeDuplicates(tvoArray[0], `FlightNumber`);
+    tvoReturnArray= removeDuplicates(tvoArray[1], `FlightNumber`);
+    let kafilaArrayCombine = KafilaResponse.data.Schedules || [];
+    kafilaArray=kafilaArrayCombine[0];
+    kafilaReturnArray=kafilaArrayCombine[1];
+   const  combineData=kafilaArray.concat(tvoArray1);
+   const  combineReturnData=kafilaReturnArray.concat(tvoReturnArray)
+   const tvoMap = new Map();
+   const tvoReturnMap = new Map();
+   tvoArray1.forEach((tvoFlight) => {
+     const key = `${tvoFlight.Segments[0][0].Airline.FlightNumber}-${tvoFlight.Segments[0][0].Origin.DepTime}`;
+     tvoMap.set(key, tvoFlight);
+   });
+   tvoReturnArray.forEach((tvoFlight) => {
+    const key = `${tvoFlight.Segments[0][0].Airline.FlightNumber}-${tvoFlight.Segments[0][0].Origin.DepTime}`;
+    tvoReturnMap.set(key, tvoFlight);
+  });
+  kafilaArray.forEach((kafilaFlight) => {
+    const key = `${kafilaFlight.Itinerary[0].FNo}-${kafilaFlight.Itinerary[0].DDate}`;
+    const matchingTvoFlight = tvoMap.get(key);
+  })
+  kafilaReturnArray.forEach((kafilaFlight) => {
+    const key = `${kafilaFlight.Itinerary[0].FNo}-${kafilaFlight.Itinerary[0].DDate}`;
+    const matchingTvoFlight = tvoReturnMap.get(key);
+  })
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: {
+        kafilaArray,
+        kafilaReturnArray,
+        tvoArray1,
+        tvoReturnArray,
+        combineData,
+        combineReturnData
+      },
+    });
+  } catch (error) {
+    console.log("error while trying to combine both apis for roundtrip tvo and kafila", error);
+    return next(error);
+  }
+  }
+
 
 const generateAmadeusRequest = (data) => {
   // Generate the SOAP request XML based on the provided data
@@ -1781,9 +1768,9 @@ const generateKafilaRequest = (data) => {
   const KafilaAgentId = "1126824";
   const pyload = {
     Trip: "D1",
-    Adt: 1,
-    Chd: 0,
-    Inf: 0,
+    Adt: data.AdultCount,
+    Chd: data.ChildCount,
+    Inf: data.InfantCount,
     Sector: [
       {
         Src: data.Segments[0].Origin,
@@ -1811,4 +1798,76 @@ const generateKafilaRequest = (data) => {
     },
   };
   return pyload;
+};
+const generateKafilaRoundTripRequest = (data) => {
+  const formattedDate = moment(data.Segments[0].PreferredDepartureTime).format(
+    "YYYY-MM-DD"
+  );
+  const formattedDate1 = moment(data.Segments[1].PreferredDepartureTime).format(
+    "YYYY-MM-DD"
+  );
+  const KafilaAgentId = `${kafilaTokenGenerator.AID}`;
+  const pyload = {
+    Trip: "D1",
+    Adt: data.AdultCount,
+    Chd: data.ChildCount,
+    Inf: data.InfantCount,
+    Sector: [
+      {
+        Src: data.Segments[0].Origin,
+        Des: data.Segments[0].Destination,
+        DDate: formattedDate,
+      },
+       {
+        Src: data.Segments[1].Origin,
+        Des: data.Segments[1].Destination,
+        DDate: formattedDate1,
+      },
+    ],
+    PF: "",
+    PC: "",
+    Routing: "ALL",
+    Ver:  `${kafilaTokenGenerator.Version}`,
+    Auth: {
+      AgentId: KafilaAgentId,
+      Token: data.KafilaToken,
+    },
+    Env: "D",
+    Module: "B2B",
+    OtherInfo: {
+      PromoCode: " ",
+      FFlight: "",
+      FareType: "",
+      TraceId: "",
+      IsUnitTesting: false,
+      TPnr: false,
+    },
+  };
+  return pyload;
+};
+
+
+
+const kafilaToken =async() => {
+    const data = {
+      P_TYPE: `${kafilaTokenGenerator.P_TYPE}`,
+      R_TYPE: `${kafilaTokenGenerator.R_TYPE}`,
+      R_NAME: `${kafilaTokenGenerator.R_NAME}`,
+      AID: `${kafilaTokenGenerator.AID}`,
+      UID: `${kafilaTokenGenerator.UID}`,
+      PWD: `${kafilaTokenGenerator.PWD}`,
+      Version: `${kafilaTokenGenerator.Version}`,
+    };
+
+    const response = await axios.post(`${api.kafilatokenURL}`, data);
+    msg = "Token Generated";
+    // const TokenId=response?.data?.TokenId
+    const result = {
+      TokenId: response?.data?.Result,
+      Error: response?.data?.ErrorMessage,
+      Status: response?.data?.Status,
+    };
+    
+    return result;
+  
 };

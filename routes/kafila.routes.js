@@ -9,7 +9,8 @@ module.exports = function (app) {
   
   //Token Generator
   app.get("/skyTrails/api/kafila/token", controller.kafilaTokenGenerator);
-
+  app.post("/skyTrails/api/kafila/kafilaFareCheck", controller.kafilaFareCheck);
+  app.post("/skyTrails/api/kafila/kafilaSSR", controller.kafilaSSR);
 };
 
 
