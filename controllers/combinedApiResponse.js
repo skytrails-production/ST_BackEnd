@@ -1369,7 +1369,7 @@ exports.combineTvoKafila = async (req, res, next) => {
       if (matchingTvoFlight) {
         const tvoFare = matchingTvoFlight.Fare.OfferedFare;
         const kafilaFare = kafilaFlight.Fare.GrandTotal;
-        if (kafilaFare < tvoFare) {
+        if (kafilaFare <= tvoFare) {
           finalResArray.push(kafilaFlight); // Kafila flight is cheaper
           flightKeySet.add(key); // Add key to the set
         } else {
@@ -1417,64 +1417,242 @@ exports.combineTvoKafila = async (req, res, next) => {
   }
 };
 
-exports.combineTvoKafilaRoundTrip=async(req,res,next)=>{
-  try {
-    const data = req.body;
-    let finalResArray = []; // Array to hold the final result
-    let flightKeySet = new Set();
-    const kafilaUrl = api.kafilaGetFlight||"http://stage1.ksofttechnology.com/api/FSearch";
-    const api1Url = commonUrl.api.flightSearchURL;
-    const getToken=await kafilaToken();
-    data.KafilaToken=getToken.TokenId
-    const [tvoResponse, KafilaResponse] = await Promise.all([
-      axios.post(api1Url, data),
-      axios.post(kafilaUrl, generateKafilaRoundTripRequest(data)),
-    ]);
-    let tvoArray = tvoResponse.data.Response.ResponseStatus === 1? tvoResponse.data.Response.Results: [];
-    let tvoArray1 = removeDuplicates(tvoArray[0], `FlightNumber`);
-    tvoReturnArray= removeDuplicates(tvoArray[1], `FlightNumber`);
-    let kafilaArrayCombine = KafilaResponse.data.Schedules || [];
-    kafilaArray=kafilaArrayCombine[0];
-    kafilaReturnArray=kafilaArrayCombine[1];
-   const  combineData=kafilaArray.concat(tvoArray1);
-   const  combineReturnData=kafilaReturnArray.concat(tvoReturnArray)
-   const tvoMap = new Map();
-   const tvoReturnMap = new Map();
-   tvoArray1.forEach((tvoFlight) => {
-     const key = `${tvoFlight.Segments[0][0].Airline.FlightNumber}-${tvoFlight.Segments[0][0].Origin.DepTime}`;
-     tvoMap.set(key, tvoFlight);
-   });
-   tvoReturnArray.forEach((tvoFlight) => {
-    const key = `${tvoFlight.Segments[0][0].Airline.FlightNumber}-${tvoFlight.Segments[0][0].Origin.DepTime}`;
-    tvoReturnMap.set(key, tvoFlight);
-  });
-  kafilaArray.forEach((kafilaFlight) => {
-    const key = `${kafilaFlight.Itinerary[0].FNo}-${kafilaFlight.Itinerary[0].DDate}`;
-    const matchingTvoFlight = tvoMap.get(key);
-  })
-  kafilaReturnArray.forEach((kafilaFlight) => {
-    const key = `${kafilaFlight.Itinerary[0].FNo}-${kafilaFlight.Itinerary[0].DDate}`;
-    const matchingTvoFlight = tvoReturnMap.get(key);
-  })
-    return res.status(statusCode.OK).send({
-      statusCode: statusCode.OK,
-      responseMessage: responseMessage.DATA_FOUND,
-      result: {
-        kafilaArray,
-        kafilaReturnArray,
-        tvoArray1,
-        tvoReturnArray,
-        combineData,
-        combineReturnData
-      },
-    });
-  } catch (error) {
-    console.log("error while trying to combine both apis for roundtrip tvo and kafila", error);
-    return next(error);
-  }
-  }
+exports.combineTvoKafilaRoundTrip = async (req, res, next) => {
+    try {
+      const data = req.body;
+      const kafilaUrl = api.kafilaGetFlight || "http://stage1.ksofttechnology.com/api/FSearch";
+      const api1Url = commonUrl.api.flightSearchURL;
+      const getToken = await kafilaToken();
+      data.KafilaToken = getToken.TokenId;
+  
+      const [tvoResponse, kafilaResponse] = await Promise.all([
+        axios.post(api1Url, data),
+        axios.post(kafilaUrl, generateKafilaRoundTripRequest(data)),
+      ]);
+  
+      let tvoArray = tvoResponse.data.Response.ResponseStatus === 1 ? tvoResponse.data.Response.Results : [];
+      let tvoArray1 = removeDuplicates(tvoArray[0], `FlightNumber`); 
+      let tvoReturnArray = removeDuplicates(tvoArray[1], `FlightNumber`); 
+      let kafilaArrayCombine = kafilaResponse.data.Schedules || [];
+      let kafilaArray = kafilaArrayCombine[0];
+      let kafilaReturnArray = kafilaArrayCombine[1];
+      const tvoMap = new Map();
+      tvoArray1.forEach((tvoFlight) => {
+        const key = `${tvoFlight.Segments[0][0].Airline.FlightNumber}-${tvoFlight.Segments[0][0].Origin.DepTime}`;
+        tvoMap.set(key, tvoFlight);
+      });
+  
+      const tvoReturnMap = new Map();
+      tvoReturnArray.forEach((tvoFlight) => {
+        const key = `${tvoFlight.Segments[0][0].Airline.FlightNumber}-${tvoFlight.Segments[0][0].Origin.DepTime}`;
+        tvoReturnMap.set(key, tvoFlight);
+      });
+  
+      const unmatchedKafilaFlights = [];
+      const matchedFlights = [];
+  
+      kafilaArray.forEach((kafilaFlight) => {
+        const key = `${kafilaFlight.Itinerary[0].FNo}-${kafilaFlight.Itinerary[0].DDate}`;
+        if (tvoMap.has(key)) {
+          const tvoFlight = tvoMap.get(key);
+          const kafilaFare = kafilaFlight.Fare ?  kafilaFlight.Fare.GrandTotal: Infinity;
+          const tvoFare = tvoFlight.Fare ? tvoFlight.Fare.OfferedFare  : Infinity;
+          matchedFlights.push(kafilaFare <= tvoFare ? kafilaFlight : tvoFlight);
+          tvoMap.delete(key); 
+        } else {
+          unmatchedKafilaFlights.push(kafilaFlight); 
+        }
+      });
+  
+      const unmatchedTvoFlights = Array.from(tvoMap.values());
+  
+      const unmatchedKafilaReturnFlights = [];
+      const matchedReturnFlights = [];
+  
+      kafilaReturnArray.forEach((kafilaFlight) => {
+        const key = `${kafilaFlight.Itinerary[0].FNo}-${kafilaFlight.Itinerary[0].DDate}`;
+        if (tvoReturnMap.has(key)) {
+          const tvoFlight = tvoReturnMap.get(key);
+          const kafilaFare = kafilaFlight.Fare ? kafilaFlight.Fare.GrandTotal : Infinity;
+          const tvoFare = tvoFlight.Fare ? tvoFlight.Fare.OfferedFare  : Infinity;
+          matchedReturnFlights.push(kafilaFare <= tvoFare ? kafilaFlight : tvoFlight);
+          tvoReturnMap.delete(key);
+        } else {
+          unmatchedKafilaReturnFlights.push(kafilaFlight);
+        }
+      });
+  
+      const unmatchedTvoReturnFlights = Array.from(tvoReturnMap.values());
+   
+      const mergedOutboundFlights = [
+        ...unmatchedKafilaFlights,
+        ...matchedFlights,
+        ...unmatchedTvoFlights,
+      ];
+   
+      const mergedReturnFlights = [
+        ...unmatchedKafilaReturnFlights,
+        ...matchedReturnFlights,
+        ...unmatchedTvoReturnFlights,
+      ];
+  
+      const sortedFinalRes = mergedOutboundFlights.sort((a, b) => {
+        const fareA = a.Fare ? (a.Fare.OfferedFare || a.Fare.GrandTotal) : 0;
+        const fareB = b.Fare ? (b.Fare.OfferedFare || b.Fare.GrandTotal) : 0;
+        return fareA - fareB; 
+      });
+  
+      const sortedReturnFinalRes = mergedReturnFlights.sort((a, b) => {
+        const fareA = a.Fare ? (a.Fare.OfferedFare || a.Fare.GrandTotal) : 0;
+        const fareB = b.Fare ? (b.Fare.OfferedFare || b.Fare.GrandTotal) : 0;
+        return fareA - fareB;
+      });
+  
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.DATA_FOUND,
+        result: {
+          Param: kafilaResponse.data.Param,
+        tvoTraceId: tvoResponse.data.Response.TraceId,
+          sortedFinalRes,         
+          sortedReturnFinalRes, 
+        },
+      });
+    } catch (error) {
+      console.log("Error while trying to combine both APIs for roundtrip TVO and Kafila", error);
+      return next(error);
+    }
+  };
 
+exports.combineTvoKafilaRoundTrip2 = async (req, res, next) => {
+    try {
+      const data = req.body;
+      const kafilaUrl = api.kafilaGetFlight || "http://stage1.ksofttechnology.com/api/FSearch";
+      const api1Url = commonUrl.api.flightSearchURL;
+      const getToken = await kafilaToken();
+      data.KafilaToken = getToken.TokenId;
+  
+      // Fetch data from both APIs
+      const [tvoResponse, kafilaResponse] = await Promise.all([
+        axios.post(api1Url, data),
+        axios.post(kafilaUrl, generateKafilaRoundTripRequest(data)),
+      ]);
+  
+      // Process TVO and Kafila data
+      let tvoArray = tvoResponse.data.Response.ResponseStatus === 1 ? tvoResponse.data.Response.Results : [];
+      let tvoArray1;
+      let tvoReturnArray
+      if(tvoArray.length>0){
+         tvoArray1 = removeDuplicates(tvoArray[0], `FlightNumber`);
+       tvoReturnArray = removeDuplicates(tvoArray[1], `FlightNumber`);
+      }
+      let kafilaArrayCombine = kafilaResponse.data.Schedules || [];
+      let kafilaArray = kafilaArrayCombine[0];
+      let kafilaReturnArray = kafilaArrayCombine[1]; 
 
+      const tvoMap = new Map();
+      tvoArray1.forEach((tvoFlight) => {
+        const key = `${tvoFlight.Segments[0][0].Airline.FlightNumber}-${tvoFlight.Segments[0][0].Origin.DepTime}`;
+        tvoMap[key] = tvoFlight; 
+      });
+  
+      const tvoReturnMap = new Map();
+      tvoReturnArray.forEach((tvoFlight) => {
+        const key = `${tvoFlight.Segments[0][0].Airline.FlightNumber}-${tvoFlight.Segments[0][0].Origin.DepTime}`;
+        tvoReturnMap[key] = tvoFlight; 
+      });
+  
+      const unmatchedKafilaFlights = [];
+      const matchedFlights = [];
+
+      kafilaArray.forEach((kafilaFlight) => {
+        const key = `${kafilaFlight.Itinerary[0].FNo}-${kafilaFlight.Itinerary[0].DDate}`;
+        if (tvoMap.has(key)) {
+          console.log("unmatchedTvoReturnFlights=======",tvoMap.has(key))
+          const tvoFlight = tvoMap[key];
+   
+          const kafilaFare = kafilaFlight.Fare ? (kafilaFlight.Fare.OfferedFare || kafilaFlight.Fare.GrandTotal) : Infinity;
+          const tvoFare = tvoFlight.Fare ? (tvoFlight.Fare.OfferedFare || tvoFlight.Fare.GrandTotal) : Infinity;
+          matchedFlights.push(kafilaFare < tvoFare ? kafilaFlight : tvoFlight);
+          delete tvoMap[key]; 
+        } else {
+          unmatchedKafilaFlights.push(kafilaFlight);
+        }
+      });
+  
+ 
+      const unmatchedTvoFlights = Object.values(tvoMap); 
+  
+      
+      const unmatchedKafilaReturnFlights = [];
+      const matchedReturnFlights = [];
+  
+      kafilaReturnArray.forEach((kafilaFlight) => {
+        const key = `${kafilaFlight.Itinerary[0].FNo}-${kafilaFlight.Itinerary[0].DDate}`;
+        if (tvoReturnMap.has(key)) {
+          console.log("unmatchedTvoReturnFlights====tvoReturnMap.has(key)===",tvoReturnMap.has(key))
+          const tvoFlight = tvoReturnMap[key];
+  
+          
+          const kafilaFare = kafilaFlight.Fare ? (kafilaFlight.Fare.OfferedFare || kafilaFlight.Fare.GrandTotal) : Infinity;
+          const tvoFare = tvoFlight.Fare ? (tvoFlight.Fare.OfferedFare || tvoFlight.Fare.GrandTotal) : Infinity;
+          matchedReturnFlights.push(kafilaFare < tvoFare ? kafilaFlight : tvoFlight);
+          delete tvoReturnMap[key]; 
+        } else {
+          unmatchedKafilaReturnFlights.push(kafilaFlight); 
+        }
+      });
+  
+    
+      const unmatchedTvoReturnFlights = Object.values(tvoReturnMap); 
+  
+     console.log("08f73f90-14f1-4078-bf80-9834439a2a33===",unmatchedKafilaFlights.length,matchedFlights.length,unmatchedTvoFlights.length);
+      const mergedOutboundFlights = [
+        ...unmatchedKafilaFlights,
+        ...matchedFlights,
+        ...unmatchedTvoFlights,
+      ];
+      console.log("08f73f90-14f1-4078-bf80-9834439a2a33===",unmatchedKafilaReturnFlights.length,matchedReturnFlights.length,unmatchedTvoReturnFlights.length)
+      const mergedReturnFlights = [
+        ...unmatchedKafilaReturnFlights,
+        ...matchedReturnFlights,
+        ...unmatchedTvoReturnFlights,
+      ];
+  
+    
+      const sortedFinalRes = mergedOutboundFlights.sort((a, b) => {
+        const fareA = a.Fare ? (a.Fare.OfferedFare || a.Fare.GrandTotal) : 0;
+        const fareB = b.Fare ? (b.Fare.OfferedFare || b.Fare.GrandTotal) : 0;
+        return fareA - fareB; 
+      });
+  
+      const sortedReturnFinalRes = mergedReturnFlights.sort((a, b) => {
+        const fareA = a.Fare ? (a.Fare.OfferedFare || a.Fare.GrandTotal) : 0;
+        const fareB = b.Fare ? (b.Fare.OfferedFare || b.Fare.GrandTotal) : 0;
+        return fareA - fareB;
+      });
+  
+     
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.DATA_FOUND,
+        result: {
+          kafilaArray,
+          kafilaReturnArray,
+          tvoArray1,
+          tvoReturnArray,
+          sortedFinalRes,          // Sorted array of all outbound flights
+          sortedReturnFinalRes,    // Sorted array of all return flights
+        },
+      });
+    } catch (error) {
+      console.log("Error while trying to combine both APIs for roundtrip TVO and Kafila", error);
+      return next(error);
+    }
+  };
+  
+
+  
 const generateAmadeusRequest = (data) => {
   // Generate the SOAP request XML based on the provided data
   // Generate new values for messageId, uniqueId, NONCE, TIMESTAMP, and hashedPassword
@@ -1765,7 +1943,7 @@ const generateKafilaRequest = (data) => {
   const formattedDate = moment(data.Segments[0].PreferredDepartureTime).format(
     "YYYY-MM-DD"
   );
-  const KafilaAgentId = "1126824";
+  const KafilaAgentId = process.env.KAFILA_AGENT_ID;
   const pyload = {
     Trip: "D1",
     Adt: data.AdultCount,
@@ -1786,7 +1964,7 @@ const generateKafilaRequest = (data) => {
       AgentId: KafilaAgentId,
       Token: data.KafilaToken,
     },
-    Env: "D",
+    Env: process.env.KAFILA_ENV,
     Module: "B2B",
     OtherInfo: {
       PromoCode: " ",
@@ -1832,7 +2010,7 @@ const generateKafilaRoundTripRequest = (data) => {
       AgentId: KafilaAgentId,
       Token: data.KafilaToken,
     },
-    Env: "D",
+    Env: process.env.KAFILA_ENV,
     Module: "B2B",
     OtherInfo: {
       PromoCode: " ",

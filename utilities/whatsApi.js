@@ -283,7 +283,7 @@ async function sendWhtsAppAISensyMultiUSer(destinations, templateParams, campaig
       // Make the request for each destination
       axios.request(config)
         .then(response => {
-          console.log(`Response for ${destination}:`, response.data);
+          // console.log(`Response for ${destination}:`, response.data);
         })
         .catch(error => {
           console.error(`Error for ${destination}:`, error.response ? error.response.data : error.message);

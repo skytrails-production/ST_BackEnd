@@ -69,7 +69,6 @@ const {
 //**********************************************************API's**********************************************/
 exports.amdsFlightBooking = async (req, res, next) => {
   try {
-    // const {}=req.body;
     const data = { ...req.body };
     let options = { day: "2-digit", month: "2-digit", year: "numeric" };
     const isUserExist = await findUser({
@@ -83,28 +82,23 @@ exports.amdsFlightBooking = async (req, res, next) => {
       });
     }
     data.userId = isUserExist._id;
-    // data.bookingStatus = bookingStatus.BOOKED;
-    // Format the date using the toLocaleDateString() function
     let formattedDate = new Date().toLocaleDateString("en-GB", options);
-    const TemplateNames = [
-      String("FLightBooking"),
-      String(data.pnr),
-      String(isUserExist.username),
-      String(formattedDate),
-    ];
     const result = await createUserAmadeusFlightBooking(data);
-    const adminContact=['+918115199076','+919899564481']
-    await whatsApi.sendWhtsAppAISensyMultiUSer(
-      adminContact,
-      TemplateNames,
-      "admin_booking_Alert"
-    );
+    const adminContact=['+918115199076','+919899564481','+919870249076']
+    if(result.bookingStatus==bookingStatus.FAILED){
+      const TemplateNames=['Amadeus Flight',String(data.pnr),String(isUserExist.username),String(formattedDate)];
+      await whatsApi.sendWhtsAppAISensyMultiUSer(adminContact,TemplateNames,'adminBookingFailure');
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.ReqTimeOut, 
+        responseMessage: responseMessage.BOOKING_FAILED,
+      });
 
-    return res.status(statusCode.OK).send({
-      statusCode: statusCode.OK,
-      responseMessage: responseMessage.FLIGHT_BOOKED,
-      result,
-    });
+    }else{
+      const TemplateNames=[String(data.from),String(data.pnr),String(isUserExist.username),String(formattedDate)];
+      await whatsApi.sendWhtsAppAISensyMultiUSer(adminContact,TemplateNames,'admin_booking_Alert');
+      return res.status(statusCode.OK).send({statusCode: statusCode.OK, message: responseMessage.FLIGHT_BOOKED,result });
+    }
+    
   } catch (error) {
     console.log("error while trying to booking", error);
     return next(error);

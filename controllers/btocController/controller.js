@@ -1106,7 +1106,7 @@ exports.loginWithMailMobileLogin = async (req, res, next) => {
 
         const userMobile =
           isExist.phone.country_code + isExist.phone.mobile_number;
-        const templateParams = [String(isExist.username), String(otp)];
+        const templateParams = [String(var1), String(otp)];
         const sent = await whatsappAPIUrl.sendWhtsAppOTPAISensy(
           userMobile,
           templateParams,
@@ -2034,3 +2034,4 @@ exports.addProfileContactDetail=async(req,res,next)=>{
     
   }
 }
+

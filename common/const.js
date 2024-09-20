@@ -12,11 +12,13 @@ exports.kafilaTokenGenerator={
   P_TYPE: "API",
   R_TYPE: "FLIGHT",
   R_NAME: "GetToken",
-  AID: "1126824",
-  UID: "test",
-  PWD: "test",
+  AID: process.env.KAFILA_AGENT_ID,
+  UID: process.env.KAFILA_UID,
+  PWD: process.env.KAFILA_PWD,
   Version: "1.0.0.0.0.0"
 }
+
+
 
 exports.api = {
   //Common Token ,Agencybalance and Logout API's
@@ -358,16 +360,36 @@ getCancelRequeststatus:
 
     // --------------------------------------- End Mihuru Api's ----------------------------
 //*******************************KAFILA API***************************************/
-kafilatokenURL:
-"http://stage1.ksofttechnology.com/api/Freport",
-kafilaGetFlight:"http://stage1.ksofttechnology.com/api/FSearch",
-kafilaRoundTripGetFlight:"http://stage1.ksofttechnology.com/api/FSearch",
-kafilaFareCheck:"http://stage1.ksofttechnology.com/api/FFareCheck",
-kafilaSSR:" http://stage1.ksofttechnology.com/api/FAncl",
-kafilaPnrCreation:"http://stage1.ksofttechnology.com/api/FPNR",
-kafilaGetBookingDetails:" http://stage1.ksofttechnology.com/api/Freport",
-kafilaCncelCharges:"http://stage1.ksofttechnology.com/api/FCancel",
-kafilaCancelSubmit:"http://stage1.ksofttechnology.com/api/Freport",
+
+
+//testing url
+
+
+// kafilatokenURL:
+// "http://stage1.ksofttechnology.com/api/Freport",
+// kafilaGetFlight:"http://stage1.ksofttechnology.com/api/FSearch",
+// kafilaRoundTripGetFlight:"http://stage1.ksofttechnology.com/api/FSearch",
+// kafilaFareCheck:"http://stage1.ksofttechnology.com/api/FFareCheck",
+// kafilaSSR:" http://stage1.ksofttechnology.com/api/FAncl",
+// kafilaPnrCreation:"http://stage1.ksofttechnology.com/api/FPNR",
+// kafilaGetBookingDetails:" http://stage1.ksofttechnology.com/api/Freport",
+// kafilaCncelCharges:"http://stage1.ksofttechnology.com/api/FCancel",
+// kafilaCancelSubmit:"http://stage1.ksofttechnology.com/api/Freport",
+
+
+
+//live url
+
+
+kafilatokenURL:"https://fhapip.ksofttechnology.com/api/Freport",
+kafilaGetFlight:"https://fhapip.ksofttechnology.com/api/FSearch",
+kafilaRoundTripGetFlight:"https://fhapip.ksofttechnology.com/api/FSearch",
+kafilaFareCheck:"https://fhapip.ksofttechnology.com/api/FFareCheck",
+kafilaSSR:"https://fhapip.ksofttechnology.com/api/FAncl",
+kafilaPnrCreation:"https://fhapip.ksofttechnology.com/api/FPNR",
+kafilaGetBookingDetails:"https://fhapip.ksofttechnology.com/api/Freport",
+kafilaCncelCharges:"https://fhapip.ksofttechnology.com/api/FCancel",
+kafilaCancelSubmit:"https://fhapip.ksofttechnology.com/api/Freport",
 
 
 
