@@ -9,6 +9,27 @@ const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 const mongoosePaginate = require("mongoose-paginate-v2");
 const offerType = require("../../enums/offerType");
 
+
+const seatDynamicSchema = new mongoose.Schema({
+  _id:false,
+  AirlineCode: String,
+  FlightNumber: String,
+  CraftType: String,
+  Origin: String,
+  Destination: String,
+  AvailabilityType: Number,
+  Description: Number,
+  Code: String,
+  RowNo: String,
+  SeatNo: String,
+  SeatType: Number,
+  SeatWayType: Number,
+  Compartment: Number,
+  Deck: Number,
+  Currency: String,
+  Price: Number
+});
+
 const flightBookingSchema = new mongoose.Schema(
   {
     userId: {
@@ -101,7 +122,7 @@ const flightBookingSchema = new mongoose.Schema(
         Destination: String,
       },
     ],
-
+    seatDynamic:[seatDynamicSchema], 
     passengerDetails: [
       {
         _id:false,

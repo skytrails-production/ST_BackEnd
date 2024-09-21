@@ -44,6 +44,7 @@ const grnHotelBookingDetailSchema = new mongoose.Schema(
         client_nationality:String,
         pan_number:String,
         email:String,
+        phone_number:String,
         name:String,
         surname:String,
         title:{
