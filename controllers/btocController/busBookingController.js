@@ -198,3 +198,63 @@ exports.getUserBusBookingById=async(req,res,next)=>{
     return next(error)
   }
 }
+
+
+//sendOffline update to user of their booking***********************
+
+exports.sendUpdateToUser=async(req,res,next)=>{
+  try {
+    const {userId,bookingId}=req.body;
+    const isUserExist = await findUser({_id: userId,status: status.ACTIVE,});
+    if(!isUserExist){
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound, 
+        responseMessage: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+    const isBookingExist = await findUserBusBooking({ _id:bookingId,userId:isUserExist._id });
+    if (!isBookingExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.BOOKING_NOT_FOUND,
+      });
+    }
+    const userName=`${isBookingExist.passenger[0].firstName} ${isBookingExist.passenger[0].lastName}`
+    const notificationTitle=`Dear ${isUserExist.username},`
+    const notificationMessage = `
+      We wanted to inform you that your PNR (PNR: ${isBookingExist.pnr}) has been updated.🙂 
+      Please check your account for more details.
+
+      Thank you for choosing us!
+
+      Best regards,
+      TheSkyTrails Pvt Ltd
+    `;
+    const notObject={
+      userId:isUserExist._id,
+      title:notificationTitle,
+      description:notificationMessage,
+      from:'busBookiing',
+      to:userName,
+    }
+    let options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    let journeyDate=new Date(isBookingExist.departureTime);
+    const data={
+      origin:isBookingExist.origin,destination:isBookingExist.destination,pnr:isBookingExist.pnr,noOfSeats:isBookingExist.noOfSeats,BoardingPoint:isBookingExist.BoardingPoint.Location
+    }
+    await createPushNotification(notObject);
+    const template=[String(data.origin),String(data.destination),String(data.pnr),String(journeyDate.toLocaleDateString('en-GB', options)),String(data.noOfSeats),String(data.BoardingPoint)]
+    const whatsapp=await whatsApi.sendWhtsAppOTPAISensy(`+91${isBookingExist.passenger[0].Phone}`,template,'busBooking');
+    const send=await sendSMS.sendSMSBusBooking(isBookingExist.passenger[0].Phone, userName);
+    // await commonFunction.BusBoo5kingConfirmationMail(isBookingExist);
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK, 
+      responseMessage: responseMessage.SUCCESS,
+      
+    });
+  } catch (error) {
+    console.log("error while trying to send update",error);
+    return next(error);
+    
+  }
+}

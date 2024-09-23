@@ -22,9 +22,9 @@ exports.kafilaTokenGenerator = async (req, res) => {
       P_TYPE: `${kafilaTokenGenerator.P_TYPE}`,
       R_TYPE: `${kafilaTokenGenerator.R_TYPE}`,
       R_NAME: `${kafilaTokenGenerator.R_NAME}`,
-      AID: `${kafilaTokenGenerator.AID}`,
-      UID: `${kafilaTokenGenerator.UID}`,
-      PWD: `${kafilaTokenGenerator.PWD}`,
+      AID: process.env.KAFILA_AGENT_ID,
+      UID: process.env.KAFILA_UID,
+      PWD: process.env.KAFILA_PWD,
       Version: `${kafilaTokenGenerator.Version}`,
     };
 
@@ -50,6 +50,7 @@ exports.kafilaFlightSearch=async(req,res,next)=>{
     const data = {
       ...req.body,
     };
+    data.Env=process.env.KAFILA_ENV;
     const response = await axios.post(`${api.kafilaGetFlight}`, data);
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
@@ -67,6 +68,7 @@ exports.kafilaRoundTripFlightSearch=async(req,res,next)=>{
     const data = {
       ...req.body,
     };
+    data.Env=process.env.KAFILA_ENV;
     const response = await axios.post(`${api.kafilaRoundTripGetFlight}`, data);
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
@@ -78,7 +80,6 @@ exports.kafilaRoundTripFlightSearch=async(req,res,next)=>{
     return next(error);
   }
 }
-
 
 exports.kafilaFareCheck=async(req,res,next)=>{
   try {
@@ -152,13 +153,6 @@ exports.kafilaGetBookingDetails=async(req,res,next)=>{
     return next(error);
   }
 }
-
-
-
-
-
-
-
 
 //Token generator Function 
 const kafilaToken =async() => {

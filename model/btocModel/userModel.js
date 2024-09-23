@@ -197,7 +197,8 @@ const usersSchema = new Schema({
     createdAt: {
       type: Date,
       default: Date.now,
-    }}], // Array of wallet history objects
+    }}],
+    temp_mobile_number:{ type: String,default: ""}
   },
   {
     timestamps: true,

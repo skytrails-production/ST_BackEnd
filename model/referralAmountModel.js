@@ -14,7 +14,8 @@ const referallAmountSchema = new Schema({
     hotelBookingCoin:Number,
     packageBookingCoin:Number,
     coinDetail:String,
-    signUpAmount:Number
+    signUpAmount:Number,
+    triviaWinnerAmount:Number
 }, { timestamps: true }); // Moved timestamps option to the schema options object
 
 referallAmountSchema.plugin(mongoosePaginate);

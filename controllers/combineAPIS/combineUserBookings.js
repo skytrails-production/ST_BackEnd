@@ -87,6 +87,21 @@ const {
   countTotalhotelBooking,
   aggregatePaginateHotelBookingList,
 } = userhotelBookingModelServices;
+const {
+  userKafilaFlightBookingServices,
+} = require("../../services/kafilaServices/flightBookingServices");
+const {
+    createKafilaFlightBooking,
+    findKafilaFlightBooking,
+    getKafilaFlightBookings,
+    deleteKafilaFlightBooking,
+    updateKafilaFlightBooking,
+    paginateKafilaFlightBookingSearch,
+    countTotalKafilaFlightBookings,
+    aggregatePaginateGetKafilaFlightBooking1,
+    aggrPagGetKafilaFlightBooking,
+    aggPagGetBookingList,
+} = userKafilaFlightBookingServices;
 //*****************************API"S******************************************************/
 exports.getAmadeusTvo = async (req, res, next) => {
   try {
@@ -170,3 +185,47 @@ exports.getCombineHotelBookingList=async(req,res,next)=>{
   }
 }
 
+exports.getCombineFlightBookingResp=async(req,res,next)=>{
+  try {
+    let result=[];
+    const isUserExist = await findUser({
+      _id: req.userId,
+      status: status.ACTIVE,
+    });
+    if (!isUserExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+   
+    const [tvoResponse, amadeusResponse,kafilaResponse] = await Promise.all([
+      userflightBookingList({userId: isUserExist._id}),
+      listUserAmadeusFlightBookings({userId: isUserExist._id}),
+      getKafilaFlightBookings({userId: isUserExist._id})
+    ]);
+    let tvoArray = tvoResponse!==null
+    ? tvoResponse
+    : [];
+    let amadeusArray = amadeusResponse!==null
+    ? amadeusResponse
+    : [];
+    let kafilaArray = kafilaResponse!==null
+    ? kafilaResponse
+    : [];
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: {
+        user:isUserExist._id,
+        tvoArray,
+        amadeusArray,
+        kafilaArray
+      },
+    });
+  } catch (error) {
+    console.log("error while trying to combine all booking data",error);
+    return next(error)
+    
+  }
+}

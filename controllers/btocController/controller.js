@@ -1900,7 +1900,7 @@ exports.socialLogin = async (req, res, next) => {
       req.body.email = req.body.email.toLowerCase();
     }
     const isUserExist = await findUser({ email: email });
-
+    const checkReward = await findReferralAmount({});
     if (!isUserExist) {
       const object = {
         username,
@@ -1916,6 +1916,7 @@ exports.socialLogin = async (req, res, next) => {
         otpVerified: true,
         firstTime: false,
         isSocial: true,
+       balance: checkReward.signUpAmount
       };
       let result = await createUser(object);
       result = result.toObject();
@@ -1969,7 +1970,7 @@ exports.addMobileNumber = async (req, res, next) => {
     const otpExpireTime = new Date().getTime() + 300000;
     const isUserExist = await findUserData({ _id: req.userId });
     if (!isUserExist) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.USERS_NOT_FOUND,
       });
