@@ -79,6 +79,12 @@ module.exports = function (app) {
     app.post('/skyTrails/tboandgrn/searchresults', controller.searchTboGrnCombineHotelCityWise);
 
 
+
+    //tboGrnCombineHotelSearch with dynamic room payloads handeling
+    
+    app.post('/skyTrails/tbogrn/searchresult', controller.tboGrnCombineHotelSearch);
+
+
     //grn and tbo combined search city list and grn hotel list include
 
     app.get('/skyTrails/tboandgrn/citylist',controller.searchTboandGrnCityList);

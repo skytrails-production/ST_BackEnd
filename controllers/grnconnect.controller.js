@@ -1,4 +1,3 @@
-const aws = require("aws-sdk");
 const axios = require("axios");
 const { api } = require("../common/const");
 const moment = require("moment");
@@ -23,12 +22,9 @@ const {
 } = require("../model/grnconnectModel");
 const commonFunctions = require("../utilities/commonFunctions");
 
-const s3 = new aws.S3({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-});
 
-//testing
+
+
 
 const headers = {
   "Content-Type": "application/json",
@@ -37,15 +33,13 @@ const headers = {
   "api-key": process.env.GRNAPIKEY,
 };
 
-//production
-// const headers = {
-//   'Content-Type': 'application/json',
-//   'Accept': 'application/json',
-//   'Accept-Encoding': 'application/gzip',
-//   'api-key': 'b79e47991faefb0c7d091b9b6ddc9ea4',
-// };
 
 const baseurl = process.env.GRNURL;
+
+
+
+
+
 
 //citylist data
 
@@ -1347,9 +1341,9 @@ exports.searchTboGrnCombineHotelCityWise = async (req, res) => {
       const finalList = [...top5HotelsWithFeature, ...uniqueHotels];
 
       const mainData = {
-        // Hotels: uniqueHotels,
+        // hotels: uniqueHotels,
         // no_of_hotels: uniqueHotels?.length,
-        Hotels: finalList,
+        hotels: finalList,
         no_of_hotels: finalList?.length,
         ...grnResults?.updatedObj,
         ...additionalDataResult?.tboOtherkeys,
@@ -1533,3 +1527,370 @@ const cityListFunction = async (keyword) => {
 
   return finalData;
 };
+
+
+
+
+
+
+ //tboGrnCombineHotelSearch with dynamic room payloads handeling
+
+
+exports.tboGrnCombineHotelSearch = async (req, res) =>{
+  try {
+
+    // console.log("req.body",req.body.rooms.roomCount);
+    // return;
+    if (req?.body?.cityCode || req?.body?.tboCityCode) {
+      const additionalPromise = async () => {
+        try {
+          const data = {
+            CheckInDate: moment(req?.body?.checkin, "YYYY-MM-DD").format(
+              "DD/MM/YYYY"
+            ),
+            NoOfNights: countNights(req?.body?.checkin, req?.body?.checkout),
+            NoOfRooms: req?.body?.rooms?.roomCount,
+            RoomGuests: tboDistributeGuests(req?.body?.rooms),
+            CountryCode: req?.body?.client_nationality,
+            GuestNationality: req?.body?.client_nationality,
+            CityId: req?.body?.tboCityCode,
+            TokenId: req?.body?.TokenId,
+            EndUserIp: req?.body?.EndUserIp,
+            ResultCount: null,
+            PreferredCurrency: "INR",
+            MaxRating: 5,
+            MinRating: 0,
+            ReviewScore: null,
+            IsNearBySearchAllowed: false,
+          };
+
+          // console.log("data",data);
+          // return;
+
+          const response = await axios.post(`${api?.hotelSearchURL}`, data);
+          // console.log(response?.data,"response")
+          let keysToRemove = ["HotelResults", "ResponseStatus", "Error"];
+          let tboOtherkeys = removeKeys(
+            response?.data?.HotelSearchResult,
+            keysToRemove
+          );
+          // if (!hotelName === undefined) return;
+          const filterTboHotels =
+            response?.data?.HotelSearchResult?.HotelResults;
+          // console.log(filterTboHotels.length,"first")
+          // const filteredHotels = filterTboHotels?.filter(hotel =>  hotel.hasOwnProperty('HotelName') );
+          // const filteredHotels = filterTboHotels?.filter(hotel => hotel.HotelName!==undefined)
+          const filteredHotels = filterTboHotels?.filter(
+            (hotel) => hotel && "HotelName" in hotel && hotel.HotelName
+          );
+
+          // console.log(filteredHotels.length)
+          const modifyData = {
+            // TraceId: response?.data?.HotelSearchResult?.TraceId,
+            HotelResults: filteredHotels,
+            tboOtherkeys: tboOtherkeys,
+          };
+          return modifyData;
+        } catch (error) {
+          console.error("Error fetching additional data:", error.message);
+          return null; // Return null if there's an error
+        }
+      };
+
+      const grnSearchPromise = async () => {
+        try {
+          const totalPage = await GrnHotelCityMap.countDocuments({
+            cityCode: req?.body?.cityCode,
+          });
+          const page = Math.ceil(totalPage / 100);
+          const limit = 100;
+          const promises = [];
+
+          for (let i = 1; i <= page; i++) {
+            // console.log(page,"page",i);
+            promises.push(async () => {
+              const hotelCode = await exports.grnHotelCityMapWithPagination(
+                req?.body?.cityCode,
+                i,
+                limit
+              );
+              const searchData = {
+                rooms: grnDistributeGuests(req?.body?.rooms),
+                rates: req?.body?.rates,
+                hotel_codes: hotelCode,
+                currency: req?.body?.currency,
+                client_nationality: req?.body?.client_nationality,
+                checkin: req?.body?.checkin,
+                checkout: req?.body?.checkout,
+                cutoff_time: 30000,
+                version: req?.body?.version,
+              };
+              // console.log(searchData,"searchData");
+              // return;
+              const response = await axios.post(
+                `${baseurl}/api/v3/hotels/availability`,
+                searchData,
+                { headers }
+              );
+              return response.data;
+            });
+          }
+
+          const results = await Promise.all(promises.map((p) => p()));
+          const validResults = results.filter(
+            (result) => result && !result.errors
+          );
+
+          let keysToRemove = ["hotels", "search_id", "no_of_hotels"];
+          let updatedObj = removeKeys(validResults?.[0], keysToRemove);
+
+          let modifiedResults = validResults.reduce((acc, result) => {
+            result?.hotels?.forEach((hotel) => {
+              acc.push({ ...hotel, search_id: result?.search_id });
+            });
+            return acc;
+          }, []);
+
+          modifiedResults = modifiedResults
+            .filter((hotel) => hotel.images.url !== "")
+            .sort(
+              (a, b) =>
+                (a?.min_rate?.price || a?.Price?.PublishedPrice) -
+                (b?.min_rate?.price || b?.Price?.PublishedPrice)
+            );
+
+          return {
+            hotels: modifiedResults,
+            no_of_hotels: modifiedResults.length,
+            updatedObj: updatedObj,
+          };
+        } catch (error) {
+          console.error("Error fetching GRN data:", error.message);
+          return null; // Return null if there's an error
+        }
+      };
+
+      const [additionalDataResult, grnResults] = await Promise.all([
+        additionalPromise(),
+        grnSearchPromise(),
+      ]);
+
+      // Combine results
+      let combineData = [];
+
+      if (additionalDataResult?.HotelResults) {
+        combineData = [...combineData, ...additionalDataResult?.HotelResults];
+      }
+
+      if (grnResults?.hotels) {
+        combineData = [...combineData, ...grnResults.hotels];
+      }
+
+      combineData = combineData.sort(
+        (a, b) =>
+          (a?.min_rate?.price || a?.Price?.PublishedPrice) -
+          (b?.min_rate?.price || b?.Price?.PublishedPrice)
+      );
+
+      const minPriceMap = new Map();
+
+      combineData.forEach((item) => {
+        // Extract hotel name and price dynamically
+        const hotelName = item.HotelName || item.name;
+        const price = item?.Price?.PublishedPrice || item?.min_rate?.price;
+
+        // Ensure hotelName and price are defined
+        // if (!hotelName || price === undefined) return;
+
+        // Initialize the map entry if not already present
+        if (!minPriceMap.has(hotelName)) {
+          minPriceMap.set(hotelName, { price, ...item });
+        } else {
+          // Update map entry if the current price is lower
+          const currentEntry = minPriceMap.get(hotelName);
+          if (price < currentEntry.price) {
+            minPriceMap.set(hotelName, { price, ...item });
+          }
+        }
+      });
+
+      // Convert the Map to an array of objects with the desired properties
+      const uniqueHotels = Array.from(minPriceMap, ([hotelName, entry]) => {
+        // Determine the appropriate hotel name key for the output
+        const hotelNameKey = entry.HotelName ? "HotelName" : "name";
+
+        // Construct the result object with the correct hotel name key
+        return {
+          [hotelNameKey]: hotelName,
+          // price: entry.price,
+          ...Object.fromEntries(
+            Object.entries(entry).filter(
+              ([key]) =>
+                key !== "HotelName" &&
+                key !== "name" &&
+                key !== "Price.PublishedPrice" &&
+                key !== "min_rate.price"
+            )
+          ),
+        };
+      });
+
+      // Step 1: Filter hotels with category 5
+      const category5Hotels = uniqueHotels?.filter(
+        (hotel) => (hotel?.category || hotel?.HotelCategory) === 5
+      );
+      // console.log(category5Hotels.length,"length");
+      // Step 2: Sort category 5 hotels by price in descending order
+      const sortedCategory5Hotels = category5Hotels?.sort(
+        (a, b) => a.price - b.price
+      );
+
+      // Step 3: Select the top 5 hotels from the sorted list
+      const top5Hotels = sortedCategory5Hotels?.slice(0, 5);
+      // console.log(top5Hotels.length,"length");
+      const top5HotelsWithFeature = top5Hotels?.map((hotel) => ({
+        ...hotel, // Spread existing hotel properties
+        featureHotel: true, // Add the new featureHotel property
+      }));
+
+      // Step 4: Filter out hotels with category 5 from the original list
+      // const hotelsNotInCategory5 = uniqueHotels?.filter(hotel => hotel?.category !== 5);
+
+      // Combine top 5 hotels with the rest
+      const finalList = [...top5HotelsWithFeature, ...uniqueHotels];
+
+      const mainData = {
+        // hotels: uniqueHotels,
+        // no_of_hotels: uniqueHotels?.length,
+        hotels: finalList,
+        no_of_hotels: finalList?.length,
+        ...grnResults?.updatedObj,
+        ...additionalDataResult?.tboOtherkeys,
+      };
+
+      const msg = "Multiple Hotel Search Successfully!";
+      return actionCompleteResponse(res, mainData, msg);
+    } else {
+      const searchData = {
+        rooms: req?.body?.rooms,
+        rates: req?.body?.rates,
+        hotel_codes: req?.body?.hotel_codes,
+        currency: req?.body?.currency,
+        client_nationality: req?.body?.client_nationality,
+        checkin: req?.body?.checkin,
+        checkout: req?.body?.checkout,
+        cutoff_time: 5000,
+        version: req.body.version,
+      };
+      const response = await axios.post(
+        `${baseurl}/api/v3/hotels/availability`,
+        searchData,
+        { headers }
+      );
+      const msg = "Single Hotel Search Successfully!";
+
+      if (response?.data?.hotels) {
+        response?.data?.hotels.forEach((hotel) => {
+          hotel.search_id = response?.data?.search_id;
+        });
+
+        // Remove search_id from the root level
+        delete response.data.search_id;
+      }
+      // Optionally, prepare the modified data
+      const modifiedData = response?.data;
+      return actionCompleteResponse(res, modifiedData, msg);
+    }
+  } catch (err) {
+    sendActionFailedResponse(res, {}, err.message);
+  }
+};
+
+
+
+
+function tboDistributeGuests(...values) {
+
+  // console.log(values);
+
+  const [{ roomCount: numberOfRooms, adultCount: numberOfAdults, childCount: numberOfChilds, childAge: childAges }] = values;
+
+//  return;
+
+  const rooms = [];
+  
+  // Calculate base number of adults and children per room
+  let adultsPerRoom = Math.floor(numberOfAdults / numberOfRooms);
+  let childrenPerRoom = Math.floor(numberOfChilds / numberOfRooms);
+  
+  // Remaining adults and children after equal distribution
+  let remainingAdults = numberOfAdults % numberOfRooms;
+  let remainingChildren = numberOfChilds % numberOfRooms;
+
+  // Distribute adults and children across the rooms
+  for (let i = 0; i < numberOfRooms; i++) {
+      let roomAdults = adultsPerRoom + (i < remainingAdults ? 1 : 0);
+      let roomChildren = childrenPerRoom + (i < remainingChildren ? 1 : 0);
+      
+      // Initialize room object
+      const room = { NoOfAdults: roomAdults };
+      
+      // if(roomChildren===0){
+      room.NoOfChild=0;
+      room.ChildAge=null;
+      // }
+
+      // Only add Childs and ChildAges if there are children
+      if (numberOfChilds > i) {
+          const roomChildAges = childAges.splice(0, roomChildren);
+          room.NoOfChild = roomChildren>=0?roomChildren:0;
+          room.ChildAge  = roomChildAges;
+      }
+      
+      
+
+      rooms.push(room);
+  }
+
+  return rooms;
+}
+
+
+
+function grnDistributeGuests(...values) {
+
+   // console.log(values);
+
+   const [{ roomCount: numberOfRooms, adultCount: numberOfAdults, childCount: numberOfChilds, childAge: childAges }] = values;
+
+   //  return;
+  const rooms = [];
+  
+  // Calculate base number of adults and children per room
+  let adultsPerRoom = Math.floor(numberOfAdults / numberOfRooms);
+  let childrenPerRoom = Math.floor(numberOfChilds / numberOfRooms);
+  
+  // Remaining adults and children after equal distribution
+  let remainingAdults = numberOfAdults % numberOfRooms;
+  let remainingChildren = numberOfChilds % numberOfRooms;
+
+  // Distribute adults and children across the rooms
+  for (let i = 0; i < numberOfRooms; i++) {
+      let roomAdults = adultsPerRoom + (i < remainingAdults ? 1 : 0);
+      let roomChildren = childrenPerRoom + (i < remainingChildren ? 1 : 0);
+      
+      // Initialize room object
+      const room = { Adults: roomAdults };
+
+      // Only add Childs and ChildAges if there are children
+      if (numberOfChilds > i) {
+          const roomChildAges = childAges.splice(0, roomChildren);
+          // room.Childs = roomChildren;
+          room.children_ages = roomChildAges;
+      }
+
+      rooms.push(room);
+  }
+
+  return rooms;
+}
