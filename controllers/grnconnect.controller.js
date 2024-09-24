@@ -1543,6 +1543,8 @@ exports.tboGrnCombineHotelSearch = async (req, res) =>{
     // return;
     if (req?.body?.cityCode || req?.body?.tboCityCode) {
       const additionalPromise = async () => {
+        // console.log("data pass", req?.body?.rooms);
+
         try {
           const data = {
             CheckInDate: moment(req?.body?.checkin, "YYYY-MM-DD").format(
@@ -1614,6 +1616,7 @@ exports.tboGrnCombineHotelSearch = async (req, res) =>{
                 i,
                 limit
               );
+              
               const searchData = {
                 rooms: grnDistributeGuests(req?.body?.rooms),
                 rates: req?.body?.rates,
@@ -1626,12 +1629,13 @@ exports.tboGrnCombineHotelSearch = async (req, res) =>{
                 version: req?.body?.version,
               };
               // console.log(searchData,"searchData");
-              // return;
+              return;
               const response = await axios.post(
                 `${baseurl}/api/v3/hotels/availability`,
                 searchData,
                 { headers }
               );
+              // console.log(response.data?.errors,"Data")
               return response.data;
             });
           }
@@ -1811,10 +1815,11 @@ exports.tboGrnCombineHotelSearch = async (req, res) =>{
 
 function tboDistributeGuests(...values) {
 
-  // console.log(values);
+  // console.log(values,"tboDistributeGuests");
 
   const [{ roomCount: numberOfRooms, adultCount: numberOfAdults, childCount: numberOfChilds, childAge: childAges }] = values;
 
+  // console.log(childAges);
 //  return;
 
   const rooms = [];
@@ -1851,46 +1856,48 @@ function tboDistributeGuests(...values) {
 
       rooms.push(room);
   }
+  // console.log(rooms);
+
 
   return rooms;
 }
 
 
 
-function grnDistributeGuests(...values) {
+function grnDistributeGuests(...myValues) {
 
-   // console.log(values);
+  //  console.log(myValues,"grnDistributeGuests function");
 
-   const [{ roomCount: numberOfRooms, adultCount: numberOfAdults, childCount: numberOfChilds, childAge: childAges }] = values;
+   const [{ roomCount: numberOfRooms, adultCount: numberOfAdults, childCount: numberOfChilds, childAge: childAges }] = myValues;
 
-   //  return;
-  const rooms = [];
-  
-  // Calculate base number of adults and children per room
-  let adultsPerRoom = Math.floor(numberOfAdults / numberOfRooms);
-  let childrenPerRoom = Math.floor(numberOfChilds / numberOfRooms);
-  
-  // Remaining adults and children after equal distribution
-  let remainingAdults = numberOfAdults % numberOfRooms;
-  let remainingChildren = numberOfChilds % numberOfRooms;
+    // return;
+    const rooms = [];
+    
+    // Calculate base number of adults and children per room
+    let adultsPerRoom = Math.floor(numberOfAdults / numberOfRooms);
+    let childrenPerRoom = Math.floor(numberOfChilds / numberOfRooms);
+    
+    // Remaining adults and children after equal distribution
+    let remainingAdults = numberOfAdults % numberOfRooms;
+    let remainingChildren = numberOfChilds % numberOfRooms;
 
-  // Distribute adults and children across the rooms
-  for (let i = 0; i < numberOfRooms; i++) {
-      let roomAdults = adultsPerRoom + (i < remainingAdults ? 1 : 0);
-      let roomChildren = childrenPerRoom + (i < remainingChildren ? 1 : 0);
-      
-      // Initialize room object
-      const room = { Adults: roomAdults };
+    // Distribute adults and children across the rooms
+    for (let i = 0; i < numberOfRooms; i++) {
+        let roomAdults = adultsPerRoom + (i < remainingAdults ? 1 : 0);
+        let roomChildren = childrenPerRoom + (i < remainingChildren ? 1 : 0);
+        
+        // Initialize room object
+        const room = { Adults: roomAdults };
 
-      // Only add Childs and ChildAges if there are children
-      if (numberOfChilds > i) {
-          const roomChildAges = childAges.splice(0, roomChildren);
-          // room.Childs = roomChildren;
-          room.children_ages = roomChildAges;
-      }
+        // Only add Childs and ChildAges if there are children
+        if (numberOfChilds > i) {
+            const roomChildAges = childAges.splice(0, roomChildren);
+            // room.Childs = roomChildren;
+            room.children_ages = roomChildAges;
+        }
 
-      rooms.push(room);
-  }
+        rooms.push(room);
+    }
 
-  return rooms;
+    return rooms;
 }
