@@ -31,17 +31,12 @@ const sendNotification = async (notifDetails) => {
     );
 
     if (response.status === 200) {
-      console.log("Notification sent successfully:", response.data);
       return 1;
     } else {
-      console.log(
-        "Failed to send notification. Response status:",
-        response.status
-      );
+      
       return 0;
     }
   } catch (error) {
-    console.error("Error sending notification:", error);
     return 0;
   }
 };
@@ -63,10 +58,8 @@ const pushNotificationIOS = async (deviceToken, title, body) => {
     };
 
     const response = await admin.messaging().send(message);
-    // console.log("Successfully sent push notification:", response);
     return response;
   } catch (error) {
-    console.error("Error while trying to send a push notification:", error);
     throw error;
   }
 };
@@ -98,10 +91,8 @@ const pushNotification = async (deviceToken, title, body,imageUrl) => {
     const response = await new Promise((resolve, reject) => {
       fcm.send(message, (err, response) => {
         if (err) {
-          console.log("Error while push notification:", err);
           reject(err);
         } else {
-          console.log("Success while push notification pushNotification:", response);
           resolve(response);
         }
       });
@@ -149,10 +140,8 @@ const mediapushNotification = async (deviceToken, title, body) => {
     const response = await new Promise((resolve, reject) => {
       fcm.send(message, (err, response) => {
         if (err) {
-          console.log("Error while push notification:", err);
           reject(err);
         } else {
-          console.log("Success while push notification mediapushNotification:", response);
           resolve(response);
         }
       });
@@ -160,7 +149,6 @@ const mediapushNotification = async (deviceToken, title, body) => {
 
     return response;
   } catch (error) {
-    console.error("Error while trying to send a push notification", error);
     throw error;
   }
 };
@@ -181,10 +169,8 @@ const pushSimpleNotification = async (deviceToken, title, body) => {
   const response = await new Promise((resolve, reject) => {
     fcm.send(message, (err, response) => {
       if (err) {
-        console.log("Error while push notification:", err);
         reject(err);
       } else {
-        console.log("Success while push notification pushSimpleNotification:", response);
         resolve(response);
       }
     });
@@ -220,10 +206,8 @@ const pushNotification1 = async (deviceToken, title, body, imageUrl) => {
   const response = await new Promise((resolve, reject) => {
       fcm.send(message, (err, response) => {
           if (err) {
-              console.log("Error while push notification:", err);
               reject(err);
           } else {
-              console.log("Success while push notification pushNotification1:", response);
               resolve(response);
           }
       });
@@ -268,10 +252,8 @@ const customSoundPushNotification = async (deviceToken, title, body, imageUrl, s
   const response = await new Promise((resolve, reject) => {
       fcm.send(message, (err, response) => {
           if (err) {
-              console.log("Error while push notification:", err);
               reject(err);
           } else {
-              console.log("Success while push notification:", response);
               resolve(response);
           }
       });
@@ -287,19 +269,18 @@ const pushNotificationAfterDepricate=async(deviceToken,title,body)=>{
           title: title,
           body: body,
           // sound: sound, // Custom sound
-      }
+        // imageUrl: imageurl
+      },
+      // data: {
+      //   imageUrl: imageurl, // Include the image URL in the data payload
+      // },
   };
   try {
-    console.log("pushNotificationAfterDepricate",deviceToken,title,body)
     const response = await admin.messaging().send(message);
-    console.log("Success while push notification pushSimpleNotification:", response);
     return response;
-    //   res.status(200).json({ success: true, messageId: response });
   } catch (error) {
-    console.log("Error while push notification:", error);
    return error.message;
   }
 
-  // const endPoint="https://fcm.googleapis.com/fcm/"
 }
 module.exports = { sendNotification, pushNotification,mediapushNotification,pushNotificationIOS,pushSimpleNotification,pushNotification1 ,customSoundPushNotification,pushNotificationAfterDepricate};

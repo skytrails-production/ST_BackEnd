@@ -99,5 +99,6 @@ module.exports = function (app) {
     //booking by id
 
     app.get('/skyTrails/api/user/flightBooking/:id',flightBookingController.getFlightBookingByUserId);
-   app.post('/skyTrails/api/admin/sendBusBookingUpdate',busBookingController.sendUpdateToUser)
+   app.post('/skyTrails/api/admin/sendBusBookingUpdate',busBookingController.sendUpdateToUser);
+   
 }

@@ -13,7 +13,9 @@ const AdminNumber=process.env.ADMINNUMBER;
 /**********************************SERVICES********************************** */
 const{pushNotificationServices}=require('../../services/pushNotificationServices');
 const{createPushNotification,findPushNotification,findPushNotificationData,deletePushNotification,updatePushNotification,countPushNotification}=pushNotificationServices;
-
+const {
+  pushNotificationAfterDepricate,
+} = require("../../utilities/commonFunForPushNotification");
 const { userServices } = require("../../services/userServices");
 const {
   createUser,
@@ -205,7 +207,79 @@ exports.sendPDF=async(req,res,next)=>{
     console.log("error while send mail!",error);
     return next(error)
   }
-}
+};
+exports.sendUpdateToUser = async (req, res, next) => {
+  try {
+    const { userId, bookingId } = req.body;
+    const isUserExist = await findUser({ _id: userId, status: status.ACTIVE });
+    if (!isUserExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+    const isBookingExist = await findUserflightBooking({
+      _id: bookingId,
+      userId: isUserExist._id,
+    });
+    if (!isBookingExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.BOOKING_NOT_FOUND,
+      });
+    }
+    const userName = `${isBookingExist.passenger[0].firstName} ${isBookingExist.passenger[0].lastName}`;
+    const notificationTitle = `Dear ${isUserExist.username},`;
+    const notificationMessage = `🥳 Woohoo! Your booking (PNR: ${isBookingExist.pnr}) is confirmed. Time to start packing! 💼`;
+    const notObject = {
+      userId: isUserExist._id,
+      title: "Flight Booking by User",
+      description: `New Booking form our platform🎊.🙂`,
+      from: "FlightBookiing",
+      to: userName,
+    };
+    let options = { day: "2-digit", month: "2-digit", year: "numeric" };
+    let journeyDate = new Date(isBookingExist.departureTime);
+    const data = {
+      origin: isBookingExist.origin,
+      destination: isBookingExist.destination,
+      pnr: isBookingExist.pnr,
+      noOfSeats: isBookingExist.noOfSeats,
+      BoardingPoint: isBookingExist.BoardingPoint.Location,
+    };
+    await createPushNotification(notObject);
+    await pushNotificationAfterDepricate(
+      isUserExist.deviceToken,
+      notificationTitle,
+      notificationMessage
+    );
+    const template = [
+      String(data.origin),
+      String(data.destination),
+      String(data.pnr),
+      String(journeyDate.toLocaleDateString("en-GB", options)),
+      String(data.noOfSeats),
+      String(data.BoardingPoint),
+    ];
+    await whatsApi.sendWhtsAppOTPAISensy(
+      `+91${isBookingExist.passenger[0].Phone}`,
+      template,
+      "busBooking"
+    );
+    await sendSMS.sendSMSBusBooking(
+      isBookingExist.passenger[0].Phone,
+      userName
+    );
+    // await commonFunction.BusBoo5kingConfirmationMail(isBookingExist);
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.SUCCESS,
+    });
+  } catch (error) {
+    console.log("error while trying to send update", error);
+    return next(error);
+  }
+};
 
 exports.getFlightBookingById=async(req,res,next)=>{
   try{
@@ -248,3 +322,4 @@ exports.getFlightBookingByUserId =async (req, res,next) =>{
   
 
 }
+

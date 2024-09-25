@@ -55,36 +55,36 @@ const {createNotification,findNotification,findNotificationData,deleteNotificati
 
 const notifications = [
   {
-    message: `Go Now, Pay Later!`,
-    body: `Don't let payments hold you back. Travel now, pay at your convenience!✈️`,
+    message: `🎭 “Kolkata Durga Puja: Ghar di yaad, te khushiyan naal bhara safar!”`,
+    body: `Book today for 20% off, up to ₹500 off on your first booking! 🛫`,
   },
   {
     message: `Like Jolly LLB, we'll make you laugh and save you money!`,
     body: `Amazing offers are available. Book now!`,
   },
   {
-    message: `Yeh Dosti Hum Nahi Todenge! 🤝`,
-    body: `Plan a group trip with your besties and create lifelong memories together.`,
+    message: `Enjoy upto 500 off today!`,
+    body: `Experience the joy of Kolkata’s Durga Puja!`,
   },
   {
     message: `Kuch Kuch Hota Hai! 💘`,
     body: `Find your perfect travel companion and embark on a romantic getaway.`,
   },
   {
-    message: `Book Now, Pay When You Can!`,
-    body: `No need to delay your travels. Book now.`,
+    message: `Is Durgapuja, Kolkata di khushiyan aapka intezaar kar rahi hain!`,
+    body: `Book now and get 20% off on your first trip to the celebrations! 🙏`,
   },
   {
     message: `username,Dil Chahta Hai Travel! 🎶`,
     body: `Explore new horizons and create unforgettable memories. Your next adventure awaits!`,
   },
   {
-    message: `Trust me! Traveling is not expensive💰`,
-    body:`Missing Out is😟`
+    message: `Chalo, milke Durgapuja da mazaa lein Kolkata ch!`,
+    body:`🎶 Enjoy the festive vibes with our amazing offer of 20% off, up to ₹500 off on your first booking! 🛫`
   },
   {
-    message: `Aaj Phir ₹500 Bachane Ki Tamanna Hai!`,
-    body: `Save upto ₹500 on your first booking. Make your travel dreams come true!`,
+    message: `Don’t miss Kolkata’s Durga Puja!`,
+    body: `20% off your first booking! 🛫`,
   },
 //   {
 //     message: `Thara Paisa 💸💵`,
@@ -98,59 +98,56 @@ const notifications = [
     body: `Ladakh🗻 Ghoom kar aayenge maze🤩`,
   },
   {
-    message: `Cheen Tapak Dam Dam!👌`,
-    body: `Goa Pahunch Jaye hum🏖
-Rhyme Chhodo, Trip Book Karo✈`,
+    message: `Fly with TheSkyTrails`,
+    body: `Travel smart, fly affordable. Only with TheSkyTrails!`,
   },
   {
     message: `Isi din ke liye Savings ki thi🤩`,
     body: `Ab jaldi se Bag Pack Karo, Baki sab Done Hai✅`,
-  }
-//   {
-//     message: `Two things we love ❤️`,
-//     body: `1. username
-// 2. Giving 20% OFF* to username on all Bookings
-// CLAIM NOW`,
-//   },
+  },
+  {
+    message: `Suna Kya?`,
+    body: `TheSkyTrails is offering festive seasons deals.`,
+  },
 ];
 
 const lastNotificationSent = new Map();
 
-var taskPromotionalNotification = cron.schedule("30 8 * * *",async () => {
+var taskPromotionalNotification = cron.schedule("00 08 * * *",async () => {
   try {
     // 'phone.mobile_number':'8115199076'
     const users = await userList({
-    // 'phone.mobile_number':{ $in: ['8115199076', '9135219071','8847301811','9810704352','9870249076','9354527010'] },
+    // 'phone.mobile_number':{ $in: ['8115199076'] },
       status: status.ACTIVE,
       deviceToken: { $exists: true, $ne: "" },
     });
     for (const user of users) {
       try { 
-        const notificationMessage = `Book Now, Pay When You Can!`;
-        const messageBody = `No need to delay your travels. Book now.✈️✨`;
+        const notificationMessage = `Shop Flipkart for deals, fly TheSkyTrails for steals`;
+        const messageBody = `Biggest flight discounts here!” 🎯💼`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
         const lastSent = lastNotificationSent.get(user._id);
         if (lastSent && Date.now() - lastSent < 3600000) {
-          console.log(
-            "Notification already sent to user within the last hour. Skipping."
-          );
+          // console.log(
+          //   "Notification already sent to user within the last hour. Skipping."
+          // );
           continue; // Skip sending notification
         }
         await pushNotificationAfterDepricate(
           user.deviceToken,
           notificationMessage,
           messageBody,
-          // imageurl
+          imageurl
         );
 
         // Update the last notification sent time for this user
         lastNotificationSent.set(user._id, Date.now());
       } catch (pushError) {
         // Handle if any user is not registered
-        console.error(
-          "Error while sending push notification to user:",
-          pushError
-        );
+        // console.error(
+        //   "Error while sending push notification to user:",
+        //   pushError
+        // );
         // continue to the next user even if one fails
         continue;
       }
@@ -158,7 +155,7 @@ var taskPromotionalNotification = cron.schedule("30 8 * * *",async () => {
       taskPromotionalNotification.stop();
     }
   } catch (error) {
-    console.log("error when running task2", error);
+    // console.log("error when running task2", error);
   }
 },
 {
@@ -169,12 +166,12 @@ var taskPromotionalNotification = cron.schedule("30 8 * * *",async () => {
 taskPromotionalNotification.start(); // Start the task2
 
 // Define and schedule task2 separately
-var taskPlatformNotification = cron.schedule("42 14 * * *",
+var taskPlatformNotification = cron.schedule("30 13 * * *",
   async () => {
     try {  
       // 'contactNo.mobile_number': { $in: ['8115199076', '9135219071'] },
       const users = await userList({
-        'phone.mobile_number': { $in: ['7017757907','8115199076'] },
+        // 'phone.mobile_number': { $in: ['7017757907','8115199076'] },
         status: status.ACTIVE,
         deviceToken: { $exists: true, $ne: "" },
       });
@@ -182,8 +179,9 @@ var taskPlatformNotification = cron.schedule("42 14 * * *",
     const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
       for (const user of users) {
         try {
-          const notificationMessage = `CODE:Sky500`;
-      const messageBody = `Hey ${user.username}! 🎬✨ Get ready to be the hero of your travel story! Use CODE: SKY500 and save big on your bookings. Let your adventure begin, superstar! ✈️🏖️🚎🏩🌟`;
+          const notificationMessage = `Just like Big Billion Days, but better`;
+          // Book with TheSkyTrails – your wallet-friendly flight expert!🌟
+      const messageBody = `Sky-high savings, pay when you can!`;
           await pushNotificationAfterDepricate(
             user.deviceToken,
             notificationMessage,
@@ -193,10 +191,10 @@ var taskPlatformNotification = cron.schedule("42 14 * * *",
          
         } catch (pushError) {
           // Handle if any user is not registered
-          console.error(
-            "Error while sending push notification to user:",
-            pushError
-          );
+          // console.error(
+          //   "Error while sending push notification to user:",
+          //   pushError
+          // );
           // continue to the next user even if one fails
           continue;
         }
@@ -204,7 +202,7 @@ var taskPlatformNotification = cron.schedule("42 14 * * *",
       // Stop the cron job after execution
       taskPlatformNotification.stop();
     } catch (error) {
-      console.log("error when running task2", error);
+      // console.log("error when running task2", error);
     }
   },
   {
@@ -237,10 +235,10 @@ var sendNotificationTask=cron.schedule("1 */9 * * *",async()=>{
         await updateNotification({_id:notification._id},{isSend:true})  ;
       } catch (pushError) {
          // Handle if any user is not registered
-         console.error(
-          "Error while sending push notification to user:",
-          pushError
-        );
+        //  console.error(
+        //   "Error while sending push notification to user:",
+        //   pushError
+        // );
         // continue to the next user even if one fails
         continue;
       }
@@ -248,22 +246,24 @@ var sendNotificationTask=cron.schedule("1 */9 * * *",async()=>{
     // Stop the cron job after execution
     sendNotificationTask.stop();
   } catch (error) {
-    console.log("error when running task2", error);
+    // console.log("error when running task2", error);
   }
 })
 sendNotificationTask.start();
 
-const taskRandomNotification = cron.schedule("36 17 * * *",async () => {
+const taskRandomNotification = cron.schedule("05 6 * * *",async () => {
     try {
       const users = await userList({
         status: status.ACTIVE,
-        'phone.mobile_number':{ $in: ['8115199076','8847301811' ] },
+        // 'phone.mobile_number':{ $in: ['8115199076'] },
         deviceToken: { $exists: true, $ne: "" },
 
       });
       const imageurl = `https://skytrails.s3.amazonaws.com/notification.jpg`;
-      const notification = notifications[Math.floor(Math.random() * notifications.length)];
+      // const notification = notifications[Math.floor(Math.random() * notifications.length)];
       for (const user of users) {
+        const randomIndex = Math.floor(Math.random() * notifications.length);
+        const notification = notifications[randomIndex];
           const notificationMessage = notification.message.replace('username', user.username);
           const messageBody = notification.body.replace(/username/g, user.username);
 
@@ -273,11 +273,15 @@ const taskRandomNotification = cron.schedule("36 17 * * *",async () => {
             messageBody,
             // imageurl
           );
+          // notifications.splice(randomIndex, 1);
+          notifications.splice(randomIndex, 1);
+
         }
+       
+
       // Stop the cron job after execution
       taskPlatformNotification.stop();
     } catch (error) {
-      console.log("Error when running task:", error);
     }
   },
   {
@@ -286,3 +290,91 @@ const taskRandomNotification = cron.schedule("36 17 * * *",async () => {
   }
 );
 taskRandomNotification.start();
+
+const taskRandomNotification1 = cron.schedule("03 19 * * *",async () => {
+  try {
+    const users = await userList({
+      status: status.ACTIVE,
+      // 'phone.mobile_number':{ $in: ['8115199076','8847301811' ] },
+      deviceToken: { $exists: true, $ne: "" },
+
+    });
+    const imageurl = `https://skytrails.s3.amazonaws.com/notification.jpg`;
+    const notification = notifications[Math.floor(Math.random() * notifications.length)];
+    for (const user of users) {
+        const notificationMessage = notification.message.replace('username', user.username);
+        const messageBody = notification.body.replace(/username/g, user.username);
+
+        await pushNotificationAfterDepricate(
+          user.deviceToken,
+          notificationMessage,
+          messageBody,
+          // imageurl
+        );
+      }
+    // Stop the cron job after execution
+    taskPlatformNotification.stop();
+  } catch (error) {
+    console.log("Error when running task:", error);
+  }
+},
+{
+  scheduled: true,
+  timezone: "Asia/Kolkata", // Timezone setting
+}
+);
+taskRandomNotification1.start();
+
+
+
+var taskPromotionalNotification2 = cron.schedule("00 16 * * *",async () => {
+  try {
+    // 'phone.mobile_number':'8115199076'
+    const users = await userList({
+    // 'phone.mobile_number':{ $in: ['8115199076'] },
+      status: status.ACTIVE,
+      deviceToken: { $exists: true, $ne: "" },
+    });
+    for (const user of users) {
+      try { 
+        const notificationMessage = `Travel’s Big Billion Days is here`;
+        const messageBody = `Book now with TheSkyTrails for the biggest savings!” 🌍🎯`;
+      const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
+        const lastSent = lastNotificationSent.get(user._id);
+        if (lastSent && Date.now() - lastSent < 3600000) {
+          console.log(
+            "Notification already sent to user within the last hour. Skipping."
+          );
+          continue; // Skip sending notification
+        }
+        await pushNotificationAfterDepricate(
+          user.deviceToken,
+          notificationMessage,
+          messageBody,
+          imageurl
+        );
+
+        // Update the last notification sent time for this user
+        lastNotificationSent.set(user._id, Date.now());
+      } catch (pushError) {
+        // Handle if any user is not registered
+        // console.error(
+        //   "Error while sending push notification to user:",
+        //   pushError
+        // );
+        // continue to the next user even if one fails
+        continue;
+      }
+      // Stop the cron job after execution
+      taskPromotionalNotification.stop();
+    }
+  } catch (error) {
+    // console.log("error when running task2", error);
+  }
+},
+{
+  scheduled: true,
+  timezone: "Asia/Kolkata", // Timezone setting
+}
+);
+taskPromotionalNotification2.start();

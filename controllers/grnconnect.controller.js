@@ -1539,11 +1539,10 @@ const cityListFunction = async (keyword) => {
 exports.tboGrnCombineHotelSearch = async (req, res) =>{
   try {
 
-    // console.log("req.body",req.body.rooms.roomCount);
-    // return;
+    
     if (req?.body?.cityCode || req?.body?.tboCityCode) {
       const additionalPromise = async () => {
-        // console.log("data pass", req?.body?.rooms);
+        
 
         try {
           const data = {
@@ -1566,8 +1565,6 @@ exports.tboGrnCombineHotelSearch = async (req, res) =>{
             IsNearBySearchAllowed: false,
           };
 
-          // console.log("data",data);
-          // return;
 
           const response = await axios.post(`${api?.hotelSearchURL}`, data);
           // console.log(response?.data,"response")
@@ -1629,7 +1626,7 @@ exports.tboGrnCombineHotelSearch = async (req, res) =>{
                 version: req?.body?.version,
               };
               // console.log(searchData,"searchData");
-              return;
+            
               const response = await axios.post(
                 `${baseurl}/api/v3/hotels/availability`,
                 searchData,
@@ -1815,12 +1812,9 @@ exports.tboGrnCombineHotelSearch = async (req, res) =>{
 
 function tboDistributeGuests(...values) {
 
-  // console.log(values,"tboDistributeGuests");
+ 
 
   const [{ roomCount: numberOfRooms, adultCount: numberOfAdults, childCount: numberOfChilds, childAge: childAges }] = values;
-
-  // console.log(childAges);
-//  return;
 
   const rooms = [];
   
@@ -1866,11 +1860,8 @@ function tboDistributeGuests(...values) {
 
 function grnDistributeGuests(...myValues) {
 
-  //  console.log(myValues,"grnDistributeGuests function");
-
    const [{ roomCount: numberOfRooms, adultCount: numberOfAdults, childCount: numberOfChilds, childAge: childAges }] = myValues;
 
-    // return;
     const rooms = [];
     
     // Calculate base number of adults and children per room
