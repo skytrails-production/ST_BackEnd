@@ -23,7 +23,6 @@ exports.createVisaCategory=async(req,res,next)=>{
         return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.CREATED_SUCCESS,result: result,});
 
     } catch (error) {
-        console.log("Error while create visa category",error);
         return next(error)
     }
 }
@@ -37,7 +36,6 @@ exports.getVisaCategory=async(req,res,next)=>{
         return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result: result,});
    
     } catch (error) {
-        console.log("error while trying to get error");
         return next(error)
     }
 }
@@ -52,7 +50,6 @@ exports.getVisaCategoryById=async(req,res,next)=>{
         return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result: result,});
    
     } catch (error) {
-        console.log("Error while trying to get data.");
         return next(error)
     }
 }

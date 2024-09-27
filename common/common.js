@@ -5,7 +5,6 @@ exports.mongoUrl = {
 };
 
 exports.actionCompleteResponse = function (res, data, msg) {
-  // console.log(data);
   var response = {
     success: 1,
     message: msg || responseMessages.ACTION_COMPLETE,

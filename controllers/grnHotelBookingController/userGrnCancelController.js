@@ -134,7 +134,6 @@ exports.createUserGrnCancelRequest = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("Error while trying to create cancel request", error);
     return next(error);
   }
 };
@@ -154,7 +153,6 @@ exports.getGrnCancelRequests=async(req,res,next)=>{
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to get data",error);
     return next(error);
   }
 };
@@ -176,7 +174,6 @@ exports.updateCancellation=async(req,res,next)=>{
       result:updateCancellation
     });
   } catch (error) {
-    console.log("error while trying to update data",error);
     return next(error);
   }
 }

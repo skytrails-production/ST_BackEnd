@@ -68,7 +68,6 @@ const crypto = require('crypto');
 
 
 
-// console.log("generateReferralCode=======",generateReferralCode());
 module.exports = {
   getOTP() {
     var otp = Math.floor(100000 + Math.random() * 900000);
@@ -161,10 +160,8 @@ module.exports = {
     };
     try {
       const info = await nodemailerConfig.sendMail(mailOptions);
-      // console.log("Email sent: " + info.response);
       return info;
     } catch (error) {
-      console.error("Email sending failed:", error);
       throw error;
     }
   },
@@ -272,10 +269,8 @@ module.exports = {
 
       // Send the email
       const info = await nodemailerConfig.sendMail(mailOptions);
-      // console.log("Email sent: " + info.response);
       return info;
     } catch (error) {
-      console.error("Email sending failed:", error);
       throw error;
     }
   },
@@ -334,10 +329,8 @@ module.exports = {
 
       // Send the email
       const info = await nodemailerConfig.sendMail(mailOptions);
-      // console.log("Email sent: " + info.response);
       return info;
     } catch (error) {
-      console.error("Email sending failed:", error);
       throw error;
     }
   },
@@ -371,7 +364,6 @@ module.exports = {
       return date.toLocaleString("en-US", options);
     };
 
-    // console.log("to================>>>>>>>",to)
     const name = `${to?.passengerDetails[0]?.firstName} ${to?.passengerDetails[0]?.lastName}`;
     // Define your HTML content with nested elements
     const htmlContent = `<!DOCTYPE html>
@@ -768,7 +760,6 @@ module.exports = {
     await browser.close();
     // const pdfBytes= await pdf.saveAs(pdfFilePath);
 
-    console.log("PDF generation complete.");
 
     fs.writeFileSync(pdfFilePath, pdfBytes);
 
@@ -831,7 +822,6 @@ module.exports = {
       return date.toLocaleString("en-US", options);
     };
 
-    // console.log("to================>>>>>>>",to)
     const name = `${to?.passengerDetails[0]?.firstName} ${to?.passengerDetails[0]?.lastName}`;
     // Define your HTML content with nested elements
     const htmlContent = `<!DOCTYPE html>
@@ -1226,7 +1216,6 @@ module.exports = {
     await browser.close();
     // const pdfBytes= await pdf.saveAs(pdfFilePath);
 
-    console.log("PDF generation complete.");
 
     fs.writeFileSync(pdfFilePath, pdfBytes);
 
@@ -1255,7 +1244,6 @@ module.exports = {
 
       return info;
     } catch (error) {
-      console.error("Email sending failed:", error);
       throw error;
     }
   },
@@ -1265,7 +1253,6 @@ module.exports = {
   //==========================================================
 
   FlightBookingConfirmationMailwithAgentMarkup: async (to, markup) => {
-    // console.log(to,"data",markup);
     // return;
 
     const currentDate = new Date(to.createdAt);
@@ -1292,7 +1279,6 @@ module.exports = {
       return date.toLocaleString("en-US", options);
     };
 
-    // console.log("to================>>>>>>>",to)
     const name = `${to?.passengerDetails[0]?.firstName} ${to?.passengerDetails[0]?.lastName}`;
     // Define your HTML content with nested elements
     const htmlContent = `<!DOCTYPE html>
@@ -1688,7 +1674,6 @@ module.exports = {
     await browser.close();
     // const pdfBytes= await pdf.saveAs(pdfFilePath);
 
-    console.log("PDF generation complete.");
 
     fs.writeFileSync(pdfFilePath, pdfBytes);
 
@@ -1717,7 +1702,6 @@ module.exports = {
 
       return info;
     } catch (error) {
-      console.error("Email sending failed:", error);
       throw error;
     }
   },
@@ -1727,7 +1711,6 @@ module.exports = {
   //==========================================================
 
   BusBookingConfirmationMail: async (to) => {
-    // console.log(to,"data");
 
     const currentDate = new Date(to.createdAt);
     const options = {
@@ -1763,7 +1746,6 @@ module.exports = {
     );
     const depTimeFormatted = formatDate(to.departureTime, "hh:mm A");
 
-    // console.log("to================>>>>>>>",to)
     const name = `${to.passenger[0]?.title} ${to.passenger[0]?.firstName} ${to.passenger[0]?.lastName}`;
     // Define your HTML content with nested elements
     const htmlContent = `<!DOCTYPE html>
@@ -2241,14 +2223,12 @@ module.exports = {
     await browser.close();
     // const pdfBytes= await pdf.saveAs(pdfFilePath);
 
-    console.log("PDF generation complete.");
 
     fs.writeFileSync(pdfFilePath, pdfBytes);
 
     
 
     const passengerEmail = to.passenger[0]?.Email;
-    // console.log("=================",passengerEmail,name)
     const mailOptions = {
       from: process.env.DEFAULT_ZOHO_EMAIL,
       to: passengerEmail,
@@ -2263,7 +2243,6 @@ module.exports = {
 
       // Send the email
       const info = await nodemailerConfig.sendMail(mailOptions);
-      // console.log("Email sent: " + info.response);
 
       // Clean up the temporary PDF file
       fs.unlinkSync(pdfFilePath);
@@ -2276,7 +2255,6 @@ module.exports = {
   },
 
   busBookingConfirmationMailWithNewEmail: async (to, email) => {
-    // console.log(to,"data");
 
     const currentDate = new Date(to.createdAt);
     const options = {
@@ -2314,7 +2292,6 @@ module.exports = {
 
     const arrTimeFormatted=formatDate(to.arrivalTime, "ddd, DD MMM YYYY");
 
-    // console.log("to================>>>>>>>",to)
     const name = `${to.passenger[0]?.title} ${to.passenger[0]?.firstName} ${to.passenger[0]?.lastName}`;
     // Define your HTML content with nested elements
     const htmlContent = `<!DOCTYPE html>
@@ -2793,14 +2770,12 @@ module.exports = {
     await browser.close();
     // const pdfBytes= await pdf.saveAs(pdfFilePath);
 
-    console.log("PDF generation complete.");
 
     fs.writeFileSync(pdfFilePath, pdfBytes);
 
    
 
     const passengerEmail = email;
-    // console.log("=================",passengerEmail,name)
     const mailOptions = {
       from: process.env.DEFAULT_ZOHO_EMAIL,
       to: passengerEmail,
@@ -2815,14 +2790,12 @@ module.exports = {
 
       // Send the email
       const info = await nodemailerConfig.sendMail(mailOptions);
-      // console.log("Email sent: " + info.response);
 
       // Clean up the temporary PDF file
       fs.unlinkSync(pdfFilePath);
 
       return info;
     } catch (error) {
-      console.error("Email sending failed:", error);
       throw error;
     }
   },
@@ -3511,7 +3484,6 @@ module.exports = {
 
       // Send the email
       const info = await nodemailerConfig.sendMail(mailOptions);
-      // console.log("Email sent: " + info.response);
 
       fs.unlinkSync(pdfFilePath);
 
@@ -4177,7 +4149,6 @@ module.exports = {
     await browser.close();
     // const pdfBytes= await pdf.saveAs(pdfFilePath);
 
-    console.log("PDF generation complete.");
 
     fs.writeFileSync(pdfFilePath, pdfBytes);
 
@@ -4202,13 +4173,11 @@ module.exports = {
 
       // Send the email
       const info = await nodemailerConfig.sendMail(mailOptions);
-      // console.log("Email sent: " + info.response);
 
       fs.unlinkSync(pdfFilePath);
 
       return info;
     } catch (error) {
-      console.error("Email sending failed:", error);
       throw error;
     }
   },
@@ -4697,7 +4666,6 @@ module.exports = {
     await browser.close();
     // const pdfBytes= await pdf.saveAs(pdfFilePath);
 
-    console.log("PDF generation complete.");
 
     fs.writeFileSync(pdfFilePath, pdfBytes);
 
@@ -4722,13 +4690,11 @@ module.exports = {
 
       // Send the email
       const info = await nodemailerConfig.sendMail(mailOptions);
-      // console.log("Email sent: " + info.response);
 
       fs.unlinkSync(pdfFilePath);
 
       return info;
     } catch (error) {
-      console.error("Email sending failed:", error);
       throw error;
     }
   },
@@ -4736,7 +4702,6 @@ module.exports = {
   //upload image on cloudinary***************************************
   getSecureUrl: async (base64) => {
     var result = await cloudinary.v2.uploader.upload(base64);
-    // console.log("result=============", result);
     return result.secure_url;
   },
 
@@ -4772,10 +4737,8 @@ module.exports = {
 
       // Send the email
       const info = await nodemailerConfig.sendMail(mailOptions);
-      // console.log("Email sent: " + info.response);
       return info;
     } catch (error) {
-      console.error("Email sending failed:", error);
       throw error;
     }
   },
@@ -4801,10 +4764,8 @@ module.exports = {
       });
       // Send the email
       const info = await nodemailerConfig.sendMail(mailOptions);
-      // console.log("Email sent: " + info.response);
       return info;
     } catch (error) {
-      console.error("Email sending failed:", error);
       throw error;
     }
   },
@@ -4857,10 +4818,8 @@ module.exports = {
 
       // Send the email
       const info = await nodemailerConfig.sendMail(mailOptions);
-      // console.log("Email sent: " + info.response);
       return info;
     } catch (error) {
-      console.error("Email sending failed:", error);
       throw error;
     }
   },
@@ -4963,7 +4922,6 @@ module.exports = {
     return await nodemailerConfig.sendMail(mailOptions);
   },
   sendRMCredential: async (to, userName, password) => {
-    // console.log("to, userName, password=============",to, userName, password)
     
     
     var mailOptions = {
@@ -5088,7 +5046,6 @@ module.exports = {
 
      
     } catch (error) {
-      console.error("Email sending failed:", error);
       throw error;
     }
   },
@@ -5113,7 +5070,6 @@ module.exports = {
 
      
     } catch (error) {
-      console.error("Email sending failed:", error);
       throw error;
     }
   },
@@ -5121,7 +5077,6 @@ module.exports = {
 
 //   packageBookingConfirmationMail: async (to) => {
 //     try {
-//       console.log("to==================",to)
 //       const currentDate = new Date(to.createdAt);
 //       const options = {
 //         weekday: "short",
@@ -5130,7 +5085,6 @@ module.exports = {
 //         year: "numeric",
 //       };
 //       const formattedDate = currentDate.toLocaleDateString("en-US", options);
-// console.log("formattedDate==========>>>>",formattedDate)
 //       function formatDate(dateString, format) {
 //         const date = new Date(dateString);
 //         const options = {
@@ -5144,19 +5098,15 @@ module.exports = {
 //         return date.toLocaleString("en-US", options);
 //       }
 //       const  getDepartureTime=moment(`${to.departureDate}`);
-//       console.log("getDepartureTime=========",getDepartureTime);
 //       const boardingTimeFormatted = formatDate(
 //         to.departureTime,
 //         "DD MMMM YYYY hh:mm A"
 //       );
-//       console.log("boardingTimeFormatted===============>>>>",boardingTimeFormatted);
 //       const journeyDateFormatted = formatDate(
 //         to.departureTime,
 //         "ddd, DD MMM YYYY"
 //       );
-//       console.log("journeyDateFormatted==================>>>",journeyDateFormatted);
 //       const depTimeFormatted = formatDate(to.departureTime, "hh:mm A");
-// console.log("depTimeFormatted==============",depTimeFormatted);
 //       const name = `${to.fullName}`;
 //       const htmlContent = `
 //       <!DOCTYPE html>
@@ -5485,13 +5435,11 @@ module.exports = {
 
 //       await transporter.verify();
 //       const info = await transporter.sendMail(mailOptions);
-//       console.log("Email sent: " + info.response);
 
 //       fs.unlinkSync(pdfFilePath);
 
 //       return info;
 //     } catch (error) {
-//       console.error("Email sending failed:", error);
 //       throw error;
 //     }
 //   },
@@ -5527,7 +5475,6 @@ module.exports = {
       const result = await s3.upload(params).promise();
       return result.Location; // Assuming Location contains the S3 URL
     } catch (error) {
-      console.error("Error uploading to S3:", error);
       throw error;
     }
   },
@@ -5544,7 +5491,6 @@ module.exports = {
       const result = await s3.upload(params).promise();
       return result.Location; // Assuming Location contains the S3 URL
     } catch (error) {
-      console.error("Error uploading to S3:", error);
       throw error;
     }
   },
@@ -5560,7 +5506,6 @@ module.exports = {
       const result = await s3.upload(params).promise();
       return result.Location; // Assuming Location contains the S3 URL
     } catch (error) {
-      console.error("Error uploading to S3:", error);
       throw error;
     }
   },
@@ -5624,7 +5569,6 @@ module.exports = {
 
 //   packageBookingConfirmationMail1:async(to)=>{
 //     try {
-//       console.log("to==================",to)
 //       const currentDate = new Date(to.createdAt);
 //       const options = {
 //         weekday: "short",
@@ -5633,7 +5577,6 @@ module.exports = {
 //         year: "numeric",
 //       };
 //       const formattedDate = currentDate.toLocaleDateString("en-US", options);
-// console.log("formattedDate==========>>>>",formattedDate)
 //       function formatDate(dateString, format) {
 //         const date = new Date(dateString);
 //         const options = {
@@ -6293,7 +6236,6 @@ module.exports = {
   },
 
   FlightBookingConfirmationMail1: async (to) => {
-    console.log("to=========",to);
     const currentDate = new Date(to.createdAt);
     const options = {
         weekday: "short",

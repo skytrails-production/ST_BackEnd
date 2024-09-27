@@ -18,7 +18,6 @@ class UploadHandler {
         });
         this.uploadFile = this.uploadFile.bind(this);
         const root = path.normalize(`${__dirname}/../..`);
-        // console.log("root",root );
     }
 
     handleUploadError(req, res, next, upload) {
@@ -38,8 +37,6 @@ class UploadHandler {
             storage: this.storage,
             fileFilter: function (req, file, cb) {
                 var ext = path.extname(file.originalname).toLowerCase();
-                // console.log("file============",file);
-                // console.log("sssssssss", ext);
                 if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg' && ext !== '.svg') {
                     return cb(Boom.badRequest('Only images are allowed'), false);
                 }

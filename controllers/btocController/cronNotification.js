@@ -23,7 +23,8 @@ const {
   mediapushNotification,
   pushSimpleNotification,
   pushNotification1,
-  pushNotificationAfterDepricate
+  pushNotificationAfterDepricate,
+  pushNotAfterDepricateImage
 } = require("../../utilities/commonFunForPushNotification"); // Assuming you have a controller to send notifications
 const {
   eventBookingServices,
@@ -128,26 +129,21 @@ var taskPromotionalNotification = cron.schedule("00 08 * * *",async () => {
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
         const lastSent = lastNotificationSent.get(user._id);
         if (lastSent && Date.now() - lastSent < 3600000) {
-          // console.log(
-          //   "Notification already sent to user within the last hour. Skipping."
-          // );
+         
           continue; // Skip sending notification
         }
         await pushNotificationAfterDepricate(
           user.deviceToken,
           notificationMessage,
           messageBody,
-          imageurl
+          // imageurl
         );
 
         // Update the last notification sent time for this user
         lastNotificationSent.set(user._id, Date.now());
       } catch (pushError) {
         // Handle if any user is not registered
-        // console.error(
-        //   "Error while sending push notification to user:",
-        //   pushError
-        // );
+       
         // continue to the next user even if one fails
         continue;
       }
@@ -191,10 +187,7 @@ var taskPlatformNotification = cron.schedule("30 13 * * *",
          
         } catch (pushError) {
           // Handle if any user is not registered
-          // console.error(
-          //   "Error while sending push notification to user:",
-          //   pushError
-          // );
+          
           // continue to the next user even if one fails
           continue;
         }
@@ -212,7 +205,7 @@ var taskPlatformNotification = cron.schedule("30 13 * * *",
 );
 taskPlatformNotification.start();
 
-var sendNotificationTask=cron.schedule("1 */9 * * *",async()=>{
+var sendNotificationTask=cron.schedule("58 23 * * *",async()=>{
   try {
     const users = await userList({
       // 'phone.mobile_number': { $in: ['8115199076','9135219071','8384082560'] },
@@ -235,10 +228,7 @@ var sendNotificationTask=cron.schedule("1 */9 * * *",async()=>{
         await updateNotification({_id:notification._id},{isSend:true})  ;
       } catch (pushError) {
          // Handle if any user is not registered
-        //  console.error(
-        //   "Error while sending push notification to user:",
-        //   pushError
-        // );
+       
         // continue to the next user even if one fails
         continue;
       }
@@ -259,7 +249,7 @@ const taskRandomNotification = cron.schedule("05 6 * * *",async () => {
         deviceToken: { $exists: true, $ne: "" },
 
       });
-      const imageurl = `https://skytrails.s3.amazonaws.com/notification.jpg`;
+      const imageurl = `https://travvolt.s3.amazonaws.com/notification/uploadedFile_1727351077557_Artboard2festivesale.jpg`;
       // const notification = notifications[Math.floor(Math.random() * notifications.length)];
       for (const user of users) {
         const randomIndex = Math.floor(Math.random() * notifications.length);
@@ -267,11 +257,11 @@ const taskRandomNotification = cron.schedule("05 6 * * *",async () => {
           const notificationMessage = notification.message.replace('username', user.username);
           const messageBody = notification.body.replace(/username/g, user.username);
 
-          await pushNotificationAfterDepricate(
+          await pushNotAfterDepricateImage(
             user.deviceToken,
             notificationMessage,
             messageBody,
-            // imageurl
+            imageurl
           );
           // notifications.splice(randomIndex, 1);
           notifications.splice(randomIndex, 1);
@@ -342,9 +332,7 @@ var taskPromotionalNotification2 = cron.schedule("00 16 * * *",async () => {
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
         const lastSent = lastNotificationSent.get(user._id);
         if (lastSent && Date.now() - lastSent < 3600000) {
-          console.log(
-            "Notification already sent to user within the last hour. Skipping."
-          );
+         
           continue; // Skip sending notification
         }
         await pushNotificationAfterDepricate(
@@ -358,10 +346,7 @@ var taskPromotionalNotification2 = cron.schedule("00 16 * * *",async () => {
         lastNotificationSent.set(user._id, Date.now());
       } catch (pushError) {
         // Handle if any user is not registered
-        // console.error(
-        //   "Error while sending push notification to user:",
-        //   pushError
-        // );
+       
         // continue to the next user even if one fails
         continue;
       }

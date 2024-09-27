@@ -63,7 +63,7 @@ const userhotelBookingModelServices = {
     }
     ,
     aggregatePaginateHotelBookingList:async(body)=>{
-        const { page, limit, search, fromDate, toDate,userId } = body;
+        const { page, limit, search, fromDate, toDate,} = body;
         if (search) {
             var filter = search;
         }

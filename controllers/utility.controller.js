@@ -23,7 +23,6 @@ exports.getOTP = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -39,7 +38,6 @@ exports.getVerifyOTP = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -55,7 +53,6 @@ exports.getPromoCode = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -75,7 +72,6 @@ exports.getPromoService = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -91,7 +87,6 @@ exports.getUserBalance = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -113,7 +108,6 @@ exports.userLogin = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -137,7 +131,6 @@ exports.getService = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -154,7 +147,6 @@ exports.getRechargePlan = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -170,7 +162,6 @@ exports.getRechargePlanDetails = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -193,7 +184,6 @@ exports.rechageRequest = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -211,7 +201,6 @@ exports.getBillService = async (req, res) => {
   try {
     const  data = req.body;
     let params = { header: header, data: data };
-    // console.log(data,"data");
 
 
     const response = await axios.post(`${api.getBillServiceURL}`, params, {
@@ -219,11 +208,9 @@ exports.getBillService = async (req, res) => {
     });
     msg = "Get Bill Agency List!";
 
-    // console.log(response,"response");
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -236,7 +223,6 @@ exports.getBillServiceParamemter = async (req, res) =>{
   try {
     const  data = req.body;
     let params = { header: header, data: data };
-    // console.log(data,"data");
 
 
     const response = await axios.post(`${api.getBillServiceParamemterURL}`, params, {
@@ -244,11 +230,9 @@ exports.getBillServiceParamemter = async (req, res) =>{
     });
     msg = "Get Bill Service Details!";
 
-    // console.log(response,"response");
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 
@@ -266,7 +250,6 @@ exports.saveBillPayment=async (req, res) =>{
     });
     msg = "Save Bill Payment!";
 
-    // console.log(response,"response");
 
     actionCompleteResponse(res, response.data, msg);
     

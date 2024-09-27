@@ -23,7 +23,6 @@ exports.staticData = async (req, res) => {
       msg = "Get static data successfully!";
       actionCompleteResponse(res, response.data, msg);
     } catch (err) {
-      console.log(err);
       sendActionFailedResponse(res, {}, err.message);
     }
   };
@@ -46,7 +45,6 @@ exports.staticData = async (req, res) => {
       msg = "Get destination search static data Successfully!";
       actionCompleteResponse(res, response.data, msg);
     } catch (err) {
-      console.log(err);
       sendActionFailedResponse(res, {}, err.message);
     }
   };
@@ -69,7 +67,6 @@ exports.staticData = async (req, res) => {
   //     msg = "Get transfer static data successfully!";
   //     actionCompleteResponse(res, response.data, msg);
   //   } catch (err) {
-  //     console.log(err);
   //     sendActionFailedResponse(res, {}, err.message);
   //   }
   // };
@@ -123,7 +120,6 @@ exports.staticData = async (req, res) => {
       actionCompleteResponse(res, modifiedData, "Get transfer static data successfully!");
     });
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -151,7 +147,6 @@ exports.staticData = async (req, res) => {
         "TokenId":req.body.TokenId,
      } 
 
-    //  console.log(data,"data");
     //  return;
 //  Mandatory                                            
 // -PickUpCode should be a blow number or
@@ -192,11 +187,9 @@ exports.staticData = async (req, res) => {
 // Spanish = 14
 
       const response = await axios.post(`${api.transferSearch}`, data);
-      // console.log(response,"api")
       msg = "Transfer search  successfully!";
       actionCompleteResponse(res, response.data, msg);
     } catch (err) {
-      console.log(err);
       sendActionFailedResponse(res, {}, err.message);
     }
   };
@@ -219,13 +212,11 @@ exports.staticData = async (req, res) => {
         "TraceId": req.body.TraceId,
        };
             
-      //  console.log("get cancellation",data,"data");
       //  return;
       const response = await axios.post(`${api.getCancellationPolicy}`, data);
       msg = "Get Transfer Static Data Successfully!";
       actionCompleteResponse(res, response.data, msg);
     } catch (err) {
-      console.log(err);
       sendActionFailedResponse(res, {}, err.message);
     }
   };
@@ -240,14 +231,12 @@ exports.staticData = async (req, res) => {
   exports.transferBooking = async (req, res) => {    
     try {
       const data = req.body;
-      // console.log("Booking",data);
       // return;
  
       const response = await axios.post(`${api.transferBooking}`, data);
       msg = "Booking successfully!";
       actionCompleteResponse(res, response.data, msg);
     } catch (err) {
-      console.log(err);
       sendActionFailedResponse(res, {}, err.message);
     }
   };
@@ -269,7 +258,6 @@ exports.staticData = async (req, res) => {
       msg = "Voucher Generated Successfully!";
       actionCompleteResponse(res, response.data, msg);
     } catch (err) {
-      console.log(err);
       sendActionFailedResponse(res, {}, err.message);
     }
   };
@@ -288,14 +276,12 @@ exports.staticData = async (req, res) => {
         "TokenId": req.body.TokenId,
         };
 
-        // console.log(data,"Get Booking");
         // return;
  
       const response = await axios.post(`${api.retrieveBookingDetails}`, data);
       msg = " Successfully get booking details!";
       actionCompleteResponse(res, response.data, msg);
     } catch (err) {
-      console.log(err);
       sendActionFailedResponse(res, {}, err.message);
     }
   };
@@ -318,7 +304,6 @@ exports.staticData = async (req, res) => {
       msg = " Successfully send cancle request";
       actionCompleteResponse(res, response.data, msg);
     } catch (err) {
-      console.log(err);
       sendActionFailedResponse(res, {}, err.message);
     }
   };
@@ -335,11 +320,9 @@ exports.staticData = async (req, res) => {
         };
      
       const response = await axios.post(`${api.getCancelRequeststatus}`, data);
-      // console.log(response.data)
       msg = " Successfully get  cancle request status";
       actionCompleteResponse(res, response.data, msg);
     } catch (err) {
-      console.log(err);
       sendActionFailedResponse(res, {}, err.message);
     }
   };

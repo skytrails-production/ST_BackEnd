@@ -92,7 +92,6 @@ exports.createEvent = async (req, res, next) => {
     const startingDate = Moment(startDate, "YYYY-MM-DD");
     const endingDate = Moment(endDate, "YYYY-MM-DD");
     const storeStartDate = startingDate.format("YYYY-MM-DD");
-    // console.log("startingDate:", startingDate, "endingDate:,", endingDate);
     while (startingDate <= endingDate) {
       const startingTime = Moment(startTime, "HH:mm");
       const endingTime = Moment(endTime, "HH:mm");
@@ -122,7 +121,6 @@ exports.createEvent = async (req, res, next) => {
       startingDate.add(1, "day");
     }
 
-    // console.log("object======", object);
     const result = await createEvent(object);
     if (!result) {
       return res.status(statusCode.NotFound).send({
@@ -136,7 +134,6 @@ exports.createEvent = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while creating event", error);
     return next(error);
   }
 };
@@ -150,7 +147,6 @@ exports.getAllEvents = async (req, res, next) => {
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });
     }
-    // console.log("result=============",result);
     // const object={
     //   _id:result._id,
     //   image:result.image,
@@ -178,7 +174,6 @@ exports.getAllEvents = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("Error while get data: " + error);
     return next(error);
   }
 };
@@ -202,7 +197,6 @@ exports.getEventById = async (req, res, next) => {
       result: isEventExist,
     });
   } catch (error) {
-    console.log("Error while get data: " + error);
     return next(error);
   }
 };
@@ -216,14 +210,12 @@ exports.getTopEvents = async (req, res, next) => {
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });
     }
-    // console.log("length=============",result.length)
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.DATA_FOUND,
       result: result,
     });
   } catch (error) {
-    console.log("Error while get data: " + error);
     return next(error);
   }
 };
@@ -244,7 +236,6 @@ exports.getAllEventsAggregate = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("Error while trying to get events", error);
     return next(error);
   }
 };
@@ -268,7 +259,6 @@ exports.deleteEvents=async(req,res,next)=>{
         result:result
       });
   } catch (error) {
-    console.log("error while trying to delete ",error );
     return next(error)
   }
 }

@@ -130,7 +130,6 @@ exports.cancelUserFlightTicket = async (req, res, next) => {
         await createPushNotification(notObject);
       return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.CANCEL_REQUEST_SEND, result: result });
   } catch (error) {
-      console.log("error in cancelFlightBooking:", error);
       return next(error);
   }
 }
@@ -139,19 +138,16 @@ exports.getUserCancelFlights = async (req, res, next) => {
   try {
     const { page, limit, search, fromDate, toDate,userId } = req.query;
     const isUserExist = await findUser({ _id: req.userId,status:status.ACTIVE,otpVerified:true });
-    // console.log("isAgentExists", isUserExist);
     if (!isUserExist) {
         return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
     }
     req.query.userId=isUserExist._id;
     const result =await aggregatePaginatecancelFlightBookingsList(req.query);
-    // console.log("result========",result);
     if (!result) {
         return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.DATA_NOT_FOUND });
     }
     return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.DATA_FOUND, result: result });
 } catch (error) {
-    console.log("error while trying to get userFlight booking! ", error);
     return next(error);
   }
 };
@@ -165,7 +161,6 @@ exports.getCancelFlightBookingId = async (req, res, next) => {
   }
   return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.DATA_FOUND, result: result });
   } catch (error) {
-    console.log("error while trying to get userFlight booking! ", error);
     return next(error);
   }
 };
@@ -174,7 +169,6 @@ exports.getCancelFlightIdOfUser = async (req, res, next) => {
   try {
    
   } catch (error) {
-    console.log("error while trying to get userFlight booking! ", error);
     return next(error);
   }
 };

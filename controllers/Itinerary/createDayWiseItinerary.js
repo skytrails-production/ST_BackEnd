@@ -33,7 +33,6 @@ const {
 exports.createDayWiseActivity = async (req, res, next) => {
   try {
     const { destination, origin, dayAt,activities ,noOfDays} = req.body;
-    console.log("req.body===========",req.body)
     const object = {
       destination,
       origin,
@@ -41,7 +40,6 @@ exports.createDayWiseActivity = async (req, res, next) => {
       activities,
       noOfDays
     };
-    console.log("object=============",object)
     const result = await createDayWiseItinerary(object);
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
@@ -49,7 +47,6 @@ exports.createDayWiseActivity = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to create itinerary", error);
     return next(error);
   }
 };
@@ -75,7 +72,6 @@ exports.getDayWiseActivity = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to get daywise activity", error);
     return next(error);
   }
 };
@@ -97,7 +93,6 @@ exports.updateDayWiseActivity = async (req, res, next) => {
       result: updatedData,
     });
   } catch (error) {
-    console.log("error while trying to get daywise activity", error);
     return next(error);
   }
 };
@@ -114,7 +109,6 @@ exports.deleteDayWiseActivity=async(req,res,next)=>{
     }
     const deletedData=await deleteDayWiseItinerary({_id:result._id})
     } catch (error) {
-        console.log("error while trying to delete",error);
         return next(error);
     }
 }

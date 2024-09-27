@@ -24,7 +24,6 @@ const { createUser, findUser, getUser, findUserData, updateUser, paginateUserSea
 //             req.body.email = (req.body.email).toLowerCase();
 //         }
 //         const isAlreadyExist = await findUser({ $or: [{ email: email }, { 'phone.mobile_number': mobileNumber }]});
-//         console.log("isAlreadyExist========",isAlreadyExist);
 //         if (isAlreadyExist) {
 //             return res.status(statusCode.Conflict).json({ message: responseMessage.USER_ALREADY_EXIST });
 //         }
@@ -47,7 +46,6 @@ const { createUser, findUser, getUser, findUserData, updateUser, paginateUserSea
 //         var result = await createUser(object);
 //         return res.status(statusCode.Conflict).json({ message: responseMessages.REGISTER_SUCCESS, data: result });
 //     } catch (error) {
-//         console.log(error);
 //         return next(error);
 //     }
 
@@ -66,7 +64,6 @@ const { createUser, findUser, getUser, findUserData, updateUser, paginateUserSea
 //             return res.status(statusCode.badRequest).json({ message: responseMessage.OTP_EXPIRED });
 //         }
 //         const updateResult=await updateUser({ _id:userResult._id},{otp:'',otpVerified:true});
-//         console.log("updateResult=============",updateResult)
 //         var token = await commonFunction.getToken({ _id: updateResult._id, email: updateResult.email, mobile_number: updateResult.mobile_number, userType: updateResult.userType });
 //         var obj = {
 //             _id: updateResult._id,
@@ -79,7 +76,6 @@ const { createUser, findUser, getUser, findUserData, updateUser, paginateUserSea
 //         };
 //         return res.status(statusCode.OK).json({ message: responseMessage.OTP_VERIFY, result: obj });
 //     } catch (error) {
-//         console.log(error);
 //         return next(error);
 //     }
 // }
@@ -104,7 +100,6 @@ const { createUser, findUser, getUser, findUserData, updateUser, paginateUserSea
 //         var token = await commonFunction.getToken({ _id: isUserExist._id, email: isUserExist.email, mobile_number: isUserExist.mobile_number });
 //         return res.status(statusCode.OK).json({ message: responseMessage.OTP_VERIFY, result: token });
 //     } catch (error) {
-//         console.log(error);
 //         return next(error);
 //     }
 // }
@@ -125,7 +120,7 @@ const { createUser, findUser, getUser, findUserData, updateUser, paginateUserSea
 //         await commonFunction.sendVerificationMail(isUserExist.email, otp);
 //         return res.status(statusCode.OK).json({ message: responseMessage.OTP_SEND });
 //     } catch (error) {
-//         console.log(error);
+//         log(error);
 //         return next(error);
 //     }
 // }
@@ -144,7 +139,6 @@ const { createUser, findUser, getUser, findUserData, updateUser, paginateUserSea
 //         await updateUser({ _id: req.userId, status: status.ACTIVE }, { $set: { password: pass } });
 //         return res.status(statusCode.OK).json({ message: responseMessage.PWD_CHANGED });
 //     } catch (error) {
-//         console.log("Error========", error);
 //         return next(error);
 //     }
 // }
@@ -164,7 +158,6 @@ const { createUser, findUser, getUser, findUserData, updateUser, paginateUserSea
 //         await commonFunction.sendEmailOtp(isUserExist.email, otp);
 //         return res.status(statusCode.OK).json({ message: responseMessage.OTP_SEND });
 //     } catch (error) {
-//         console.log(error);
 //         return next(error);
 //     }
 // }
@@ -188,7 +181,6 @@ exports.editProfile = async (req, res, next) => {
         const result = await updateUser({ _id: isUSer._id }, req.body);
         return res.status(statusCode.OK).send({ message: responseMessage.UPDATE_SUCCESS, result: result });
     } catch (error) {
-        console.log("error=======>>>>>>", error);
         return next(error);
     }
 }
@@ -208,7 +200,6 @@ exports.uploadProfilePicture = async (req, res, next) => {
             return res.status(statusCode.OK).send({ message: responseMessage.DATA_FOUND, result: result });
         }
     } catch (error) {
-        console.log("error====>>>", error);
         return next(error);
     }
 }

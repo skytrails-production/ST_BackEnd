@@ -26,7 +26,6 @@ exports.changeOrCancelByTbo = async (req, res,next) => {
         result: response.data,
       });
     } catch (err) {
-      console.log(err);
       return next(err)
     }
 };

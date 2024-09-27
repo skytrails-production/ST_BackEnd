@@ -206,7 +206,6 @@ exports.createhotelinventory = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("Error while trying to create details:", error);
     return next(error);
   }
 };
@@ -237,7 +236,6 @@ exports.getAllHotelInventory = async (req, res, next) => {
       result: finalResult,
     });
   } catch (error) {
-    console.log("Error while trying to get all inventory data", error);
     return next(error);
   }
 };
@@ -259,7 +257,6 @@ exports.getHotelInventoryById = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("Error while trying to get all inventory data", error);
     return next(error);
   }
 };
@@ -314,7 +311,6 @@ exports.updatePartnerHotel = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log("Error while trying to update hotel Details", error);
     return next(error);
   }
 };
@@ -360,7 +356,6 @@ exports.changeHotelPrice = async (req, res, next) => {
       { $set: { "rooms.$.priceDetails.net": room.priceDetails.net } }
     );
 
-    console.log("Updated room:", room);
 
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
@@ -368,7 +363,6 @@ exports.changeHotelPrice = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("Error while trying to update price:", error);
     return next(error);
   }
 };
@@ -416,7 +410,6 @@ exports.changeHotelPrice1 = async (req, res, next) => {
     );
 
     // Log the updated room for debugging purposes
-    console.log("Updated room:", room);
 
     // Return a success response
     return res.status(statusCode.OK).send({
@@ -426,7 +419,6 @@ exports.changeHotelPrice1 = async (req, res, next) => {
     });
   } catch (error) {
     // Log the error for debugging purposes
-    console.log("Error while trying to update price:", error);
     return next(error);
   }
 };
@@ -441,7 +433,6 @@ exports.deleteInventoryData = async (req, res, next) => {
       result: isExis,
     });
   } catch (error) {
-    console.log("error while trying to delete", error);
     return next(error);
   }
 };
@@ -481,7 +472,6 @@ exports.getAllHotelInventoryofPartner = async (req, res, next) => {
       result: finalResult,
     });
   } catch (error) {
-    console.log("Error while trying to get all inventory data", error);
     return next(error);
   }
 };
@@ -531,7 +521,6 @@ exports.uploadImagesOfInventory = async (req, res, next) => {
         })
       );
 
-      // console.log("hotelImageUrls===========", hotelImageUrls);
 
       if (rooms.length > 0) {
         const imagesPerRoom = Math.ceil(roomImageUrls.length / rooms.length);
@@ -550,25 +539,21 @@ exports.uploadImagesOfInventory = async (req, res, next) => {
       }
     }
 
-    // console.log("rooms before update===========", rooms);
 
     const obj = {
       $push: { hotelImages: hotelImageUrls },
       rooms: rooms,
     };
 
-    console.log("obj to update===========", obj);
 
     const result = await updatePartenerHotel({ _id: isHotelExist._id }, obj);
 
-    // console.log("update result===========", result);
     return res.status(statusCode.OK).send({
       statusCode: statusCode.ACCEPTED,
       responseMessage: responseMessage.UPLOAD_SUCCESS,
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to upload images", error);
     return next(error);
   }
 };
@@ -592,19 +577,16 @@ exports.uploadImagesOfRoom = async (req, res, next) => {
     }
     // Distribute images among rooms
     const imagesPerRoom = Math.ceil(imageUrls.length / roomData.length);
-    // console.log("imagesPerRoom=========",imagesPerRoom)
     for (let i = 0; i < roomData.length; i++) {
       const start = i * imagesPerRoom;
       const end = start + imagesPerRoom;
       const roomsImages = imageUrls.slice(start, end);
       const roomImageIndex = `rooms.${i}.roomsImages`;
-      console.log("roomImageIndex==========",roomImageIndex);
       
      const updatedData= await updatePartenerHotel(
         { _id: hotel._id },
         { $push: { [roomImageIndex]: { $each: roomsImages } } }
       );
-      console.log("updatedData==========",updatedData);
       
     }
     res.status(200).send({
@@ -613,7 +595,6 @@ exports.uploadImagesOfRoom = async (req, res, next) => {
       data: imageUrls,
     });
   } catch (error) {
-    console.log("Error while trying to upload room images", error);
     return next(error);
   }
 };
@@ -635,7 +616,6 @@ exports.uploadImagesOfRoom = async (req, res, next) => {
 //         responseMessage: responseMessage.PARTNER_NOT_FOUND,
 //       });
 //     }
-//     console.log("isUserExist===========", isUserExist._id);
 
 //     const isHotelExist = await findPartenerHotelData({ _id: hotelId, partnerId: isUserExist._id });
 //     if (!isHotelExist) {
@@ -644,7 +624,6 @@ exports.uploadImagesOfRoom = async (req, res, next) => {
 //         responseMessage: responseMessage.HOTEL_NOT_FOUND,
 //       });
 //     }
-//     console.log("isHotelExist===========", isHotelExist._id);
 
 //     let hotelImageUrls = [];
 //     let roomImageUrls = [];
@@ -653,24 +632,20 @@ exports.uploadImagesOfRoom = async (req, res, next) => {
 //     if (req.files) {
 //       const hotelImageFiles = req.files.hotelImages || [];
 //       const roomImageFiles = req.files.roomsImages || [];
-//       console.log("============req.files", req.files);
 //       hotelImageUrls = await Promise.all(
 //         hotelImageFiles.map(async (file) => {
 //           const url = await commonFunction.getImageUrlAWS(file);
-//           console.log("hotelImage URL===========", url);
 //           return url;
 //         })
 //       );
 //       roomImageUrls = await Promise.all(
 //         roomImageFiles.map(async (file) => {
 //           const url = await commonFunction.getImageUrlAWS(file);
-//           console.log("roomImage URL===========", url);
 //           return url;
 //         })
 //       );
 //       if (rooms.length > 0) {
 //         const imagesPerRoom = Math.ceil(roomImageUrls.length / rooms.length);
-//         console.log("imagesPerRoom===========", imagesPerRoom);
 
 //         rooms = rooms.map((room, index) => {
 //           const start = index * imagesPerRoom;
@@ -679,7 +654,6 @@ exports.uploadImagesOfRoom = async (req, res, next) => {
 //             ...room,
 //             roomsImages: room.roomsImages.concat(roomImageUrls.slice(start, end)),
 //           };
-//           console.log(roomImageUrls.slice(start, end),`updatedRoom [${index}]==========`, updatedRoom,"=========",room.roomsImages);
 //           return updatedRoom;
 //         });
 //       }
@@ -690,11 +664,9 @@ exports.uploadImagesOfRoom = async (req, res, next) => {
 //       rooms: rooms
 //     };
 
-//     console.log("obj to update===========", obj);
 
 //     const result = await updatePartenerHotel({ _id: isHotelExist._id }, obj);
 
-//     console.log("update result===========", result);
 
 //     return res.status(statusCode.OK).send({
 //       statusCode: statusCode.ACCEPTED,
@@ -703,7 +675,6 @@ exports.uploadImagesOfRoom = async (req, res, next) => {
 //     });
 
 //   } catch (error) {
-//     console.log("error while trying to upload images", error);
 //     return next(error);
 //   }
 // };
@@ -729,7 +700,6 @@ exports.getAllHotelInventoryList=async(req,res,next)=>{
       });
     
   } catch (error) {
-    console.log("error while trying to get all inhouse hotel list",error);
     return next(error)
   }
 }

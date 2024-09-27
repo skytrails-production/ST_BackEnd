@@ -36,7 +36,6 @@ exports.createNotificationContent=async(req,res,next)=>{
             result: result,
           });
     } catch (error) {
-        console.log("error while tring to get rate",error);
         return next(error)
     }
 }
@@ -56,7 +55,6 @@ exports.getAllNotifications=async(req,res,next)=>{
             result: result,
           });
     } catch (error) {
-        console.log("error while trying to get data ",error);
         return next(error)
     }
 }

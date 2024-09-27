@@ -40,7 +40,6 @@ exports.kafilaTokenGenerator = async (req, res) => {
 
     actionCompleteResponse(res, result, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -58,7 +57,6 @@ exports.kafilaFlightSearch=async(req,res,next)=>{
       result:response?.data
     });
   } catch (error) {
-    console.log("error while trying check fare",error);
     return next(error);
   }
 }
@@ -76,7 +74,6 @@ exports.kafilaRoundTripFlightSearch=async(req,res,next)=>{
       result:response?.data
     });
   } catch (error) {
-    console.log("error while trying check fare",error);
     return next(error);
   }
 }
@@ -93,7 +90,6 @@ exports.kafilaFareCheck=async(req,res,next)=>{
       result:response?.data
     });
   } catch (error) {
-    console.log("error while trying check fare",error);
     return next(error);
   }
 }
@@ -110,7 +106,6 @@ exports.kafilaSSR=async(req,res,next)=>{
       result:response?.data
     });
   } catch (error) {
-    console.log("error while trying check fare",error);
     return next(error);
   }
 }
@@ -127,7 +122,6 @@ exports.kafilaPnrcreation=async(req,res,next)=>{
       result:response?.data
     });
   } catch (error) {
-    console.log("error while trying create Pnr",error);
     return next(error);
   }
 }
@@ -149,7 +143,6 @@ exports.kafilaGetBookingDetails=async(req,res,next)=>{
       result:response?.data
     });
   } catch (error) {
-    console.log("error while trying create Pnr",error);
     return next(error);
   }
 }

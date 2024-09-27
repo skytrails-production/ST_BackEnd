@@ -26,7 +26,8 @@ const {
   pushNotification,
   mediapushNotification,
   pushSimpleNotification,
-  pushNotification1
+  pushNotification1,
+  pushNotificationAfterDepricate
 } = require("../utilities/commonFunForPushNotification");
 const adminModel=require("../model/user.model")
 const { userServices } = require("../services/userServices");
@@ -230,7 +231,6 @@ exports.createSubAdmin = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error======>>>>.", error);
     return next(error);
   }
 };
@@ -266,7 +266,6 @@ exports.updateSubAdmin = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ message: responseMessage.UPDATE_SUCCESS, result: result });
   } catch (error) {
-    console.log("error======>>>>.", error);
     return next(error);
   }
 };
@@ -291,7 +290,6 @@ exports.deleteSubAdmin = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ message: responseMessage.DELETE_SUCCESS, result: result });
   } catch (error) {
-    console.log("error======>>>>.", error);
     return next(error);
   }
 };
@@ -307,7 +305,6 @@ exports.getSubAdmin = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ message: responseMessage.DATA_FOUND, result: result });
   } catch (error) {
-    console.log("error======>>>>.", error);
     return next(error);
   }
 };
@@ -362,7 +359,6 @@ exports.subAdminLogin = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ statusCode:statusCode.OK,message: responseMessage.LOGIN, result: result });
   } catch (error) {
-    console.log("error=======>>>>>>", error);
     return next(error);
   }
 };
@@ -392,7 +388,6 @@ return res.status(statusCode.OK).send({
   result:token
 });
   } catch (error) {
-    console.log("Error while trying to send forot mail",error);
     return next(error);
   }
 }
@@ -419,7 +414,6 @@ exports.passwordReset=async(req,res,next)=>{
       responseMessage: responseMessage.UPDATE_SUCCESS 
     });
   } catch (error) {
-    console.log("Error while trying to reset password",error);
     return next(error);
   }
 }
@@ -432,7 +426,6 @@ exports.getSubAdminByAggregate = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ message: responseMessage.DATA_FOUND, result: result });
   } catch (error) {
-    console.log("error======>>>>.", error);
     return next(error);
   }
 };
@@ -443,7 +436,6 @@ exports.subAdminDashboard = async (req, res, next) => {
       _id: req.userId,
       userType: userType.SUBADMIN,
     });
-    // console.log("isSubAdmin==========", isSubAdmin);
     if (!isSubAdmin) {
       return res
         .status(statusCode.NotFound)
@@ -469,7 +461,6 @@ exports.subAdminDashboard = async (req, res, next) => {
         result: result,
       });
   } catch (error) {
-    console.log("error on dashboard", error);
     return next(error);
   }
 };
@@ -495,7 +486,6 @@ exports.updateTaskOfSubAdmin=async(req,res,next)=>{
     return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.UPDATE_SUCCESS,result:updatedSubAdmin});
     
   } catch (error) {
-    console.log("error while update task",error);
     return next(error)
   }
 } 
@@ -511,7 +501,6 @@ exports.deletePost=async(req,res,next)=>{
       return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.DELETE_SUCCESS,result:result});
     } 
   } catch (error) {
-    console.error("error while delete post of user========",error);
     return next(error)
   }
 }
@@ -526,13 +515,11 @@ exports.approveStory=async(req,res,next)=>{
    
     const findUser=await findUserData({_id:isPostExist.userId});
    const notificationData= await findNotification({notificationType:'postapprove'});
-    const sentNotification=await pushNotification(findUser.deviceToken,notificationData.title, notificationData.description);
-    console.log("sentNotification=",sentNotification);
+    const sentNotification=await pushNotificationAfterDepricate(findUser.deviceToken,notificationData.title, notificationData.description);
     if(result){
       return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.UPDATE_SUCCESS,result:result});
     }   
   } catch (error) {
-    console.log("error while approve story",error);
     return next(error)
   }
 }
@@ -549,7 +536,6 @@ exports.getPost = async (req, res, next) => {
         message: responseMessage.DATA_NOT_FOUND,
       });
     }
-    // console.log("lenghth", post.length);
     const unanswered = await forumQueListLookUp(req.query);
     if (unanswered) {
       result.unanswered = unanswered;
@@ -572,7 +558,6 @@ exports.getPost = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log("error========>>>>>>", error);
     return next(error);
   }
 };
@@ -593,7 +578,6 @@ exports.addTrending=async(req,res,next)=>{
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to make it trending.",error);
     return next(error)
   }
 }
@@ -604,7 +588,6 @@ exports.getAgentsIdName=async(req,res,next)=>{
       _id: req.userId,
       userType: userType.SUBADMIN,
     });
-    // console.log("isSubAdmin==========", isSubAdmin);
     if (!isSubAdmin) {
       return res
         .status(statusCode.NotFound)
@@ -629,7 +612,6 @@ exports.getAgentsIdName=async(req,res,next)=>{
       result: agentIdArray,
     });
   } catch (error) {
-    console.log("Error while trying to get subadmin agent Bookings", error);
     return next(error);
   }
 }
@@ -644,7 +626,6 @@ exports.getBookingAgentWise=async(req,res,next)=>{
       _id: req.userId,
       userType: userType.SUBADMIN,
     });
-    // console.log("isSubAdmin==========", isSubAdmin);
     if (!isSubAdmin) {
       return res
         .status(statusCode.NotFound)
@@ -698,7 +679,6 @@ exports.getBookingAgentWise=async(req,res,next)=>{
       result: result,
     });
   } catch (error) {
-    console.log("Error while trying to get subadmin agent Bookings", error);
     return next(error);
   }
 }
@@ -714,7 +694,6 @@ exports.getAgentCancelRequest = async (req, res, next) => {
       _id: req.userId,
       userType: userType.SUBADMIN,
     });
-    // console.log("isSubAdmin==========", isSubAdmin);
     if (!isSubAdmin) {
       return res
         .status(statusCode.NotFound)
@@ -761,7 +740,6 @@ exports.getAgentCancelRequest = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("Error while trying to get agentCancelRequest", error);
     return next(error);
   }
 };
@@ -777,7 +755,6 @@ exports.getAgentChangeRequest = async (req, res, next) => {
       _id: req.userId,
       userType: userType.SUBADMIN,
     });
-    // console.log("isSubAdmin==========", isSubAdmin);
     if (!isSubAdmin) {
       return res
         .status(statusCode.NotFound)
@@ -826,7 +803,6 @@ exports.getAgentChangeRequest = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("Error while trying to get agentCancelRequest", error);
     return next(error);
   }
 };
@@ -838,7 +814,6 @@ exports.findRMAgentList=async(req,res,next)=>{
       _id: req.userId,
       userType: userType.SUBADMIN,
     });
-    // console.log("isSubAdmin==========", isSubAdmin);
     if (!isSubAdmin) {
       return res
         .status(statusCode.NotFound)
@@ -857,7 +832,6 @@ exports.findRMAgentList=async(req,res,next)=>{
       result: result,
     });
   } catch (error) {
-    console.log("Error while trying to get rmagents", error);
     return next(error);
   }
 }
@@ -870,7 +844,6 @@ exports.getAgnetReferralsCount=async(req,res,next)=>{
       userType: userType.SUBADMIN,
       authType:authType.BOOKING_MANAGER
     });
-    // console.log("isSubAdmin==========", isSubAdmin);
     if (!isSubAdmin) {
       return res
         .status(statusCode.NotFound)
@@ -895,7 +868,6 @@ exports.getAgnetReferralsCount=async(req,res,next)=>{
       result: isReferralExist,
     });
   } catch (error) {
-    console.log("Error while trying to get count of referrals", error);
     return next(error);
   }
 }
@@ -907,7 +879,6 @@ exports.getSubAdminDashboard=async(req,res,next)=>{
       userType: userType.SUBADMIN,
       authType:authType.BOOKING_MANAGER
     });
-    // console.log("isSubAdmin==========", isSubAdmin);
     if (!isSubAdmin) {
       return res
         .status(statusCode.NotFound)
@@ -917,7 +888,6 @@ exports.getSubAdminDashboard=async(req,res,next)=>{
         });
     }
   } catch (error) {
-    console.log("error while trying to get booking of booking manager",error);
     return next(error);
   }
 }
@@ -948,7 +918,6 @@ exports.approveMultipleStory=async(req,res,next)=>{
       //   notificationData.title,
       //   notificationData.description
       // );
-      // console.log("sentNotification=", sentNotification);
 
       if (result) {
         updatedStories.push(result); // Keep track of updated stories
@@ -968,7 +937,6 @@ exports.approveMultipleStory=async(req,res,next)=>{
       });
     }
   } catch (error) {
-    console.log("Error while approving stories", error);
     return next(error);
   }
 };

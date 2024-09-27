@@ -62,7 +62,6 @@ exports.createOffer = async (req, res) => {
 
     if (error) {
       sendActionFailedResponse(res, {}, error.details);
-      console.error("Validation error:", error.details);
     } else {
       // Data is valid, you can proceed to save it to the database
       const newOffer = new Offer(value);
@@ -71,17 +70,14 @@ exports.createOffer = async (req, res) => {
         .then((savedOffer) => {
           const msg = "Offer saved successfully.";
           actionCompleteResponse(res, savedOffer, msg);
-          // console.log("Offer saved:", savedOffer);
         })
         .catch((err) => {
           sendActionFailedResponse(res, {}, err.message);
-          console.error("Error saving offer:", err);
         });
     }
   } catch (validationError) {
     // Handle any errors that occur during validation
     sendActionFailedResponse(res, {}, validationError.message);
-    console.error("Validation error:", validationError);
   }
 };
 
@@ -89,7 +85,6 @@ exports.createOffer = async (req, res) => {
 // exports.getOffer = async (req, res) => {
 //   try {
 //     const { offertype } = req.query;
-//     console.log("======================",req.query);
 //     let response;
 //     if (offertype === offerType.BANKOFFERS) {
 //       response = await offers.find({
@@ -116,14 +111,11 @@ exports.createOffer = async (req, res) => {
 //         offertype: offerType.TRAINS,
 //       });
 //     } else {
-//       console.log("=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
 //       response = await offers.find({});
-//       console.log("response==========",response);
 //     }
 //     const msg = "Offer get data successfully.";
 //     actionCompleteResponse(res, result, msg);
 //   } catch (error) {
-//     console.log("error=====>>>",error);
 //     sendActionFailedResponse(res, {}, err.message);
 //   }
 // };

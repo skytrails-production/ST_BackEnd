@@ -49,7 +49,6 @@ const {
 exports.flighBooking = async (req, res, next) => {
   try {
     const data = { ...req.body };
-    // console.log("data=================",data,req)
     const isUserExist = await findUser({
       _id: req.userId,
       status: status.ACTIVE,
@@ -104,7 +103,6 @@ const adminContact=['+918115199076','+919899564481','+919870249076']
  
     }
      } catch (error) {
-    console.log("error: ", error);
     return next(error);
   }
 };
@@ -116,7 +114,6 @@ exports.getUserflightBooking = async (req, res, next) => {
       _id: req.userId,
       status: status.ACTIVE,
     });
-    console.log("======",isUserExist)
     if (!isUserExist) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
@@ -132,7 +129,6 @@ exports.getUserflightBooking = async (req, res, next) => {
       userId: isUserExist._id,
     };
     const result = await aggregatePaginateGetBooking(body);
-    // console.log("result=========", result);
     if (result.docs.length == 0) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
@@ -143,7 +139,6 @@ exports.getUserflightBooking = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ message: responseMessage.DATA_FOUND, result: result });
   } catch (error) {
-    console.log("error: ", error);
     return next(error);
   }
 };
@@ -171,7 +166,6 @@ exports.getUserFlightData = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ message: responseMessage.DATA_FOUND, result: result });
   } catch (error) {
-    console.log("error: ", error);
     return next(error);
   }
 };
@@ -204,10 +198,11 @@ exports.sendPDF=async(req,res,next)=>{
     .send({statusCode:statusCode.OK, message: responseMessage.PDF_SENT});
     
   } catch (error) {
-    console.log("error while send mail!",error);
     return next(error)
   }
 };
+
+
 exports.sendUpdateToUser = async (req, res, next) => {
   try {
     const { userId, bookingId } = req.body;
@@ -239,32 +234,20 @@ exports.sendUpdateToUser = async (req, res, next) => {
       to: userName,
     };
     let options = { day: "2-digit", month: "2-digit", year: "numeric" };
-    let journeyDate = new Date(isBookingExist.departureTime);
-    const data = {
-      origin: isBookingExist.origin,
-      destination: isBookingExist.destination,
-      pnr: isBookingExist.pnr,
-      noOfSeats: isBookingExist.noOfSeats,
-      BoardingPoint: isBookingExist.BoardingPoint.Location,
-    };
+     const depDate=new Date(data.airlineDetails[0].Origin.DepTime);
+    const depTime=new Date(data.airlineDetails[0].Origin.DepTime);
+    const arrTime=new Date(data.airlineDetails[0].Destination.ArrTime);
     await createPushNotification(notObject);
     await pushNotificationAfterDepricate(
       isUserExist.deviceToken,
       notificationTitle,
       notificationMessage
     );
-    const template = [
-      String(data.origin),
-      String(data.destination),
-      String(data.pnr),
-      String(journeyDate.toLocaleDateString("en-GB", options)),
-      String(data.noOfSeats),
-      String(data.BoardingPoint),
-    ];
+   const template=[String(userName),String(isBookingExist.pnr),String(isBookingExist.airlineDetails[0].Airline.AirlineName),String(depDate.toLocaleDateString('en-GB', options)),String(depTime.toLocaleTimeString('en-GB')),String(arrTime.toLocaleTimeString('en-GB')),String(isBookingExist.totalAmount)];
     await whatsApi.sendWhtsAppOTPAISensy(
       `+91${isBookingExist.passenger[0].Phone}`,
       template,
-      "busBooking"
+      "flightBooking"
     );
     await sendSMS.sendSMSBusBooking(
       isBookingExist.passenger[0].Phone,
@@ -276,7 +259,6 @@ exports.sendUpdateToUser = async (req, res, next) => {
       responseMessage: responseMessage.SUCCESS,
     });
   } catch (error) {
-    console.log("error while trying to send update", error);
     return next(error);
   }
 };
@@ -294,7 +276,6 @@ return res
 .status(statusCode.OK)
 .send({ statusCode:statusCode.OK,responseMessage: responseMessage.DATA_FOUND, result: response });
   }catch(error){
-console.log("error while get data",error);
 return next(error);
   }
 }
@@ -307,7 +288,6 @@ exports.getFlightBookingByUserId =async (req, res,next) =>{
   
  const result=await findUserflightBooking({_id:id});
 
-  // console.log(result,"id");;
   // return
 
   await commonFunction.FlightBookingConfirmationMail(result);
@@ -315,7 +295,6 @@ exports.getFlightBookingByUserId =async (req, res,next) =>{
 
 
    } catch (error) {
-  console.log("error: ", error);
   return next(error);
 }
  

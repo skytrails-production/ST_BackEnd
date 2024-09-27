@@ -17,7 +17,6 @@ exports.createfaqs = async (req, res, next) => {
     try {
         const { que, ans, type, staticContentTypeId } = req.body;
         // const isExist = await findstaticContent({ _id: staticContentTypeId, status: status.ACTIVE });
-        // console.log("isExist===========", isExist);
         // if (!isExist) {
         //     sendActionFailedResponse(res, {}, 'No Data Found');
         // }
@@ -44,7 +43,6 @@ exports.createfaqs = async (req, res, next) => {
             actionCompleteResponse(res, result, 'Frequently ask quetions created successfully.');
         }
     } catch (error) {
-        console.log("error========>>>>>>", error);
         // sendActionFailedResponse(res, {}, error.message);
         return next(error);
     }
@@ -54,7 +52,6 @@ exports.listfaqs = async (req, res, next) => {
     try {
         const { staticContentTypeId } = req.query;
         // const isExist = await findstaticContent({type: staticContentTypeId});
-        // console.log("isExist===============",isExist);
         // if (!isExist) {
         //     sendActionFailedResponse(res, {}, 'No Data Found');
         // }
@@ -65,7 +62,6 @@ exports.listfaqs = async (req, res, next) => {
         actionCompleteResponse(res, result, 'Frequently ask quetions listed successfully');
 
     } catch (error) {
-        console.log("error========>>>>>>", error);
         return next(error);
     }
 }
@@ -86,7 +82,6 @@ exports.updatefaqs = async (req, res, next) => {
         const result = await updatefaqStatic({ _id: req.body.faqId }, req.body);
         actionCompleteResponse(res, result, 'Frequently ask quetions updated successfully');
     } catch (error) {
-        console.log("error========>>>>>>", error);
         // sendActionFailedResponse(res,{},error.message);
         return next(error);
     }
@@ -106,7 +101,6 @@ exports.deletefaqs = async (req, res, next) => {
         const result = await updatefaqStatic({ _id: req.body.faqId }, { status: status.DELETE });
         actionCompleteResponse(res, result, 'Frequently ask quetions deleted successfully');
     } catch (error) {
-        console.log("error========>>>>>>", error);
         // sendActionFailedResponse(res,{},error.message);
         return next(error);
     }

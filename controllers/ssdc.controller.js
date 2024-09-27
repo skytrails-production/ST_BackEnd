@@ -18,7 +18,6 @@ exports.ssdcRegistration = async (req, res) => {
     const data = req.body;
     // Check if the data already exists
     const existingRecord = await SsdcModel.findOne(data);
-    // console.log(existingRecord,"data")
     if (existingRecord) {
       // If the data already exists, send details in the response
       actionCompleteResponse(res, existingRecord, "Data already registered");
@@ -31,7 +30,6 @@ exports.ssdcRegistration = async (req, res) => {
       actionCompleteResponse(res, response, msg);
     }
   } catch (err) {
-    // console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };

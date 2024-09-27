@@ -38,18 +38,15 @@ exports.cancelFlightBooking = async (req, res, next) => {
     try {
         const { reason, flightBookingId, bookingId, pnr, agentId } = req.body;
         const isAgentExists = await findbrbuser({ _id: agentId });
-        // console.log("isAgentExists", isAgentExists);
         if (!isAgentExists) {
             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.AGENT_NOT_FOUND });
         }
         const currentDate = new Date().toISOString();
-        // console.log("currentDate:", currentDate);
         const isBookingExist = await flightModel.findOne({
             userId: isAgentExists._id,
             bookingId: bookingId,
             dateOfJourney: { $gt: currentDate }
         });
-        // console.log("bookingDate=====", isBookingExist)
         if (!isBookingExist) {
             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.BOOKING_NOT_FOUND });
         }
@@ -67,7 +64,6 @@ exports.cancelFlightBooking = async (req, res, next) => {
         const result = await createcancelFlightBookings(object);
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.CANCEL_REQUEST_SEND, result: result });
     } catch (error) {
-        console.log("error in cancelFlightBooking:", error);
         return next(error);
     }
 }
@@ -76,13 +72,11 @@ exports.getCancelFlightBooking = async (req, res, next) => {
     try {
         const { page, limit, search, fromDate } = req.query;
         const result =await aggregatePaginatecancelFlightBookingsList(req.query);
-        // console.log("===========",result)
         if (!result) {
             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.DATA_NOT_FOUND });
         }
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.DATA_FOUND, result: result });
     } catch (error) {
-        console.log("error to get cancel flight", error);
         return next(error);
     }
 }
@@ -91,18 +85,15 @@ exports.cancelHotelBooking = async (req, res, next) => {
     try {
         const { reason, hotelBookingId, bookingId, pnr, agentId } = req.body;
         const isAgentExists = await findbrbuser({ _id: agentId });
-        // console.log("isAgentExists", isAgentExists);
         if (!isAgentExists) {
             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.AGENT_NOT_FOUND });
         }
         const currentDate = new Date().toISOString();
-        // console.log("currentDate:", currentDate);
         const isBookingExist = await findhotelBooking({
             userId: isAgentExists._id,
             bookingId: bookingId,
             CheckInDate: { $gt: currentDate }
         });
-        // console.log("bookingDate=====", isBookingExist)
         if (!isBookingExist) {
             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.BOOKING_NOT_FOUND });
         }
@@ -120,7 +111,6 @@ exports.cancelHotelBooking = async (req, res, next) => {
         const result = await createHotelCancelRequest(object);
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.CANCEL_REQUEST_SEND, result: result });
     } catch (error) {
-        console.log("error in cancelFlightBooking:", error);
         return next(error);
     }
 }
@@ -134,7 +124,6 @@ exports.getCancelHotelBooking = async (req, res, next) => {
         }
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.DATA_FOUND, result: result });
     } catch (error) {
-        console.log("error to get cancel flight", error);
         return next(error);
     }
 }
@@ -152,7 +141,6 @@ exports.cancelBusBooking=async(req,res,next)=>{
             busId:busId,
             dateOfJourney:{$gt:currentDate},
         });
-        // console.log("isBookingExist===========",isBookingExist)
         if (!isBookingExist) {
             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.BOOKING_NOT_FOUND });
         }
@@ -173,7 +161,6 @@ exports.cancelBusBooking=async(req,res,next)=>{
         } 
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.CANCEL_REQUEST_SEND, result: result });
     } catch (error) {
-        console.log("error",error);
         return next(error);
     }
 }
@@ -187,7 +174,6 @@ exports.getCancelBusBooking=async(req,res,next)=>{
         }
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.DATA_FOUND, result: result });
     } catch (error) {
-        console.log("error",error);
         return next(error);
     }
 }

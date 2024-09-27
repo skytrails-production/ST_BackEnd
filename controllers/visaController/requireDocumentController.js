@@ -69,7 +69,6 @@ exports.createRequireDocument = async (req, res, next) => {
             result: result,
         });
     } catch (error) {
-        console.log("Error while creating required document");
         return next(error);
     }
 };
@@ -83,7 +82,6 @@ exports.getRequireDocument=async(req,res,next)=>{
         return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result: result,});
    
     } catch (error) {
-        console.log("error while trying to get doc category.");
         return next(error)
     }
 }
@@ -97,7 +95,6 @@ exports.getRequireDocumentById=async(req,res,next)=>{
         }
         return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result: result,});
     } catch (error) {
-        console.log("error while get data",error);
         return next(error)
     }
 }
@@ -107,13 +104,11 @@ exports.getRequireDocumentPerCountry=async(req,res,next)=>{
         const {countryId}=req.query;
         const result=await findRequireDocData1({visaCountry:countryId});
         
-        // console.log("result==================",result);
         if(!result){
             return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND,result: result,});
         }
         return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result: result,});
     } catch (error) {
-        console.log("error while trying to get country docs",error);
         return next(error)
     }
 }

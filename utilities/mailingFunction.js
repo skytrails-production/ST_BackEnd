@@ -25,7 +25,6 @@ const formatDate = (dateString) => {
   };
 
 function flightMail(to){
-    // console.log(to)
     const name = `${to?.passengerDetails[0]?.firstName} ${to?.passengerDetails[0]?.lastName}`;
 
     const design=`<!DOCTYPE html>
@@ -483,7 +482,6 @@ function flightMail(to){
 
 
 function busMail(to){
-    // console.log(to)
     return `<!DOCTYPE html>
 
     <html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
@@ -991,7 +989,6 @@ function busMail(to){
 }
 
 function hotelMail(to){
-    // console.log(to)
 
     const checkInDate = new Date(to.CheckInDate);
     const checkOutDate = new Date(to.CheckOutDate);
@@ -2412,7 +2409,6 @@ function packageLandingMail(to){
 
 
 function hotelGrnMail(to){
-    // console.log(to)
 
     const checkInDate = new Date(to.CheckInDate);
     const checkOutDate = new Date(to.CheckOutDate);

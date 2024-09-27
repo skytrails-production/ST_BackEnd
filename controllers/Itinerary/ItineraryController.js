@@ -58,7 +58,6 @@ exports.ourProposal = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to save proposal", error);
     return next(error);
   }
 };
@@ -79,7 +78,6 @@ exports.getProposalById=async(req,res,next)=>{
       result: result,
     });
   } catch (error) {
-    console.log("erorr while trying to get proposal",error);
     return next(error);
   }
 }
@@ -99,7 +97,6 @@ exports.getAllProposal=async(req,res,next)=>{
       result: result,
     });
   } catch (error) {
-    console.log("erorr while trying to get proposal",error);
     return next(error);
   }
 }

@@ -122,7 +122,7 @@ const userflightBookingServices = {
     // console.log("aggregate========>>>>>>>", aggregate);
     const options = {
       page: Number(page) || 1,
-      limit: Number(limit) || 1000000,
+      limit: Number(limit) || 1000,
       sort: { createdAt: -1 },
     };
     const result = await flightBookingModel.aggregatePaginate(
@@ -141,19 +141,8 @@ const userflightBookingServices = {
     let data = filter || "";
     let pipeline = [
       {
-        $lookup: {
-          from: "userBtoC",
-          localField: "userId",
-          foreignField: "_id",
-          as: "userDetails",
-        },
-      },
-      {
-        $unwind: {
-          path: "$userDetails",
-          preserveNullAndEmptyArrays: true,
-        },
-      },
+        $sort:{"airlineDetails[0].Origin.DepTime":-1}
+      }
     ];
     if (fromDate && toDate) {
       pipeline.push({

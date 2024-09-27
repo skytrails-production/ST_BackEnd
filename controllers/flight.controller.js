@@ -53,7 +53,6 @@ exports.airportData = async (req, res) => {
 
     actionCompleteResponse(res, response, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -79,7 +78,6 @@ exports.tokenGenerator = async (req, res) => {
 
     actionCompleteResponse(res, result, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -100,7 +98,6 @@ exports.logout = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -116,7 +113,6 @@ exports.searchOneWay = async (req, res) => {
     msg = "Flight Searched Successfully!";
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -135,7 +131,6 @@ exports.onewaySearch = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -154,7 +149,6 @@ exports.twowaySearch = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -173,7 +167,6 @@ exports.emtflightDiscount = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -193,7 +186,6 @@ exports.searchReturn = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -211,7 +203,6 @@ exports.searchMultiCity = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -229,7 +220,6 @@ exports.searchAdvance = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -247,7 +237,6 @@ exports.searchSpecialReturn = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -264,7 +253,6 @@ exports.fareRule = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -281,7 +269,6 @@ exports.fareQuote = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -298,7 +285,6 @@ exports.ssrFlight = async (req, res) =>{
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 
@@ -316,7 +302,6 @@ exports.bookingFLight = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -335,7 +320,6 @@ exports.emtbookingFLightRequest = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -352,7 +336,6 @@ exports.getSeatMap = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -369,7 +352,6 @@ exports.emtFlightPrice = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -386,7 +368,6 @@ exports.emtFlightBook = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -410,7 +391,6 @@ exports.getTicketLCC = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -433,7 +413,6 @@ exports.getTicketNonLCCpass = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -456,7 +435,6 @@ exports.getTicketNonLCC = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -473,7 +451,6 @@ exports.getBookingDetails = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -490,7 +467,6 @@ exports.getReleasePNRRequest = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -507,7 +483,6 @@ exports.getSendChangeRequest = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -524,7 +499,6 @@ exports.getChangeRequestStatus = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -541,7 +515,6 @@ exports.getGetCancellationCharges = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -682,13 +655,11 @@ exports.getGetCancellationCharges = async (req, res) => {
 
 //     //var newdata = [...resultsArray, ...journeysArray];
 
-//     console.log("============================================");
 //     const bothapiFareValue = [
 //       response1?.data?.Response?.Results[0][0]?.Fare?.BaseFare,
 //       response2?.data?.Journeys[0]?.Segments[0]?.Fare?.BasicFare,
 //     ];
 //     const utilityData = JSON.parse(response3?.data?.RESP_VALUE);
-//     // console.log(bothapiFareValue);
 //     const mergeApiArray = [
 //       response1?.data?.Response?.Results[0][0],
 //       response1?.data?.Response?.Results[0][1],
@@ -702,9 +673,7 @@ exports.getGetCancellationCharges = async (req, res) => {
 //     ];
 
 //     // Now you can work with the array of objects
-//     //console.log(utilityData[0]?.grossAmount);
 
-//     // console.log(mergeApiArray);
 //     const customSort = (a, b) => {
 //       const aBaseFare1 = a?.Fare?.BaseFare || 0;
 //       const bBaseFare1 = b?.Fare?.BaseFare || 0;
@@ -724,11 +693,8 @@ exports.getGetCancellationCharges = async (req, res) => {
 //     // Sort the mergeApiArray using the custom sorting function
 //     mergeApiArray.sort(customSort);
 
-//     console.log(mergeApiArray);
 
-//     // console.log(response2?.data?.Journeys[0]?.Segments[0]?.Fare.BasicFare);
 //   } catch (err) {
-//     console.log(err);
 //     sendActionFailedResponse(res, {}, err.message);
 //   }
 // };
@@ -772,7 +738,6 @@ exports.combinedApi = async (req, res) => {
     //   response1?.data?.Response?.Results[0][0]?.Fare?.BaseFare,
     //   response2?.data?.Journeys[0]?.Segments[0]?.Fare?.BasicFare,
     // ];
-    // console.log(mergedData);
     // const mergeApiArray = [
     //   response1?.Response?.Results[0][0],
     //   response1?.Response?.Results[0][1],
@@ -861,15 +826,12 @@ exports.combinedApi = async (req, res) => {
     // let modifiedData = [TraceId, ...uniqueData];
     actionCompleteResponse(res, uniqueData, msg);
 
-    // console.log(mergeApiArray);
     //skyTrails flightNumber
-    // console.log("tbo flightNumber",response1?.Response?.Results[0][0]?.Segments[0][0]?.Airline?.FlightNumber);
     // const tboFlightNo =
     //   response1?.Response?.Results[0][0]?.Segments[0][0]?.Airline?.FlightNumber;
     // const emtFlightNo =
     //   response2?.Journeys[0]?.Segments[0]?.Bonds[0]?.Legs[0]?.FlightNumber;
     //tbo depr time
-    // console.log(
     //   "tbo deprt time",
     //   response1?.Response?.Results[0][0]?.Segments[0][0]?.Origin?.DepTime
     // );
@@ -885,18 +847,12 @@ exports.combinedApi = async (req, res) => {
     // const tboFlightDepTime = `${hours.toString().padStart(2, "0")}:${minutes
     //   .toString()
     //   .padStart(2, "0")}`;
-    //  console.log(tboFlightDepTime);
-    // console.log(
-    //   "emt deprt time",
     //   response2?.Journeys[0]?.Segments[0]?.Bonds[0]?.Legs[0]?.DepartureTime
     // );
     // const emtFlightDepTime =
     //   response2?.Journeys[0]?.Segments[0]?.Bonds[0]?.Legs[0]?.DepartureTime;
-    //   console.log(emtFlightDepTime);
     //emt flightNumber
-    // console.log('emt flight number',response2?.Journeys[0]?.Segments[0]?.Bonds[0]?.Legs[0]?.FlightNumber);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -940,7 +896,6 @@ exports.sortedData = async (req, res) => {
       return copiedObject;
     });
     const TraceId = response?.data?.Response?.TraceId;
-    // console.log(TraceId);
     const Origin = response?.data?.Response?.Origin;
     const Destination = response?.data?.Response?.Destination;
 
@@ -948,7 +903,6 @@ exports.sortedData = async (req, res) => {
 
     actionCompleteResponse(res, sortedflightData, msg);
   } catch (error) {
-    console.log(error);
     sendActionFailedResponse(res, {}, error.message);
   }
 };
@@ -971,10 +925,8 @@ exports.returnFlightSort = async (req, res) => {
     const sortlist = response.data.Response.Results;
     const combinedResults = sortlist.reduce((acc, result) => {
       if (result[0].Segments[0].length === 1) {
-        // console.log(result[0].Segments[0].length, 'one')
         acc[0].push(result);
       } else if (result[0].Segments[0].length === 2) {
-        // console.log(result[0].Segments[0].length, "two")
         acc[1].push(result);
       }
       return acc;
@@ -993,7 +945,6 @@ exports.returnFlightSort = async (req, res) => {
 
     actionCompleteResponse(res, sortedDataAscending, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -1014,10 +965,8 @@ exports.combinerApiForFlight=async(req,res,next)=>{
     };
 
     const response = await axios.post(`${api.emiflightSearch}`, travoltPayload);
-    // console.log("response===================",response);
 
   } catch (error) {
-    console.error("error while trying to combined the response for both",error);
     return next(error)
   }
 }
@@ -1029,21 +978,15 @@ exports.combinerApiForFlight=async(req,res,next)=>{
 
 const addImageToResults = (results) => {
   const imagesPath = '../utilities/FlightImages/';
-// console.log("====================>>>>>>>>>>>>>>>>>>>>>>>>>>>>REsults",results);
   results.forEach(result => {
     result.Segments.forEach(segment => {
       segment.forEach(subSegment => {
         const airlineCode = subSegment.Airline.AirlineCode;
-// console.log("-========================22222222222222222",subSegment)
         // Check if the image for the airline code exists
         const imagePath = imagesPath + airlineCode + '.png';
-        // console.log("imagePath-----------",imagePath)
-// console.log("=-==============================>??????",imagesPath.includes(imagePath))
         // If the image exists, add it to the response
         if (imagesPath.includes(imagePath)) {
-          // console.log("imagePath: "+imagePath);
           subSegment.Airline.image = imagePath;
-          // console.log("subSegment.Airline.image:::::::::::::",subSegment.Airline.image)
         } else {
           // If the image doesn't exist, provide a default image path
           subSegment.Airline.image = '../utilities/FlightImages/0B.png';
@@ -1058,27 +1001,21 @@ const addImageToResults = (results) => {
 // const addImageToResults = (result) => {
 //   // const flightImageMap = 
 //   const images = `../utilities/FlightImages`
-//   console.log("Images: ", images);
 //   const segment = result[0].Segments[0];
-//   console.log("=0=0=====================", segment);
 //   // for (let index of result) {
 //   //   const data1 = addImageToResults(dat);
 //   //           if (data1) {
 //   //               index._doc.image = data1
-//   //               console.log("restaurantData=============",index._doc.image);
 //   //           }
 //   //         }
 //   segment.forEach(subSegment => {
 //     const airLineCode = segment[0].Airline.AirlineCode;
 //     if (images.hasOwnProperty(airLineCode)) {
 //       subSegment[0].Airline.image = images[airLineCode];
-//       console.log("IF============================>>>>>>>>>>>",subSegment[0].Airline.image);
 //     } else {
 //       subSegment[0].Airline.images = "../utilities/FlightImages/0B.png"
-//       console.log("Else============================>>>>>>>>>>>",subSegment[0].Airline.image);
 //     }
 //   })
-// console.log(result);
 //   return result;
 // };
 

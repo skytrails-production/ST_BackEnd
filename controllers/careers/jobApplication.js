@@ -16,13 +16,11 @@ exports.applyJob = async (req, res) =>{
     try{
 
     const data=req.body;
-    // console.log("data", data?.jobId)    
     // const existingRecord = await JobApplication.findOne(data);
     const existingRecord = await JobApplication.findOne({
         userEmail: data.userEmail,
         jobId: data.jobId
     });
-    // console.log("existing data",existingRecord.jobId);
     if (existingRecord) {
       // If the data already exists, send details in the response
       actionCompleteResponse(res, existingRecord, "already apply");

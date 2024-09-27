@@ -111,7 +111,6 @@ exports.shareAgentReferralCode=async(req,res,next)=>{
      result.shortReferralLink = await shortenURL(referralLink1);
 return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.LINK_GENERATED,result:result});
   } catch (error) {
-    console.log("error while send code",error);
     return next(error);
   }
 }
@@ -129,7 +128,6 @@ exports.getReferrals=async(req,res,next)=>{
     return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result:allReferrals});
 
   } catch (error) {
-    console.log("error while trying to get referrals");
     return next(error)
   }
 }
@@ -190,7 +188,6 @@ exports.getReferalBookings = async (req, res, next) => {
       agentDetails:agents
     });
   } catch (error) {
-    console.log("error while trying to get ==========", error);
     return next(error);
   }
 };

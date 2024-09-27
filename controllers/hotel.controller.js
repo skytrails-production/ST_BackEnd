@@ -20,7 +20,6 @@ exports.searchHotelDeDup = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -37,7 +36,6 @@ exports.searchHotel = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -52,7 +50,6 @@ exports.searchHotelInfoDeDup = async (req, res) => {
     msg = "Hotel Searched Successfully!";
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -67,7 +64,6 @@ exports.searchHotelInfo = async (req, res) => {
     msg = "Hotel Searched Successfully!";
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -82,7 +78,7 @@ exports.searchHotelRoom = async (req, res) => {
     msg = "Hotel Room Searched Successfully!";
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
+    log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -97,7 +93,6 @@ exports.searchHotelRoomDeDup = async (req, res) => {
     msg = "Hotel Room Searched Successfully!";
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -112,7 +107,6 @@ exports.searchHotelBlockRoom = async (req, res) => {
     msg = "Hotel Block Room Searched Successfully!";
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -127,7 +121,6 @@ exports.searchHotelBlockRoomDeDup = async (req, res) => {
     msg = "Hotel Block Room Searched Successfully!";
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -148,7 +141,6 @@ exports.searchHotelBookRoom = async (req, res) => {
     msg = "Hotel Book Room Searched Successfully!";
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -169,7 +161,6 @@ exports.searchHotelBookRoomDeDup = async (req, res) => {
     msg = "Hotel Book Room Searched Successfully!";
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -186,7 +177,6 @@ exports.searchHotelBookingDetails = async (req, res) => {
     
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -201,7 +191,6 @@ exports.hotelSendCancel = async (req, res) => {
     msg = "Hotel Cancel Request Send Successfully!";
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -216,7 +205,6 @@ exports.hotelGetCancelStatus = async (req, res) => {
     msg = "Hotel Cancel Request Get Status Successfully!";
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -231,7 +219,6 @@ exports.hotelGetAgencyBalance = async (req, res) => {
     msg = "Hotel Cancel Request Get Status Successfully!";
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -246,7 +233,6 @@ exports.hotelGetCountryList = async (req, res) => {
     msg = "Hotel Country List Search Successfully!";
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -264,7 +250,6 @@ exports.hotelGetDestinationCityList = async (req, res) => {
     msg = "Hotel Destination City List Search Successfully!";
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -282,7 +267,6 @@ exports.hotelGetTopDestinationList = async (req, res) => {
     msg = "Hotel Top Destination List Search Successfully!";
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -297,7 +281,6 @@ exports.hotelGetVoucher = async (req, res) => {
     msg = "Hotel Voucher Search Successfully!";
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };

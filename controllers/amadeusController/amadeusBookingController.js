@@ -100,7 +100,6 @@ exports.amdsFlightBooking = async (req, res, next) => {
     }
     
   } catch (error) {
-    console.log("error while trying to booking", error);
     return next(error);
   }
 };
@@ -141,7 +140,6 @@ exports.getUserFlightBooking = async (req, res, next) => {
       result,
     });
   } catch (error) {
-    console.log("error while trying to get userFlight booking! ", error);
     return next(error);
   }
 };
@@ -162,7 +160,6 @@ exports.getFlightBookingId = async (req, res, next) => {
       result,
     });
   } catch (error) {
-    console.log("error while trying to get userFlight booking! ", error);
     return next(error);
   }
 };
@@ -196,7 +193,6 @@ exports.getFlightBookingIdOfUser = async (req, res, next) => {
       result,
     });
   } catch (error) {
-    console.log("error while trying to get userFlight booking! ", error);
     return next(error);
   }
 };
@@ -218,7 +214,6 @@ exports.getAllUserFlightBooking = async (req, res, next) => {
       result,
     });
   } catch (error) {
-    console.log("error while trying to get userFlight booking! ", error);
     return next(error);
   }
 };
@@ -244,9 +239,7 @@ exports.UpdateTicket1 = async (req, res, next) => {
     let options = { day: '2-digit', month: '2-digit', year: 'numeric' };
 
     // Update the ticket number for the specific passenger
-    console.log("firstName----------",firstName);
     for(var passenger of firstName){
-      console.log("passenger==========",passenger);
        result = await updateUserAmadeusFlightBooking(
         {
           _id: bookingId,
@@ -255,7 +248,6 @@ exports.UpdateTicket1 = async (req, res, next) => {
         { $set: { "passengerDetails.$.TicketNumber": passenger.ticketNumber } }
       );
       finalResult.push(result);
-      console.log("result=========",result);
        depDate=new Date(result.airlineDetails[0].Origin.DepTime);
        depTime=new Date(result.airlineDetails[0].Origin.DepTime);
       var arrTime=new Date(result.airlineDetails[0].Origin.DepTime);
@@ -270,8 +262,6 @@ exports.UpdateTicket1 = async (req, res, next) => {
     //   },
     //   { $set: { "passengerDetails.$.TicketNumber": ticketNumber } }
     // );
-   console.log("8568890001=======",result);
-   console.log("finalResult==========",finalResult);
     await whatsApi.sendWhtsAppOTPAISensy('+91'+result[0].passengerDetails[0].ContactNo,templates,"flightBooking");
     const templateName=[String(user.username),String(result[0].pnr),String(result[0].airlineDetails[0].Airline.AirlineName),String(depDate.toLocaleDateString('en-GB', options)),String(depTime.toLocaleTimeString('en-GB')),String(arrTime.toLocaleTimeString('en-GB')),String(result[0].totalAmount)];
     await whatsApi.sendWhtsAppOTPAISensy('+91'+user.phone.mobile_number,templateName,"flightBooking");
@@ -284,7 +274,6 @@ exports.UpdateTicket1 = async (req, res, next) => {
     });
     
   } catch (error) {
-    console.log("error while trying to update userFlight booking! ", error);
     return next(error);
   }
 };
@@ -300,7 +289,6 @@ exports.UpdateTicket = async (req, res, next) => {
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });
     }
-    console.log("isBookingExist=-==============",isBookingExist);
     const user = await findUser({ _id: isBookingExist.userId });
     let options = { day: '2-digit', month: '2-digit', year: 'numeric' };
     var finalResult ;
@@ -314,7 +302,6 @@ exports.UpdateTicket = async (req, res, next) => {
         },
         { $set: { "passengerDetails.$.TicketNumber": passenger.ticketNumber } }
       );
-console.log("result=====",result);
       if (result) {
         // finalResult.push(result);
         finalResult=result
@@ -363,7 +350,6 @@ console.log("result=====",result);
       result: finalResult,
     });
   } catch (error) {
-    console.log("error while trying to update userFlight booking! ", error);
     return next(error);
   }
 };
@@ -374,14 +360,12 @@ exports.generatePdfOfUSer = async (req, res, next) => {
     const data = await findUserAmadeusFlightBooking({ _id: bookingId });
     // sendSMS.
     const response = await commonFunction.FlightBookingConfirmationMail1(data);
-    // console.log("result",result);
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.EMAIL_SENT,
       result: response,
     });
   } catch (error) {
-    console.log("error while trying to craete pdf", error);
     return next(error);
   }
 };

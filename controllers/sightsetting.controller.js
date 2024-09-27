@@ -28,7 +28,6 @@ exports.sightSettingSearch = async (req, res) => {
   
       actionCompleteResponse(res, response.data, msg);
     } catch (err) {
-      console.log(err);
       sendActionFailedResponse(res, {}, err.message);
     }
   };
@@ -48,7 +47,6 @@ exports.sightSettingSearch = async (req, res) => {
       msg = "sightsetting get avaibility Successfully!";
       actionCompleteResponse(res, response.data, msg);
     } catch (err) {
-      console.log(err);
       sendActionFailedResponse(res, {}, err.message);
     }
   };
@@ -82,7 +80,6 @@ exports.sightSettingBlock = async (req, res) => {
   
       actionCompleteResponse(res, response.data, msg);
     } catch (err) {
-      console.log(err);
       sendActionFailedResponse(res, {}, err.message);
     }
   };
@@ -132,7 +129,6 @@ exports.sightSettingBlock = async (req, res) => {
   
       actionCompleteResponse(res, response.data, msg);
     } catch (err) {
-      console.log(err);
       sendActionFailedResponse(res, {}, err.message);
     }
   };
@@ -158,7 +154,6 @@ exports.sightSettingBlock = async (req, res) => {
   
       actionCompleteResponse(res, response.data, msg);
     } catch (err) {
-      console.log(err);
       sendActionFailedResponse(res, {}, err.message);
     }
   };
@@ -181,7 +176,6 @@ exports.sightSettingBlock = async (req, res) => {
   
       actionCompleteResponse(res, response.data, msg);
     } catch (err) {
-      console.log(err);
       sendActionFailedResponse(res, {}, err.message);
     }
   };

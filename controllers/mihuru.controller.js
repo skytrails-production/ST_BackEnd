@@ -18,13 +18,10 @@ exports.partnerAuthentication = async (req, res) => {
       apiKey: process.env.MIHURUAPIKEY,
     };
     const response = await axios.post(`${api.partnerAuthentication}`, data);
-    // console.log(response.data,"response");
-    // console.log(data,"data")
 
     msg = "Token Generate Successfully!";
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    // console.log(err);
     sendActionFailedResponse(res, { err }, err.message);
   }
 };
@@ -39,7 +36,6 @@ exports.signUp = async (req, res) => {
 
     const userLocation = geoip.lookup(userIP);
     // const userLocation=geoip.lookup("192.168.10.10");
-    // console.log("location", userIP,userLocation);
 
     const data = {
       ...requestBody,
@@ -51,12 +47,10 @@ exports.signUp = async (req, res) => {
       latitude:userLocation?.ll[0],
       longitude:userLocation?.ll[1]
     };
-    // console.log(data,"data");
 
     // return;
 
     const apiToken = req.headers.mihirutoken;
-    // console.log(req.headers,"token")
 
     const response = await axios.post(`${api.customerSignUp}`, data, {
       headers: {
@@ -77,10 +71,8 @@ exports.submitOtp = async (req, res) => {
   try {
     const data = req.body;
 
-    // console.log(requestBody,"data");
 
     const apiToken = req.headers.mihirutoken;
-    // console.log(apiToken,"token");
     // return;
 
     const response = await axios.post(`${api.submitOtp}`, data, {
@@ -115,7 +107,6 @@ exports.travelPlanGenerator = async (req, res) => {
     msg = "submit Otp Successfully!";
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    // console.log(err);
     sendActionFailedResponse(res, { err }, err.message);
   }
 };

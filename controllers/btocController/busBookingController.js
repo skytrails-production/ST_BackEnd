@@ -125,7 +125,6 @@ exports.busBooking = async (req, res, next) => {
       }
     }
   } catch (error) {
-    console.log("error: ", error);
     return next(error);
   }
 };
@@ -152,7 +151,6 @@ exports.getBusBookingList = async (req, res, next) => {
       userId: isUserExist._id,
     };
     const result = await paginateUserBusBookingSearch(body);
-    // console.log("result=========", result);
     if (result.docs.length == 0) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
@@ -163,7 +161,6 @@ exports.getBusBookingList = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ message: responseMessage.DATA_FOUND, result: result });
   } catch (error) {
-    console.log("error: ", error);
     return next(error);
   }
 };
@@ -176,7 +173,6 @@ exports.getUserBusData = async (req, res, next) => {
       _id: req.userId,
       status: status.ACTIVE,
     });
-    // console.log("isUSerExist", isUserExist);
     if (!isUserExist) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
@@ -198,7 +194,6 @@ exports.getUserBusData = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ message: responseMessage.DATA_FOUND, result: result });
   } catch (error) {
-    console.log("error: ", error);
     return next(error);
   }
 };
@@ -220,7 +215,6 @@ exports.getUserBusBookingById = async (req, res, next) => {
         result: response,
       });
   } catch (error) {
-    console.log("Error======================", error);
     return next(error);
   }
 };
@@ -277,6 +271,7 @@ exports.sendUpdateToUser = async (req, res, next) => {
       String(data.destination),
       String(data.pnr),
       String(journeyDate.toLocaleDateString("en-GB", options)),
+      // isBookingExist.passenger[0].seatNumber
       String(data.noOfSeats),
       String(data.BoardingPoint),
     ];
@@ -295,7 +290,6 @@ exports.sendUpdateToUser = async (req, res, next) => {
       responseMessage: responseMessage.SUCCESS,
     });
   } catch (error) {
-    console.log("error while trying to send update", error);
     return next(error);
   }
 };

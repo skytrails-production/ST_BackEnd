@@ -156,7 +156,6 @@ exports.packageBooking = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log("error in booking enquiry", error.message);
     return next(error);
   }
 };
@@ -189,7 +188,6 @@ exports.getPackageBookigs = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error to get packages", error.message);
     return next(error);
   }
 };
@@ -210,14 +208,12 @@ exports.getAllPackageEnquiry = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("Error while trying to get all packages", error);
     return next(error);
   }
 };
 
 exports.getPackageEnquiryById = async (req, res, next) => {
   try {
-    // console.log("req.params.bookingId,===",req.params.bookingId,)
     const response = await findPackagePopulate({
       _id: req.params.bookingId,
     });
@@ -233,7 +229,6 @@ exports.getPackageEnquiryById = async (req, res, next) => {
       result: response,
     });
   } catch (error) {
-    console.log("Error======================", error);
     return next(error);
   }
 };
@@ -321,7 +316,6 @@ exports.packageBookNow = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log("error in booking packages", error.message);
     return next(error);
   }
 };
@@ -366,7 +360,6 @@ exports.getUserPackageBooking=async(req,res,next)=>{
       upcomingJourneys,
     });
   } catch (error) {
-    console.log("error while trying to get booking",error);
     return next(error)
   }
 }
@@ -383,7 +376,6 @@ exports.packageEnquiryListForCrm = async (req, res, next) => {
 
     const mappedResult = result.map(item => {
       let inter_domes = '';
-// console.log(item.packageId.select_tags.some(tag => tag.domestic),"===========");
 if (item.packageId.select_tags.some(tag => tag.domestic)) {
   inter_domes = 'Domestic';
 } else {
@@ -412,7 +404,6 @@ if (item.packageId.select_tags.some(tag => tag.domestic)) {
       result: mappedResult,
     });
   } catch (error) {
-    console.log("error while trying to get package enquiry list", error);
     return next(error);
   }
 };

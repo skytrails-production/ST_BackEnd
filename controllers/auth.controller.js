@@ -444,7 +444,6 @@ exports.socialLogin = async (req, res, next) => {
       .status(200)
       .json({ message: "Social login successful.", result: user, token });
   } catch (error) {
-    console.log("error========>>>>>>", error);
     return next(error);
   }
 };
@@ -488,7 +487,6 @@ exports.approveAgent = async (req, res, next) => {
         .send({ message: responseMessage.REJECTED, result: updateResult });
     }
   } catch (error) {
-    console.log("error=======>>>>>>", error);
     return next(error);
   }
 };
@@ -520,7 +518,6 @@ exports.activeBlockUser = async (req, res, next) => {
         .send({ message: "User blocked successfully .", result: updateResult });
     }
   } catch (error) {
-    console.log("error=======>>>>>>", error);
     return next(error);
   }
 };
@@ -560,7 +557,6 @@ exports.activeBlockUser = async (req, res, next) => {
         .send({ message: "User blocked successfully .", result: updateResult });
     }
   } catch (error) {
-    console.log("error=======>>>>>>", error);
     return next(error);
   }
 };
@@ -597,7 +593,6 @@ exports.adminLogin = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ message: responseMessage.LOGIN, result: result });
   } catch (error) {
-    console.log("error=======>>>>>>", error);
     return next(error);
   }
 };
@@ -633,7 +628,6 @@ exports.editProfile = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ message: responseMessage.UPDATE_SUCCESS, result: result });
   } catch (error) {
-    console.log("error=======>>>>>>", error);
     return next(error);
   }
 };
@@ -651,12 +645,10 @@ exports.getAgents = async (req, res, next) => {
         .status(statusCode.NotFound)
         .send({ message: responseMessage.DATA_NOT_FOUND });
     }
-    // console.log("result========", result);
     return res
       .status(statusCode.OK)
       .send({ message: responseMessage.DATA_FOUND, result: result });
   } catch (error) {
-    console.log("error=======>>>>>>", error);
     return next(error);
   }
 };
@@ -678,7 +670,6 @@ exports.getAllHotelBookingList = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ message: responseMessage.DATA_FOUND, result: result });
   } catch (error) {
-    console.log("error=======>>>>>>", error);
     return next(error);
   }
 };
@@ -792,7 +783,6 @@ exports.getAllFlightBookingList = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ message: responseMessage.DATA_FOUND, result: result });
   } catch (error) {
-    console.log("error=======>>>>>>", error);
     return next(error);
   }
 };
@@ -887,7 +877,6 @@ exports.adminDashBoard = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ message: responseMessage.DATA_FOUND, result: result });
   } catch (error) {
-    console.log("error=======>>>>>>", error);
     return next(error);
   }
 };
@@ -955,7 +944,6 @@ exports.getAllBusBookingList = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ message: responseMessage.DATA_FOUND, result: result });
   } catch (error) {
-    console.log("Error in getAllBusBookingList:", error);
     return next(error);
   }
 };
@@ -995,7 +983,6 @@ exports.getDataById = async (req, res, next) => {
       default:
         return res.status(400).json({ message: responseMessage.INVALID_MODEL });
     }
-    // console.log();
     if (!result) {
       return res.status(404).json({ message: responseMessage.DATA_NOT_FOUND });
     }
@@ -1004,7 +991,6 @@ exports.getDataById = async (req, res, next) => {
       .status(200)
       .json({ message: responseMessage.DATA_FOUND, data: result });
   } catch (error) {
-    console.log("error =-=-=-=-=-=-=-=-=-=-=-=-=->>", error);
     return next(error);
   }
 };
@@ -1061,7 +1047,6 @@ exports.cancelTickets = async (req, res, next) => {
           .json({ message: responseMessage.INVALID_MODEL });
     }
   } catch (error) {
-    console.log("error============>>>>>>", error);
     return next(error);
   }
 };
@@ -1086,7 +1071,6 @@ exports.uploadProfilePicture = async (req, res, next) => {
         .send({ message: responseMessage.DATA_FOUND, result: result });
     }
   } catch (error) {
-    console.log("error====>>>", error);
     return next(error);
   }
 };
@@ -1118,7 +1102,7 @@ exports.cancelHotel = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ message: responseMessage.CANCELED, result: result });
   } catch (error) {
-    console.log("error===========>>>.", error);
+    return next(error)
   }
 };
 //************GET ALL AGENT HOTEL BOOKING LIST ***************/
@@ -1139,7 +1123,6 @@ exports.getAllHotelBookingListAgent = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ message: responseMessage.DATA_FOUND, result: result });
   } catch (error) {
-    console.log("error=======>>>>>>", error);
     return next(error);
   }
 };
@@ -1216,7 +1199,6 @@ exports.getAllFlightBookingListAgent = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ message: responseMessage.DATA_FOUND, result: result });
   } catch (error) {
-    console.log("error=======>>>>>>", error);
     return next(error);
   }
 };
@@ -1297,7 +1279,6 @@ exports.getAllBusBookingListAgent = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ message: responseMessage.DATA_FOUND, result: result });
   } catch (error) {
-    console.log("error=======>>>>>>", error);
     return next(error);
   }
 };
@@ -1305,7 +1286,6 @@ exports.getAllBusBookingListAgent = async (req, res, next) => {
 exports.getCancelUserFlightBooking = async (req, res, next) => {
   try {
     // const isUserExist = await findUser({ _id: req.userId, status: status.ACTIVE, userType: userType.USER });
-    // // console.log("isAgentExists", isAgentExists);
     // if (!isUserExist) {
     //   return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
     // }
@@ -1325,7 +1305,6 @@ exports.getCancelUserFlightBooking = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error to get cancel flight", error);
     return next(error);
   }
 };
@@ -1345,7 +1324,6 @@ exports.getCancelUserHotelBooking = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error to get cancel flight", error);
     return next(error);
   }
 };
@@ -1365,7 +1343,6 @@ exports.getCancelUserBusBooking = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error", error);
     return next(error);
   }
 };
@@ -1426,7 +1403,6 @@ exports.getAllFixDepartureBooking = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ message: responseMessage.DATA_FOUND, result: result });
   } catch (error) {
-    console.log("error=======>>>>>>", error);
     return next(error);
   }
 };
@@ -1445,7 +1421,6 @@ exports.getAgentchangeFlightRequest = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ statusCode: statusCode.OK, result: result });
   } catch (error) {
-    console.log("Error to getting data", error);
     return next(error);
   }
 };
@@ -1465,7 +1440,6 @@ exports.getAgentchangeHotelRequest = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ statusCode: statusCode.OK, result: result });
   } catch (error) {
-    console.log("Error to getting data", error);
     return next(error);
   }
 };
@@ -1474,7 +1448,6 @@ exports.getAgentchangeBusRequest = async (req, res, next) => {
   try {
     const { page, limit, search, fromDate, toDate } = req.query;
     const result = await aggregatePaginatechangeBusRequestList(req.query);
-    // console.log(result);
     if (!result) {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,
@@ -1485,7 +1458,6 @@ exports.getAgentchangeBusRequest = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ statusCode: statusCode.OK, result: result });
   } catch (error) {
-    console.log("Error to getting data", error);
     return next(error);
   }
 };
@@ -1535,7 +1507,6 @@ exports.createMarkup = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log("Error creating markup", error);
     return next(error);
   }
 };
@@ -1555,7 +1526,6 @@ exports.getMarkup = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("Error: " + error);
     return next(error);
   }
 };
@@ -1563,7 +1533,6 @@ exports.getMarkup = async (req, res, next) => {
 exports.getCancelAgentFlightBooking = async (req, res, next) => {
   try {
     // const isUserExist = await findUser({ _id: req.userId, status: status.ACTIVE, userType: userType.USER });
-    // // console.log("isAgentExists", isAgentExists);
     // if (!isUserExist) {
     //   return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
     // }
@@ -1582,7 +1551,6 @@ exports.getCancelAgentFlightBooking = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error to get cancel flight", error);
     return next(error);
   }
 };
@@ -1602,7 +1570,6 @@ exports.getCancelAgentHotelBooking = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error to get cancel flight", error);
     return next(error);
   }
 };
@@ -1622,7 +1589,6 @@ exports.getCancelAgentBusBooking = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error", error);
     return next(error);
   }
 };
@@ -1641,7 +1607,6 @@ exports.getUserchangeFlightRequest = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ statusCode: statusCode.OK, result: result });
   } catch (error) {
-    console.log("Error to getting data", error);
     return next(error);
   }
 };
@@ -1661,7 +1626,6 @@ exports.getUserchangeHotelRequest = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ statusCode: statusCode.OK, result: result });
   } catch (error) {
-    console.log("Error to getting data", error);
     return next(error);
   }
 };
@@ -1670,7 +1634,6 @@ exports.getUserchangeBusRequest = async (req, res, next) => {
   try {
     const { page, limit, search, fromDate, toDate } = req.query;
     const result = await buschangeRequestUserList(req.query);
-    // console.log(result);
     if (!result) {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,
@@ -1681,7 +1644,6 @@ exports.getUserchangeBusRequest = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ statusCode: statusCode.OK, result: result });
   } catch (error) {
-    console.log("Error to getting data", error);
     return next(error);
   }
 };
@@ -1700,7 +1662,6 @@ exports.getSearchHistory = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ statusCode: statusCode.OK, result: result });
   } catch (error) {
-    console.log("error in getting data=====>>>>>>>", error.message);
     return next(error);
   }
 };
@@ -1788,7 +1749,6 @@ exports.createAgent = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.error("Error:", error);
     return next(error);
   }
 };
@@ -1810,7 +1770,6 @@ exports.getAllUsers = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error in getting all users", error);
     return next(error);
   }
 };
@@ -1837,7 +1796,6 @@ exports.statusChange = async (req, res, next) => {
       result: updateData,
     });
   } catch (error) {
-    console.log("error in changeing subadmin status", error);
     return next(error);
   }
 };
@@ -1866,7 +1824,6 @@ exports.updateMarkup = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log("error while change markup", error);
     return next(error);
   }
 };
@@ -1887,7 +1844,6 @@ exports.getAllEventBookings = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to get all event booking list", error);
     return next(error);
   }
 };
@@ -1909,7 +1865,6 @@ exports.createAppVersion = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log("error while trying to add app version", error);
     return next(error);
   }
 };
@@ -1930,7 +1885,6 @@ exports.getAppVersion = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to get version", error);
     return next(error);
   }
 };
@@ -2096,7 +2050,6 @@ exports.distributeReward = async (req, res, next) => {
       responseMessage: responseMessage.No_REVENUE,
     });
   } catch (error) {
-    console.error("error while trying to distribute reward of agent");
     return next(error);
   }
 };
@@ -2163,7 +2116,6 @@ exports.createReferralAmount = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("Error while trying to add or update referral amount:", error);
     return next(error);
   }
 };
@@ -2184,7 +2136,6 @@ exports.getReferralAmount = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to get amount", error);
     return next(error);
   }
 };
@@ -2226,7 +2177,6 @@ exports.createPackageBanner = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("Error while trying to create package banner", error);
     return next(error);
   }
 };
@@ -2261,7 +2211,6 @@ exports.createPopularDestination = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("Error while trying to create package banner", error);
     return next(error);
   }
 };
@@ -2286,7 +2235,6 @@ exports.updateStatusBanner = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("Error while trying to create package banner", error);
     return next(error);
   }
 };
@@ -2312,7 +2260,6 @@ exports.updatePopularDestination = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("Error while trying to create package banner", error);
     return next(error);
   }
 };
@@ -2335,7 +2282,6 @@ exports.createPackageCategory = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("Error while trying to create package category", error);
     return next(error);
   }
 };
@@ -2382,7 +2328,6 @@ exports.createDailyQuiz = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to create daily quiz", error);
     return next(error);
   }
 };
@@ -2397,7 +2342,6 @@ exports.dailyQuizStatus = async (req, res, next) => {
       result: updateData,
     });
   } catch (error) {
-    console.log("Error while trying to update quiz status", error);
     return next(error);
   }
 };
@@ -2446,7 +2390,6 @@ exports.approvePartnerAccount = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log("error while tring to approve partner account", error);
     return next(error);
   }
 };

@@ -119,7 +119,6 @@ exports.grnUserHotelBooking = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("Error while trying to book hotel", error);
     return next(error);
   }
 };
@@ -145,7 +144,6 @@ exports.getUserGrnBooking=async(req,res,next)=>{
     }
     return res.status(statusCode.OK).send({ responseMessage: responseMessage.DATA_FOUND, result: result });
   } catch (error) {
-    console.log("Error while trying to get booking history",error);
     return next(error);
   }
 }
@@ -172,7 +170,6 @@ exports.getUserGrnBookingById=async(req,res,next)=>{
     }
     return res.status(statusCode.OK).send({ responseMessage: responseMessage.DATA_FOUND, result: result });
    } catch (error) {
-    console.log("Error while trying to get data by id",error);
     return next(error);
   }
 }
@@ -188,7 +185,6 @@ exports.getAllGrnBookingList=async(req,res,next)=>{
     }
     return res.status(statusCode.OK).send({ responseMessage: responseMessage.DATA_FOUND, result: result });
   } catch (error) {
-    console.log("error while trying to get all booking ", error);
     return next(error);
   }
 }

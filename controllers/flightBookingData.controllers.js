@@ -53,7 +53,6 @@ exports.addFlightBookingData = async (req, res) => {
 
 exports.EmailTicket = async (req, res) => {
   const data = req.body;
-  // console.log(data,"id")
   try {
     const response = await flightBookingData.findById({ _id: data.TicketId });
     await commonFunction.FlightBookingConfirmationMailWithNewEmail(
@@ -71,10 +70,8 @@ exports.EmailTicket = async (req, res) => {
 exports.emailTicketWithMarkup = async (req, res) => {
   const id = req.body.TicketId;
   const markup = req.body;
-  // console.log(req.body,"body");
   try {
     const response = await flightBookingData.findById({ _id: id });
-    // console.log(response,markup,"response")
 
     await commonFunction.FlightBookingConfirmationMailwithAgentMarkup(
       response,
@@ -123,7 +120,6 @@ exports.getoneFlightsBooking = async (req, res) => {
     response = await flightBookingData.find({
       userId: { $in: [req.params.id] },
     });
-    // console.log(response,"response");
     const msg = "user booking data get successfully";
     actionCompleteResponse(res, response, msg);
   } catch (error) {
@@ -136,7 +132,6 @@ exports.getoneFlightsBookingById = async (req, res) => {
     response = await flightBookingData.find({
       _id: { $in: [req.params.id] },
     });
-    // console.log(response,"response");
     const msg = "user booking data get successfully";
     actionCompleteResponse(res, response, msg);
   } catch (error) {
@@ -180,7 +175,6 @@ exports.sendFlightBookingCencelRequestForAdmin = async (req, res) => {
         .json({ message: "Booking Cancellation Request successfully" });
     }
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -321,19 +315,15 @@ exports.allAmaduesAgentBooking = async (req, res) => {
 
 exports.updateAmadeusTicket = async (req, res) => {
   const { bookingId, passengerDetails } = req.body;
-  console.log("req.body===========", req.body);
   try {
     const updatePromises = passengerDetails.map(async (passenger) => {
       const result = await amadeusFlightBookingData.updateOne(
         { _id: bookingId, "passengerDetails._id": passenger._id },
         { $set: { "passengerDetails.$.TicketNumber": passenger.TicketNumber } }
       );
-      console.log("result==========", result);
       return result.modifiedCount;
     });
-    console.log("updatePromises========", updatePromises);
     const updateResults = await Promise.all(updatePromises);
-    console.log("updateResults==========", updateResults);
     const depDate = new Date(updateResults.airlineDetails[0].Origin.DepTime);
     const depTime = new Date(updateResults.airlineDetails[0].Origin.DepTime);
     var arrTime = new Date(updateResults.airlineDetails[0].Origin.DepTime);
@@ -434,7 +424,6 @@ exports.updateAgentTicket = async (req, res, next) => {
       result: finalResult,
     });
   } catch (error) {
-    console.log("error while trying to update agent Flight booking! ", error);
     return next(error);
   }
 };
@@ -443,13 +432,10 @@ exports.generatePdf = async (req, res, next) => {
   try {
     const { bookingId } = req.body;
     const data = await amadeusFlightBookingData.findOne({ _id: bookingId });
-    console.log("==================", data);
     // sendSMS.
     const response = await commonFunction.FlightBookingConfirmationMail1(data);
-    // console.log("result",result);
     actionCompleteResponse(res, response, "PDF Generated............");
   } catch (error) {
-    console.log("error while trying to craete pdf", error);
     return next(error);
   }
 };

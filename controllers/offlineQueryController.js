@@ -46,7 +46,6 @@ exports.createofflineQuery = async (req, res, next) => {
       queryType,
     } = req.body;
     const result = await createOffline(req.body);
-    // console.log("result=====", result);
     if (!result) {
       return res.status(statusCode.InternalError).send({
         statusCode: statusCode.InternalError,
@@ -64,7 +63,6 @@ exports.createofflineQuery = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("Error in creatring offline query", error);
     return next(error);
   }
 };
@@ -84,7 +82,6 @@ exports.getOfflineQuery = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error======", error);
     return next(error);
   }
 };
@@ -93,7 +90,6 @@ exports.getOfflineQuery = async (req, res, next) => {
 //   try {
 //     const {}=req.body;
 //   } catch (error) {
-//     console.log("error======",error);
 //     return next(error)
 //   }
 // }
@@ -108,7 +104,6 @@ exports.updateOfflineQuery=async(req,res,next)=>{
       result: result,
     });
   } catch (error) {
-    console.log("error=====",error);
     return next(error)
   }
 }

@@ -18,7 +18,6 @@ exports.createDocumentCategory=async(req,res,next)=>{
     try {
         const {categoryName,description,documentTypes,docType,}=req.body;
         const isCategoryExist=await findDocCategoryData({categoryName:categoryName});
-        //  console.log("isCategoryExist=========",isCategoryExist)
         if(isCategoryExist && isCategoryExist.documentTypesId && isCategoryExist.documentTypesId.documentName === documentTypes){
             const update=await updateDocCategory({_id:isCategoryExist._id},req.body);
             return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.UPDATE_SUCCESS,result: update,});
@@ -36,7 +35,6 @@ exports.createDocumentCategory=async(req,res,next)=>{
         }
         
     } catch (error) {
-        console.log("error while create Document Category",error);
         return next(error)
     }
 }
@@ -50,7 +48,6 @@ exports.getDocumnetCategory=async(req,res,next)=>{
         return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result: result,});
    
     } catch (error) {
-        console.log("error while trying to get doc category.");
         return next(error)
     }
 }
@@ -64,7 +61,6 @@ exports.getDocumnetCategoryById=async(req,res,next)=>{
         }
         return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result: result,});
     } catch (error) {
-        console.log("error while get data",error);
         return next(error)
     }
 }

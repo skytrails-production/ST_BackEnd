@@ -30,7 +30,6 @@ exports.getCountryList=async(req,res,next)=>{
             result: result,
           });
     } catch (error) {
-        console.log("Error while trying to fetch countryList",error);
         return next(error);
         
     }
@@ -63,8 +62,6 @@ exports.getStateList=async(req,res,next)=>{
               });
         }       
         // const removeDuplicate=result=>[...new Set(result.stateProvince)] ;
-        // console.log("removeDuplicateLength",removeDuplicate.length);
-        console.log("result==============",result.length);
         
         
         return res.status(statusCode.OK).send({
@@ -73,7 +70,6 @@ exports.getStateList=async(req,res,next)=>{
             result: result,
           });
     } catch (error) {
-        console.log("Error while trying to fetch City and State List",error);
         return next(error);
     }
 }
@@ -93,7 +89,6 @@ exports.getCityList=async(req,res,next)=>{
             result: result,
           });
     } catch (error) {
-        console.log("error while trying to fetch cityList",error);
         return next(error);
         
     }
@@ -139,7 +134,6 @@ exports.getStateAggregateList = async (req, res, next) => {
             result1:result.length
         });
     } catch (error) {
-        console.log("Error while trying to fetch City and State List", error);
         return next(error);
     }
 };

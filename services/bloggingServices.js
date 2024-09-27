@@ -70,7 +70,6 @@ const bloggingServices = {
 
   aggPagGetBlogList: async (query) => {
     const { toDate, fromDate, page, limit, search } = query;
-    console.log("query=========", query);
     if (search) {
       var filter = search;
     }
@@ -99,14 +98,12 @@ const bloggingServices = {
       });
     }
     let aggregate = bloggingModel.aggregate(pipeline);
-    console.log("aggregate========",aggregate);
     const options = {
       page: Number(page) || 1,
       limit: Number(limit) || 10,
       sort: { createdAt: -1 },
     };
     const result = await bloggingModel.aggregatePaginate(aggregate, options);
-    console.log("result=============", result);
     return result;
   },
   countTotalBlog: async (body) => {

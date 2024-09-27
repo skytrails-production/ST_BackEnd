@@ -71,7 +71,6 @@ exports.createSearchHistory = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error in creating search request===>>", error);
     return next(error);
   }
 };
@@ -92,7 +91,6 @@ exports.getUserSerchHistory = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to get data", error);
     return next(error);
   }
 };

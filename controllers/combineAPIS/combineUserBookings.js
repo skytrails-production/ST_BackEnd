@@ -37,6 +37,7 @@ const {
   updateUserflightBooking,
   paginateUserflightBookingSearch,
   aggregatePaginateGetBooking,
+  aggregatePaginateGetBooking1
 } = userflightBookingServices;
 
 const {
@@ -152,7 +153,6 @@ exports.getAmadeusTvo = async (req, res, next) => {
         result,
       });
   } catch (error) {
-    console.log("error while trying to get all booking details", error);
     return next(error);
   }
 };
@@ -179,7 +179,6 @@ exports.getCombineHotelBookingList=async(req,res,next)=>{
       result,
     });
   } catch (error) {
-    console.log("error while trying to combine booking history",error);
     return next(error);
     
   }
@@ -224,7 +223,56 @@ exports.getCombineFlightBookingResp=async(req,res,next)=>{
       },
     });
   } catch (error) {
-    console.log("error while trying to combine all booking data",error);
+    return next(error)
+    
+  }
+}
+
+exports.getCombineFlightBookingRespAggregate=async(req,res,next)=>{
+  try {
+    const { page, limit, search, fromDate, toDate } = req.query;
+    let result={};
+    const isUserExist = await findUser({
+      _id: req.userId,
+      status: status.ACTIVE,
+    });
+    if (!isUserExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+    const queryData = {
+      page,
+      limit,
+      search,
+      fromDate,
+      toDate,
+      userId: isUserExist._id,
+    };
+    const [tvoResponse, amadeusResponse,kafilaResponse] = await Promise.all([
+      aggregatePaginateGetBooking1(queryData),
+      aggregatePaginateGetUserAmadeusFlightBooking1(queryData),
+      aggregatePaginateGetKafilaFlightBooking1(queryData)
+    ]);
+    let tvoArray = Array.isArray(tvoResponse.docs) && tvoResponse.docs.length > 0 ? tvoResponse : [];
+    let amadeusArray = Array.isArray(amadeusResponse.docs) && amadeusResponse.docs.length > 0 ? amadeusResponse : [];
+    let kafilaArray = Array.isArray(kafilaResponse.docs) && kafilaResponse.docs.length > 0 ? kafilaResponse : [];
+    result.docs = [...tvoArray.docs, ...amadeusArray.docs,...kafilaArray.docs];
+    result.totalDocs = amadeusArray.totalDocs+kafilaArray.totalDocs;
+    result.totalAmadeusPages = amadeusArray.totalPages;
+    result.totalTvoPages=tvoArray.totalPages;
+    result.totalKafilaPages=kafilaArray.totalPages;
+
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: {
+        user:isUserExist._id,
+        result
+      },
+    });
+  } catch (error) {
     return next(error)
     
   }

@@ -109,7 +109,6 @@ exports.visaBooking = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ message: responseMessage.CREATED_SUCCESS, result: result });
   } catch (error) {
-    console.log("error while visa booking", error);
     return next(error);
   }
 };

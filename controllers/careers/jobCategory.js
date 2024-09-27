@@ -66,7 +66,6 @@ exports.createJobCategory = async (req, res, next) => {
     });
   }
   } catch (error) {
-    console.log("error while trying to create opening", error);
     return next(error);
   }
 };
@@ -132,7 +131,6 @@ exports.getOpening = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to get all openings", error);
     return next(error);
   }
 };
@@ -152,7 +150,6 @@ exports.getAllOpening = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to get all openings", error);
     return next(error);
   }
 };
@@ -174,7 +171,6 @@ return res.status(statusCode.OK).send({
   result: deletedData,
 });
     } catch (error) {
-        console.log("error while trying to delete openneing",error);
         return next(error);
     }
 }
@@ -185,10 +181,8 @@ exports.createJobMainCategory = async (req, res) =>{
 
  try {
   const data=req.body;
-  // console.log(data,"data");
   
   const existingCategory = await categorySchema.findOne({categoryName:data.categoryName});
-  // console.log(existingCategory);
   // return;
   if(existingCategory){
     actionCompleteResponse(res, existingCategory, "already existing category");

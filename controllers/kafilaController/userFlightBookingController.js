@@ -94,7 +94,6 @@ exports.userFlightBooking = async (req, res, next) => {
       return res.status(statusCode.OK).send({statusCode: statusCode.OK, message: responseMessage.FLIGHT_BOOKED,result });
       }
   } catch (error) {
-    console.log("error while trying to kafila booking", error);
     return next(error);
   }
 };
@@ -131,7 +130,6 @@ exports.getUserFlightBooking=async(req,res,next)=>{
       .status(statusCode.OK)
       .send({ message: responseMessage.DATA_FOUND, result: result });
   }catch{
-   console.log("error while trying to get booking detail", error);
     return next(error);
   }
   };
@@ -159,7 +157,6 @@ exports.getUserFlightData = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ message: responseMessage.DATA_FOUND, result: result });
   } catch (error) {
-    console.log("error: ", error);
     return next(error);
   }
 };
@@ -186,7 +183,6 @@ exports.getUserFlightBookings=async(req,res,next)=>{
       .status(statusCode.OK)
       .send({ message: responseMessage.DATA_FOUND, result: result });
   }catch{
-   console.log("error while trying to get booking detail", error);
     return next(error);
   }
   };
@@ -207,7 +203,6 @@ exports.getFlightBookingId = async (req, res, next) => {
       result,
     });
   } catch (error) {
-    console.log("error while trying to get userFlight booking! ", error);
     return next(error);
   }
 };

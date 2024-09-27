@@ -28,7 +28,7 @@ exports.getPackageBanner=async(req,res,next)=>{
             result: result,
           });
     } catch (error) {
-        console.log("Error while trying to get package banner", error);
+        log("Error while trying to get package banner", error);
     return next(error);
     }
 }
@@ -49,7 +49,6 @@ exports.getPopularDestination=async(req,res,next)=>{
             result: result,
           });
     } catch (error) {
-        console.log("Error while trying to get popular destination", error);
     return next(error);
     }
 }

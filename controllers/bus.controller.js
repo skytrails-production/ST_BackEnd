@@ -17,7 +17,6 @@ exports.getBusCityList = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -34,7 +33,6 @@ exports.searchBus = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -51,7 +49,6 @@ exports.searchBusSeatLayout = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -68,7 +65,6 @@ exports.busBoardingPoint = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -85,7 +81,6 @@ exports.busBlock = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -108,7 +103,6 @@ exports.busBook = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -125,7 +119,6 @@ exports.busBookingDetails = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -142,7 +135,6 @@ exports.busCancellation = async (req, res) => {
 
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };

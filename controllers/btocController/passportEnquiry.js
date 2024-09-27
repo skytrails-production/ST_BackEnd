@@ -94,7 +94,6 @@ exports.createEnquiry = async (req, res, next) => {
       return res.status(statusCode.OK).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.USERS_NOT_FOUND});
     }
     if (type === applyType.RENEW) {
-      console.log("images=================",type)
       const requiredFields = { passportNumber, issuedDate, expiryDate };
       const missingFields = Object.keys(requiredFields).filter(key => !requiredFields[key]);
       if (missingFields.length > 0) {
@@ -133,7 +132,6 @@ exports.createEnquiry = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to create enquiry!", error);
     return next(error);
   }
 };
@@ -155,7 +153,6 @@ exports.getAllPassportEnquiry = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to get all passport enquiry list", error);
     return next(error);
   }
 };
@@ -191,7 +188,6 @@ exports.getPassportEnquiry = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to get all passport enquiry list", error);
     return next(error);
   }
 };
@@ -218,7 +214,6 @@ exports.updateResolveStatus = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to update status", error);
     return next(error);
   }
 };
@@ -243,7 +238,6 @@ exports.deletePassportEnquiry = async (req, res, next) => {
       result: deletedData,
     });
   } catch (error) {
-    console.log("error while trying to delete passport enquiry", error);
     return next(error);
   }
 };
@@ -265,7 +259,6 @@ exports.createPasportEnquiry = async (req, res, next) => {
     } = req.body;
     let img = [];
     if (type === applyType.RENEW) {
-      console.log("images=================",type)
       const requiredFields = { passportNumber, issuedDate, expiryDate };
       const missingFields = Object.keys(requiredFields).filter(key => !requiredFields[key]);
       if (missingFields.length > 0) {
@@ -287,7 +280,6 @@ exports.createPasportEnquiry = async (req, res, next) => {
     ) {
       age--;
     }
-    console.log("req.files===============",req.file)
     // Ensure images are uploaded
     if (req.file||req.files.length >= 1) {
       for (var image of req.files) {
@@ -305,7 +297,6 @@ exports.createPasportEnquiry = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to create enquiry!", error);
     return next(error);
   }
 };
@@ -343,7 +334,6 @@ exports.updatePassportEnquiry=async(req,res,next)=>{
       });
 
   } catch (error) {
-   console.log("error while trying to update passport enquiry",error);
    return next(error);
   }
 }

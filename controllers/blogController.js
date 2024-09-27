@@ -79,7 +79,6 @@ exports.getBlogList=async(req,res,next)=>{
             result: result,
           });
     } catch (error) {
-       console.log("Error while trying to get all blogs",error);
        return next(error);
     }
 };
@@ -103,7 +102,6 @@ exports.getBlogById=async(req,res,next)=>{
             result: allResult,
           });
     } catch (error) {
-       console.log("Error while trying to get blogs",error);
        return next(error);
     }
 };
@@ -124,7 +122,6 @@ exports.deleteBlog=async(req,res,next)=>{
       result:deleteddata
     }); 
   } catch (error) {
-    console.log("Error while trying to delete blog",error);
     return next(error);
   }
 }
@@ -145,7 +142,6 @@ exports.hideBlog=async(req,res,next)=>{
       result:update
     }); 
   } catch (error) {
-    console.log("Error while trying to hide blog",error);
     return next(error);
   }
 }
@@ -166,7 +162,6 @@ exports.updateBlog=async(req,res,next)=>{
       result:update
     });
   } catch (error) {
-    console.log("error while trying to update blog",error);
     return next(error);
   }
 }
@@ -186,7 +181,6 @@ exports.getBlogListAdmin=async(req,res,next)=>{
           result: result,
         });
   } catch (error) {
-     console.log("Error while trying to get all blogs",error);
      return next(error);
   }
 };
@@ -207,7 +201,6 @@ exports.activeStatus=async(req,res,next)=>{
       result:update
     });
   } catch (error) {
-    console.log("error while trying to active blog",error);
     return next(error);
   }
 }
@@ -224,7 +217,6 @@ exports.likeBlog=async(req,res,next)=>{
         }
         const updateBlog=await updateBlog({_id:result._id},{likesCount:{$inc:1},likes:{$push:userId}})
     } catch (error) {
-        console.log("Error while trying to like  blogs",error);
        return next(error);
     }
 }
@@ -248,7 +240,6 @@ exports.getBlogByTitle=async(req,res,next)=>{
         result: allResult,
       });
 } catch (error) {
-   console.log("Error while trying to get blogs",error);
    return next(error);
 }
 }
@@ -273,7 +264,6 @@ exports.editImage=async(req,res,next)=>{
         result: result,
       });
   } catch (error) {
-    console.log("error wwhile trying to upload iumage",error);
     return next(error);
   }
 }

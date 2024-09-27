@@ -202,7 +202,6 @@ exports.createRelationShipManage = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while craete rm manager", error);
     return next(error);
   }
 };
@@ -236,7 +235,6 @@ exports.getRelationShipManagers = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("Error while trying to get RM", error);
     return next(error);
   }
 };
@@ -247,7 +245,6 @@ exports.getRelationShipManagerById = async (req, res, next) => {
       _id: req.userId,
       userType: userType.SUBADMIN,
     });
-    // console.log("isSubAdmin==========", isSubAdmin);
     if (!isSubAdmin) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
@@ -270,7 +267,6 @@ exports.getRelationShipManagerById = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("Error while trying to get RM", error);
     return next(error);
   }
 };
@@ -309,7 +305,6 @@ exports.loginRM = async (req, res, next) => {
       result: resultWithToken, // Send the result with token included
     });
   } catch (error) {
-    console.log("Error while trying to sign in RM", error);
     return next(error);
   }
 };
@@ -317,7 +312,6 @@ exports.loginRM = async (req, res, next) => {
 exports.forgetPassword = async (req, res, next) => {
   try {
     const { email } = req.body;
-    // console.log("email============",email)
     const isRmExist = await findRelationShipManager({status: { $ne: status.DELETE }, email: email });
     if (!isRmExist) {
         return res.status(statusCode.OK).send({
@@ -339,7 +333,6 @@ exports.forgetPassword = async (req, res, next) => {
       result:token
     });
   } catch (error) {
-    console.log("Error while trying to forget password", error);
     return next(error);
   }
 };
@@ -369,7 +362,6 @@ exports.resetPassword=async(req,res,next)=>{
       responseMessage: responseMessage.UPDATE_SUCCESS 
     });
   } catch (error) {
-    console.log("Error while trying to reset password", error);
     return next(error);
   }
 }
@@ -377,7 +369,6 @@ exports.getAllRMOfAGENT = async (req, res, next) => {
   try {
     const isAgentExist = await findOneAgent({});
   } catch (error) {
-    console.log("error while trying to get all agent as per city");
     return next(error);
   }
 };
@@ -402,7 +393,6 @@ exports.getAgentListOfRM = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("Error while trying to get agent of RM", error);
     return next(error);
   }
 };
@@ -446,7 +436,6 @@ exports.getAgentList = async (req, res, next) => {
       result: agentIdArray,
     });
   } catch (error) {
-    console.log("Error while trying to get RM agent Bookings", error);
     return next(error);
   }
 };
@@ -511,10 +500,7 @@ exports.getAgentBooking = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log(
-      "error while trying to get booking of agnet who assosisate with rm",
-      error
-    );
+   
     return next(error);
   }
 };
@@ -573,7 +559,6 @@ exports.getAgentCancelRequest = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("Error while trying to get agentCancelRequest", error);
     return next(error);
   }
 };
@@ -634,7 +619,6 @@ exports.getAgentChangeRequest = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("Error while trying to get agentCancelRequest", error);
     return next(error);
   }
 };

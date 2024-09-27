@@ -204,7 +204,6 @@ exports.RegisterUser = async (req, res) => {
         actionCompleteResponse(res, response, msg);
       
       } catch (err) {
-        console.log(err);
         sendActionFailedResponse(res, {}, err.message);
       }
     }
@@ -256,13 +255,11 @@ exports.uploadAgentLogo = async (req, res) => {
 
           res.json({ success: true, message: 'Logo uploaded successfully' });
         } catch (err) {
-          console.log(err);
           res.status(500).send('Error updating logo URL in the database');
         }
       }
     });
   } catch (err) {
-    console.log(err);
     res.status(500).send('Error checking user authorization');
   }
 };
@@ -304,7 +301,6 @@ exports.LoginUser = async (req, res) => {
     }
   } catch (error) {
     sendActionFailedResponse(res, {}, "Internal server error");
-    console.error(error);
   }
 };
 
@@ -327,7 +323,6 @@ exports.UserUpdate = async (req, res) => {
     };
     actionCompleteResponse(res, resData, msg);
   } catch (error) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -390,7 +385,6 @@ exports.SetMarkup = async (req, res) => {
     actionCompleteResponse(res, user, msg);
   } catch (error) {
     sendActionFailedResponse(res, {}, error.message);
-    console.log(error);
   }
 };
 
@@ -405,7 +399,6 @@ exports.GetMarkup = async (req, res) => {
     }
   } catch (error) {
     sendActionFailedResponse(res, {}, "Internal server error");
-    console.log(error);
   }
 };
 
@@ -447,7 +440,6 @@ exports.UserById = async (req, res) => {
     actionCompleteResponse(res, user, "User Found");
   } catch (error) {
     sendActionFailedResponse(res, {}, "Internal server error");
-    console.log(error);
   }
 };
 
@@ -494,7 +486,6 @@ exports.UserChangePassword = async (req, res) => {
     });
   } catch (error) {
     sendActionFailedResponse(res, {}, "Internal server error");
-    console.log(error);
   }
 };
 
@@ -614,12 +605,10 @@ exports.agentQues = async (req, res, next) => {
       options1
     );
     const combinedData = [hotelData, flightData, busBookData];
-    // console.log("busBookData===========", busBookData);
     return res
       .status(statusCode.OK)
       .send({ message: responseMessage.DATA_FOUND, result: combinedData });
   } catch (error) {
-    console.log("error==============", error);
     return next(error);
   }
 };
@@ -654,7 +643,6 @@ exports.subtractBalance = async (req, res) => {
     );
   } catch (error) {
     sendActionFailedResponse(res, {}, "Internal server error");
-    console.log(error);
   }
 };
 
@@ -730,7 +718,6 @@ exports.getAllAgentHotelBookingList = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error=======>>>>>>", error);
     return next(error);
   }
 };
@@ -799,7 +786,6 @@ exports.getAllAgentFlightBookingList = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ message: responseMessage.DATA_FOUND, result: result });
   } catch (error) {
-    console.log("error=======>>>>>>", error);
     return next(error);
   }
 };
@@ -877,7 +863,6 @@ exports.getAllAgentBusBookingList = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ message: responseMessage.DATA_FOUND, result: result });
   } catch (error) {
-    console.log("error=======>>>>>>", error);
     return next(error);
   }
 };
@@ -888,7 +873,6 @@ exports.cancelBookingByAgent = async (req, res, next) => {
   try {
     const {} = req.body;
   } catch (error) {
-    console.log("error", error);
     return next(error);
   }
 };
@@ -938,7 +922,6 @@ exports.changeHotelDetailsRequest = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ statusCode: statusCode.OK, result: result });
   } catch (error) {
-    console.log("error", error);
     return next(error);
   }
 };
@@ -990,7 +973,6 @@ exports.changeFlightDetailsRequest = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error", error);
     return next(error);
   }
 };
@@ -1039,7 +1021,6 @@ exports.changeBusBookingDetailsRequest = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ statusCode: statusCode.OK, result: result });
   } catch (error) {
-    console.log("error", error);
     return next(error);
   }
 };
@@ -1059,7 +1040,6 @@ exports.getchangeFlightRequest = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ statusCode: statusCode.OK, result: result });
   } catch (error) {
-    console.log("Error to getting data", error);
     return next(error);
   }
 };
@@ -1083,7 +1063,6 @@ exports.getchangeHotelRequest = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ statusCode: statusCode.OK, result: result });
   } catch (error) {
-    console.log("Error to getting data", error);
     return next(error);
   }
 };
@@ -1102,7 +1081,6 @@ exports.getchangeBusRequest = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ statusCode: statusCode.OK, result: result });
   } catch (error) {
-    console.log("Error to getting data", error);
     return next(error);
   }
 };
@@ -1328,7 +1306,6 @@ exports.getAllFixDepartureBooking = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ message: responseMessage.DATA_FOUND, result: result });
   } catch (error) {
-    console.log("error=======>>>>>>", error);
     return next(error);
   }
 };
@@ -1356,7 +1333,6 @@ exports.upload = async (req, res) => {
     await fixdepartures.insertMany(parsedData);
     res.status(200).send("File uploaded and data saved to the database.");
   } catch (error) {
-    console.error("Error uploading file:", error);
     res.status(500).send("Server error during file upload.");
   }
 };
@@ -1446,7 +1422,6 @@ exports.easebuzzPayment = async (req, res, next) => {
       console.error("error axios:===========>>>>>>>>>>", error);
     }
   } catch (error) {
-    console.log("error into easebuzz ", error);
     return next(error);
   }
 };
@@ -1454,14 +1429,11 @@ exports.easebuzzPayment = async (req, res, next) => {
 //success response********************************************************
 exports.paymentSuccess = async (req, res, next) => {
   try {
-    // console.log("successVerifyApi==",req.body.easepayid);
     const { merchantTransactionId } = req.query;
     const isTransactionExist = await agentWallets.find({
       paymentId: merchantTransactionId,
     });
-    //  console.log("isTransactionExist==",isTransactionExist)
     if (isTransactionExist) {
-      // console.log("isTransactionExist=========",isTransactionExist);
       const result = await agentWallets.findOneAndUpdate(
         { _id: isTransactionExist[0]._id },
         { $set: { transactionStatus: "SUCCESS",easepayid: req.body.easepayid  } },
@@ -1492,7 +1464,6 @@ exports.paymentSuccess = async (req, res, next) => {
       );
     }
   } catch (error) {
-    console.log("error ==========", error);
     return next(error);
   }
 };
@@ -1501,14 +1472,11 @@ exports.paymentSuccess = async (req, res, next) => {
 //payment success***************************************************************************************
 exports.paymentSuccessAgent = async (req, res, next) => {
   try {
-    // console.log("successVerifyApi==",req.body.easepayid);
     const { merchantTransactionId } = req.query;
     const isTransactionExist = await agentWallets.find({
       paymentId: merchantTransactionId,
     });
-    //  console.log("isTransactionExist==",isTransactionExist)
     if (isTransactionExist) {
-      // console.log("isTransactionExist=========",isTransactionExist);
       const result = await agentWallets.findOneAndUpdate(
         { _id: isTransactionExist[0]._id },
         { $set: { transactionStatus: "SUCCESS",easepayid: req.body.easepayid  } },
@@ -1524,7 +1492,6 @@ exports.paymentSuccessAgent = async (req, res, next) => {
      
     }
   } catch (error) {
-    console.log("error ==========", error);
     return next(error);
   }
 };
@@ -1536,8 +1503,6 @@ exports.paymentFailure = async (req, res, next) => {
     const isTransactionExist = await agentWallets.find({
       paymentId: merchantTransactionId,
     });
-    //  console.log("failed==",merchantTransactionId);
-    //  console.log("isTransactionExist==",isTransactionExist);
     if (isTransactionExist) {
       const result = await agentWallets.findOneAndUpdate(
         { _id: isTransactionExist[0]._id },
@@ -1550,7 +1515,6 @@ exports.paymentFailure = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log("error on failure operation", error);
     return next(error);
   }
 };
@@ -1613,8 +1577,6 @@ exports.updateProfile = async (req, res) => {
     if (!agent) {
       return res.status(404).json({ success: false, error: "Agent not found" });
     }
-    // console.log("agent==============",agent);
-    // Build update object with existing data
     const updatedAgent = {
       personal_details: {
         first_name: first_name || agent.personal_details.first_name,
@@ -1704,7 +1666,6 @@ exports.updateProfile = async (req, res) => {
     }
 
     const updatedData=toString(updatedAgent);
-    console.log("updatedData=============",updatedAgent);
 
     // Update the agent
     const updatedAgentData = await b2bUser.findOneAndUpdate(
@@ -1715,7 +1676,6 @@ exports.updateProfile = async (req, res) => {
 
     res.json({ success: true, agent: updatedAgentData });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ success: false, error: err.message });
   }
 };
@@ -1791,9 +1751,6 @@ exports.agentCommission = async (req, res) => {
 exports.addAgentCommission =async (req, res) =>{
 
   const {agentId, addAmount}=req.body;
-
-  // console.log(req.body)
-
   try {
     const userProfile = await b2bUser.findOne({ _id: agentId });
 
@@ -1857,7 +1814,6 @@ exports.checkReferralCode=async(req,res,next)=>{
     }
     return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage:responseMessage.REFERRALCODE_APPLIED,result:isCodeValid });
   } catch (error) {
-    console.error("error while trying to check ",error);
     return next(error);
   }
 }
@@ -1868,7 +1824,6 @@ exports.checkIsExits = async (req, res, next) => {
     
     // Construct a regex pattern to match substrings of the normalized search query
     const regexPattern = new RegExp(agencyName.replace(/\s+/g, ''), 'i');
-    console.log("regexPattern===========",regexPattern);
     // Find if any agency name matches the regex pattern
     const isAgentExist = await b2bUser.find({
       'agency_details.agency_name': { $regex: regexPattern }
@@ -1881,7 +1836,6 @@ exports.checkIsExits = async (req, res, next) => {
     return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage:true, result: isAgentExist });
    
   } catch (error) {
-    console.error("error while trying to check ", error);
     return next(error);
   }
 }
@@ -1913,7 +1867,6 @@ exports.updatePersonalProfile=async(req,res,next)=>{
     const result=await updatebrbuser({_id:isAgentExist._id},object);
     return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage:responseMessage.UPDATE_SUCCESS ,result:result});
   } catch (error) {
-    console.error("error while trying to update profile ",error);
     return next(error);
   }
 }
@@ -1968,7 +1921,6 @@ exports.randomPayment=async (req, res, next) => {
     };
     try {
       const { data } = await axios.request(options);
-      // console.log(data);
       const result = {
         access: data.data,
         key: process.env.EASEBUZZ_KEY,
@@ -1991,7 +1943,6 @@ exports.randomPayment=async (req, res, next) => {
       console.error("error axios:===========>>>>>>>>>>", error);
     }
   } catch (error) {
-    // console.log("error into easebuzz ", error);
     return next(error);
   }
 };
@@ -1999,14 +1950,11 @@ exports.randomPayment=async (req, res, next) => {
 //success
 exports.randomPaymentSuccess = async (req, res, next) => {
   try {
-    // console.log("successVerifyApi==",req.body.easepayid);
     const { merchantTransactionId } = req.query;
     const isTransactionExist = await randomPayments.find({
       paymentId: merchantTransactionId,
     });
-    //  console.log("isTransactionExist==",isTransactionExist)
     if (isTransactionExist) {
-      // console.log("isTransactionExist=========",isTransactionExist);
       const result = await randomPayments.findOneAndUpdate(
         { _id: isTransactionExist[0]._id },
         { $set: { transactionStatus: "SUCCESS",easepayid: req.body.easepayid  } },
@@ -2023,7 +1971,6 @@ exports.randomPaymentSuccess = async (req, res, next) => {
       );
     }
   } catch (error) {
-    console.log("error ==========", error);
     return next(error);
   }
 };
@@ -2034,8 +1981,7 @@ exports.randomPaymentFailure= async (req, res, next) => {
     const isTransactionExist = await randomPayments.find({
       paymentId: merchantTransactionId,
     });
-    //  console.log("failed==",merchantTransactionId);
-    //  console.log("isTransactionExist==",isTransactionExist);
+    
     if (isTransactionExist) {
       const result = await randomPayments.findOneAndUpdate(
         { _id: isTransactionExist[0]._id },
@@ -2048,7 +1994,6 @@ exports.randomPaymentFailure= async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log("error on failure operation", error);
     return next(error);
   }
 };
@@ -2064,7 +2009,6 @@ exports.deleteAgent=async(req,res,next)=>{
     const deletedData=await deletebrbuser({_id:isAgentExist._id});
     return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage:responseMessage.DELETE_SUCCESS,result:deletedData });
   } catch (error) {
-    console.log("error  while delete agentAccount==========", error);
     return next(error);
   }
 };
@@ -2112,7 +2056,6 @@ exports.getRevenueOfAgent = async (req, res, next) => {
     const busRevenue = busAggregateResult.length > 0 ? busAggregateResult[0].totalRevenue : 0;
 
     const totalRevenue=flightRevenue+hotelRevenue+busRevenue
-    console.log("Total revenue calculated:", totalRevenue,"hotelRevenue=",hotelRevenue,"busRevenue====",busRevenue,"flightRevenue===",flightRevenue);
 
     // Send the response with the total revenue
     return res.status(statusCode.OK).send({ 
@@ -2122,7 +2065,6 @@ exports.getRevenueOfAgent = async (req, res, next) => {
     });
 
   } catch (error) {
-    console.log("Error while getting revenue:", error);
     return next(error);
   }
 };
@@ -2145,7 +2087,6 @@ return res.status(statusCode.OK).send({
   responseMessage: responseMessage.RESET_LINK_SEND 
 });
   } catch (error) {
-    console.log("error while trying to forgetPassword",error);
     return next(error);
   }
 };
@@ -2175,7 +2116,6 @@ exports.resetPassword=async(req,res,next)=>{
       responseMessage: responseMessage.UPDATE_SUCCESS 
     });
   } catch (error) {
-    console.log("error while trying to reset password",error);
     return next(error)
   }
 };
@@ -2220,7 +2160,6 @@ exports.getAllAgentRevenue=async(req,res,next)=>{
       result: result,
     });
   } catch (error) {
-    console.log("error while getAgents revenue",error);
     return next(error)
   }
 }
@@ -2265,7 +2204,6 @@ exports.getAgentTableWithRevenue=async(req,res,next)=>{
       result: revenueResults,
     });
   } catch (error) {
-    console.log("Error while trying to get agent Table",error);
     return next(error)
   }
 }
@@ -2275,9 +2213,7 @@ exports.addBalance=async(req,res,next)=>{
   try {
     const {amount,agentId,currency,adminId}=req.body;
     const user = await User.findById(adminId);
-    // console.log(user.roles[0].toString());
     const role = await Role.findById(user.roles[0].toString());
-    //  console.log(r.name);
     if (role.name === "admin") {
       const isAgentExist=await b2bUser.findOne({_id:agentId});
       if(!isAgentExist){
@@ -2299,7 +2235,6 @@ exports.addBalance=async(req,res,next)=>{
       });
     }
   } catch (error) {
-    console.log("Error while trying to update Balance",error);
     return next(error);
   }
 }

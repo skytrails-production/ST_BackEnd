@@ -152,7 +152,6 @@ exports.hotelBooking = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log("error: ", error);
     return next(error);
   }
 };
@@ -188,7 +187,6 @@ exports.getAllHotelBookingList = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ message: responseMessage.DATA_FOUND, result: result });
   } catch (error) {
-    console.log("error=======>>>>>>", error);
     return next(error);
   }
 };
@@ -198,7 +196,6 @@ exports.getUserHotelData = async (req, res, next) => {
       _id: req.userId,
       status: status.ACTIVE,
     });
-    // console.log("isUSerExist", isUserExist);
     if (!isUserExist) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
@@ -220,7 +217,6 @@ exports.getUserHotelData = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ message: responseMessage.DATA_FOUND, result: result });
   } catch (error) {
-    console.log("error: ", error);
     return next(error);
   }
 };
@@ -241,7 +237,6 @@ exports.getUserHotelBookingById = async (req, res, next) => {
       result: response,
     });
   } catch (error) {
-    console.log("Error======================", error);
     return next(error);
   }
 };

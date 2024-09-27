@@ -87,7 +87,6 @@ const {
             "You are commented successfully"
         );
     } catch (error) {
-        console.log("error========>>>>>>", error);
         return next(error);
     }
 };
@@ -103,7 +102,6 @@ exports.getPostComment = async (req, res, next) => {
         // };
         actionCompleteResponse(res, result, "All posts successfully.");
     } catch (error) {
-        console.log("error========>>>>>>", error);
         return next(error);
     }
 };
@@ -121,7 +119,6 @@ exports.updatePostComment = async (req, res, next) => {
         );
         actionCompleteResponse(res, result, "Post edited successfully.");
     } catch (error) {
-        console.log("error========>>>>>>", error);
         return next(error);
     }
 };
@@ -135,7 +132,6 @@ exports.deletePostComment = async (req, res, next) => {
         const result = await deleteforumQueAnsComm({ userId: isUser._id });
         actionCompleteResponse(res, result, "Post deleted successfully.");
     } catch (error) {
-        console.log("error========>>>>>>", error);
         return next(error);
     }
 };
@@ -144,7 +140,6 @@ exports.getPostCommentsOfUser = async (req, res, next) => {
     try {
         const { search, page, limit, questionId, userId } = req.query;
         const isUserExist = await findUser({ _id: req.userId,status:status.ACTIVE,otpVerified:true });
-        // console.log("isAgentExists", isUserExist);
         if (!isUserExist) {
             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
         }
@@ -160,7 +155,6 @@ exports.getPostCommentsOfUser = async (req, res, next) => {
           result: result,
         });
     } catch (error) {
-        console.log("error========>>>>>>", error);
         return next(error);
     }
 };
@@ -211,7 +205,6 @@ exports.likeComments = async (req, res, next) => {
         savedLike._doc.likeslength = savedLike.likes.length;
         return  res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.LIKED ,result:savedLike});
     } catch (error) {
-        console.log("error========>>>>>>", error);
         return next(error);
     }
 };

@@ -42,7 +42,6 @@ exports.createItinearyMarkup = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to create itinerary markup", error);
     return next(error);
   }
 };
@@ -63,7 +62,6 @@ exports.finOneItinearyMarkup = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to get markup", error);
     return next(error);
   }
 };
@@ -84,7 +82,6 @@ exports.findAllItinearyMarkup = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to get all markup", error);
     return next(error);
   }
 };
@@ -106,7 +103,6 @@ exports.deleteItinearyMarkup=async(req,res,next)=>{
         result:deletedData
       });
     } catch (error) {
-        console.log("error while trying to delete",error);
         return next(error);
     }
 }
@@ -121,7 +117,6 @@ exports.updateItineraryMrkup=async(req,res,next)=>{
             result: updatedData,
           });
     } catch (error) {
-       console.log("error while trying to update",error);
        return next(error);
     }
 }

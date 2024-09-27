@@ -168,7 +168,7 @@ const userKafilaFlightBookingServices = {
     let aggregate = kafilaFlightBookingModel.aggregate(pipeline);
     const options = {
       page: Number(page) || 1,
-      limit: Number(limit) || 1000000,
+      limit: Number(limit) || 1000,
       sort: { createdAt: -1 },
     };
     const result = await kafilaFlightBookingModel.aggregatePaginate(aggregate, options);

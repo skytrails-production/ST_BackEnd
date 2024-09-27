@@ -90,7 +90,6 @@ isModerator = (req, res, next) => {
 verifcationToken = (req, res, next) => {
   try {
     if (req.headers.token) {
-      // console.log(req.headers.token,"token")
       jwt.verify(req.headers.token, config.secret, (err, result) => {
         if (err) {
           if (err.name == "TokenExpiredError") {
@@ -100,7 +99,6 @@ verifcationToken = (req, res, next) => {
             });
           }
           else {
-            console.log("error=====>>",err);
             // throw apiError.unauthorized(responseMessage.UNAUTHORIZED);
             return res.status(401).json({
               responseCode: 401,
@@ -114,7 +112,6 @@ verifcationToken = (req, res, next) => {
               return next(error)
             }
             else if (!result2) {
-              console.log("result2",result2);
               //throw apiError.notFound(responseMessage.USER_NOT_FOUND);
               return res.status(404).json({
                 responseCode: 404,
@@ -136,7 +133,6 @@ verifcationToken = (req, res, next) => {
               }
               else {
                 req.userId = result._id;
-                // console.log(req.userId,"req.userId")
                 req.userDetails = result
                 next();
               }
@@ -164,7 +160,6 @@ verifcationSubAdminToken = (req, res, next) => {
             });
           }
           else {
-            console.log("error=====>>",err);
             // throw apiError.unauthorized(responseMessage.UNAUTHORIZED);
             return res.status(401).json({
               responseCode: 401,
@@ -178,7 +173,6 @@ verifcationSubAdminToken = (req, res, next) => {
               return next(error)
             }
             else if (!result2) {
-              console.log("result2=====",result2);
               //throw apiError.notFound(responseMessage.USER_NOT_FOUND);
               return res.status(404).json({
                 responseCode: 404,
@@ -200,7 +194,7 @@ verifcationSubAdminToken = (req, res, next) => {
               }
               else {
                 req.userId = result.id;
-                // console.log(req.userId,"req.userId")
+                // log(req.userId,"req.userId")
                 req.userDetails = result
                 next();
               }
@@ -220,7 +214,6 @@ verificationTokenOfRM=(req,res,next)=>{
   try {
     if (req.headers.token) {
       
-      // console.log(req.headers.token,"token")
       jwt.verify(req.headers.token, config.secret, (err, result) => {
         if (err) {
           if (err.name == "TokenExpiredError") {
@@ -230,7 +223,6 @@ verificationTokenOfRM=(req,res,next)=>{
             });
           }
           else {
-            console.log("error=====>>",err);
             // throw apiError.unauthorized(responseMessage.UNAUTHORIZED);
             return res.status(401).json({
               responseCode: 401,
@@ -239,7 +231,6 @@ verificationTokenOfRM=(req,res,next)=>{
           }
         }
         else {
-          // console.log("result===",result)
           rmModel.findOne({ _id: result._id }, (error, result2) => {
             if (error) {
               return next(error)
@@ -283,7 +274,6 @@ verificationTokenOfRMResetPass=(req,res,next)=>{
   try {
     if (req.headers.token) {
       
-      // console.log(req.headers.token,"token")
       jwt.verify(req.headers.token, config.secret, (err, result) => {
         if (err) {
           if (err.name == "TokenExpiredError") {
@@ -293,7 +283,6 @@ verificationTokenOfRMResetPass=(req,res,next)=>{
             });
           }
           else {
-            console.log("error=====>>",err);
             // throw apiError.unauthorized(responseMessage.UNAUTHORIZED);
             return res.status(401).json({
               responseCode: 401,
@@ -302,7 +291,6 @@ verificationTokenOfRMResetPass=(req,res,next)=>{
           }
         }
         else {
-          // console.log("result===",result)
           rmModel.findOne({ _id: result._id }, (error, result2) => {
             if (error) {
               return next(error)
@@ -347,7 +335,6 @@ verifyTokenOfInvenPartner=(req,res,next)=>{
   try {
     if (req.headers.token) {
       
-      // console.log(req.headers.token,"token")
       jwt.verify(req.headers.token, config.secret, (err, result) => {
         if (err) {
           if (err.name == "TokenExpiredError") {
@@ -357,7 +344,6 @@ verifyTokenOfInvenPartner=(req,res,next)=>{
             });
           }
           else {
-            console.log("error=====>>",err);
             // throw apiError.unauthorized(responseMessage.UNAUTHORIZED);
             return res.status(401).json({
               responseCode: 401,
@@ -366,7 +352,6 @@ verifyTokenOfInvenPartner=(req,res,next)=>{
           }
         }
         else {
-          // console.log("result===",result)
           partnerModel.findOne({ _id: result._id }, (error, result2) => {
             if (error) {
               return next(error)

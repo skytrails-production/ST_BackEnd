@@ -52,7 +52,6 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
     .digest("base64");
 
   try {
-    // console.log(req.body,"body")
     let data = `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
         xmlns:sec="http://xml.amadeus.com/2010/06/Security_v1"
         xmlns:typ="http://xml.amadeus.com/2010/06/Types_v1"
@@ -164,7 +163,6 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
       SOAPAction: "http://webservices.amadeus.com/FMPTBQ_23_4_1A",
     };
 
-    // console.log("fare master pricer", data);
 
     const response = await axios.post(url, data, { headers });
 
@@ -175,10 +173,8 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
     //     "Fare_MasterPricerTravelBoardSearchReply"
     //   ];
     
-    // console.log(obj)
 
 //       const recommendationObject=obj.recommendation
-//       console.log(recommendationObject?.length,"length")
 //       let newData=[];
 //       if(recommendationObject?.length>=1){
 // const segNumber=recommendationObject.map((item,index)=>{
@@ -197,18 +193,15 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
 
 // }else{
 //   const modifiedArray = [];
-//   console.log(obj);
 //   // return;
 //   modifiedArray.push({...obj.flightIndex.groupOfFlights, ...recommendationObject.paxFareProduct})
 //   newData=modifiedArray;
 // }
-// console.log(flattenedArray);
 
 
     // actionCompleteResponse(res, newData, successMsg);
     actionCompleteResponse(res, response.data, successMsg);
   } catch (err) {
-    // console.log(err);
     sendActionFailedResponse(res, {err}, err.message);
   }
 };

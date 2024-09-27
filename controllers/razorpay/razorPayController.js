@@ -34,25 +34,20 @@ const {
 
 //   try {
 //     const response = await instance.orders.create(orderData);
-//     console.log("response=>>>>>>>>>>>>>>>", response);
 
 //     // Log the entire response to inspect its structure
-//     console.log("Entire Response: ", JSON.stringify(response, null, 2));
 
 //     // Check if there's a payment link in the response (adjust based on inspection)
 //     let paymentLink = response.short_url;
 
 //     if (!paymentLink) {
 //       // If still not found, you may need to adjust this based on the actual response structure
-//       console.error("Payment link not found in the response");
 //       res.status(500).json({ error: "Payment link not found" });
 //       return;
 //     }
 
-//     console.log("paymentLink==============", paymentLink);
 //     res.json({ paymentLink });
 //   } catch (error) {
-//     console.error("Error creating order:", error);
 //     res.status(500).json({ error: error.message });
 //   }
 // };
@@ -81,25 +76,20 @@ const {
 
 //   try {
 //     const response = instance.paymentLink.create(orderData);
-//     console.log("response=>>>>>>>>>>>>>>>", response);
 
 //     // Log the entire response to inspect its structure
-//     console.log("Entire Response: ", JSON.stringify(response, null, 2));
 
 //     // Check if there's a payment link in the response (adjust based on inspection)
 //     let paymentLink = response.short_url;
 //     if (!paymentLink) {
 //       // If still not found, you may need to adjust this based on the actual response structure
-//       console.error("Payment link not found in the response");
 //       res.status(500).json({ error: "Payment link not found" });
 //       return;
 //     }
 
 //     // const paymentLink = `https://example.com/payment-page?orderId=${orderId}`;
-//     // console.log("paymentLink==============", paymentLink);
 //     // res.json({ paymentLink });
 //   } catch (error) {
-//     console.error("Error creating order:", error);
 //     res.status(500).json({ error: error.message });
 //   }
 // };
@@ -130,25 +120,20 @@ exports.createOrder = async (req, res, next) => {
 
   try {
     const response = await instance.paymentLink.create(orderData); // Use 'await' here
-    // console.log("response=>>>>>>>>>>>>>>>", response);
 
     // Log the entire response to inspect its structure
-    // console.log("Entire Response: ", JSON.stringify(response, null, 2));
 
     // Check if there's a payment link in the response (adjust based on inspection)
     let paymentLink = response.short_url;
     if (!paymentLink) {
       // If still not found, you may need to adjust this based on the actual response structure
-      console.error("Payment link not found in the response");
       res.status(500).json({ error: "Payment link not found" });
       return;
     }
 
     // Provide the payment link in the response
-    // console.log("paymentLink==============", paymentLink);
     res.json({ paymentLink });
   } catch (error) {
-    console.error("Error creating order:", error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -172,7 +157,6 @@ exports.makePayment = async (req, res) => {
     const { _id, amount, paymentId } = req.body; // Destructure userId and additionalBalance from the request body
 
     // Check if userId is valid in your user table
-    // console.log(req.body);
 
 
     let instance = new Razorpay({
@@ -185,14 +169,11 @@ exports.makePayment = async (req, res) => {
       currency: "INR",
       receipt: "order_rcptid_11",
     };
-    // console.log(req.body.amount);
     instance.orders.create(options, function (err, order) {
       if (err) {
-        console.error(err);
         return res.status(500).json({ code: 500, message: "Server Error" });
       }
 
-      // console.log(order);
       // return res.send({
       //   code: 200,
       //   message: "order Created Successfully",
@@ -223,21 +204,17 @@ exports.makePayment = async (req, res) => {
 
   } catch (error) {
     sendActionFailedResponse(res, {}, "Internal server error");
-    console.log(error);
   }
 
 };
 
 exports.payVerify = (req, res) => {
   try {
-    console.log(req.body);
     body = req.body.razorpay_order_id + "|" + req.body.razorpay_payment_id;
     var crypto = require("crypto");
     var expectedSignature = crypto.createHmac('sha256', process.env.Razorpay_KEY_SECRET)
       .update(body.toString())
       .digest('hex');
-    console.log("sig" + req.body.razorpay_signature);
-    console.log("sig" + expectedSignature);
 
     if (expectedSignature === req.body.razorpay_signature) {
       console.log("Payment Success");
@@ -247,6 +224,5 @@ exports.payVerify = (req, res) => {
 
   } catch (error) {
     sendActionFailedResponse(res, {}, "Internal server error");
-    console.log(error.message);
   }
 }

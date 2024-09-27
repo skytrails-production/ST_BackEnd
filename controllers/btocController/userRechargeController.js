@@ -74,7 +74,7 @@ if(result){
       });
 }
     } catch (error) {
-        console.log("error whiel create recharge history",error);
+        return next(error);
     }
 }
 
@@ -103,7 +103,6 @@ exports.getReachargeHistory=async(req,res,next)=>{
         result:result
       });
     } catch (error) {
-      console.log("error while trying to get history of user recharge====",error);
       return next(error)
     }
   }

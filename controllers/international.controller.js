@@ -99,7 +99,6 @@ exports.internationalCreate = async (req, res) => {
       // Store the URL of the uploaded image
       imageUrls.push(data.Location);
     } catch (err) {
-      console.error("Error uploading file to S3:", err);
       return res.status(500).send(err);
     }
   }
@@ -182,7 +181,6 @@ exports.internationalupdate = async (req, res) => {
       };
       try {
         const user = await User.findById(reqData.isAdmin);
-        // console.log(user);
         const role = await Role.findById(user.roles[0].toString());
         if (role.name === "admin" || role.name === "user") {
           const response = await internationl.findByIdAndUpdate(
@@ -206,7 +204,6 @@ exports.internationalFind = async (req, res) => {
   try {
     const pakage = await internationl.findById(req.params.id);
     msg = "Pakage successfully found";
-    // console.log(pakage.pakage_img);
     actionCompleteResponse(res, pakage, msg);
   } catch (err) {
     sendActionFailedResponse(res, {}, err.message);
@@ -216,7 +213,6 @@ exports.internationalFind = async (req, res) => {
 exports.internationalDelete = async (req, res) => {
   try {
     const user = await User.findById(req.body.isAdmin);
-    // console.log(user);
     const role = await Role.findById(user.roles[0].toString());
     if (role.name === "admin") {
       const pakage = await internationl.findByIdAndRemove(req.params.id);
@@ -239,12 +235,9 @@ exports.internationalgetAll = async (req, res) => {
       .search()
       .filter()
       .pagintion(pagintionData);
-    // console.log("data",apiSearch.length);
 
     let pakage = await apiSearch.query;
-    // console.log(pakage.length,"package")
     if (pakage.length === 0) {
-      // console.log(req.query)
       // pakage=await internationl.find({ 'destination.addMore': req.query.keyword }).exec();
       pakage = await internationl.find({is_active:1})
         .find({
@@ -260,7 +253,6 @@ exports.internationalgetAll = async (req, res) => {
           ],
         }).sort({createdAt: -1 })
         .exec();
-      // console.log(pakage,"data")
     }
 
     for (let p = 0; p < pakage.length; p++) {
@@ -322,7 +314,6 @@ exports.crmPackage= async (req, res) => {
     let pagintionData = 10; 
 
     let pakage = await internationl.find({is_active:1}).sort({createdAt: -1 });
-    // console.log(pakage.length,"package")
 
     for (let p = 0; p < pakage.length; p++) {
       var arr = [];
@@ -488,7 +479,6 @@ exports.beachesPackages = async (req, res) => {
   try {
     const data = req.query.keyword;
     let query = {};
-  //  console.log(data,"datqa")
     // for (var key in data) {
       // if (Object.hasOwnProperty.call(data, key)) {
         // var value = data[key];
@@ -497,7 +487,6 @@ exports.beachesPackages = async (req, res) => {
       // }
     // }
 
-    // console.log('Generated Query:', query);
 
     const packages = await internationl.find({ $and: [{ is_active: 1 }, query] }).sort({createdAt: -1 });
 
@@ -540,10 +529,8 @@ exports.domesticAndInternational = async (req, res) => {
     }
 
     const count = await internationl.countDocuments({ $and: [{ is_active: 1 }, query] });
-    // console.log(count,"count");
     const packages = await internationl.find({ $and: [{ is_active: 1 }, query] }).sort({ updatedAt: -1 }).skip(skip).limit(limit);
 
-    // console.log(count,"count");
 
     if (packages.length > 0) {
       // const msg = `आपने किया है ${country === 'India' ? 'देशी' : 'विदेशी'} पैकेजं सर्च`;
@@ -564,7 +551,6 @@ exports.domesticAndInternational = async (req, res) => {
 
 exports.domesticAndInternationalWithPagination = async (req, res) => {
   try {
-    // console.log("data")
 
     const limit = parseInt(req.query.limit, 10) || 162; // Default to 20 if not provided
     const page = parseInt(req.query.page, 10) || 1; // Default to page 1 if not provided
@@ -587,7 +573,6 @@ exports.domesticAndInternationalWithPagination = async (req, res) => {
     }
 
     const count = await internationl.countDocuments({ $and: [{ is_active: 1 }, query] });
-    // console.log(count,"count");
     const packages = await internationl.find({ $and: [{ is_active: 1 }, query] }).sort({ updatedAt: -1 }).skip(skip).limit(limit);
 
      // Calculate total pages
@@ -660,11 +645,8 @@ exports.agentPackages = async (req, res) => {
     const { userId, isActive } = req.params;  
     
     if (userId) {
-      // console.log("query");
       const query = isActive? { is_active: isActive, userId: userId } : { userId: userId };
-      // console.log(query,"query");
        packages = await internationl.find(query).sort({createdAt: -1 });
-    //  console.log("Vpackages",packages.length);
     }
     
     const msg = packages.length > 0 ? 'Packages found' : 'No packages found';
@@ -686,7 +668,6 @@ exports.agentAllPackage= async (req, res) => {
     if (userId) {
 
        packages = await internationl.find({userId:userId}).sort({createdAt: -1 });
-    //  console.log("Vpackages",packages.length);
     }
     
     const msg = packages.length > 0 ? 'Packages found' : 'No packages found';
@@ -702,7 +683,6 @@ exports.agentLeads = async (req, res) =>{
 
   try {
     const agent=req.params;
-    // console.log("agent", agent)
     const agentPackagesData=await internationl.find(agent);
     const filterData = agentPackagesData.map((item) => item._id);
 
@@ -726,9 +706,7 @@ exports.internationalSetActive = async (req, res) => {
   const { pakageId, isAdmin, activeStatus } = req.body;
   try {
     const user = await User.findById(isAdmin);
-    // console.log(user);
     const role = await Role.findById(user.roles[0].toString());
-    //  console.log(r.name);
     if (role.name === "admin") {
       const response = await internationl.findById(pakageId);
       var size = Object.keys(response).length;
@@ -833,7 +811,6 @@ exports.editPackage = async (req, res, next) => {
     const file = req.file;
     // const isPackageExist = await internationl.findOne({ _id: packageId });
     const isPackageExist=await internationl.findOne({_id:packageId})
-// console.log("isPackageExist==========",isPackageExist)
     if (!isPackageExist) {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,
@@ -862,7 +839,6 @@ exports.editPackage = async (req, res, next) => {
         });
         req.body.pakage_img = data.Location;
       } catch (error) {
-        console.error("Error during S3 upload:", error);
         return res.status(500).send(error);
       }
     }
@@ -896,7 +872,6 @@ exports.editPackage = async (req, res, next) => {
       sendActionFailedResponse(res, {}, err.message);
     }
   } catch (error) {
-    console.log("Error while editing package.", error);
     return next(error);
   }
 };
@@ -912,9 +887,7 @@ exports.internationalgetAdminAll = async (req, res) => {
       .pagintion(pagintionData);
 
     let pakage = await apiSearch.query;
-    // console.log(pakage.length,"package")
     if (pakage.length === 0) {
-      // console.log(req.query)
       // pakage=await internationl.find({ 'destination.addMore': req.query.keyword }).exec();
       pakage = await internationl.find()
         .find({
@@ -933,7 +906,6 @@ exports.internationalgetAdminAll = async (req, res) => {
         
       )
         .exec();
-      // console.log(pakage,"data")
     }
 
     for (let p = 0; p < pakage.length; p++) {
@@ -982,7 +954,6 @@ exports.internationalgetAdminAll = async (req, res) => {
       pages: pages,
       pakage: pakage,
     };
-    // console.log("pakage============",pakage.length);
     // const pakage = await international.find();
     msg = "successfully";
     actionCompleteResponse(res, data, msg);
@@ -995,7 +966,6 @@ exports.getAllPackagesList=async(req,res,next)=>{
   try {
     
   } catch (error) {
-    console.log("error while trying to get package List",error);
     return next(error);
   }
 }
@@ -1107,7 +1077,6 @@ exports.beachesPackagesCategory = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.error("Error while trying to fetch beach packages:", error);
     return next(error);
   }
 };
@@ -1169,7 +1138,6 @@ exports.beachesPackagesCategoryArr = async (req, res, next) => {
       });
     } 
   } catch (error) {
-    console.error("Error while trying to fetch beach packages:", error);
     return next(error);
   }
 };
@@ -1194,7 +1162,6 @@ exports.getPackageByCategory=async(req,res,next)=>{
     result: result,
   });
   } catch (error) {
-    console.error("Error while trying to fetch beach packages:", error);
     return next(error);
   }
 }
@@ -1217,7 +1184,6 @@ exports.getPackageByLocation=async(req,res,next)=>{
       result: result,
     });
   } catch (error) {
-    console.error("Error while trying to fetch  packages by location:", error);
     return next(error);
   }
 }
@@ -1242,7 +1208,6 @@ exports.beachesPackagesCategoryArr1 = async (req, res, next) => {
         });
     }
     const categoryArray=await findPackageCategoryData({});
-    // console.log("categoryArray=-=========",categoryArray);
      // Check if keyword exists and is an array
      if (categoryArray.length > 0) {
       const finalRes=[]
@@ -1261,13 +1226,10 @@ exports.beachesPackagesCategoryArr1 = async (req, res, next) => {
           select:{pakage_amount:1,pakage_title:1,pakage_img:1,days:1}
         };
         // Perform pagination query
-        // console.log("Selecting fields:", 'pakage_amount pakage_img pakage_title days');
         const result = await internationl.paginate(queryObj, options, {
           
         });
-        // console.log("Query Result:", result);results[key.inclusion] = result;
       // Push result along with additional information to finalRes array
-      // console.log("result============",result);
       // const modifiedobject={}
       // for(const data of result.docs){
 
@@ -1289,7 +1251,6 @@ exports.beachesPackagesCategoryArr1 = async (req, res, next) => {
       });
     } 
   } catch (error) {
-    console.error("Error while trying to fetch beach packages:", error);
     return next(error);
   }
 };

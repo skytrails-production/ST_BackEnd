@@ -66,12 +66,8 @@ exports.pushNotificationsToUser=async(req,res,next)=>{
       if(notificationType==="PEFA2024"){
         for (const user of users) {
           try {
-            await pushNotification(user.deviceToken, messageTitle, messageBody,imageUrl);
-            console.log('Notification cron job executed successfully');
+            await pushNotificationAfterDepricate(user.deviceToken, messageTitle, messageBody,imageUrl);
           } catch (pushError) {
-            // Handle if any user is not registered
-            console.error('Error while sending push notification to user:', pushError);
-            // continue to the next user even if one fails
             continue;
           }
           }
@@ -81,18 +77,14 @@ exports.pushNotificationsToUser=async(req,res,next)=>{
       const usereTokenExist=await userList({status: status.ACTIVE,deviceToken: { $exists: true, $ne: ""}});
       for (const user of usereTokenExist) {
         try {
-          await pushNotification(user.deviceToken, messageTitle, messageBody,imageUrl);
-          console.log('Notification cron job executed successfully');
+          await pushNotificationAfterDepricate(user.deviceToken, messageTitle, messageBody,imageUrl);
         } catch (pushError) {
-          // Handle if any user is not registered
-          console.error('Error while sending push notification to user:', pushError);
           // continue to the next user even if one fails
           continue;
         }
       }
       return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.SUCCESS});
     } catch (error) {
-        console.log("error while push notification",error);
         return next(error)
     }
 }
@@ -111,7 +103,6 @@ exports.getAllNotificationOfAmdin=async(req,res,next)=>{
     }
     return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.DATA_FOUND,result:result})
   } catch (error) {
-    console.log("error while trying to get all notification",error);
     return next(error)
   }
 }
@@ -127,7 +118,6 @@ exports.getNotificationById=async(req,res,next)=>{
     const result=await findPushNotificationData({isRead:'false',from:'holidayEnquiry'});
     return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.NOTIFICATION_READ,result:result});
   } catch (error) {
-    console.log("error while get notification by Id",error);
     return next(error)
   }
 }

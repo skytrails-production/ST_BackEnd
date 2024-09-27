@@ -259,7 +259,6 @@ exports.login = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to login====>>>>>", error);
     return next(error);
   }
 };
@@ -403,7 +402,6 @@ exports.verifyUserOtp = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("Error==============>", error);
     return next(error);
   }
 };
@@ -501,7 +499,6 @@ exports.resendOtp = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error==========>>>>>>.", error);
     return next(error);
   }
 };
@@ -538,7 +535,6 @@ exports.uploadImage = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error", error);
     return next(error);
   }
 };
@@ -560,7 +556,6 @@ exports.getUserProfile = async (req, res, next) => {
       result: isUserExist,
     });
   } catch (error) {
-    console.log("error", error);
     return next(error);
   }
 };
@@ -595,7 +590,6 @@ exports.updateLocation = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("Error updating location", error);
     return next(error);
   }
 };
@@ -629,7 +623,7 @@ exports.forgetPassword = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ statusCode: statusCode.OK, message: responseMessage.OTP_SEND });
   } catch (error) {
-    console.log("Forget Password", error);
+    return next(error);
   }
 };
 exports.verifyUserOtpWithSocialId = async (req, res, next) => {
@@ -715,7 +709,6 @@ exports.verifyUserOtpWithSocialId = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("Error==============>", error);
     return next(error);
   }
 };
@@ -771,7 +764,6 @@ exports.editProfile = async (req, res, next) => {
       .status(statusCode.OK)
       .send({ message: responseMessage.UPDATE_SUCCESS, result: result });
   } catch (error) {
-    console.log("error=======>>>>>>", error);
     return next(error);
   }
 };
@@ -799,7 +791,6 @@ exports.deleteUserAccount = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log("Error while delete account..!", error);
     return next(error);
   }
 };
@@ -831,10 +822,7 @@ exports.getReachargeHistory = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log(
-      "error while trying to get history of user recharge====",
-      error
-    );
+   
     return next(error);
   }
 };
@@ -857,7 +845,6 @@ exports.getAppLink = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while send link", error);
     return next(error);
   }
 };
@@ -893,7 +880,6 @@ exports.updateDeviceToken = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log("error while update deviceToken===", error);
     return next(error);
   }
 };
@@ -927,7 +913,6 @@ exports.shareReferralCode = async (req, res, next) => {
       referralCode: isUserExist.referralCode,
     });
   } catch (error) {
-    console.log("error while send code", error);
     return next(error);
   }
 };
@@ -963,7 +948,6 @@ exports.updateEmail = async (req, res, next) => {
       result: updateEmail,
     });
   } catch (error) {
-    console.error("error while trying to update email.", error);
     return next(error);
   }
 };
@@ -1178,7 +1162,6 @@ exports.loginWithMailMobileLogin = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.error("error while tryiong to login", error);
     return next(error);
   }
 };
@@ -1391,7 +1374,6 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("Error==============>", error);
     return next(error);
   }
 };
@@ -1451,7 +1433,6 @@ exports.sendOtpOnSMS = async (req, res, next) => {
       responseMessage: responseMessage.OTP_SEND,
     });
   } catch (error) {
-    console.error("error while trying to send sms.", error);
     return next(error);
   }
 };
@@ -1582,7 +1563,6 @@ exports.resendOtpMailMobile = async (req, res, next) => {
       result,
     });
   } catch (error) {
-    console.log("Error while trying to resend OTP: ", error);
     return next(error);
   }
 };
@@ -1634,7 +1614,6 @@ exports.shareReferralCodeSMSWHTSAPP = async (req, res, next) => {
       referralCode: isUserExist.referralCode,
     });
   } catch (error) {
-    console.log("error while send code", error);
     return next(error);
   }
 };
@@ -1657,7 +1636,6 @@ exports.getValueOfCoin = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to get coin value", error);
     return next(error);
   }
 };
@@ -1682,7 +1660,6 @@ exports.getWalletHistory = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to get Wallet history", error);
     return next(error);
   }
 };
@@ -1723,7 +1700,6 @@ exports.redeemCoin = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to redeemCoin", error);
     return next(error);
   }
 };
@@ -1749,7 +1725,6 @@ exports.getUserBalance = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to redeemCoin", error);
     return next(error);
   }
 };
@@ -1772,9 +1747,7 @@ exports.updateMihuruWallet = async (req, res) => {
       remark,
       status,
     } = req.body;
-    // console.log(req.body)
     const userId = partnerTransactionId;
-    //  console.log(userId,"userId")
     if (!userId || !paymentAmount || !paymentId || !paymentReferenceId) {
       return actionCompleteResponse(res, {}, "Missing required fields");
     }
@@ -1793,8 +1766,6 @@ exports.updateMihuruWallet = async (req, res) => {
       // Payment already added
       return actionCompleteResponse(res, mihuruData, "Payment Already Added");
     }
-
-    // console.log(user?.mihuruWallet);
     const updatedMihuruWallet =
       Number(mihuruData?.paymentAmount) + Number(paymentAmount);
     const response = await User.findByIdAndUpdate(
@@ -1855,7 +1826,6 @@ exports.checkFirstBooking = async (req, res, next) => {
       },
     });
   } catch (error) {
-    console.log("error while tryiong to find is first booking or not", error);
     return next(error);
   }
 };
@@ -1876,7 +1846,6 @@ exports.getUserById = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to get user details", error);
     return next(error);
   }
 };
@@ -1958,7 +1927,6 @@ exports.socialLogin = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to social login", error);
     return next(error);
   }
 };
@@ -2015,10 +1983,7 @@ exports.addMobileNumber = async (req, res, next) => {
       .status(statusCode.OK)
       .send({statusCode: statusCode.OK,responseMessage: responseMessage.LOGIN_SUCCESS, result: token });
   } catch (error) {
-    console.log(
-      "error while trying to updtae mobileNumber on user Acoount",
-      error
-    );
+   
     return next(error);
   }
 };

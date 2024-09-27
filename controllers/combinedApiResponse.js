@@ -28,10 +28,7 @@ const streamLength = 8;
 const randomBytes = generateRandomBytes(streamLength);
 // Function to convert bytes to base64
 function bytesToBase64(bytes) {
-  // console.log(
-  //   "Buffer.from(bytes).toStringbase64=",
-  //   Buffer.from(bytes).toString("base64")
-  // );
+ 
   return Buffer.from(bytes).toString("base64");
 }
 const commonUrl = require("../common/const");
@@ -71,7 +68,6 @@ async function xmlToJson(xml) {
 // Helper function to find and keep flights with the least BaseFare
 const getLowestFareFlights = (flights) => {
   const uniqueFlights = {};
-  // console.log("flights=============",flights);
   flights.forEach((flight) => {
     const key = `${flight.flightNumber}_${flight.origin}_${flight.departureTime}`;
     if (!uniqueFlights[key] || flight.BaseFare < uniqueFlights[key].BaseFare) {
@@ -97,7 +93,6 @@ exports.combinedAPI1 = async (req, res, next) => {
     const data = req.body;
     data.formattedDate = await moment(
       data.Segments[0].PreferredDepartureTime,
-      "DD MMM, YY"
     ).format("DDMMYY"); // Format the date as "DDMMYY"
     const api1Url = commonUrl.api.flightSearchURL;
 
@@ -111,7 +106,6 @@ exports.combinedAPI1 = async (req, res, next) => {
       axios
         .post(url, generateAmadeusRequest(data), { headers })
         .catch((error) => {
-          console.error("Error in Amadeus API request:", error);
           return { data: {} };
         }),
     ]);
@@ -150,7 +144,6 @@ exports.combinedAPI1 = async (req, res, next) => {
     } else if (flattenedArray.length <= 0) {
     }
   } catch (error) {
-    console.log("error while trying to get response", error);
     return next(error);
   }
 };
@@ -173,7 +166,6 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
       await axios
         .post(url, generateAmadeusRequest(data), { headers })
         .catch((error) => {
-          console.error("Error in Amadeus API request:", error);
           return { data: {} };
         }),
     ]);
@@ -226,7 +218,6 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
         },
         []
       );
-      // console.log("baggaReferenceArray=============", obj.flightIndex);
       const modifiedArray = [];
       let tempIndex = 0;
       for (let i = 0; i < segNumber.length; i++) {
@@ -236,7 +227,6 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
             ...obj.recommendation[i].paxFareProduct,
             ...obj.recommendation[i].recPriceInfo,
           });
-          // console.log(obj.flightIndex.groupOfFlights[j], "flighNumber");
         }
         tempIndex = tempIndex + segNumber[i];
       }
@@ -245,7 +235,6 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
       const newFlattnedArray = flattenedArray.map((item, index) => {
         return { ...item, baggage: baggaReferenceArray[index] };
       });
-      // console.log(newFlattnedArray[0].baggage.referencingDetail,"newFlattnedArray")
       finalFlattenedArray = newFlattnedArray.map((item, index) => {
         const tempItemBaggage = item.baggage.referencingDetail[1].refNumber;
 
@@ -276,19 +265,14 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
             freeBaggageAllowance,
         };
       });
-      // console.log(finalFlattenedArray,"finalFlattenedArray")
     }
 
     var finalResult = [];
     var selectedArray = [];
     if (tvoArray.length > 0) {
-      // console.log("tvoArray.length===========",tvoArray.length);
       selectedArray = await tvoArray.filter((value) => value.IsLCC === true);
-      // console.log("finalFlattenedArray=================finalFlattenedArray====",finalFlattenedArray.length);
       if (selectedArray.length > 0) {
-        // console.log("selectedArray.length===========",selectedArray.length);
         finalResult = finalFlattenedArray.concat(selectedArray);
-        // console.log("v======finalResult==========",finalResult.length);
       } else if (finalFlattenedArray.length <= 0) {
         finalResult = [...tvoArray];
       } else {
@@ -314,11 +298,9 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
         // const totalTax = parseInt(finalRep.monetaryDetail[1].amount);
         // const totalAmount = totalFare + totalTax;
         // const totalFare =  parseInt(finalRep.paxFareDetail?.totalFareAmount-finalRep?.paxFareDetail?.totalTaxAmount);
-        // console.log("finalRep.paxFareDetail?.totalFareAmount=",typeof(finalRep.paxFareDetail?.totalFareAmount));
         const totalFare =
           Number(finalRep.paxFareDetail?.totalFareAmount) -
           Number(finalRep?.paxFareDetail?.totalTaxAmount);
-        // console.log("totalFar=========",typeof(totalFare));
         const totalTax = parseInt(finalRep.monetaryDetail[1].amount);
         const totalAmount = totalFare + totalTax;
         // finalRep.totalAmount = totalAmount;
@@ -354,7 +336,6 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
       });
     }
   } catch (error) {
-    // console.error("Error while trying to get response", error);
     return next(error);
   }
 };
@@ -362,12 +343,9 @@ exports.AMADEUSPriceSort = async (req, res, next) => {
   try {
     let tvoArray = [];
     const data = req.body;
-    // console.log("===============", data);
     data.formattedDate = moment(
       data.Segments[0].PreferredDepartureTime,
-      "DD MMM, YY"
-    ).format("DDMMYY"); // Format the date as "DDMMYY"
-    // console.log("data.formattedDate==============", data.formattedDate);
+    ).format("DDMMYY");
     data.totalPassenger = parseInt(data.AdultCount) + parseInt(data.ChildCount);
     const flattenedArray = [];
     let finalFlattenedArray = [];
@@ -381,7 +359,6 @@ exports.AMADEUSPriceSort = async (req, res, next) => {
         headers,
       })
       .catch((error) => {
-        console.error("Error in Amadeus API request:", error);
         return { data: {} };
       });
     let jsonResult = await xmlToJson(amadeusResponse.data);
@@ -420,7 +397,6 @@ exports.AMADEUSPriceSort = async (req, res, next) => {
         },
         []
       );
-      // console.log("baggaReferenceArray=============", obj.flightIndex);
       const modifiedArray = [];
       let tempIndex = 0;
       for (let i = 0; i < segNumber.length; i++) {
@@ -488,11 +464,9 @@ exports.AMADEUSPriceSort = async (req, res, next) => {
         // const totalTax = parseInt(finalRep.monetaryDetail[1].amount);
         // const totalAmount = totalFare + totalTax;
         // const totalFare =  parseInt(finalRep.paxFareDetail?.totalFareAmount-finalRep?.paxFareDetail?.totalTaxAmount);
-        // console.log("finalRep.paxFareDetail?.totalFareAmount=",typeof(finalRep.paxFareDetail?.totalFareAmount));
         const totalFare =
           Number(finalRep.paxFareDetail?.totalFareAmount) -
           Number(finalRep?.paxFareDetail?.totalTaxAmount);
-        // console.log("totalFar=========",typeof(totalFare));
         const totalTax = parseInt(finalRep.monetaryDetail[1].amount);
         const totalAmount = totalFare + totalTax;
         // finalRep.totalAmount = totalAmount;
@@ -519,7 +493,6 @@ exports.AMADEUSPriceSort = async (req, res, next) => {
       tvoArray: tvoArray,
     });
   } catch (error) {
-    // console.error("Error while trying to get response", error);
     return next(error);
   }
 };
@@ -531,7 +504,6 @@ exports.AMADEUSPriceSortOptimize = async (req, res, next) => {
     // Format date
     data.formattedDate = moment(
       data.Segments[0].PreferredDepartureTime,
-      "DD MMM, YY"
     ).format("DDMMYY");
 
     // Calculate total passengers
@@ -547,7 +519,6 @@ exports.AMADEUSPriceSortOptimize = async (req, res, next) => {
     const amadeusResponse = await axios
       .post(url, generateAmadeusRequest(data), { headers })
       .catch((error) => {
-        console.error("Error in Amadeus API request:", error);
         return { data: {} };
       });
 
@@ -650,7 +621,6 @@ exports.AMADEUSPriceSortOptimize = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.error("Error while processing request:", error);
     return next(error);
   }
 };
@@ -660,7 +630,6 @@ exports.combineTVOAMADEUS = async (req, res, next) => {
     const data = req.body;
     data.formattedDate = await moment(
       data.Segments[0].PreferredDepartureTime,
-      "DD MMM, YY"
     ).format("DDMMYY"); // Format the date as "DDMMYY"
     const api1Url = commonUrl.api.flightSearchURL;
 
@@ -674,7 +643,6 @@ exports.combineTVOAMADEUS = async (req, res, next) => {
       axios
         .post(url, generateAmadeusRequest(data), { headers })
         .catch((error) => {
-          console.error("Error in Amadeus API request:", error);
           return { data: {} };
         }),
     ]);
@@ -735,7 +703,6 @@ exports.combineTVOAMADEUS = async (req, res, next) => {
       length: length,
     });
   } catch (error) {
-    console.error("Error while trying to get response", error);
     return next(error);
   }
 };
@@ -745,7 +712,6 @@ exports.cobinedAsPerPrice = async (req, res, next) => {
     const data = req.body;
     data.formattedDate = moment(
       data.Segments[0].PreferredDepartureTime,
-      "DD MMM, YY"
     ).format("DDMMYY"); // Format the date as "DDMMYY"
     data.totalPassenger =
       parseInt(data.AdultCount) +
@@ -765,7 +731,6 @@ exports.cobinedAsPerPrice = async (req, res, next) => {
       axios
         .post(url, generateAmadeusRequest(data), { headers })
         .catch((error) => {
-          console.error("Error in Amadeus API request:", error);
           return { data: {} };
         }),
     ]);
@@ -886,7 +851,6 @@ exports.cobinedAsPerPrice = async (req, res, next) => {
       },
     });
   } catch (error) {
-    console.error("Error:while cobinedAsPerPrice", error);
     return next(error);
   }
 };
@@ -896,7 +860,6 @@ exports.combineTVOAMADEUSOptimised = async (req, res, next) => {
     const data = req.body;
     data.formattedDate = moment(
       data.Segments[0].PreferredDepartureTime,
-      "DD MMM, YY"
     ).format("DDMMYY");
     data.totalPassenger = parseInt(data.AdultCount) + parseInt(data.ChildCount);
     const api1Url = commonUrl.api.flightSearchURL;
@@ -911,7 +874,6 @@ exports.combineTVOAMADEUSOptimised = async (req, res, next) => {
       axios
         .post(url, generateAmadeusRequest(data), { headers })
         .catch((error) => {
-          console.error("Error in Amadeus API request:", error);
           return { data: {} };
         }),
     ]);
@@ -920,7 +882,6 @@ exports.combineTVOAMADEUSOptimised = async (req, res, next) => {
     if (tvoResponse.data.Response.ResponseStatus === 1) {
       tvoArray = tvoResponse.data.Response.Results[0];
     }
-    console.log("amadeusResponse============", amadeusResponse);
     let finalFlattenedArray = [];
     if (amadeusResponse.status === 200) {
       const jsonResult = await xmlToJson(amadeusResponse.data);
@@ -996,7 +957,6 @@ exports.combineTVOAMADEUSOptimised = async (req, res, next) => {
       },
     });
   } catch (error) {
-    console.error("Error while trying to get response", error);
     return next(error);
   }
 };
@@ -1020,7 +980,6 @@ exports.combineTVOAMADEUSOptimised = async (req, res, next) => {
 //       await axios
 //         .post(url, generateAmadeusReturn(data), { headers })
 //         .catch((error) => {
-//           console.error("Error in Amadeus API request:", error);
 //           return { data: {} };
 //         }),
 //     ]);
@@ -1038,11 +997,9 @@ exports.combineTVOAMADEUSOptimised = async (req, res, next) => {
 //         const segNumber = recommendationObject.map((item, index) => {
 //           return item.segmentFlightRef.length || 1;
 //         });
-//         console.log("segNumber===============",segNumber);
 //         segNumber.forEach((item, index) => {
 //           count = count + item;
 //         });
-//   console.log("segNumber====forEachforEachforEach===========",segNumber);
 //   const baggaReferenceArray = recommendationObject.reduce(
 //     (accumulator, item) => {
 //       if (Array.isArray(item.segmentFlightRef)) {
@@ -1128,7 +1085,6 @@ exports.combineTVOAMADEUSOptimised = async (req, res, next) => {
 //     });
 
 //   } catch (error) {
-//     // console.error("Error while trying to get response", error);
 //     return next(error);
 //   }
 // };
@@ -1158,7 +1114,6 @@ exports.combineTvoAmadeusReturn = async (req, res, next) => {
       await axios
         .post(url, generateAmadeusReturn(data), { headers })
         .catch((error) => {
-          console.error("Error in Amadeus API request:", error);
           return { data: {} };
         }),
     ]);
@@ -1412,7 +1367,6 @@ exports.combineTvoKafila = async (req, res, next) => {
       },
     });
   } catch (error) {
-    console.log("error while trying to combine both apis tvo and kafila", error);
     return next(error);
   }
 };
@@ -1519,7 +1473,6 @@ exports.combineTvoKafilaRoundTrip = async (req, res, next) => {
         },
       });
     } catch (error) {
-      console.log("Error while trying to combine both APIs for roundtrip TVO and Kafila", error);
       return next(error);
     }
   };
@@ -1568,7 +1521,6 @@ exports.combineTvoKafilaRoundTrip2 = async (req, res, next) => {
       kafilaArray.forEach((kafilaFlight) => {
         const key = `${kafilaFlight.Itinerary[0].FNo}-${kafilaFlight.Itinerary[0].DDate}`;
         if (tvoMap.has(key)) {
-          console.log("unmatchedTvoReturnFlights=======",tvoMap.has(key))
           const tvoFlight = tvoMap[key];
    
           const kafilaFare = kafilaFlight.Fare ? (kafilaFlight.Fare.OfferedFare || kafilaFlight.Fare.GrandTotal) : Infinity;
@@ -1590,7 +1542,6 @@ exports.combineTvoKafilaRoundTrip2 = async (req, res, next) => {
       kafilaReturnArray.forEach((kafilaFlight) => {
         const key = `${kafilaFlight.Itinerary[0].FNo}-${kafilaFlight.Itinerary[0].DDate}`;
         if (tvoReturnMap.has(key)) {
-          console.log("unmatchedTvoReturnFlights====tvoReturnMap.has(key)===",tvoReturnMap.has(key))
           const tvoFlight = tvoReturnMap[key];
   
           
@@ -1606,13 +1557,11 @@ exports.combineTvoKafilaRoundTrip2 = async (req, res, next) => {
     
       const unmatchedTvoReturnFlights = Object.values(tvoReturnMap); 
   
-     console.log("08f73f90-14f1-4078-bf80-9834439a2a33===",unmatchedKafilaFlights.length,matchedFlights.length,unmatchedTvoFlights.length);
       const mergedOutboundFlights = [
         ...unmatchedKafilaFlights,
         ...matchedFlights,
         ...unmatchedTvoFlights,
       ];
-      console.log("08f73f90-14f1-4078-bf80-9834439a2a33===",unmatchedKafilaReturnFlights.length,matchedReturnFlights.length,unmatchedTvoReturnFlights.length)
       const mergedReturnFlights = [
         ...unmatchedKafilaReturnFlights,
         ...matchedReturnFlights,
@@ -1646,7 +1595,6 @@ exports.combineTvoKafilaRoundTrip2 = async (req, res, next) => {
         },
       });
     } catch (error) {
-      console.log("Error while trying to combine both APIs for roundtrip TVO and Kafila", error);
       return next(error);
     }
   };

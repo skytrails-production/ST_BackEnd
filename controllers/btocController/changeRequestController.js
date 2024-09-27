@@ -31,7 +31,6 @@ exports.createFlightTicketChangeRequest=async(req,res,next)=>{
             return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
         }
         const currentDate = new Date().toISOString();
-        console.log("currentDate:", currentDate);
         const isBookingExist=await findUserflightBooking({ userId: isUserExist._id,bookingId: bookingId,_id:flightBookingId,status:status.ACTIVE});
 
         if (!isBookingExist) {
@@ -70,8 +69,7 @@ exports.createFlightTicketChangeRequest=async(req,res,next)=>{
             return res.status(statusCode.OK).send({ statusCode: statusCode.OK,responseMessage:responseMessage.CHANGE_REQUEST_SUCCESS, result: result });
         }
     } catch (error) {
-        console.log("error in creating flight change request",error);
-        return next(error)
+        
     }
 }
 
@@ -88,7 +86,7 @@ exports.getUserFlightChangeRequest=async(req,res,next)=>{
         }
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.DATA_FOUND, result: result });
     } catch (error) {
-        console.log("error in gettiong change request list",error)
+        return next(error)
     }
 }
 
@@ -117,7 +115,6 @@ exports.getUserFlightChangeRequest=async(req,res,next)=>{
 //             return res.status(statusCode.OK).send({ statusCode: statusCode.OK,responseMessage:responseMessage.CHANGE_REQUEST_SUCCESS, result: result });
 //         }
 //     } catch (error) {
-//         console.log("error in creating hotel change request",error);
 //         return next(error)
 //     }
 // }
@@ -125,19 +122,15 @@ exports.getUserFlightChangeRequest=async(req,res,next)=>{
 // exports.getUserHotelChangeRequest=async(req,res,next)=>{
 //     try {
 //         const {page,limit,search}=req.query;
-//         console.log(" req.userId========", req.userId)
 //         const isUserExist = await findUser({ _id: req.userId,status:status.ACTIVE });
-//         console.log("isAgentExists", isUserExist);
 //         if (!isUserExist) {
 //             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
 //         }
 //         const result=await hotelchangeRequestUserList(req.query);
-//         console.log("================",result);
 //         if(!result||result.length==0){
 //             return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.DATA_NOT_FOUND });
 //         }
 //         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.DATA_FOUND, result: result });
 //     } catch (error) {
-//         console.log("error in gettiong change request list",error)
 //     }
 // }

@@ -47,7 +47,6 @@ exports.signUp = async (req, res, next) => {
     const password = `${managerName}@1234`;
     req.body.password = await bcrypt.hashSync(password, 10);
 
-    console.log(req.body);
 // Check if the email or phone number already exists
 const isAlreadyExist = await findhotelinventoryAuthData({
   $or: [{ email: req.body.email }, { phoneNumber: phoneNumber }],
@@ -69,7 +68,6 @@ return res.status(statusCode.OK).send({
   result: result,
 });
   } catch (error) {
-    console.log("Error while trying to create user", error);
     return next(error);
   }
 };
@@ -133,7 +131,6 @@ exports.login = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to login", error);
     return next(error);
   }
 };
@@ -164,7 +161,6 @@ exports.forgetPassword = async (req, res, next) => {
       result: token,
     });
   } catch (error) {
-    console.log("error while trying to forgetPassword", error);
     return next(error);
   }
 };
@@ -195,7 +191,6 @@ exports.resetPassword = async (req, res, next) => {
       responseMessage: responseMessage.UPDATE_SUCCESS,
     });
   } catch (error) {
-    console.log("error while trying to reset password", error);
     return next(error);
   }
 };
@@ -215,7 +210,6 @@ exports.getPartnerList = async (req, res, next) => {
       result,
     });
   } catch (error) {
-    console.log("error while trying to get partner list", error);
     return next(error);
   }
 };
@@ -238,7 +232,6 @@ exports.getPartnerById = async (req, res, next) => {
       result,
     });
   } catch (error) {
-    console.log("error while trying to get detail by id", error);
     return next(error);
   }
 };
@@ -260,7 +253,6 @@ exports.updateProfile = async (req, res, next) => {
       req.body.profilePic = await commonFunction.getImageUrlAWS(req.file);
     }
   } catch (error) {
-    console.log("error while trying to update detail", error);
     return next(error);
   }
 };
@@ -310,7 +302,6 @@ exports.deleteAccount = async (req, res, next) => {
       result: deleteUserAcount,
     });
   } catch (error) {
-    console.log("error while trying to delete account", error);
     return next(error);
   }
 };
@@ -329,7 +320,6 @@ exports.partnerdashboard=async(req,res,next)=>{
     const partnerHotelCount=await countTotalhotelinventoryAuth({partnerId:isUserExist._id,status:status.ACTIVE});
     
   } catch (error) {
-    console.log("error while trying to getPartner dashboard",error);
     return next(error);
   }
 }
@@ -367,7 +357,6 @@ exports.changePassword=async(req,res,next)=>{
       responseMessage: responseMessage.PASSWORD_CHANGED,
     });
   } catch (error) {
-    console.log("error while trying to change password", error);
     return next(error);
   }
 }

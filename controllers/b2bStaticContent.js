@@ -89,7 +89,6 @@ exports.updateAgentStaticContent = async (req, res, next) => {
     const result = await createAgentStaticContent(obj);
     return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.UPDATE_SUCCESS,result: result, });
   } catch (error) {
-    console.error("error while trying to update static content ", error);
     return next(error);
   }
 };
@@ -105,7 +104,6 @@ exports.getAllAgentStaticContent = async (req, res, next) => {
         result: result,
       });
   } catch (error) {
-    console.error("error while trying to get static content ", error);
     return next(error);
   }
 };
@@ -146,7 +144,6 @@ exports.getAgentStaticContent = async (req, res, next) => {
         result: result,
       });
   } catch (error) {
-    console.error("error while trying to get static content ", error);
     return next(error);
   }
 };

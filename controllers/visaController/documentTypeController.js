@@ -23,7 +23,6 @@ exports.crerateDocType=async(req,res,next)=>{
         return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.CREATED_SUCCESS,result: result,});
 
     } catch (error) {
-        console.log("error while creating documnetType",error);
         return next(error)
     }
 }
@@ -35,7 +34,6 @@ exports.getDocType=async(req,res,next)=>{
         }
         return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result: result,});
     } catch (error) {
-        console.log("error while get data",error);
         return next(error)
     }
 }
@@ -48,7 +46,6 @@ exports.getDocTypeById=async(req,res,next)=>{
         }
         return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result: result,});
     } catch (error) {
-        console.log("error while get data",error);
         return next(error)
     }
 }

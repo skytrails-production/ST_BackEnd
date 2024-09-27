@@ -20,7 +20,6 @@ const {createSubAdminTask,findSubAdminTask,findSubAdminTaskData,deleteSubAdminTa
 exports.createTask=async(req,res,next)=>{
     try {
         const {authType,task,adminId}=req.body;
-        // console.log("req.body===========",req.body);
         const isAdmin=await adminModel.findOne({_id:adminId});
         if(!isAdmin){
             return res.status(statusCode.NotFound).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.ADMIN_NOT_FOUND});
@@ -29,9 +28,7 @@ exports.createTask=async(req,res,next)=>{
             authType:authType,
             task:task
         }
-        // console.log("object=============",object);
         const result=await createSubAdminTask(object);
-        // console.log("result=============",result);
         if(result){
             return res.status(statusCode.OK).send({
                 status: statusCode.OK,
@@ -40,7 +37,6 @@ exports.createTask=async(req,res,next)=>{
               });
         }
     } catch (error) {
-        console.error("error while create task",error);
         return next(error)
     }
 }

@@ -34,7 +34,6 @@ exports.userInquiriesEntry=async(req,res,next)=>{
         return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.SUCCESS,result:result});
 
     } catch (error) {
-        console.log("error while trying to mentain entry==",error);
         return next(error);
 
     }
@@ -50,7 +49,6 @@ exports.getAllInquiriesList=async(req,res,next)=>{
         return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result:result});
 
     } catch (error) {
-        console.log("error while trying to get inquiries",error);
         return next(error);
     }
 }
@@ -62,6 +60,6 @@ exports.updateInquiryResolved=async(req,res,next)=>{
         return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result:result});
 
     } catch (error) {
-        console.log("error while trying to resolve inquiry",error);
+        return next(error);
     }
 }

@@ -47,7 +47,6 @@ exports.createadvertismentController = async (req, res, next) => {
         }
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, message: responseMessage.ADS_CREATED, result: result });
     } catch (error) {
-        console.log("error: ", error);
         return next(error);
     }
 }
@@ -80,7 +79,6 @@ exports.updateadvertisementController = async (req, res, next) => {
         }
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, message: responseMessage.UPDATE_SUCCESS, result: result });
     } catch (error) {
-        console.log("error", error);
         return next(error);
     }
 }
@@ -94,7 +92,6 @@ exports.getadvertisementController = async (req, res, next) => {
         }
         return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.DATA_FOUND,result:result})
     } catch (error) {
-        console.log("Error: " + error);
         return next(error);
     }
 }
@@ -129,7 +126,6 @@ exports.createflightadvertismentController = async (req, res, next) => {
         }
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, message: responseMessage.ADS_CREATED, result: result });
     } catch (error) {
-        console.log("error: ", error);
         return next(error);
     }
 }
@@ -162,7 +158,6 @@ exports.updateflightadvertisementController = async (req, res, next) => {
         }
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, message: responseMessage.UPDATE_SUCCESS, result: result });
     } catch (error) {
-        console.log("error", error);
         return next(error);
     }
 }
@@ -181,7 +176,6 @@ exports.getflightadvertisementController = async (req, res, next) => {
         }
         return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.DATA_FOUND,result:result})
     } catch (error) {
-        console.log("Error: " + error);
         return next(error);
     }
 }
@@ -215,7 +209,6 @@ exports.createbustadvertismentController = async (req, res, next) => {
         }
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, message: responseMessage.ADS_CREATED, result: result });
     } catch (error) {
-        console.log("error: ", error);
         return next(error);
     }
 }
@@ -248,7 +241,6 @@ exports.updatebusadvertisementController = async (req, res, next) => {
         }
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, message: responseMessage.UPDATE_SUCCESS, result: result });
     } catch (error) {
-        console.log("error", error);
         return next(error);
     }
 }
@@ -264,7 +256,6 @@ exports.getbusadvertisementController = async (req, res, next) => {
         }
         return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.DATA_FOUND,result:result})
     } catch (error) {
-        console.log("Error: " + error);
         return next(error);
     }
 }
@@ -299,7 +290,6 @@ exports.createhoteladvertismentController = async (req, res, next) => {
         }
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, message: responseMessage.ADS_CREATED, result: result });
     } catch (error) {
-        console.log("error: ", error);
         return next(error);
     }
 }
@@ -332,7 +322,6 @@ exports.updatehoteladvertisementController = async (req, res, next) => {
         }
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, message: responseMessage.UPDATE_SUCCESS, result: result });
     } catch (error) {
-        console.log("error", error);
         return next(error);
     }
 }
@@ -348,7 +337,6 @@ exports.gethoteladvertisementController = async (req, res, next) => {
         }
         return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.DATA_FOUND,result:result})
     } catch (error) {
-        console.log("Error: " + error);
         return next(error);
     }
 }
@@ -368,7 +356,6 @@ exports.uploadImage=async(req,res,next)=>{
         }
         
     } catch (error) {
-     console.log("error while trying to upload image on cloud",error);
      return next(error)   
     }
 }

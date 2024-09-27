@@ -39,11 +39,9 @@ exports.addHotelBookingData = async (req, res) => {
       amount: req.body.amount,
       bookingStatus: bookingStatus.BOOKED,
     };
-    // console.log(data,"hotel data");
 
     const response = await hotelBookingModel.create(data);
 
-    // console.log("response==========", response);
     const msg = "Hotel booking  successfully";
     if (response.bookingStatus === "BOOKED") {
       // await commonFunction.sendHotelBookingConfirmation(data);
@@ -71,7 +69,6 @@ exports.getoneHotelBookingById=async (req, res) => {
     response = await hotelBookingModel.find({
       _id: { $in: [req.params.id] },
     });
-    // console.log(response,"response");
     const msg = "user booking data get successfully";
     actionCompleteResponse(res, response, msg);
   } catch (error) {
@@ -82,7 +79,6 @@ exports.getoneHotelBookingById=async (req, res) => {
 
 exports.emailTicket= async (req, res) => {
   const data=req.body;
-  // console.log(data,"id")
     try{
     const response = await hotelBookingModel.findById({_id:data.TicketId});
      await commonFunction.hotelBookingConfirmationMailWithNewEmail(response,data.emailTicket);
@@ -129,7 +125,6 @@ exports.sendHotelBookingCencelRequestForAdmin = async () => {
         .json({ message: "Booking Cancellation Request successfully" });
     }
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

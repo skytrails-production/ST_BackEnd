@@ -155,7 +155,6 @@ exports.createCoupons = async (req, res, next) => {
       result: newCoupon
     });
   } catch (error) {
-    console.error("error while trying to create error", error);
     return next(error);
   }
 };
@@ -175,7 +174,6 @@ exports.getAllCoupons = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.error("error while trying to get coupons", error);
     return next(error);
   }
 };
@@ -195,7 +193,6 @@ exports.getCouponById = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to get coupon data", error);
     return next(error);
   }
 };
@@ -271,7 +268,6 @@ exports.applyCoupon = async (req, res, next) => {
         result:isCouponExist
       });
   } catch (error) {
-    console.log("error while trying to apply coupon", error);
     return next(error);
   }
 };
@@ -320,7 +316,6 @@ exports.CouponApplied=async(req,res,next)=>{
     const result= await updateCoupon({_id:isCouponExist._id}, { $push: { userApplied: isUserExist._id } });
     return res.status(statusCode.OK).json({statusCode: statusCode.OK,responseMessage: responseMessage.COUPON_APPLIED_SUCCESS,result:result});
   } catch (error) {
-    console.log("error while apply coupon");
     return next(error);
   }
 }

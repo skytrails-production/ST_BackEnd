@@ -21,8 +21,6 @@ const agentWalletHistory=require("../model/agentWalletHistory");
 //     try {
 //           const data = await wallet.find({userId:{$in:[userId]}});
 //           const isExistUser = await User.findById(userId);
-//           console.log(data.length);
-//           console.log(isExistUser);
 //           if(data.length !== 0){
 //             const msg = 'user wallet already exists';
 //             actionCompleteResponse(res, {}, msg);
@@ -44,9 +42,7 @@ exports.update_amount = async (req, res) => {
   const id = req.params.id;
   try {
     const user = await User.findById(req.body.isAdmin);
-    // console.log(user.roles[0].toString());
     const role = await Role.findById(user.roles[0].toString());
-    //  console.log(r.name);
     if (role.name === "admin") {
       const response = await wallet.findById(id);
       const balance = Number(response.balance) + Number(req.body.balance);
@@ -55,7 +51,6 @@ exports.update_amount = async (req, res) => {
       var size = Object.keys(data).length;
       if (size > 0) {
         // const resData = await b2bUser.findById({ walletid: id });
-        // console.log(resData.walletid);
         const user = await b2bUser.findOneAndUpdate(
           { walletid: id },
           { $set: { balance: balance } },
@@ -70,7 +65,6 @@ exports.update_amount = async (req, res) => {
       actionCompleteResponse(res, {}, msg);
     }
   } catch (error) {
-    // console.log(error);
     sendActionFailedResponse(res, {}, error.message);
   }
 };
@@ -89,15 +83,12 @@ exports.pay_amount = async (req, res) => {
   try {
     const response = await wallet.findById(req.params.id);
     const user = await User.findById(response.userId);
-    // console.log(user);
     if (Number(response.balance) >= Number(req.body.amount)) {
       const balance = Number(response.balance) - req.body.amount;
-      // console.log(balance);
       const updateWallet = await wallet.findByIdAndUpdate(req.params.id, {
         balance,
       });
       const transactionId = crypto.createHash("md5").digest("hex").toString();
-      // console.log(transactionId);
       const data = {
         userId: response.userId,
         transactionId: transactionId,
@@ -146,12 +137,10 @@ exports.rechargeWallet = (req, res) => {
       currency: "INR",
       receipt: "order_rcptid_11",
     };
-    // console.log(amount);
     instance.orders.create(options, function (err, order) {
       if (err) {
         return res.send({ code: 500, message: "Server Error" });
       }
-      // console.log(order);
       return res.send({
         code: 200,
         message: "order Created Successfully",
@@ -159,7 +148,6 @@ exports.rechargeWallet = (req, res) => {
       });
     });
   } catch (err) {
-    console.log(err);
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -169,7 +157,6 @@ exports.rechargeWallet = (req, res) => {
 //   try {
 //     res.send({ verify });
 //   } catch (err) {
-//     console.log(err);
 //     sendActionFailedResponse(res, {}, err.message);
 //   }
 // };
@@ -219,7 +206,6 @@ exports.updateRozarPay = async (req, res) => {
       });
     });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ error: "Internal server error" });
   }
 };

@@ -102,7 +102,6 @@ exports.createPost = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error========>>>>>>", error);
     return next(error);
   }
 };
@@ -120,7 +119,6 @@ exports.getPost = async (req, res, next) => {
         message: responseMessage.DATA_NOT_FOUND,
       });
     }
-    // console.log("lenghth", post.length);
     const unanswered = await forumQueListLookUp(req.query);
     if (unanswered) {
       result.unanswered = unanswered;
@@ -143,7 +141,6 @@ exports.getPost = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log("error========>>>>>>", error);
     return next(error);
   }
 };
@@ -161,7 +158,6 @@ exports.updatePost = async (req, res, next) => {
     );
     return actionCompleteResponse(res, result, "Post edited successfully.");
   } catch (error) {
-    console.log("error========>>>>>>", error);
     // sendActionFailedResponse(res,{},error.message);
     return next(error);
   }
@@ -192,7 +188,6 @@ exports.deletePost = async (req, res, next) => {
       responseMessage: responseMessage.POST_DELETED,
     });
   } catch (error) {
-    console.log("error========>>>>>>", error);
     // sendActionFailedResponse(res,{},error.message);
     return next(error);
   }
@@ -214,7 +209,6 @@ exports.getPostOfUser = async (req, res, next) => {
     }
     // req.query.userId = isUserExist._id;
     const result = await forumQueDataList({userId:isUserExist._id,status:[storyStatus.ACTIVE,storyStatus.PENDING]});
-    // console.log("result============",result);
     // const likeLength=await findPostlikes({postId:result})
 
     if (!result) {
@@ -229,7 +223,6 @@ exports.getPostOfUser = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error========>>>>>>", error);
     return next(error);
   }
 };
@@ -283,7 +276,6 @@ exports.addBookmark = async (req, res, next) => {
       );
     }
   } catch (error) {
-    console.log("error========>>>>>>", error);
     return next(error);
   }
 };
@@ -304,7 +296,6 @@ exports.getTopStories = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error========", error);
     return next(error);
   }
 };
@@ -325,7 +316,6 @@ exports.getPostByID = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("Error to get data from server", error);
     return next(error);
   }
 };
@@ -349,7 +339,6 @@ exports.getComments = async (req, res, next) => {
       result: getComments,
     });
   } catch (error) {
-    console.log("get comments ============", error);
     return next(error);
   }
 };
@@ -371,13 +360,11 @@ exports.likePost = async (req, res, next) => {
     }
 
     for (const post of postId) {
-      console.log("post========",post)
       const isPostExist = await findforumQue({
         _id: post,
         status: status.ACTIVE,
       });
       if (!isPostExist) {
-        console.log("isPostExist=======",isPostExist)
         return res.status(statusCode.NotFound).send({
           statusCode: statusCode.NotFound,
           message: responseMessage.DATA_NOT_FOUND,
@@ -399,7 +386,6 @@ exports.likePost = async (req, res, next) => {
           { _id: isPostExist._id },
           { $inc: { likesCount: 1 }, $push: { likes: isUser._id } }
         );
-        console.log(`Post ${post} liked`);
       } else {
         if (isAlreadyLiked.likes.includes(isUser._id)) {
           if (isPostExist.likesCount > 0) {
@@ -414,7 +400,6 @@ exports.likePost = async (req, res, next) => {
                 $pull: { likes: isUser._id },
               }
             );
-            console.log(`Like removed from Post ${post}`);
           }
         } else {
           const updateResult = await updatePostlikes(
@@ -425,7 +410,6 @@ exports.likePost = async (req, res, next) => {
             { _id: isPostExist._id },
             { $inc: { likesCount: 1 }, $push: { likes: isUser._id } }
           );
-          console.log(`Post ${post} liked`);
         }
       }
     }
@@ -435,7 +419,6 @@ exports.likePost = async (req, res, next) => {
       responseMessage: responseMessage.POST_LIKED,
     });
   } catch (error) {
-    console.log("error========>>>>>>", error);
     return next(error);
   }
 };
@@ -459,7 +442,6 @@ exports.getTrendingStories = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error========", error);
     return next(error);
   }
 };
@@ -510,7 +492,6 @@ exports.postLike=async(req,res,next)=>{
         transactionType:'credit',
         createdAt: date.now
       }
-      // console.log("isPostExist.userId==========",isPostExist.userId)
       const updated=await updateUser(
         { _id: isPostExist.userId },
         {
@@ -520,7 +501,6 @@ exports.postLike=async(req,res,next)=>{
       );
 
       // await updateUser({_id:isUser._id},{ $inc: { likesCount: 1 }, $push: { likes: isUser._id }})
-      // console.log(`Post ${post} liked`,updated);
       
     }
     return res.status(statusCode.OK).send({
@@ -529,7 +509,6 @@ exports.postLike=async(req,res,next)=>{
       result:liked
     });
   } catch (error) {
-    console.log("error=while trying to like post=======>>>>>>", error);
     return next(error);
   }
 };

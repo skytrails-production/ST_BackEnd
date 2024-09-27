@@ -49,7 +49,6 @@ exports.createPromotinalBanner=async(req,res,next)=>{
             result: result,
           });
     } catch (error) {
-        console.error("error while trying to create a promotional banner",error);
         return next(error);
     }
 }
@@ -69,7 +68,6 @@ exports.getPromotionalBanner=async(req,res,next)=>{
             result: result,
           });
     } catch (error) {
-        console.error("error while trying to get promotional banner",error);
         return next(error);
     }
 }
@@ -90,7 +88,6 @@ exports.deletePromoEvent=async(req,res,next)=>{
             message: responseMessage.EVENT_NOT_FOUND,
           });
     } catch (error) {
-        console.error("error while trying to dlete promo event",error);
         return next(error);
     }
 }
@@ -103,7 +100,7 @@ exports.deletePermanentPromoEvent=async(req,res,next)=>{
             result:deleteEvent
           });
     } catch (error) {
-        console.error();
+        return next(error);
     }
 }
 

@@ -224,7 +224,7 @@ const userAmadeusFlightBookingServices = {
     let aggregate = userAmadeusFlightBookingModel.aggregate(pipeline);
     const options = {
       page: Number(page) || 1,
-      limit: Number(limit) || 10,
+      limit: Number(limit) || 1000,
       sort: { createdAt: -1 },
     };
     const result = await userAmadeusFlightBookingModel.aggregatePaginate(aggregate, options);
@@ -237,20 +237,27 @@ const userAmadeusFlightBookingServices = {
 
     let pipeline = [
       {
-        $lookup: {
-          from: "userBtoC",
-          localField: "userId",
-          foreignField: "_id",
-          as: "userDetails",
-        },
-      },
-      {
-        $unwind: {
-          path: "$userDetails",
-          preserveNullAndEmptyArrays: true,
-        },
-      },
+        $sort:{"airlineDetails[0].Origin.DepTime":-1}
+      }
     ];
+    if (fromDate && toDate) {
+      pipeline.push({
+        $match: {
+          $and: [
+            { CheckInDate: { $eq: new Date(fromDate) } },
+            { CheckOutDate: { $eq: new Date(toDate) } },
+          ],
+        },
+      });
+    } else if (fromDate) {
+      pipeline.push({
+        $match: { CheckInDate: { $eq: new Date(fromDate) } },
+      });
+    } else if (toDate) {
+      pipeline.push({
+        $match: { CheckOutDate: { $eq: new Date(toDate) } },
+      });
+    }
     let aggregate = userAmadeusFlightBookingModel.aggregate(pipeline);
     const options = {
       page: Number(page) || 1,
@@ -258,7 +265,6 @@ const userAmadeusFlightBookingServices = {
       sort: { createdAt: -1 },
     };
     const result = await userAmadeusFlightBookingModel.aggregatePaginate(aggregate, options);
-    console.log("result============",result);
     return result;
   }
 };

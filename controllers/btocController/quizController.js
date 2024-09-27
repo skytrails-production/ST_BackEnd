@@ -35,29 +35,23 @@ const {
 
 exports.getDailyQuiz1=async(req,res,next)=>{
     try {
-        console.log("==========================")
         const currentDate=new Date();
         // quizDate:{$gte:currentDate}
         const result=await findQuizContent({status:status.ACTIVE,quizExpiration:{$gt:currentDate}});
-        console.log("result=============",result);
         if(result){
         // return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND});
         const getDate=moment(currentDate).format("YYYY-MM-DD")
         const getDateExp=moment(result.quizExpiration).format("YYYY-MM-DD");
-        console.log("v=============ijuyhygygygygygyyyuhy=======",getDateExp>getDate);
         if(getDateExp>getDate){
             return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.QUIZ_GET,result:result});
         }
         return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.NOT_FOUND});
       
     }else{
-        console.log("========================");
             const result=await findQuizContent({status:status.ACTIVE,quizExpiration:{$gte:currentDate}});
-            console.log("result===========",result);
             return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.QUIZ_GET,result:result});
         }
     } catch (error) {
-        console.log("error while trying to get daily quiz",error);
         return next(error);
     }
 };
@@ -85,7 +79,6 @@ exports.getDailyQuiz = async (req, res, next) => {
             }
         ]);
 
-        console.log("Result:", result);
 
         if (result && result.length > 0) {
             return res.status(statusCode.OK).send({
@@ -94,14 +87,12 @@ exports.getDailyQuiz = async (req, res, next) => {
                 result: result[0]
             });
         } else {
-            console.log("No active quiz found.");
             return res.status(statusCode.NOT_FOUND).send({
                 statusCode: statusCode.NOT_FOUND,
                 responseMessage: responseMessage.DATA_NOT_FOUND
             });
         }
     } catch (error) {
-        console.error("Error while trying to get daily quiz:", error);
         return next(error);
     }
 };
@@ -156,7 +147,6 @@ exports.submitDailyQuizResponse=async(req,res,next)=>{
         const result=await createQuizResponseContent(object);
         return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.RESPONSE_SUBMIT,result:result});
     } catch (error) {
-        console.log("error while trying to create daily quiz",error);
         return next(error);
     }
 };
@@ -170,7 +160,6 @@ exports.getAllQuizQustion=async(req,res,next)=>{
             return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.RESPONSE_SUBMIT,result:result});
        
     } catch (error) {
-        console.log("error while trying to get daily quiz",error);
         return next(error);
     }
 }
@@ -197,7 +186,6 @@ exports.getWinnerOfQuiz=async(req,res,next)=>{
         return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.WIINER_GOT,result:result});
 
     } catch (error) {
-        console.log("error while trying to get daily quiz winner",error);
         return next(error);
     }
 }

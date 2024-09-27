@@ -57,7 +57,6 @@ exports.rateOurApp=async(req,res,next)=>{
             result: result,
           });
     } catch (error) {
-        console.log("error while trying to rate our app",error);
         return next(error);
     }
 }
@@ -84,7 +83,6 @@ exports.getRating=async(req,res,next)=>{
             result: result,
           });
     } catch (error) {
-        console.log("error while tring to get rate",error);
         return next(error)
     }
 }
@@ -92,7 +90,6 @@ exports.getRating=async(req,res,next)=>{
 exports.getAllRating=async(req,res,next)=>{
     try {
         const result=await ratingList({});
-        console.log("result",result);
         if(result.length<1){
             return res.status(statusCode.OK).send({
                 statusCode: statusCode.NotFound,
@@ -105,7 +102,6 @@ exports.getAllRating=async(req,res,next)=>{
             result: result,
           });
     } catch (error) {
-        console.log("error while tring to get rate",error);
         return next(error)
     }
 }

@@ -130,18 +130,14 @@ exports.refundUserTransaction = async (req, res, next) => {
 
       // Generate checksum
       const checksum = ccav.encrypt(requestData,process.env.CC_AVENUE_WORKING_KEY);
-      console.log("checksum=============",checksum);
       requestData.checksum =checksum;
       const encryptedData = ccav.encrypt(requestData);
-      console.log(encryptedData);
       const decryptedData = ccav.decrypt(encryptedData);
-      console.log(decryptedData);
       try {
         // Send request to CCAvenue
         const response = await axios.post(url, requestData);
 
         // Redirect user to CCAvenue payment page
-        console.log("Redirecting to CCAvenue payment page:", response.data);
       } catch (error) {
         console.error("Error initiating payment:", error.message);
         // Handle error
@@ -166,14 +162,11 @@ exports.refundUserTransaction = async (req, res, next) => {
     //       });
 
     //       // The 'form' variable now contains the HTML form to be rendered in your view
-    //       console.log(form);
-    //     } catch (error) {
-    //       console.error('Error initiating payment:', error.message);
+    //       console.ror) {
     //       // Handle error
     //     }
     //   }
   } catch (error) {
-    console.log("error while trying to refund amount==", error);
     return next(error);
   }
 };

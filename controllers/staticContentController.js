@@ -69,7 +69,6 @@ exports.createStaticContent = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log("error========>>>>>>", error);
     // sendActionFailedResponse(res, {}, error.message);
     return next(error);
   }
@@ -97,7 +96,6 @@ exports.listStaticContent = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log("error========>>>>>>", error);
     return next(error);
   }
 };
@@ -126,7 +124,6 @@ exports.updateStaticContent = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error========>>>>>>", error);
     // sendActionFailedResponse(res,{},error.message);
     return next(error);
   }
@@ -160,7 +157,6 @@ exports.deleteStaticContent = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error========>>>>>>", error);
     // sendActionFailedResponse(res,{},error.message);
     return next(error);
   }

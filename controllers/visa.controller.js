@@ -59,7 +59,6 @@ exports.deleteVisa = async (req, res) => {
   try {
     const id = req.params.id;
     const result = await visadata.findByIdAndDelete(id);
-    // console.log("result found", result)
 
     if (!result) {
       return res.status(404).json({ message: "Item not found" });

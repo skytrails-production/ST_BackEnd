@@ -113,11 +113,9 @@ exports.eventBooking1 = async (req, res, next) => {
         message: responseMessage.EVENT_NOT_FOUND,
       });
     }
-    // console.log("isEventExist=============", isEventExist);
     const selectedSlot = isEventExist.slot.find(
       (slot) => slot.startTime === startTime && slot.isAvailable === true
     );
-    // console.log("selectedSlot=========", selectedSlot);
     if (!selectedSlot) {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,
@@ -227,7 +225,6 @@ exports.eventBooking1 = async (req, res, next) => {
       result: makeBooking,
     });
   } catch (error) {
-    console.log("error while booking event", error);
     return next(error);
   }
 };
@@ -295,7 +292,6 @@ exports.bookFreeEvents = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log("error while booking event", error);
     return next(error);
   }
 };
@@ -365,7 +361,6 @@ exports.eventBooking = async (req, res, next) => {
       result: result,
     }); 
   } catch (error) {
-    console.log("error while booking event", error);
     return next(error);
   }
 };
@@ -377,10 +372,9 @@ exports.sendNotificationAfterBooking=async(req,res,next)=>{
       const messageBody=`Dear ${name} 😎,We are pleased to inform you that your booking for PEFA 2024, an extraordinary night, is confirmed with Skytrails. We will be sharing more details soon, so stay tuned for regular updates on our app. See you at PEFA2024.Best Regards TheSkyTrails pvt ltd`
       const messageTitle="🌟🎉 Your PEFA 2024 Booking Confirmation! 🎉🌟";
       const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`;
-      await commonPushFunction.pushNotification(deviceToken,messageTitle,messageBody,imageurl);
+      await commonPushFunction.pushNotificationAfterDepricate(deviceToken,messageTitle,messageBody,imageurl);
       return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.SUCCESS})
   } catch (error) {
-   console.log("error while send notification"); 
    return next(error)
   }
 }
@@ -398,7 +392,6 @@ exports.getEventBookingStatus=async(req,res,next)=>{
     // const dateMoment=
     return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result:isBookingExist});
   } catch (error) {
-    console.log("error while get pefaeventHistory",error);
     return next(error);
   }
 }
@@ -429,12 +422,9 @@ exports.sendUpdatePasses=async(req,res,next)=>{
         const notificationMessage=`Hey ${user.name}😎 You are booked!🎊`;
         const messageBody="🎉✨You're all set for the PEFA event. See you there for an unforgettable time.✨🎉";
         const imageurl=`https://travvolt.s3.amazonaws.com/uploadedFile_1706947058271_pefaEvent.jpg`;
-        await pushNotification(user.deviceToken,notificationMessage,messageBody,imageurl);
+        await pushNotificationAfterDepricate(user.deviceToken,notificationMessage,messageBody,imageurl);
       } catch (pushError) {
-        console.error(
-          "Error while sending push notification to user:",
-          pushError
-        );
+       
         continue;
       }
       }
@@ -442,7 +432,6 @@ exports.sendUpdatePasses=async(req,res,next)=>{
     return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.PASSES_SENT,result:result});
 
   } catch (error) {
-    console.log("error while send passes===========",error);
     return next(error)
   }
 }

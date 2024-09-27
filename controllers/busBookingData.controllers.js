@@ -52,7 +52,6 @@ exports.addBusBookingData = async (req, res) => {
 
 exports.emailTicket= async (req, res) => {
   const data=req.body;
-  // console.log(data,"id")
     try{
     const response = await busBookingData.findById({_id:data.TicketId});
     await commonFunction.busBookingConfirmationMailWithNewEmail(response,data.emailTicket);
@@ -70,7 +69,6 @@ exports.getoneBusBookingById = async (req, res) => {
     response = await busBookingData.find({
       _id: { $in: [req.params.id] },
     });
-    // console.log(response,"response");
     const msg = "user booking data get successfully";
     actionCompleteResponse(res, response, msg);
   } catch (error) {

@@ -81,7 +81,6 @@ exports.createOpenings = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to create opening", error);
     return next(error);
   }
 };
@@ -101,7 +100,6 @@ exports.getOpening = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to get all openings", error);
     return next(error);
   }
 };
@@ -121,7 +119,6 @@ exports.getAllOpening = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-    console.log("error while trying to get all openings", error);
     return next(error);
   }
 };
@@ -143,7 +140,6 @@ exports.deleteOpening = async (req, res, next) => {
       result: deletedData,
     });
   } catch (error) {
-    console.log("error while trying to delete openneing", error);
     return next(error);
   }
 };

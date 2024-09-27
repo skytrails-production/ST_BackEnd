@@ -74,6 +74,7 @@ const {createAmdeusUserFlightChangeRequest,flightAmdeuschangeRequestUserList,fli
 const {amadeusCncellationServices}=require("../../services/amadeusServices/amadeusFlightCancelRequest");
 const {createamadeusCancelFlightBookings,findamadeusCancelFlightBookings,aggregatePaginatecancelFlightBookingsList,aggPagamadeusCancelFlightBookingsList1,countTotalamadeusCancelFlightBookings}=amadeusCncellationServices;
 
+
 //**********************************************************API's**********************************************/
 exports.amdsChangeFlight = async (req, res, next) => {
   try {
@@ -132,7 +133,6 @@ exports.amdsChangeFlight = async (req, res, next) => {
             return res.status(statusCode.OK).send({ statusCode: statusCode.OK,responseMessage:responseMessage.CHANGE_REQUEST_SUCCESS, result: result });
         }
   } catch (error) {
-    console.log("error while trying to booking", error);
     return next(error);
   }
 };
@@ -141,7 +141,6 @@ exports.getUserChangeFlights = async (req, res, next) => {
   try {
   
   } catch (error) {
-    console.log("error while trying to get userFlight booking! ", error);
     return next(error);
   }
 };

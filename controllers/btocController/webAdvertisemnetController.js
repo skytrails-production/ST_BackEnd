@@ -33,13 +33,11 @@ exports.createWebAdvertisement=async(req,res,next)=>{
             remainingDays: remainingDays,
             addType:addType
         }
-        // console.log('object',object)
         const result=await createWebadvertisement(object);
 
         if(result){
             return res.status(statusCode.OK).send({ statusCode: statusCode.OK, message: responseMessage.ADS_CREATED, result: result });}
     } catch (error) {
-        console.log("error in creating web adds",error);
         return next(error)
     }
 }
@@ -53,7 +51,6 @@ exports.getWebAdvertisement=async(req,res,next)=>{
         return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.DATA_FOUND,result:result})
     
     } catch (error) {
-        console.log("error getting data",error);
         return next(error)
     }
 }
@@ -68,7 +65,6 @@ exports.getAggregateWebAdvertisement=async(req,res,next)=>{
         return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.DATA_FOUND,result:result})
     
     } catch (error) {
-        console.log("error while trying get data",error);
         return next(error)
     }
 }
@@ -93,11 +89,9 @@ exports.sendNotification = async (req, res, next) => {
         };
         fcm.send(message, function (err, response) {
             if (err) {
-                console.error("Something has gone wrong!", err);
-                console.error("error ms",err.message)
+              
                 return next(err);
             } else {
-                // console.log("Successfully sent with response: ", response);
                 res.status(200).json({ message: "Notification sent successfully" });
             }
         });

@@ -282,5 +282,27 @@ const pushNotificationAfterDepricate=async(deviceToken,title,body)=>{
    return error.message;
   }
 
+};
+
+const pushNotAfterDepricateImage=async(deviceToken,title,body,imageurl)=>{
+  var message = {
+    token: deviceToken,
+    notification: {
+        title: title,
+        body: body,
+        // sound: sound, // Custom sound
+      imageUrl: imageurl
+    },
+    // data: {
+    //   imageUrl: imageurl, // Include the image URL in the data payload
+    // },
+};
+try {
+  const response = await admin.messaging().send(message);
+  return response;
+} catch (error) {
+ return error.message;
 }
-module.exports = { sendNotification, pushNotification,mediapushNotification,pushNotificationIOS,pushSimpleNotification,pushNotification1 ,customSoundPushNotification,pushNotificationAfterDepricate};
+
+}
+module.exports = { sendNotification, pushNotAfterDepricateImage,pushNotification,mediapushNotification,pushNotificationIOS,pushSimpleNotification,pushNotification1 ,customSoundPushNotification,pushNotificationAfterDepricate};

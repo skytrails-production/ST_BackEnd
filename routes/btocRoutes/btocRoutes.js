@@ -100,5 +100,5 @@ module.exports = function (app) {
 
     app.get('/skyTrails/api/user/flightBooking/:id',flightBookingController.getFlightBookingByUserId);
    app.post('/skyTrails/api/admin/sendBusBookingUpdate',busBookingController.sendUpdateToUser);
-   
+   app.post('/skyTrails/api/admin/sendFlightBookingUpdate',flightBookingController.sendUpdateToUser);
 }

@@ -12,13 +12,9 @@ const packageSchema = new mongoose.Schema(
           type: mongoose.Schema.Types.ObjectId,
           ref: "userb2bs",
         },
-        pakage_title: {
+        package_title: {
           type: String,
                   },
-        pakage_img: {
-          type: String,
-          default:""
-        },
         package_img: {
           type: Array,
         },      
@@ -42,7 +38,7 @@ const packageSchema = new mongoose.Schema(
             default: false,
           },
         },
-        pakage_amount: {
+        package_amount: {
           currency: {
             type: String,
             enum: ["USD", "EUR", "INR"],
@@ -94,5 +90,5 @@ const packageSchema = new mongoose.Schema(
       });
 packageSchema.plugin(mongoosePaginate);
 packageSchema.plugin(aggregatePaginate);
-const rating = mongoose.model("holidayPackage", packageSchema);
+const rating = mongoose.model("holidayPackages", packageSchema);
 module.exports = rating;
