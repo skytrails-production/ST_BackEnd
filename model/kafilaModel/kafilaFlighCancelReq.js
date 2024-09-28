@@ -16,7 +16,7 @@ const cancelBookingDataSchema = new mongoose.Schema(
         },
         flightBookingId: {
             type: Schema.Types.ObjectId,
-            ref: "userflightBookingDetail"
+            ref: "kafilaUserFlightBooking"
         },
 
         bookingId:{
@@ -41,7 +41,7 @@ const cancelBookingDataSchema = new mongoose.Schema(
         cancellationPartyType:{
             type: String,
             enums: ['TBO','AMADEUS','KAFILA'],
-            default:'TBO'
+            default:'KAFILA'
         }
     }, { timestamps: true }
 )
@@ -49,5 +49,5 @@ cancelBookingDataSchema.plugin(mongoosePaginate);
 
 cancelBookingDataSchema.plugin(aggregatePaginate);
 
-const cancelBookingData = mongoose.model("userCancelFlightTickects", cancelBookingDataSchema);
+const cancelBookingData = mongoose.model("userKafilaCancelFlightTickects", cancelBookingDataSchema);
 module.exports = cancelBookingData;

@@ -5,49 +5,52 @@ const approveStatus = require("../../enums/approveStatus");
 const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 const mongoosePaginate = require('mongoose-paginate-v2');
 mongoose.pluralize(null);
-const cancelBookingDataSchema = new mongoose.Schema(
-    {
+const changeBookingDataSchema =
+    new mongoose.Schema({
         userId: {
             type: Schema.Types.ObjectId,
-            ref: "userBtoC",
+            ref: "userBtoC"
         },
         reason: {
             type: String
         },
+        bookingId: {
+            type: String
+        },
         flightBookingId: {
             type: Schema.Types.ObjectId,
-            ref: "userflightBookingDetail"
+            ref: "kafilaUserFlightBooking"
         },
-
-        bookingId:{
-            type: Number,
+        contactNumber: {
+            type: String
         },
-        pnr: {
-            type: String,
+        changerequest: {
+            type: String
         },
-        amount:{
-            type: Number,
+        amount: {
+            type: Number
         },
         status: {
             type: String,
             enum:[status.ACTIVE,status.BLOCK,status.DELETE],
             default: status.ACTIVE
         },
-        processStatus: {
+        approveStatus: {
             type: String,
-            enums: [approveStatus.APPROVED, approveStatus.REJECT, approveStatus.PENDING],
-            default:approveStatus.PENDING
+            enum: [approveStatus.APPROVED, approveStatus.REJECT, approveStatus.PENDING],
+            default: approveStatus.PENDING
         },
-        cancellationPartyType:{
+        changeReqPartyType:{
             type: String,
             enums: ['TBO','AMADEUS','KAFILA'],
-            default:'TBO'
-        }
+            default:'KAFILA'
+        },
+        isamadeus:{type:Boolean,default:true}
     }, { timestamps: true }
-)
-cancelBookingDataSchema.plugin(mongoosePaginate);
+    )
+changeBookingDataSchema.plugin(mongoosePaginate);
 
-cancelBookingDataSchema.plugin(aggregatePaginate);
+changeBookingDataSchema.plugin(aggregatePaginate);
 
-const cancelBookingData = mongoose.model("userCancelFlightTickects", cancelBookingDataSchema);
-module.exports = cancelBookingData;
+const changeBookingData = mongoose.model("userKafilaChangeFlightRequest", changeBookingDataSchema);
+module.exports = changeBookingData;

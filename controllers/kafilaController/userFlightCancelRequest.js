@@ -37,44 +37,12 @@ const {
   paginateUsertransaction,
   countTotalUsertransaction,
 } = transactionModelServices;
-const {
-  userflightBookingServices,
-} = require("../../services/btocServices/flightBookingServices");
-const { aggregatePaginate } = require("../../model/role.model");
-const {
-  createUserflightBooking,
-  findUserflightBooking,
-  getUserflightBooking,
-  findUserflightBookingData,
-  deleteUserflightBooking,
-  userflightBookingList,
-  updateUserflightBooking,
-  paginateUserflightBookingSearch,
-  aggregatePaginateGetBooking,
-} = userflightBookingServices;
-const {
-  userAmadeusFlightBookingServices,
-} = require("../../services/amadeusServices/amadeusFlighBookingServices");
-const {
-  createUserAmadeusFlightBooking,
-  findUserAmadeusFlightBooking,
-  getUserAmadeusFlightBooking,
-  findUserAmadeusFlightBookingData,
-  deleteUserAmadeusFlightBooking,
-  listUserAmadeusFlightBookings,
-  updateUserAmadeusFlightBooking,
-  paginateUserAmadeusFlightBookingSearch,
-  countTotalUserAmadeusFlightBookings,
-  aggregatePaginateGetUserAmadeusFlightBooking,
-  aggregatePaginateGetUserAmadeusFlightBooking1,
-  aggrPagGetUserAmadeusFlightBooking,
-} = userAmadeusFlightBookingServices;
-
-const {amadeusCncellationServices}=require("../../services/amadeusServices/amadeusFlightCancelRequest");
-const {createamadeusCancelFlightBookings,findamadeusCancelFlightBookings,aggregatePaginatecancelFlightBookingsList,aggPagamadeusCancelFlightBookingsList1,countTotalamadeusCancelFlightBookings}=amadeusCncellationServices;
-const {changeAmadeusUserBookingServices}=require('../../services/amadeusServices/amadeysFlightChangeRequestServices');
-const {createAmdeusUserFlightChangeRequest,flightAmdeuschangeRequestUserList,flightAmdeusChangeRequestUserList1,amdeusFindOneChangeRequestDetail,countAmdeusChangeFlightRequest}=changeAmadeusUserBookingServices;
-
+const {KafilaCancellationServices}=require("../../services/kafilaServices/cancelBooking");
+const {createKafilaCancelFlightBookings,findKafilaCancelFlightBookings,updateKafilacancelFlightBookings,aggrPagcancelFlightBookingsList,aggPagKafilaCancelFlightBookingsList1,countTotalKafilaCancelFlightBookings}=KafilaCancellationServices;
+const {changeKafilaUserBookingServices}=require('../../services/kafilaServices/changeRequest');
+const {createKafilaUserFlightChangeRequest,flightKafilachangeRequestUserList,flightKafilaChangeRequestUserList1,kafilaFindOneChangeRequestDetail,countKafilaChangeFlightRequest}=changeKafilaUserBookingServices;
+const {userKafilaFlightBookingServices}=require("../../services/kafilaServices/flightBookingServices");
+const {createKafilaFlightBooking,findKafilaFlightBooking,getKafilaFlightBookings,deleteKafilaFlightBooking,updateKafilaFlightBooking,paginateKafilaFlightBookingSearch,countTotalKafilaFlightBookings,aggPagGetBookingList,aggrPagGetKafBookingAdmin}=userKafilaFlightBookingServices;
 //**********************************************************API's**********************************************/
 exports.cancelUserFlightTicket = async (req, res, next) => {
   try {
@@ -84,17 +52,17 @@ exports.cancelUserFlightTicket = async (req, res, next) => {
           return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
       }
      
-      let isBookingExist = await findUserAmadeusFlightBooking({userId: isUserExist._id,bookingId: bookingId});
+      let isBookingExist = await findKafilaFlightBooking({userId: isUserExist._id,bookingId: bookingId});
         
         if(!isBookingExist||isBookingExist==null){
           return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, message: responseMessage.BOOKING_NOT_FOUND });
         }
 
-      const isAlreadyRequested=await findamadeusCancelFlightBookings({userId:isUserExist._id,flightBookingId:isBookingExist._id});
+      const isAlreadyRequested=await findKafilaCancelFlightBookings({userId:isUserExist._id,flightBookingId:isBookingExist._id});
       if(isAlreadyRequested){
           return res.status(statusCode.OK).send({ statusCode: statusCode.Conflict, responseMessage: responseMessage.ALREADY_REQUESTED});
       }
-      const isAlreadyChangeRequested=await amdeusFindOneChangeRequestDetail({userId:isUserExist._id,flightBookingId:isBookingExist._id})
+      const isAlreadyChangeRequested=await kafilaFindOneChangeRequestDetail({userId:isUserExist._id,flightBookingId:isBookingExist._id})
       if(isAlreadyChangeRequested){
         return res.status(statusCode.OK).send({ statusCode: statusCode.Conflict, responseMessage: responseMessage.ALREADY_CHANGE_REQUESTED});
     }
@@ -106,9 +74,9 @@ exports.cancelUserFlightTicket = async (req, res, next) => {
           pnr: pnr,
           amount:isBookingExist.totalAmount
       }
-      const result = await createamadeusCancelFlightBookings(object);
+      const result = await createKafilaCancelFlightBookings(object);
       const TemplateNames = [
-        String("FLightTicket Cancel"),
+        String("kafila FLightTicket Cancel"),
         String("hello"),
         String(isUserExist.username),
         String("formattedDate"),
@@ -122,7 +90,7 @@ exports.cancelUserFlightTicket = async (req, res, next) => {
       const notObject = {
           userId: isUserExist._id,
           title: "Cancel Ticket Request by User",
-          description: `New amadeus  ticket cancel request from the user on our platform. 🎊`,
+          description: `New kafila  ticket cancel request from the user on our platform. 🎊`,
           from: 'flightCancelRequest',
           to: isUserExist.userName,
         };
@@ -136,13 +104,13 @@ exports.cancelUserFlightTicket = async (req, res, next) => {
 
 exports.getUserCancelFlights = async (req, res, next) => {
   try {
-    const { page, limit, search, fromDate, toDate,userId } = req.query;
+    const { page, limit, search, fromDate, toDate } = req.query;
     const isUserExist = await findUser({ _id: req.userId,status:status.ACTIVE,otpVerified:true });
     if (!isUserExist) {
         return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
     }
     req.query.userId=isUserExist._id;
-    const result =await aggregatePaginatecancelFlightBookingsList(req.query);
+    const result =await aggrPagcancelFlightBookingsList(req.query);
     if (!result) {
         return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.DATA_NOT_FOUND });
     }
@@ -155,7 +123,7 @@ exports.getUserCancelFlights = async (req, res, next) => {
 exports.getCancelFlightBookingId = async (req, res, next) => {
   try {
     const {cancelRequestId}=req.query;
-    const result=await findamadeusCancelFlightBookings({_id:cancelRequestId});
+    const result=await findKafilaCancelFlightBookings({_id:cancelRequestId});
     if (!result) {
       return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.DATA_NOT_FOUND });
   }
@@ -181,5 +149,7 @@ exports.getAllUserCancelFlight = async (req, res, next) => {
     return next(error);
   }
 };
+
+
 
 

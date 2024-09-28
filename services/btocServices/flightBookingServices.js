@@ -133,17 +133,25 @@ const userflightBookingServices = {
     return result;
   },
   aggregatePaginateGetBooking1: async (query) => {
-    const { toDate, fromDate, page, limit, search } = query;
-
-    if (search) {
-      var filter = search;
-    }
-    let data = filter || "";
+    const { toDate, fromDate, page, limit, search ,userId} = query;
     let pipeline = [
-      {
-        $sort:{"airlineDetails[0].Origin.DepTime":-1}
-      }
+      { $match: { userId: userId } },
+      { $sort:{"airlineDetails[0].Origin.DepTime":-1}}
     ];
+    if (search) {
+      pipeline.push({
+        $match: {
+          $or: [
+            { "status": { $regex: search, $options: "i" } },
+            { "origin": { $regex: search, $options: "i" } },
+            { "destination": { $regex: search, $options: "i" } },
+            { "pnr": { $regex: search, $options: "i" } },
+            { "totalAmount": parseInt(search)},
+            { "bookingStatus": { $regex: search, $options: "i" } },
+          ],
+        },
+      });
+    }
     if (fromDate && toDate) {
       pipeline.push({
         $match: {
@@ -162,6 +170,73 @@ const userflightBookingServices = {
         $match: { CheckOutDate: { $eq: new Date(toDate) } },
       });
     }
+
+    let aggregate = flightBookingModel.aggregate(pipeline);
+    // console.log("aggregate========>>>>>>>", aggregate);
+    const options = {
+      page: Number(page) || 1,
+      limit: Number(limit) || 10,
+      sort: { createdAt: -1 },
+    };
+    const result = await flightBookingModel.aggregatePaginate(
+      aggregate,
+      options
+    );
+    // console.log("=--------=-=-=--------", result);
+    return result;
+  },
+  aggrPagGetBookingAdmin: async (query) => {
+    const { toDate, fromDate, page, limit, search } = query;
+    let pipeline = [
+      {
+        $lookup: {
+            from: "userBtoC",
+            localField: 'userId',
+            foreignField: '_id',
+            as: "userDetails",
+        }
+    },
+    {
+        $unwind: {
+            path: "$userDetails",
+            preserveNullAndEmptyArrays: true
+        }
+    },
+      { $sort:{"airlineDetails[0].Origin.DepTime":-1}},
+    ];
+    if (search) {
+      pipeline.push({
+        $match: {
+          $or: [
+            { "status": { $regex: search, $options: "i" } },
+            { "origin": { $regex: search, $options: "i" } },
+            { "destination": { $regex: search, $options: "i" } },
+            { "pnr": { $regex: search, $options: "i" } },
+            { "totalAmount": parseInt(search)},
+            { "bookingStatus": { $regex: search, $options: "i" } },
+          ],
+        },
+      });
+    }
+    if (fromDate && toDate) {
+      pipeline.push({
+        $match: {
+          $and: [
+            { CheckInDate: { $eq: new Date(fromDate) } },
+            { CheckOutDate: { $eq: new Date(toDate) } },
+          ],
+        },
+      });
+    } else if (fromDate) {
+      pipeline.push({
+        $match: { CheckInDate: { $eq: new Date(fromDate) } },
+      });
+    } else if (toDate) {
+      pipeline.push({
+        $match: { CheckOutDate: { $eq: new Date(toDate) } },
+      });
+    }
+
     let aggregate = flightBookingModel.aggregate(pipeline);
     // console.log("aggregate========>>>>>>>", aggregate);
     const options = {
