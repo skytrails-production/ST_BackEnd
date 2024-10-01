@@ -58,8 +58,19 @@ const changeKafilaUserBookingServices = {
         return await userFligthChangeRequestModel.aggregatePaginate(aggregate, options)
 
     },
-    flightKafilaChangeRequestUserList1:async(body)=>{
-        const { page, limit, search, fromDate, toDate,userId } = body;
+    flightKafilaChangeRequestById:async(body)=>{
+        return await userChangeFlightModel.findOne(body)
+
+    },
+    kafilaFindOneChangeRequestDetail:async(body)=>{
+        return await userFligthChangeRequestModel.findOne(body)
+    },
+    countKafilaChangeFlightRequest:async(body)=>{
+        return await userFligthChangeRequestModel.countDocuments(body)
+    },
+    aggrPagchangeFlightBookingsList: async (body) => {
+        
+        const { page, limit, search, fromDate, toDate ,userId} = body;
         if (search) {
             var filter = search;
         }
@@ -82,22 +93,52 @@ const changeKafilaUserBookingServices = {
                     preserveNullAndEmptyArrays: true
                 }
             },
+              {
+                $lookup: {
+                    from: "kafilaUserFlightBooking",
+                    localField: 'flightBookingId',
+                    foreignField: '_id',
+                    as: "flightDetails",
+                  }
+              },
+              {
+                $unwind: {
+                  path: "$flightDetails",
+                  preserveNullAndEmptyArrays: true
+                }
+              },
+              {
+                $match: {
+                    $or: [
+                        { "flightDetails.AirlineName": { $regex: data, $options: "i" } },
+                        { "userDetails.username": { $regex: data, $options: "i" } },
+                        { "userDetails.email": { $regex: data, $options: "i" } },
+                        { "flightDetails.paymentStatus": { $regex: data, $options: "i" } },
+                        { "flightDetails.destination": { $regex: data, $options: "i" } },
+                        { "flightDetails.dateOfJourney": { $regex: data, $options: "i" } },
+                        { "bookingId": { $regex: data, $options: "i" } },
+                        { "flightDetails.origin": { $regex: data, $options: "i" } },
+                        { "reason": { $regex: data, $options: "i" } },
+                        { "flightDetails.amount": parseInt(data) }
+                    ],
+            }
+        }
         ]
+        if (fromDate) {
+            pipeline.dateOfJourney = { $eq: fromDate };
+        }
+        if (toDate) {
+            pipeline.createdAt = { $eq: toDate }
+        }
         let aggregate = userFligthChangeRequestModel.aggregate(pipeline)
         let options = {
             page: parseInt(page) || 1,
-            limit: parseInt(limit) || 5,
+            limit: parseInt(limit) || 10,
             sort: { createdAt: -1 },
         };
-        return await userChangeFlightModel.aggregatePaginate(aggregate, options)
-
+        const result= await userFligthChangeRequestModel.aggregatePaginate(aggregate, options)
+        return result;
     },
-    kafilaFindOneChangeRequestDetail:async(body)=>{
-        return await userFligthChangeRequestModel.findOne(body)
-    },
-    countKafilaChangeFlightRequest:async(body)=>{
-        return await userFligthChangeRequestModel.countDocuments(body)
-    }
 }
 
 module.exports = { changeKafilaUserBookingServices }

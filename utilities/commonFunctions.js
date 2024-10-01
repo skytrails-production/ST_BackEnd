@@ -340,7 +340,7 @@ module.exports = {
   //==========================================================
 
   FlightBookingConfirmationMail: async (to) => {
-    const currentDate = new Date(to.createdAt);
+    const currentDate = new Date(to?.createdAt);
     const options = {
       weekday: "short",
       month: "short",
@@ -423,7 +423,7 @@ module.exports = {
                           font-weight: 500;
                           word-wrap: break-word;
                         ">
-                  ${to.bookingId}
+                  ${to?.bookingId}
                 </div>
               </div>
               <div style="
@@ -448,7 +448,7 @@ module.exports = {
                           font-weight: 500;
                           word-wrap: break-word;
                         ">
-                  ${to.pnr}
+                  ${to?.pnr}
                 </div>
               </div>
               <div style="
@@ -487,7 +487,7 @@ module.exports = {
               </div>
       
 
-              ${to.passengerDetails
+              ${to?.passengerDetails
                 .map(
                   (item) => `
               <div style="width:100%; float: left; padding: 5px;">
@@ -535,7 +535,7 @@ module.exports = {
                 <div style="width: 20%; float: right; margin-right: 10px;">
                   Status</div>
               </div>
-              ${to.airlineDetails
+              ${to?.airlineDetails
                 .map(
                   (item) => `      
               <div style="width: 100%; float: left; padding: 5px;">
@@ -602,6 +602,143 @@ module.exports = {
                 )
                 .join("")}      
             </div>
+
+
+            ${to && to?.baggage && to?.baggage?.length > 0
+              ? `<div>
+                  <div
+              style="
+                width: 100%;
+                background-color: #004684;
+                float: left;
+                font-weight: bold;
+                padding: 5px;
+                border-bottom: 1px solid #d6d8e7;
+                color: #fff;
+                margin-top: 8px;
+              "
+            >
+              Extra Baggage
+            </div>
+                  ${to?.baggage?.map(
+                    (item) => `
+                      <div
+              style="
+                width: 100%;
+                float: left;
+                margin-top: 8px;
+                padding: 5px;
+                border-bottom: 1px solid #d6d8e7;
+              "
+            >
+              <div style="margin-top: 5px; float: left; width: 300px">
+                <div style="float: left; width: 100%; text-align: left; font-weight: bold">
+                  Weight: ${item?.Weight}
+                </div>
+              </div>
+              <div style="margin-top: 5px; float: left; width: 300px">
+                <div style="float: left; width: 100%; text-align: right; font-weight: bold">
+                  Code: ${item?.Code}
+                </div>
+              </div>
+            </div>
+                    `
+                  ).join("")}
+                </div>`
+              : ""
+            }
+
+            ${to && to?.mealDynamic && to?.mealDynamic?.length > 0
+              ? `<div>
+                  <div
+              style="
+                width: 100%;
+                background-color: #004684;
+                float: left;
+                font-weight: bold;
+                padding: 5px;
+                border-bottom: 1px solid #d6d8e7;
+                color: #fff;
+                margin-top: 8px;
+              "
+            >
+              Meal
+            </div>
+                  ${to?.mealDynamic?.map(
+                    (item) => `
+                      <div
+              style="
+                width: 100%;
+                float: left;
+                margin-top: 8px;
+                padding: 5px;
+                border-bottom: 1px solid #d6d8e7;
+              "
+            >
+              <div style="margin-top: 5px; float: left; width: 300px">
+                <div style="float: left; width: 100%; text-align: left; font-weight: bold">
+                  Menu Item: ${item?.AirlineDescription}
+                </div>
+              </div>
+              <div style="margin-top: 5px; float: left; width: 300px">
+                <div style="float: left; width: 100%; text-align: right; font-weight: bold">
+                  Code: ${item?.Code}
+                </div>
+              </div>
+            </div>
+                    `
+                  ).join("")}
+                </div>`
+              : ""
+            }
+
+
+             ${to && to?.seatDynamic && to?.seatDynamic?.length > 0
+              ? `<div>
+                  <div
+              style="
+                width: 100%;
+                background-color: #004684;
+                float: left;
+                font-weight: bold;
+                padding: 5px;
+                border-bottom: 1px solid #d6d8e7;
+                color: #fff;
+                margin-top: 8px;
+              "
+            >
+              Seat
+            </div>
+                  ${to?.seatDynamic?.map(
+                    (item) => `
+                      <div
+              style="
+                width: 100%;
+                float: left;
+                margin-top: 8px;
+                padding: 5px;
+                border-bottom: 1px solid #d6d8e7;
+              "
+            >
+              <div style="margin-top: 5px; float: left; width: 300px">
+                <div style="float: left; width: 100%; text-align: left; font-weight: bold">
+                  RowNo: ${item?.RowNo}
+                </div>
+              </div>
+              <div style="margin-top: 5px; float: left; width: 300px">
+                <div style="float: left; width: 100%; text-align: right; font-weight: bold">
+                  SeatNo: ${item?.SeatNo}
+                </div>
+              </div>
+            </div>
+                    `
+                  ).join("")}
+                </div>`
+              : ""
+            }
+
+
+          
       
             <div
               style="width: 100%; background-color: #004684; float: left; font-weight: bold; padding: 5px; border-bottom: 1px solid #D6D8E7; color: #fff; margin-top: 8px;">
@@ -745,6 +882,8 @@ module.exports = {
       </html>
       `;
 
+      console.log(htmlContent)
+
     // Create a new PDF document
     const browser = await puppeteer.launch({ headless: "new", timeout: 0 });
     const page = await browser.newPage();
@@ -798,7 +937,7 @@ module.exports = {
   //==========================================================
 
   FlightBookingConfirmationMailWithNewEmail: async (to, email) => {
-    const currentDate = new Date(to.createdAt);
+    const currentDate = new Date(to?.createdAt);
     const options = {
       weekday: "short",
       month: "short",
@@ -1060,6 +1199,146 @@ module.exports = {
                 )
                 .join("")}      
             </div>
+
+
+
+
+
+
+             ${to && to?.baggage && to?.baggage?.length > 0
+              ? `<div>
+                  <div
+              style="
+                width: 100%;
+                background-color: #004684;
+                float: left;
+                font-weight: bold;
+                padding: 5px;
+                border-bottom: 1px solid #d6d8e7;
+                color: #fff;
+                margin-top: 8px;
+              "
+            >
+              Extra Baggage
+            </div>
+                  ${to?.baggage?.map(
+                    (item) => `
+                      <div
+              style="
+                width: 100%;
+                float: left;
+                margin-top: 8px;
+                padding: 5px;
+                border-bottom: 1px solid #d6d8e7;
+              "
+            >
+              <div style="margin-top: 5px; float: left; width: 300px">
+                <div style="float: left; width: 100%; text-align: left; font-weight: bold">
+                  Weight: ${item?.Weight}
+                </div>
+              </div>
+              <div style="margin-top: 5px; float: left; width: 300px">
+                <div style="float: left; width: 100%; text-align: right; font-weight: bold">
+                  Code: ${item?.Code}
+                </div>
+              </div>
+            </div>
+                    `
+                  ).join("")}
+                </div>`
+              : ""
+            }
+
+            ${to && to?.mealDynamic && to?.mealDynamic?.length > 0
+              ? `<div>
+                  <div
+              style="
+                width: 100%;
+                background-color: #004684;
+                float: left;
+                font-weight: bold;
+                padding: 5px;
+                border-bottom: 1px solid #d6d8e7;
+                color: #fff;
+                margin-top: 8px;
+              "
+            >
+              Meal
+            </div>
+                  ${to?.mealDynamic?.map(
+                    (item) => `
+                      <div
+              style="
+                width: 100%;
+                float: left;
+                margin-top: 8px;
+                padding: 5px;
+                border-bottom: 1px solid #d6d8e7;
+              "
+            >
+              <div style="margin-top: 5px; float: left; width: 300px">
+                <div style="float: left; width: 100%; text-align: left; font-weight: bold">
+                  Menu Item: ${item?.AirlineDescription}
+                </div>
+              </div>
+              <div style="margin-top: 5px; float: left; width: 300px">
+                <div style="float: left; width: 100%; text-align: right; font-weight: bold">
+                  Code: ${item?.Code}
+                </div>
+              </div>
+            </div>
+                    `
+                  ).join("")}
+                </div>`
+              : ""
+            }
+
+
+             ${to && to?.seatDynamic && to?.seatDynamic?.length > 0
+              ? `<div>
+                  <div
+              style="
+                width: 100%;
+                background-color: #004684;
+                float: left;
+                font-weight: bold;
+                padding: 5px;
+                border-bottom: 1px solid #d6d8e7;
+                color: #fff;
+                margin-top: 8px;
+              "
+            >
+              Seat
+            </div>
+                  ${to?.seatDynamic?.map(
+                    (item) => `
+                      <div
+              style="
+                width: 100%;
+                float: left;
+                margin-top: 8px;
+                padding: 5px;
+                border-bottom: 1px solid #d6d8e7;
+              "
+            >
+              <div style="margin-top: 5px; float: left; width: 300px">
+                <div style="float: left; width: 100%; text-align: left; font-weight: bold">
+                  RowNo: ${item?.RowNo}
+                </div>
+              </div>
+              <div style="margin-top: 5px; float: left; width: 300px">
+                <div style="float: left; width: 100%; text-align: right; font-weight: bold">
+                  SeatNo: ${item?.SeatNo}
+                </div>
+              </div>
+            </div>
+                    `
+                  ).join("")}
+                </div>`
+              : ""
+            }
+
+
       
             <div
               style="width: 100%; background-color: #004684; float: left; font-weight: bold; padding: 5px; border-bottom: 1px solid #D6D8E7; color: #fff; margin-top: 8px;">
@@ -1517,6 +1796,146 @@ module.exports = {
                 )
                 .join("")}      
             </div>
+
+
+
+
+
+
+             ${to && to?.baggage && to?.baggage?.length > 0
+              ? `<div>
+                  <div
+              style="
+                width: 100%;
+                background-color: #004684;
+                float: left;
+                font-weight: bold;
+                padding: 5px;
+                border-bottom: 1px solid #d6d8e7;
+                color: #fff;
+                margin-top: 8px;
+              "
+            >
+              Extra Baggage
+            </div>
+                  ${to?.baggage?.map(
+                    (item) => `
+                      <div
+              style="
+                width: 100%;
+                float: left;
+                margin-top: 8px;
+                padding: 5px;
+                border-bottom: 1px solid #d6d8e7;
+              "
+            >
+              <div style="margin-top: 5px; float: left; width: 300px">
+                <div style="float: left; width: 100%; text-align: left; font-weight: bold">
+                  Weight: ${item?.Weight}
+                </div>
+              </div>
+              <div style="margin-top: 5px; float: left; width: 300px">
+                <div style="float: left; width: 100%; text-align: right; font-weight: bold">
+                  Code: ${item?.Code}
+                </div>
+              </div>
+            </div>
+                    `
+                  ).join("")}
+                </div>`
+              : ""
+            }
+
+            ${to && to?.mealDynamic && to?.mealDynamic?.length > 0
+              ? `<div>
+                  <div
+              style="
+                width: 100%;
+                background-color: #004684;
+                float: left;
+                font-weight: bold;
+                padding: 5px;
+                border-bottom: 1px solid #d6d8e7;
+                color: #fff;
+                margin-top: 8px;
+              "
+            >
+              Meal
+            </div>
+                  ${to?.mealDynamic?.map(
+                    (item) => `
+                      <div
+              style="
+                width: 100%;
+                float: left;
+                margin-top: 8px;
+                padding: 5px;
+                border-bottom: 1px solid #d6d8e7;
+              "
+            >
+              <div style="margin-top: 5px; float: left; width: 300px">
+                <div style="float: left; width: 100%; text-align: left; font-weight: bold">
+                  Menu Item: ${item?.AirlineDescription}
+                </div>
+              </div>
+              <div style="margin-top: 5px; float: left; width: 300px">
+                <div style="float: left; width: 100%; text-align: right; font-weight: bold">
+                  Code: ${item?.Code}
+                </div>
+              </div>
+            </div>
+                    `
+                  ).join("")}
+                </div>`
+              : ""
+            }
+
+
+             ${to && to?.seatDynamic && to?.seatDynamic?.length > 0
+              ? `<div>
+                  <div
+              style="
+                width: 100%;
+                background-color: #004684;
+                float: left;
+                font-weight: bold;
+                padding: 5px;
+                border-bottom: 1px solid #d6d8e7;
+                color: #fff;
+                margin-top: 8px;
+              "
+            >
+              Seat
+            </div>
+                  ${to?.seatDynamic?.map(
+                    (item) => `
+                      <div
+              style="
+                width: 100%;
+                float: left;
+                margin-top: 8px;
+                padding: 5px;
+                border-bottom: 1px solid #d6d8e7;
+              "
+            >
+              <div style="margin-top: 5px; float: left; width: 300px">
+                <div style="float: left; width: 100%; text-align: left; font-weight: bold">
+                  RowNo: ${item?.RowNo}
+                </div>
+              </div>
+              <div style="margin-top: 5px; float: left; width: 300px">
+                <div style="float: left; width: 100%; text-align: right; font-weight: bold">
+                  SeatNo: ${item?.SeatNo}
+                </div>
+              </div>
+            </div>
+                    `
+                  ).join("")}
+                </div>`
+              : ""
+            }
+
+
       
             <div
               style="width: 100%; background-color: #004684; float: left; font-weight: bold; padding: 5px; border-bottom: 1px solid #D6D8E7; color: #fff; margin-top: 8px;">

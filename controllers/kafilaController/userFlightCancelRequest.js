@@ -143,7 +143,21 @@ exports.getCancelFlightIdOfUser = async (req, res, next) => {
 
 exports.getAllUserCancelFlight = async (req, res, next) => {
   try {
-  
+    const {page, limit, search, fromDate, toDate}=req.query;
+  const result=await aggPagKafilaCancelFlightBookingsList1(req.query);
+  if (result.docs.length == 0) {
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      message: responseMessage.DATA_NOT_FOUND,
+    });
+  }
+  return res
+    .status(statusCode.OK)
+    .send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
   } catch (error) {
     console.log("error while trying to get userFlight booking! ", error);
     return next(error);

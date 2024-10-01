@@ -70,7 +70,7 @@ const {
   aggrPagGetUserAmadeusFlightBooking,
 } = userAmadeusFlightBookingServices;
 const {changeAmadeusUserBookingServices}=require('../../services/amadeusServices/amadeysFlightChangeRequestServices');
-const {createAmdeusUserFlightChangeRequest,flightAmdeuschangeRequestUserList,flightAmdeusChangeRequestUserList1,amdeusFindOneChangeRequestDetail,countAmdeusChangeFlightRequest}=changeAmadeusUserBookingServices;
+const {createAmdeusUserFlightChangeRequest,flightAmdeuschangeRequestUserList,amdeusFindOneChangeRequestDetail,countAmdeusChangeFlightRequest}=changeAmadeusUserBookingServices;
 const {amadeusCncellationServices}=require("../../services/amadeusServices/amadeusFlightCancelRequest");
 const {createamadeusCancelFlightBookings,findamadeusCancelFlightBookings,aggregatePaginatecancelFlightBookingsList,aggPagamadeusCancelFlightBookingsList1,countTotalamadeusCancelFlightBookings}=amadeusCncellationServices;
 
@@ -125,7 +125,7 @@ exports.amdsChangeFlight = async (req, res, next) => {
           ];
           const adminContact=['+918115199076','+919899564481']
           await whatsApi.sendWhtsAppAISensyMultiUSer(
-            "+918115199076",
+            adminContact,
             TemplateNames,
             "admin_booking_Alert"
           );
@@ -147,6 +147,7 @@ exports.getUserChangeFlights = async (req, res, next) => {
 
 exports.getChangeFlightBookingId = async (req, res, next) => {
   try {
+    const {changeReqId}=req.query;
     
   } catch (error) {
     console.log("error while trying to get userFlight booking! ", error);

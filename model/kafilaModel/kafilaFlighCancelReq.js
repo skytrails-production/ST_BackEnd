@@ -20,7 +20,7 @@ const cancelBookingDataSchema = new mongoose.Schema(
         },
 
         bookingId:{
-            type: Number,
+            type: String,
         },
         pnr: {
             type: String,

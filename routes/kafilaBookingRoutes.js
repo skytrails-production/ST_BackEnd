@@ -1,4 +1,6 @@
 const controller = require("../controllers/kafilaController/userFlightBookingController");
+const cancelController=require("../controllers/kafilaController/userFlightCancelRequest");
+const changeController=require("../controllers/kafilaController/userFlightChangeRequest");
 const schemas = require('../utilities/schema.utilities');
 const SchemaValidator = require('../utilities/validations.utilities');
 // const upload=require('../../utilities/uploadHandler')
@@ -23,9 +25,14 @@ module.exports = function (app) {
   app.get("/skyTrails/api/admin/kafila/getUserFlightBookings", controller.getUserFlightBookings);
 
   //   app.post("/skyTrails/api/user/kafila/kafilaPnrcreation", controller.kafilaPnrcreation);
-//   app.post("/skyTrails/api/user/kafila/kafilaFlightSearch", controller.kafilaFlightSearch);
-//   app.post("/skyTrails/api/user/kafila/kafilaRoundTripFlightSearch", controller.kafilaRoundTripFlightSearch);
-//   app.post("/skyTrails/api/user/kafila/kafilaGetBookingDetails", controller.kafilaGetBookingDetails);
+  app.post("/skyTrails/api/user/kafila/cancelKafilaFlightBooking",[authJwt.verifcationToken], cancelController.cancelUserFlightTicket);
+  app.get("/skyTrails/api/user/kafila/getBookingById", [authJwt.verifcationToken],cancelController.getUserCancelFlights);
+  app.get("/skyTrails/api/user/kafila/getCancelReqById", cancelController.getCancelFlightBookingId);
+  app.post("/skyTrails/api/user/kafila/changeKafilaFlightBooking",[authJwt.verifcationToken], changeController.ChangeFlightBookingReq);
+  app.get("/skyTrails/api/user/kafila/getchangeRequestData", [authJwt.verifcationToken],changeController.getUserChangeFlights);
+  app.get("/skyTrails/api/user/kafila/getchangeRequestById",changeController.getChangeFlightIdOfUserById);
+  app.get("/skyTrails/api/admin/kafila/getAllChangeRequest",changeController.getAllUserChangeFlight);
+app.get("/skyTrails/api/admin/kafila/getAllCancelRequest",cancelController.getAllUserCancelFlight);
 };
 
 
