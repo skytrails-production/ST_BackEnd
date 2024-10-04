@@ -76,7 +76,7 @@ exports.flighBooking = async (req, res, next) => {
 let formattedDate = new Date().toLocaleDateString('en-GB', options);
 const adminContact=['+918115199076','+919899564481','+919870249076']
     const result = await createUserflightBooking(data);
-    if(result.bookingStatus==bookingStatus.FAILED){
+    if(result.bookingStatus===bookingStatus.FAILED){
       const TemplateNames=['Flight',String(data.pnr),String(notObject.to),String(formattedDate)];
       await whatsApi.sendWhtsAppAISensyMultiUSer(adminContact,TemplateNames,'adminBookingFailure');
       return res.status(statusCode.OK).send({
@@ -86,6 +86,20 @@ const adminContact=['+918115199076','+919899564481','+919870249076']
       });
 
     }else{
+      let tenPercentOfTotal = data.totalAmount * 0.01;
+      const walletObj = {
+        amount: parseInt(tenPercentOfTotal),
+        details: `Flight booking reward`,
+        transactionType: "credit",
+        createdAt: Date.now(),
+      };
+    const data=  await updateUser(
+        { _id: isUserExist._id },
+        {
+          $inc: { balance: parseInt(tenPercentOfTotal)},
+          $push: { walletHistory: walletObj },
+        }
+      );
       const TemplateNames=[String(notObject.from),String(data.pnr),String(notObject.to),String(formattedDate)];
       await whatsApi.sendWhtsAppOTPAISensy(adminContact,TemplateNames,'admin_booking_Alert');
       const userName = `${data?.passengerDetails[0]?.firstName} ${data?.passengerDetails[0]?.lastName}`;

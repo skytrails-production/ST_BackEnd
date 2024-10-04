@@ -78,6 +78,20 @@ exports.userFlightBooking = async (req, res, next) => {
         });
   
       }else{
+        let tenPercentOfTotal = data.totalAmount * 0.01;
+      const walletObj = {
+        amount: parseInt(tenPercentOfTotal),
+        details: `Flight booking reward`,
+        transactionType: "credit",
+        createdAt: Date.now(),
+      };
+     await updateUser(
+        { _id: isUserExist._id },
+        {
+          $inc: { balance: parseInt(tenPercentOfTotal)},
+          $push: { walletHistory: walletObj },
+        }
+      );
         const TemplateNames=['Kafila Flight',String(data.pnr),String(isUserExist.username),String(formattedDate)];
         await whatsApi.sendWhtsAppAISensyMultiUSer(adminContact,TemplateNames,'admin_booking_Alert');
         const userName = `${data?.passengerDetails[0]?.firstName} ${data?.passengerDetails[0]?.lastName}`;

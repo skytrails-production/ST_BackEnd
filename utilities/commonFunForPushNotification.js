@@ -293,9 +293,9 @@ const pushNotAfterDepricateImage=async(deviceToken,title,body,imageurl)=>{
         // sound: sound, // Custom sound
       imageUrl: imageurl
     },
-    // data: {
-    //   imageUrl: imageurl, // Include the image URL in the data payload
-    // },
+    data: {
+      imageUrl: imageurl, // Include the image URL in the data payload
+    },
 };
 try {
   const response = await admin.messaging().send(message);

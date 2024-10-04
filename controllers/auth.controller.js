@@ -32,7 +32,6 @@ const { hotelBookingServicess } = require("../services/hotelBookingServices");
 const {
   aggregatePaginateHotelBookingList,
   aggregatePaginateHotelBookingList1,
-  aggregatePaginateGrnHotelBookingList,
   findhotelBooking,
   findhotelBookingData,
   deletehotelBooking,
@@ -1514,16 +1513,21 @@ exports.createMarkup = async (req, res, next) => {
 exports.getMarkup = async (req, res, next) => {
   try {
     const result = await markupList({});
+    const skyCoinValue = await findReferralAmount({});
     if (!result) {
-      return res.status(statusCode.InternalError).send({
+      return res.status(statusCode.OK).send({
         status: statusCode.InternalError,
-        responseMessage: responseMessage.InternalError,
+        responseMessage: responseMessage.INTERNAL_ERROR,
       });
     }
+    const updatedResult = result.map(item => ({
+      ...item._doc,
+      skyCoinValue,
+    }));
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.DATA_FOUND,
-      result: result,
+      result: updatedResult,
     });
   } catch (error) {
     return next(error);

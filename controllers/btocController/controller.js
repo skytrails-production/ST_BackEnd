@@ -405,7 +405,6 @@ exports.verifyUserOtp = async (req, res, next) => {
     return next(error);
   }
 };
-
 exports.resendOtp = async (req, res, next) => {
   try {
     const { mobileNumber } = req.body;
@@ -1257,7 +1256,6 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
         result: result,
       });
     }
-    // Check if the fullName is empty or just whitespace
     if (!fullName || fullName.trim() === "") {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.Forbidden,
@@ -1290,7 +1288,7 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
         otpExpireTime: "",
         firstTime: false,
         referralCode: refeerralCode,
-        balance: checkReward.signUpAmount,
+        balance: 0,
       };
       updateData = await updateUser({ _id: updation._id }, obj);
     } else if (mobileRegex.test(phoneNumber)) {
@@ -1308,7 +1306,7 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
         otp: "",
         firstTime: false,
         referralCode: refeerralCode,
-        balance: checkReward.signUpAmount,
+        balance: 0,
       };
       updateData = await updateUser({ _id: updation._id }, obj);
     }
@@ -1321,7 +1319,6 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
           responseMessage: responseMessage.INCORRECT_REFERRAL,
         });
       }
-      const checkReward = await findReferralAmount({});
       const walletObj = {
         amount: checkReward.refereeAmount,
         details: "Referral reward",
@@ -1348,6 +1345,21 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
         {
           $inc: { balance: checkReward.referrerAmount },
           $push: { walletHistory: walletObj1 },
+        }
+      );
+    }else {
+      const walletObj = {
+        amount: checkReward.signUpAmount,
+        details: "Sign-up reward",
+        transactionType: "credit",
+        createdAt: Date.now(),
+      };
+
+      await updateUser(
+        { _id: updateData._id },
+        {
+          $inc: { balance: checkReward.signUpAmount },
+          $push: { walletHistory: walletObj },
         }
       );
     }
@@ -1445,36 +1457,6 @@ exports.resendOtpMailMobile = async (req, res, next) => {
     const mobileRegex = /^(?!0)\d{9,}(\d)(?!\1{4})\d*$/;
 
     let user, contactMethod, userIdentifier;
-
-    if (emailRegex.test(email)) {
-      user = await findUser({ email, status: status.ACTIVE });
-      if (!user) {
-        return res.status(statusCode.OK).send({
-          statusCode: statusCode.NotFound,
-          message: responseMessage.USERS_NOT_FOUND,
-        });
-      }
-      contactMethod = "email";
-      userIdentifier = user.email;
-    } else if (mobileRegex.test(email)) {
-      user = await findUser({
-        "phone.mobile_number": email,
-        status: status.ACTIVE,
-      });
-      if (!user) {
-        return res.status(statusCode.OK).send({
-          statusCode: statusCode.NotFound,
-          message: responseMessage.USERS_NOT_FOUND,
-        });
-      }
-      contactMethod = "mobile";
-      userIdentifier = user.phone.country_code + user.phone.mobile_number;
-    } else {
-      return res.status(statusCode.OK).send({
-        statusCode: statusCode.badRequest,
-        message: responseMessage.INVALID_INPUT,
-      });
-    }
     if (email === "9999123232") {
       let updatedNumber = await updateUser(
         { "phone.mobile_number": email, status: status.ACTIVE },
@@ -1512,6 +1494,36 @@ exports.resendOtpMailMobile = async (req, res, next) => {
         result: result,
       });
     }
+    if (emailRegex.test(email)) {
+      user = await findUser({ email, status: status.ACTIVE });
+      if (!user) {
+        return res.status(statusCode.OK).send({
+          statusCode: statusCode.NotFound,
+          message: responseMessage.USERS_NOT_FOUND,
+        });
+      }
+      contactMethod = "email";
+      userIdentifier = user.email;
+    } else if (mobileRegex.test(email)) {
+      user = await findUser({
+        "phone.mobile_number": email,
+        status: status.ACTIVE,
+      });
+      if (!user) {
+        return res.status(statusCode.OK).send({
+          statusCode: statusCode.NotFound,
+          message: responseMessage.USERS_NOT_FOUND,
+        });
+      }
+      contactMethod = "mobile";
+      userIdentifier = user.phone.country_code + user.phone.mobile_number;
+    } else {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.badRequest,
+        message: responseMessage.INVALID_INPUT,
+      });
+    }
+  
     const updateData = await updateUser(
       { _id: user._id, status: status.ACTIVE },
       { otp, otpExpireTime }
@@ -1678,22 +1690,28 @@ exports.redeemCoin = async (req, res, next) => {
       });
     }
     const coinDiff = isUserExist.balance - redeemCoin;
-    // Ensure the user's balance never becomes less than 1000
-    if (isUserExist.balance - redeemCoin < 1000) {
+      if (userBalance <= 1000 ) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.badRequest,
         responseMessage: `${responseMessage.REDEEM_NOT_ALLOW} 1000`,
       });
     }
+  const maxRedeemableAmount = userBalance * 0.1;
+  if (redeemCoin > maxRedeemableAmount) {
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.badRequest,
+      responseMessage: `${responseMessage.ALLOWED_SKY_COIN}which is ${maxRedeemableAmount.toFixed(2)} coins.`,
+    });
+  }
     const obj = {
       userId: isUserExist._id,
       source: source,
       amount: redeemCoin,
-      details: details,
+      details: details || `You are using ${redeemCoin} coins for ${source} booking.`,
       transactionType: "Debit",
     };
     result.wallHistory = await createUserWalletHistory(obj);
-    result.redableCoin = coinDiff - 1000;
+    result.redableCoin = coinDiff;
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.CREATED_SUCCESS,
@@ -1716,6 +1734,7 @@ exports.getUserBalance = async (req, res, next) => {
       });
     }
     const result = {
+      walletHistory:isUserExist.walletHistory,
       balance: isUserExist.balance,
       _id: isUserExist._id,
     };
@@ -1735,7 +1754,6 @@ async function shortenURL(url) {
   const shortURL = `https://${shortCode}`;
   return shortURL;
 }
-
 exports.updateMihuruWallet = async (req, res) => {
   try {
     const {
@@ -1788,7 +1806,6 @@ exports.updateMihuruWallet = async (req, res) => {
     sendActionFailedResponse(res, { err }, err.message);
   }
 };
-
 exports.checkFirstBooking = async (req, res, next) => {
   try {
     const isUserExist = await findUserData({
@@ -1829,7 +1846,6 @@ exports.checkFirstBooking = async (req, res, next) => {
     return next(error);
   }
 };
-
 exports.getUserById = async (req, res, next) => {
   try {
     const { userId } = req.query;
@@ -1849,7 +1865,6 @@ exports.getUserById = async (req, res, next) => {
     return next(error);
   }
 };
-
 //*****************SOCIAL LOGIN***************** */
 exports.socialLogin = async (req, res, next) => {
   try {
@@ -1930,7 +1945,6 @@ exports.socialLogin = async (req, res, next) => {
     return next(error);
   }
 };
-
 exports.addMobileNumber = async (req, res, next) => {
   try {
     const { mobile_number } = req.body;
@@ -1987,7 +2001,6 @@ exports.addMobileNumber = async (req, res, next) => {
     return next(error);
   }
 };
-
 exports.addProfileContactDetail=async(req,res,next)=>{
   try {
     const updateUser=await updateUser({_id:req.params.userId},{'phone.mobile_number':req.params.mobile_number});

@@ -75,10 +75,7 @@ const notifications = [
     message: `Is Durgapuja, Kolkata di khushiyan aapka intezaar kar rahi hain!`,
     body: `Book now and get 20% off on your first trip to the celebrations! 🙏`,
   },
-  {
-    message: `username,Dil Chahta Hai Travel! 🎶`,
-    body: `Explore new horizons and create unforgettable memories. Your next adventure awaits!`,
-  },
+ 
   {
     message: `Chalo, milke Durgapuja da mazaa lein Kolkata ch!`,
     body:`🎶 Enjoy the festive vibes with our amazing offer of 20% off, up to ₹500 off on your first booking! 🛫`
@@ -94,18 +91,12 @@ const notifications = [
 // Thari Flight ✈️
 // Thara Deal 🤗`,
 //   },
-  {
-    message: `Bamsi Bamsi Bing Bing Bo😯`,
-    body: `Ladakh🗻 Ghoom kar aayenge maze🤩`,
-  },
+ 
   {
     message: `Fly with TheSkyTrails`,
     body: `Travel smart, fly affordable. Only with TheSkyTrails!`,
   },
-  {
-    message: `Isi din ke liye Savings ki thi🤩`,
-    body: `Ab jaldi se Bag Pack Karo, Baki sab Done Hai✅`,
-  },
+ 
   {
     message: `Suna Kya?`,
     body: `TheSkyTrails is offering festive seasons deals.`,
@@ -124,7 +115,7 @@ var taskPromotionalNotification = cron.schedule("00 08 * * *",async () => {
     });
     for (const user of users) {
       try { 
-        const notificationMessage = `Shop Flipkart for deals, fly TheSkyTrails for steals`;
+        const notificationMessage = `Shop Amazon for deals, fly TheSkyTrails for steals`;
         const messageBody = `Biggest flight discounts here!” 🎯💼`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
         const lastSent = lastNotificationSent.get(user._id);
@@ -241,16 +232,15 @@ var sendNotificationTask=cron.schedule("58 23 * * *",async()=>{
 })
 sendNotificationTask.start();
 
-const taskRandomNotification = cron.schedule("05 6 * * *",async () => {
+const taskRandomNotification = cron.schedule("10 16 * * *",async () => {
     try {
       const users = await userList({
         status: status.ACTIVE,
-        // 'phone.mobile_number':{ $in: ['8115199076'] },
+        'phone.mobile_number':{ $in: ['8115199076','9801540172'] },
         deviceToken: { $exists: true, $ne: "" },
 
       });
       const imageurl = `https://travvolt.s3.amazonaws.com/notification/uploadedFile_1727351077557_Artboard2festivesale.jpg`;
-      // const notification = notifications[Math.floor(Math.random() * notifications.length)];
       for (const user of users) {
         const randomIndex = Math.floor(Math.random() * notifications.length);
         const notification = notifications[randomIndex];
@@ -264,7 +254,6 @@ const taskRandomNotification = cron.schedule("05 6 * * *",async () => {
             imageurl
           );
           // notifications.splice(randomIndex, 1);
-          notifications.splice(randomIndex, 1);
 
         }
        
@@ -312,49 +301,40 @@ const taskRandomNotification1 = cron.schedule("03 19 * * *",async () => {
   scheduled: true,
   timezone: "Asia/Kolkata", // Timezone setting
 }
-);
+);                                                 
 taskRandomNotification1.start();
 
 
 
-var taskPromotionalNotification2 = cron.schedule("00 16 * * *",async () => {
+const taskRandomNotification2 = cron.schedule("40 17 * * *",async () => {
   try {
-    // 'phone.mobile_number':'8115199076'
     const users = await userList({
-    // 'phone.mobile_number':{ $in: ['8115199076'] },
       status: status.ACTIVE,
+      'phone.mobile_number':{ $in: ['8115199076','9801540172'] },
       deviceToken: { $exists: true, $ne: "" },
+
     });
+    const imageurl = `https://travvolt.s3.amazonaws.com/notification/uploadedFile_1727351077557_Artboard2festivesale.jpg`;
     for (const user of users) {
-      try { 
-        const notificationMessage = `Travel’s Big Billion Days is here`;
-        const messageBody = `Book now with TheSkyTrails for the biggest savings!” 🌍🎯`;
-      const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
-        const lastSent = lastNotificationSent.get(user._id);
-        if (lastSent && Date.now() - lastSent < 3600000) {
-         
-          continue; // Skip sending notification
-        }
-        await pushNotificationAfterDepricate(
+      const randomIndex = Math.floor(Math.random() * notifications.length);
+      const notification = notifications[randomIndex];
+        const notificationMessage = notification.message.replace('username', user.username);
+        const messageBody = notification.body.replace(/username/g, user.username);
+
+        await pushNotAfterDepricateImage(
           user.deviceToken,
           notificationMessage,
           messageBody,
           imageurl
         );
+        // notifications.splice(randomIndex, 1);
 
-        // Update the last notification sent time for this user
-        lastNotificationSent.set(user._id, Date.now());
-      } catch (pushError) {
-        // Handle if any user is not registered
-       
-        // continue to the next user even if one fails
-        continue;
       }
-      // Stop the cron job after execution
-      taskPromotionalNotification.stop();
-    }
+     
+
+    // Stop the cron job after execution
+    taskPlatformNotification.stop();
   } catch (error) {
-    // console.log("error when running task2", error);
   }
 },
 {
@@ -362,4 +342,4 @@ var taskPromotionalNotification2 = cron.schedule("00 16 * * *",async () => {
   timezone: "Asia/Kolkata", // Timezone setting
 }
 );
-taskPromotionalNotification2.start();
+taskRandomNotification2.start();
