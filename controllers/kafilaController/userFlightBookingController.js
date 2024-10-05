@@ -104,7 +104,7 @@ exports.userFlightBooking = async (req, res, next) => {
       const templates=[String(userName),String(data.pnr),String(data.airlineDetails[0].Airline.AirlineName),String(depDate.toLocaleDateString('en-GB', options)),String(depTime.toLocaleTimeString('en-GB')),String(arrTime.toLocaleTimeString('en-GB')),String(data.totalAmount)];
       await whatsApi.sendWhtsAppOTPAISensy(phone,templates,"flightBooking");
       await sendSMSUtils.sendSMSForFlightBooking(data);
-      // await commonFunction.FlightBookingConfirmationMail(result);
+      await commonFunction.FlightBookingConfirmationMail(result);
       return res.status(statusCode.OK).send({statusCode: statusCode.OK, message: responseMessage.FLIGHT_BOOKED,result });
       }
   } catch (error) {

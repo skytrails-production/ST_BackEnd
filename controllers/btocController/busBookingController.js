@@ -4,6 +4,11 @@ const status = require("../../enums/status");
 const bcrypt = require("bcryptjs");
 const axios = require("axios");
 const AdminNumber = process.env.ADMINNUMBER;
+const sendSMSUtils = require("../../utilities/sendSms");
+const whatsApi = require("../../utilities/whatsApi");
+const commonFunction = require("../../utilities/commonFunctions");
+const userType = require("../../enums/userType");
+const sendSMS = require("../../utilities/sendSms");
 /**********************************SERVICES********************************** */
 const {
   pushNotificationServices,
@@ -33,9 +38,7 @@ const {
   paginateUserSearch,
   countTotalUser,
 } = userServices;
-const userType = require("../../enums/userType");
-const sendSMS = require("../../utilities/sendSms");
-const commonFunction = require("../../utilities/commonFunctions");
+
 const {
   userBusBookingServices,
 } = require("../../services/btocServices/busBookingServices");
@@ -50,7 +53,6 @@ const {
   updateUserBusBooking,
   paginateUserBusBookingSearch,
 } = userBusBookingServices;
-const whatsApi = require("../../utilities/whatsApi");
 
 exports.busBooking = async (req, res, next) => {
   try {
@@ -77,10 +79,24 @@ exports.busBooking = async (req, res, next) => {
         // result,
       });
     } else {
+      let tenPercentOfTotal = data.amount * 0.01;
+      const walletObj = {
+        amount: parseInt(tenPercentOfTotal),
+        details: `Flight booking reward`,
+        transactionType: "credit",
+        createdAt: Date.now(),
+      };
+     await updateUser(
+        { _id: isUserExist._id },
+        {
+          $inc: { balance: parseInt(tenPercentOfTotal)},
+          $push: { walletHistory: walletObj },
+        }
+      );
       const userName = `${result.passenger[0].firstName} ${result.passenger[0].lastName}`;
       const notObject = {
         userId: isUserExist._id,
-        title: "Bus Booking by User",
+        title: "TBO Bus Booking by User",
         description: `New Booking form our platform🎊.🙂`,
         from: "busBookiing",
         to: userName,
@@ -92,7 +108,8 @@ exports.busBooking = async (req, res, next) => {
       let formattedDate = new Date().toLocaleDateString("en-GB", options);
       let journeyDate = new Date(data.departureTime);
       await createPushNotification(notObject);
-      // await sendSMS.sendSMSBusBooking(result.passenger[0].Phone, userName);
+     const smsStataus= await sendSMS.sendSMSBusBooking(result.passenger[0].Phone, userName);
+     console.log("==========",smsStataus)
       const url = `https://theskytrails.com/busEticket/${result._id}`;
       const TemplateNames = [
         String(notObject.from),
@@ -100,9 +117,9 @@ exports.busBooking = async (req, res, next) => {
         String(notObject.to),
         String(formattedDate),
       ];
-      // const TemplateNames1=[String(var1),String(var1)]
-      await whatsApi.sendWhtsAppOTPAISensy(
-        AdminNumber,
+      const adminContact=[process.env.ADMINNUMBER1,process.env.ADMINNUMBER2,process.env.ADMINNUMBER];
+      await whatsApi.sendWhtsAppAISensyMultiUSer(
+        adminContact,
         TemplateNames,
         "admin_booking_Alert"
       );
