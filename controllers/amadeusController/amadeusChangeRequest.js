@@ -123,7 +123,7 @@ exports.amdsChangeFlight = async (req, res, next) => {
             String(isUserExist.username),
             String("formattedDate"),
           ];
-          const adminContact=['+918115199076','+919899564481']
+          const adminContact=[process.env.ADMINNUMBER1,process.env.ADMINNUMBER2,process.env.ADMINNUMBER];
           await whatsApi.sendWhtsAppAISensyMultiUSer(
             adminContact,
             TemplateNames,
@@ -139,7 +139,37 @@ exports.amdsChangeFlight = async (req, res, next) => {
 
 exports.getUserChangeFlights = async (req, res, next) => {
   try {
-  
+    const { page, limit, search, fromDate, toDate } = req.query;
+    const isUserExist = await findUser({
+      _id: req.userId,
+      status: status.ACTIVE,
+      otpVerified: true,
+    });
+    if (!isUserExist) {
+      return res
+        .status(statusCode.OK)
+        .send({
+          statusCode: statusCode.NotFound,
+          message: responseMessage.USERS_NOT_FOUND,
+        });
+    }
+    req.query.userId = isUserExist._id;
+    const result = await flightAmdeuschangeRequestUserList(req.query);
+    if (!result) {
+      return res
+        .status(statusCode.OK)
+        .send({
+          statusCode: statusCode.NotFound,
+          responseMessage: responseMessage.DATA_NOT_FOUND,
+        });
+    }
+    return res
+      .status(statusCode.OK)
+      .send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.DATA_FOUND,
+        result: result,
+      });
   } catch (error) {
     return next(error);
   }

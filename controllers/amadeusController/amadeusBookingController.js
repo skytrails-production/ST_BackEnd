@@ -84,7 +84,8 @@ exports.amdsFlightBooking = async (req, res, next) => {
     data.userId = isUserExist._id;
     let formattedDate = new Date().toLocaleDateString("en-GB", options);
     const result = await createUserAmadeusFlightBooking(data);
-    const adminContact=['+918115199076','+919899564481','+919870249076']
+    const adminContact=[process.env.ADMINNUMBER1,process.env.ADMINNUMBER2,process.env.ADMINNUMBER];
+    console.log("adminContact==========",adminContact)
     if(result.bookingStatus==bookingStatus.FAILED){
       const TemplateNames=['Amadeus Flight',String(data.pnr),String(isUserExist.username),String(formattedDate)];
       await whatsApi.sendWhtsAppAISensyMultiUSer(adminContact,TemplateNames,'adminBookingFailure');
@@ -108,8 +109,17 @@ exports.amdsFlightBooking = async (req, res, next) => {
           $push: { walletHistory: walletObj },
         }
       );
-      const TemplateNames=[String(data.from),String(data.pnr),String(isUserExist.username),String(formattedDate)];
+      const TemplateNames=['Amadeus Flight',String(data.pnr),String(isUserExist.username),String(formattedDate)];
       await whatsApi.sendWhtsAppAISensyMultiUSer(adminContact,TemplateNames,'admin_booking_Alert');
+      const phone = '+91'+data?.passengerDetails[0]?.ContactNo;
+      const depDate=new Date(data.airlineDetails[0].Origin.DepTime);
+      const depTime=new Date(data.airlineDetails[0].Origin.DepTime);
+      const arrTime=new Date(data.airlineDetails[0].Destination.ArrTime);
+      const userName = `${data?.passengerDetails[0]?.firstName} ${data?.passengerDetails[0]?.lastName}`;
+      const templates=[String(userName),String(data.pnr),String(data.airlineDetails[0].Airline.AirlineName),String(depDate.toLocaleDateString('en-GB', options)),String(depTime.toLocaleTimeString('en-GB')),String(arrTime.toLocaleTimeString('en-GB')),String(data.totalAmount)];
+      await whatsApi.sendWhtsAppOTPAISensy(phone,templates,"flightBooking");
+      await sendSMSUtils.sendSMSForFlightBooking(data);
+      await commonFunction.FlightBookingConfirmationMail(result);
       return res.status(statusCode.OK).send({statusCode: statusCode.OK, message: responseMessage.FLIGHT_BOOKED,result });
     }
     

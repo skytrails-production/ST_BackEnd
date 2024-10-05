@@ -246,6 +246,7 @@ const {
 const {
   createReferralAmount,
   findReferralAmount,
+  findReferralSelectedKey,
   deleteReferralAmount,
   referralAmountList,
   updateReferralAmount,
@@ -1513,7 +1514,7 @@ exports.createMarkup = async (req, res, next) => {
 exports.getMarkup = async (req, res, next) => {
   try {
     const result = await markupList({});
-    const skyCoinValue = await findReferralAmount({});
+    const skyCoinValue = await findReferralSelectedKey({});
     if (!result) {
       return res.status(statusCode.OK).send({
         status: statusCode.InternalError,

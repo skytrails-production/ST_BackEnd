@@ -105,7 +105,7 @@ const notifications = [
 
 const lastNotificationSent = new Map();
 
-var taskPromotionalNotification = cron.schedule("00 08 * * *",async () => {
+var taskPromotionalNotification = cron.schedule("09 09 * * *",async () => {
   try {
     // 'phone.mobile_number':'8115199076'
     const users = await userList({
@@ -115,8 +115,9 @@ var taskPromotionalNotification = cron.schedule("00 08 * * *",async () => {
     });
     for (const user of users) {
       try { 
-        const notificationMessage = `Shop Amazon for deals, fly TheSkyTrails for steals`;
-        const messageBody = `Biggest flight discounts here!” 🎯💼`;
+        const notificationMessage = `Chhat Pooja ki Tickets Book ho gayi?`;
+        const messageBody = `अभी बुक कर लो, वरना महंगा पड़ेगा🤨
+Get upto 20% off 💰`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
         const lastSent = lastNotificationSent.get(user._id);
         if (lastSent && Date.now() - lastSent < 3600000) {
@@ -166,9 +167,9 @@ var taskPlatformNotification = cron.schedule("30 13 * * *",
     const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
       for (const user of users) {
         try {
-          const notificationMessage = `Just like Big Billion Days, but better`;
+          const notificationMessage = `Har travel wish hogi puri🤲🏻`;
           // Book with TheSkyTrails – your wallet-friendly flight expert!🌟
-      const messageBody = `Sky-high savings, pay when you can!`;
+      const messageBody = `We have Solutions of your problems🧞‍♂`;
           await pushNotificationAfterDepricate(
             user.deviceToken,
             notificationMessage,

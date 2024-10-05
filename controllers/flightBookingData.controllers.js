@@ -270,7 +270,7 @@ exports.amadeusFlightBooking = async (req, res) => {
       String(data.passengerDetails[0].firstName),
       String(formattedDate),
     ];
-    const adminContact = ["+918115199076", "+919899564481"];
+    const adminContact=[process.env.ADMINNUMBER1,process.env.ADMINNUMBER2,process.env.ADMINNUMBER];
     const response = await amadeusFlightBookingData.create(data);
     const msg = "flight booking details added successfully";
     await whatsApi.sendWhtsAppAISensyMultiUSer(

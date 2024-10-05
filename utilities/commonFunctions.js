@@ -882,7 +882,6 @@ module.exports = {
       </html>
       `;
 
-      console.log(htmlContent)
 
     // Create a new PDF document
     const browser = await puppeteer.launch({ headless: "new", timeout: 0 });

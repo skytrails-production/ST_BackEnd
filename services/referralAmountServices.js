@@ -12,7 +12,9 @@ const referralAmountServices = {
     findReferralAmount: async (query) => {
         return await referralAmountModel.findOne(query);
     },
-
+    findReferralSelectedKey: async (query) => {
+        return await referralAmountModel.findOne(query).select("discountPercentage minAccAmount -_id");
+    },
     deleteReferralAmount: async (query) => {
         return await referralAmountModel.deleteOne(query);
     },

@@ -74,7 +74,7 @@ exports.flighBooking = async (req, res, next) => {
     let options = { day: '2-digit', month: '2-digit', year: 'numeric' };
 // Format the date using the toLocaleDateString() function
 let formattedDate = new Date().toLocaleDateString('en-GB', options);
-const adminContact=['+918115199076','+919899564481','+919870249076']
+const adminContact=[process.env.ADMINNUMBER1,process.env.ADMINNUMBER2,process.env.ADMINNUMBER];
     const result = await createUserflightBooking(data);
     if(result.bookingStatus===bookingStatus.FAILED){
       const TemplateNames=['Flight',String(data.pnr),String(notObject.to),String(formattedDate)];
@@ -93,14 +93,15 @@ const adminContact=['+918115199076','+919899564481','+919870249076']
         transactionType: "credit",
         createdAt: Date.now(),
       };
-    const data=  await updateUser(
+    await updateUser(
         { _id: isUserExist._id },
         {
           $inc: { balance: parseInt(tenPercentOfTotal)},
           $push: { walletHistory: walletObj },
         }
       );
-      const TemplateNames=[String(notObject.from),String(data.pnr),String(notObject.to),String(formattedDate)];
+      const TemplateNames=[String('FLightBooking'),String(data.pnr),String(notObject.to),String(formattedDate)];
+     console.log("TemplateNames===",TemplateNames)
       await whatsApi.sendWhtsAppOTPAISensy(adminContact,TemplateNames,'admin_booking_Alert');
       const userName = `${data?.passengerDetails[0]?.firstName} ${data?.passengerDetails[0]?.lastName}`;
     const phone = '+91'+data?.passengerDetails[0]?.ContactNo;

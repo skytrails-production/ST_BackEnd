@@ -177,7 +177,7 @@ exports.ChangeFlightBookingReq = async (req, res, next) => {
       String(isUserExist.username),
       String("formattedDate"),
     ];
-    const adminContact = ["+918115199076", "+919899564481"];
+    const adminContact=[process.env.ADMINNUMBER1,process.env.ADMINNUMBER2,process.env.ADMINNUMBER];
     await whatsApi.sendWhtsAppAISensyMultiUSer(
       adminContact,
       TemplateNames,
