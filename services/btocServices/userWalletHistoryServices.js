@@ -20,6 +20,11 @@ const userWalletHistoryServices = {
     userWalletHistoryList: async (query) => {
         return await userWalletHistoryModel.find(query).populate('userId').exec();
     },
+    userAllWalletHistory: async (query) => {
+        return await userWalletHistoryModel.find(query).sort({ createdAt: -1 });
+    },
+    
+      
     updateUserWalletHistory: async (query, updateObj) => {
         return await userWalletHistoryModel.findOneAndUpdate(query, updateObj, { new: true });
     },

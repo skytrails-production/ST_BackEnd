@@ -83,6 +83,7 @@ const {
   findUserWalletHistory,
   deleteUserWalletHistory,
   userWalletHistoryList,
+  userAllWalletHistory,
   updateUserWalletHistory,
   countTotalUserWalletHistory,
 } = userWalletHistoryServices;
@@ -1664,8 +1665,9 @@ exports.getWalletHistory = async (req, res, next) => {
       });
     }
     let result = {};
-    result.Earned = isUserExist.walletHistory;
-    result.Redeemed = await userWalletHistoryList({ userId: isUserExist._id });
+    result.Earned = isUserExist.walletHistory.reverse();
+    result.Redeemed = await userAllWalletHistory({ userId: isUserExist._id });
+    
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.WALLET_HISTORY_GET,
@@ -1690,13 +1692,13 @@ exports.redeemCoin = async (req, res, next) => {
       });
     }
     const coinDiff = isUserExist.balance - redeemCoin;
-      if (userBalance <= 1000 ) {
+      if (isUserExist.balance <= 100 ) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.badRequest,
-        responseMessage: `${responseMessage.REDEEM_NOT_ALLOW} 1000`,
+        responseMessage: `${responseMessage.REDEEM_NOT_ALLOW} 100`,
       });
     }
-  const maxRedeemableAmount = userBalance * 0.1;
+  const maxRedeemableAmount = isUserExist.balance * 0.1;
   if (redeemCoin > maxRedeemableAmount) {
     return res.status(statusCode.OK).send({
       statusCode: statusCode.badRequest,
@@ -1711,7 +1713,9 @@ exports.redeemCoin = async (req, res, next) => {
       transactionType: "Debit",
     };
     result.wallHistory = await createUserWalletHistory(obj);
+    const updatedUser=await updateUser({_id:isUserExist._id}, {$inc: { balance: -redeemCoin }});
     result.redableCoin = coinDiff;
+    result.remainingBalance = updatedUser.balance;
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.CREATED_SUCCESS,

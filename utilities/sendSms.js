@@ -7,7 +7,7 @@ const YOUR_TWILIO_PHONE_NUMBER = process.env.YOUR_TWILIO_PHONE_NUMBER;
 const accountSid = TWILIO_ACCOUNT_SID;
 const authToken = TWILIO_AUTH_TOKEN;
 const client = new twilio(accountSid, authToken);
-const key = process.env.SMSAPIKEY; 
+const key = process.env.SMSAPIKEY;
 const senderid = process.env.SMSSENDERID;
 const route = process.env.ROUTE;
 const templateid = process.env.OTP_TEMLATEID;
@@ -17,9 +17,9 @@ const templateid3 = process.env.BUS_TEMLATEID;
 const subAdmintemplateid = process.env.SUBADMINTEMPLATEId;
 const agentTempId = process.env.AGENTTEMPLATEID;
 const visaTempId = process.env.VISATEMPLATEID;
-const eventTempId=process.env.EVENTID;
-const packageTempId=process.env.PACKAGETEMPID;
-const PEFAID=process.env.PEFAID
+const eventTempId = process.env.EVENTID;
+const packageTempId = process.env.PACKAGETEMPID;
+const PEFAID = process.env.PEFAID;
 const baseURL = "https://localhost:8000";
 
 module.exports = {
@@ -156,7 +156,7 @@ module.exports = {
     }
   },
   sendSMSBusBooking: async (data, name) => {
-    const details = `Hello, ${name}.We appreciate your Bus booking with The Skytrails. Your booking has been verified! Click the following link to view details= https://theskytrails.com/login`;
+    const details = `Hello, ${name}.We appreciate your Bus booking with The Skytrails. Your booking has been verified! Click the following link to view details= https://theskytrails.com/bookinghistory`;
     const url = `http://sms.txly.in/vb/apikey.php?`;
     const params = {
       apikey: key,
@@ -327,7 +327,7 @@ module.exports = {
     }
   },
   sendSMSPasses: async (mobileNumber) => {
-    const dta="PEFA2024";
+    const dta = "PEFA2024";
     const messageContent = `Greetings User! Your seat is now secured for the PEFA event. Get ready to groove to Punjabi beats. Heartfelt thanks for choosing TheSkytrails - we're thrilled to create memorable moments on your journey!`;
     const url = `http://sms.txly.in/vb/apikey.php?`;
     const params = {
@@ -339,7 +339,7 @@ module.exports = {
     };
     try {
       const response = await axios.get(url, { params: params });
-      console.log("response====",response.data)
+      console.log("response====", response.data);
       return response.data;
     } catch (error) {
       console.error("Error occurred in axios request:", error);
@@ -347,5 +347,3 @@ module.exports = {
     }
   },
 };
-
-
