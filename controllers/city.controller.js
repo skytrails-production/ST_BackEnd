@@ -25,7 +25,7 @@ exports.searchCityData = async (req, res) => {
     // console.log("location", userLocation)
 
     var regex = new RegExp(`^${escapeRegex(req.query.keyword)}`, "i");
-    let response = await cityData.find({$or:[{ AirportCode: regex },{name:regex}, {state:regex}]});
+    let response = await cityData.find({$or:[{ AirportCode: regex },{name:regex}, {state:regex},{CountryName:regex}]});
 
 
     // console.log(response.length);
