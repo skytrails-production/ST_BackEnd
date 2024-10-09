@@ -32,7 +32,6 @@ const {
   paginateUsertransaction,
   countTotalUsertransaction,
 } = transactionModelServices;
-
 const {
   eventBookingServices,
 } = require("../../services/btocServices/eventBookingServices");

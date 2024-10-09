@@ -295,6 +295,8 @@ const pushNotAfterDepricateImage=async(deviceToken,title,body,imageurl)=>{
     },
     data: {
       imageUrl: imageurl, // Include the image URL in the data payload
+      deepLink: 'https://theskytrails.com/app/OneWayFlight/test2',
+      navigationId:'OneWayFlight'
     },
 };
 try {

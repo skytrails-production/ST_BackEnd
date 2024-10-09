@@ -237,7 +237,7 @@ const taskRandomNotification = cron.schedule("10 16 * * *",async () => {
     try {
       const users = await userList({
         status: status.ACTIVE,
-        'phone.mobile_number':{ $in: ['8115199076','9801540172'] },
+        // 'phone.mobile_number':{ $in: ['8115199076','9801540172'] },
         deviceToken: { $exists: true, $ne: "" },
 
       });

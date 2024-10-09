@@ -286,12 +286,12 @@ exports.CouponApplied=async(req,res,next)=>{
     }
 
     //check if coupon already apply
-    const iscoupanAlreadyApply=await findCoupon({
-      userApplied: { $in: req.userId }
-    });
+    const iscoupanAlreadyApply=await findCoupon({couponCode:couponCode,userApplied: { $in: req.userId } });
     if(iscoupanAlreadyApply){
-      return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,responseMessage: "already apply"});
-   
+      return res.status(statusCode.OK).json({
+        statusCode: statusCode.Conflict,
+        responseMessage: responseMessage.ALREDY_COUPOUN_APPLIED,
+      });
     }
 
     if(isCouponExist.couponCode==="WELCOMEPEFA"){
@@ -308,7 +308,7 @@ exports.CouponApplied=async(req,res,next)=>{
     return res.status(statusCode.OK).json({statusCode: statusCode.OK,responseMessage: responseMessage.COUPON_APPLIED_SUCCESS,result:resultData});
     }
     if (isCouponExist.userApplied.includes(isUserExist._id)) {
-      return res.status(statusCode.OKc).json({
+      return res.status(statusCode.OK).json({
         statusCode: statusCode.Conflict,
         responseMessage: responseMessage.ALREDY_COUPOUN_APPLIED,
       });

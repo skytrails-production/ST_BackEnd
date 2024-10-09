@@ -109,7 +109,7 @@ exports.amdsFlightBooking = async (req, res, next) => {
           $push: { walletHistory: walletObj },
         }
       );
-      const TemplateNames=['Amadeus Flight',String(data.pnr),String(isUserExist.username),String(formattedDate)];
+      const TemplateNames=["Amadeus Flight",String(data.pnr),String(isUserExist.username),String(formattedDate)];
       await whatsApi.sendWhtsAppAISensyMultiUSer(adminContact,TemplateNames,'admin_booking_Alert');
       const phone = '+91'+data?.passengerDetails[0]?.ContactNo;
       const depDate=new Date(data.airlineDetails[0].Origin.DepTime);
