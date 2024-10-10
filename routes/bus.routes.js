@@ -9,13 +9,13 @@ module.exports = function (app) {
   });
 
   //Bus City List
-  app.post("/skyTrails/bus/citylist", controller.getBusCityList);
+  app.post("/skyTrails/bus/citylist",controller.getBusCityList);
 
   //Bus Search
-  app.post("/skyTrails/bus/search", controller.searchBus);
+  app.post("/skyTrails/bus/search",controller.searchBus);
 
   //Bus Seat Layout
-  app.post("/skyTrails/bus/seatlayout", controller.searchBusSeatLayout);
+  app.post("/skyTrails/bus/seatlayout",controller.searchBusSeatLayout);
 
   //Bus Boarding Point
   app.post("/skyTrails/bus/boardingpoint", controller.busBoardingPoint);

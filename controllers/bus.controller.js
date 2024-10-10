@@ -25,6 +25,7 @@ exports.searchBus = async (req, res) => {
   try {
     const data = {
       ...req.body,
+      "BookingMode":5
     };
 
     const response = await axios.post(`${api.busSearchURL}`, data);
