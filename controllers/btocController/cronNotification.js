@@ -55,11 +55,7 @@ const {notificationServices}=require("../../services/notificationServices");
 const {createNotification,findNotification,findNotificationData,deleteNotification,updateNotification,countNotification}=notificationServices;
 
 const notifications = [
-  {
-    message: `🎭 “Kolkata Durga Puja: Ghar di yaad, te khushiyan naal bhara safar!”`,
-    body: `Book today for 20% off, up to ₹500 off on your first booking! 🛫`,
-  },
-  {
+    {
     message: `Like Jolly LLB, we'll make you laugh and save you money!`,
     body: `Amazing offers are available. Book now!`,
   },
@@ -72,17 +68,17 @@ const notifications = [
     body: `Find your perfect travel companion and embark on a romantic getaway.`,
   },
   {
-    message: `Is Durgapuja, Kolkata di khushiyan aapka intezaar kar rahi hain!`,
-    body: `Book now and get 20% off on your first trip to the celebrations! 🙏`,
+    message: `Time to pack your bags for a Diwali getaway!`,
+    body: `Remember, calories don’t count on vacation… especially if it’s sweets!" 🍬✈️`,
   },
  
   {
-    message: `Chalo, milke Durgapuja da mazaa lein Kolkata ch!`,
-    body:`🎶 Enjoy the festive vibes with our amazing offer of 20% off, up to ₹500 off on your first booking! 🛫`
+    message: `New Year’s resolution: Travel more!`,
+    body:`Just remember to save the ‘overpacking’ for your suitcase, not your plans!" 🧳✨`
   },
   {
-    message: `Don’t miss Kolkata’s Durga Puja!`,
-    body: `20% off your first booking! 🛫`,
+    message: `Chhath Puja vibes: Book your riverside getaway!`,
+    body: `Just don't forget your puja thali—your GPS won't guide you there!" 🗺️🛶`,
   },
 //   {
 //     message: `Thara Paisa 💸💵`,
@@ -154,12 +150,12 @@ Get upto 20% off 💰`;
 taskPromotionalNotification.start(); // Start the task2
 
 // Define and schedule task2 separately
-var taskPlatformNotification = cron.schedule("30 13 * * *",
+var taskPlatformNotification = cron.schedule("33 13 * * *",
   async () => {
     try {  
       // 'contactNo.mobile_number': { $in: ['8115199076', '9135219071'] },
       const users = await userList({
-        // 'phone.mobile_number': { $in: ['7017757907','8115199076'] },
+        // 'phone.mobile_number': { $in: ['8802737860','8115199076'] },
         status: status.ACTIVE,
         deviceToken: { $exists: true, $ne: "" },
       });

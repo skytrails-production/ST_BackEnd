@@ -103,12 +103,20 @@ exports.internationalCreate = async (req, res) => {
     }
   }
 
+  const dataDestination=reqData?.destination?.map(item => {
+    if (item.addMore) {
+      item.addMore = item.addMore.toLowerCase().trim(); // Convert to lowercase and trim whitespace
+    }
+    return item;
+  });
+
+
       const data1 = new internationl({
         userId:reqData.userId,
         pakage_title: reqData.pakage_title,
         package_img: imageUrls,
         pakage_img:imageUrls[0],
-        destination: reqData.destination,
+        destination: dataDestination,
         country: reqData.country,
         days: reqData.days,
         schedule: {

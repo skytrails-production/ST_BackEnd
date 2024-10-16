@@ -283,6 +283,7 @@ const {
 const { quizServices } = require("../services/btocServices/quizServices");
 const {
   createQuizContent,
+  createQuizesContent,
   findQuizContent,
   findQuizData,
   deleteQuiz,
@@ -2394,6 +2395,122 @@ exports.approvePartnerAccount = async (req, res, next) => {
         result: updateResult,
       });
     }
+  } catch (error) {
+    return next(error);
+  }
+};
+
+// exports.createDailyQuizzes = async (req, res, next) => {
+//   try {
+//     const quizzes = req.body.quizzes; // Expecting an array of quizzes in the request body
+
+//     if (!Array.isArray(quizzes) || quizzes.length === 0) {
+//       return res.status(statusCode.OK).send({
+//         statusCode: statusCode.badRequest,
+//         responseMessage: responseMessage.INVALID_INPUT,
+//       });
+//     }
+
+//     const quizPromises = quizzes.map(async (quiz) => {
+//       const {
+//         question,
+//         answer,
+//         opt1,
+//         opt2,
+//         opt3,
+//         opt4,
+//         adminId,
+//         quizDate,
+//       } = quiz;
+
+//       // Validate the admin (optional, you can uncomment the code below)
+//       // const isAdminExist = await adminModel.findOne({ _id: adminId });
+//       // if (!isAdminExist) {
+//       //   throw new Error(responseMessage.ADMIN_NOT_FOUND);
+//       // }
+
+//       const createdDate = moment(quizDate);
+//       const expirationDate = createdDate.add(24, "hours");
+
+//       const object = {
+//         question,
+//         answer,
+//         options: {
+//           opt1,
+//           opt2,
+//           opt3,
+//           opt4,
+//         },
+//         quizExpiration: expirationDate,
+//         quizDate: quizDate,
+//       };
+
+//       // Create the quiz
+//       return await createQuizContent(object);
+//     });
+
+//     // Wait for all quiz creation promises to resolve
+//     const results = await Promise.all(quizPromises);
+
+//     return res.status(statusCode.OK).send({
+//       statusCode: statusCode.OK,
+//       responseMessage: responseMessage.CREATED_SUCCESS,
+//       results: results, // Return all the created quizzes
+//     });
+//   } catch (error) {
+//     return next(error);
+//   }
+// };
+
+
+exports.createDailyQuizzes = async (req, res, next) => {
+  try {
+    const quizzes = req.body.quizzes; // Expecting an array of quizzes in the request body
+
+    if (!Array.isArray(quizzes) || quizzes.length === 0) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.badRequest,
+        responseMessage: responseMessage.INVALID_INPUT,
+      });
+    }
+
+    // Transform the quizzes to include expiration date and required fields
+    const quizObjects = quizzes.map((quiz) => {
+      const {
+        question,
+        answer,
+        opt1,
+        opt2,
+        opt3,
+        opt4,
+        quizDate,
+      } = quiz;
+
+      const createdDate = moment(quizDate);
+      const expirationDate = createdDate.add(24, "hours");
+
+      return {
+        question,
+        answer,
+        options: {
+          opt1,
+          opt2,
+          opt3,
+          opt4,
+        },
+        quizExpiration: expirationDate.toDate(),
+        quizDate: quizDate,
+      };
+    });
+
+    // Use insertMany to create multiple quizzes at once
+    const result = await createQuizesContent(quizObjects);
+
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.CREATED_SUCCESS,
+      result: result, // Return the inserted quizzes
+    });
   } catch (error) {
     return next(error);
   }

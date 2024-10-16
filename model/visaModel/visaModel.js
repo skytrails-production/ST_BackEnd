@@ -43,7 +43,7 @@ const visaSchema = new mongoose.Schema(
     },
     daysToProcess: {
       type: Number,
-      default:10
+      // default:10
     },
     continent:{
       type:String

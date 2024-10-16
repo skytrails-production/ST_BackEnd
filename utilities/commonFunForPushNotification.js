@@ -272,6 +272,11 @@ const pushNotificationAfterDepricate=async(deviceToken,title,body)=>{
         // imageUrl: imageurl
       },
       // data: {
+      //   // imageUrl: imageurl, // Include the image URL in the data payload
+      //   deepLink: 'https://theskytrails.com/app/OneWayFlight/test2',
+      //   navigationId:'OneWayFlight'
+      // },
+      // data: {
       //   imageUrl: imageurl, // Include the image URL in the data payload
       // },
   };

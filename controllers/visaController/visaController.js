@@ -2,7 +2,7 @@ let cloudinary = require("cloudinary");
 
 //*********SERVICES********************* */
 const { visaServices } = require('../../services/visaServices');
-const { createWeeklyVisa, findWeeklyVisa,populatedVisaList, deleteWeeklyVisa, weeklyVisaList, updateWeeklyVisa, weeklyVisaListPaginate, getNoVisaByPaginate, montholyVisaListPaginate, onarrivalVisaListPaginate } = visaServices;
+const { createWeeklyVisa,createMultipleVisa, findWeeklyVisa,populatedVisaList, deleteWeeklyVisa, weeklyVisaList, updateWeeklyVisa, weeklyVisaListPaginate, getNoVisaByPaginate, montholyVisaListPaginate, onarrivalVisaListPaginate } = visaServices;
 const { userServices } = require('../../services/userServices');
 const { createUser, findUser, getUser, findUserData, updateUser } = userServices;
 const {visaCategoryServices}=require("../../services/visaAppServices/visaCategoryServices");
@@ -13,7 +13,7 @@ const {
     sendActionFailedResponse,
 } = require("../../common/common");
 const status = require("../../enums/status");
-const issuedType = require('../../enums/issuedType');
+const issuedTypeEnum = require('../../enums/issuedType');
 //common response****************
 const statusCode = require('../../utilities/responceCode');
 const responseMessage = require('../../utilities/responses');
@@ -31,15 +31,16 @@ exports.createVisa = async (req, res, next) => {
             var galleryData = [];
             for (var i = 0; i < req.files.length; i++) {
                 const imageData = req.files[i];
-                var data = await commonFunctions.getImageUrlAWS(imageData);
+                var data = await commonFunctions.getImageUrlAWSByFolder(imageData,"VisaPictures");
                 const imageUrl = data;
                 galleryData.push(imageUrl);
             }
             req.body.gallery = galleryData;
         }
-        if (issuedType == "NO_VISA") {
+        if (issuedType == issuedTypeEnum.NO_VISA) {
+            const result = await createWeeklyVisa(req.body);
             return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.VISA_CREATED, result: result })
-        } else if (issuedType === "VISA_ON_ARRIVAL") {
+        } else if (issuedType === issuedTypeEnum.VISA_ON_ARRIVAL) {
             const result = await createWeeklyVisa(req.body);
             return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.VISA_CREATED, result: result })
         }
@@ -261,4 +262,63 @@ exports.getAllVisaCountry=async(req,res,next)=>{
     } catch (error) {
         return next(error )
     }
+}
+
+
+exports.createMultipleVisas=async(req,res,next)=>{
+try {
+    const visas = req.body.visas;
+    const visaDocuments = [];
+    for (let visa of visas) {
+        const {
+            countryName,
+            price,
+            validityPeriod,
+            lengthOfStay,
+            visaType,
+            governmentFees,
+            platFormFees,
+            issuedType,
+            continent,
+            visaCategoryName,
+        } = visa;
+    
+        const isCategoryIdExist = await findVisaCategoryData({ visaCategoryName });
+        if (!isCategoryIdExist) {
+            return res.status(statusCode.OK).send({
+                statusCode: statusCode.badRequest,
+                responseMessage: responseMessage.CATEGORY_NOT_FOUND,
+            });
+        }
+        const visaDocument = {
+            countryName,
+            validityPeriod,
+            lengthOfStay,
+            continent,
+            visaCategoryId: isCategoryIdExist._id,
+            visaType: isCategoryIdExist.visaType,
+            price: Number(governmentFees) + Number(platFormFees), // Assuming these fields are always present
+            issuedType,
+        };
+        if (req.files) {
+            const galleryData = [];
+            for (const imageData of req.files) {
+                const data = await commonFunctions.getImageUrlAWSByFolder(imageData, "VisaPictures");
+                galleryData.push(data);
+            }
+            visaDocument.gallery = galleryData; // Add gallery to the visa document
+        }
+
+        visaDocuments.push(visaDocument);
+    }
+    const result = await createMultipleVisa(visaDocuments); // Assuming VisaModel is your Mongoose model
+
+    return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.VISA_CREATED,
+        result: result,
+    });
+} catch (error) {
+    return next(error);
+}
 }

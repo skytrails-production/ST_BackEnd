@@ -17,6 +17,7 @@ const internationlSchema = mongoose.Schema(
       pakage_title: {
         type: String,
         require: true,
+        trim:true
       },
       pakage_img: {
         type: String,
@@ -32,7 +33,8 @@ const internationlSchema = mongoose.Schema(
         require: true,
       },
       country:{
-        type:String
+        type:String,
+        set: (value) => value.trim().charAt(0).toUpperCase() + value.trim().slice(1).toLowerCase()
       },
       days: {
         type: Number,

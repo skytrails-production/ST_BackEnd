@@ -7,6 +7,10 @@ const quizServices={
         return await quizModel.create(insertObj);
     },
 
+    createQuizesContent:async(insertObj)=>{
+        return await quizModel.insertMany(insertObj);
+    },
+
     findQuizContent: async (query) => {
         return await quizModel.findOne(query);
     },

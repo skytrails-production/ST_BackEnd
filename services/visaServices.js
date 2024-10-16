@@ -12,6 +12,9 @@ const visaServices = {
     createWeeklyVisa: async (insertObj) => {
         return await visaModel.create(insertObj);
     },
+    createMultipleVisa: async (insertObj) => {
+        return await visaModel.insertMany(insertObj);
+    },
 
     findWeeklyVisa: async (query) => {
         return await visaModel.findOne(query);

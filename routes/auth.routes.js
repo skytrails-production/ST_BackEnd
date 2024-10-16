@@ -89,6 +89,7 @@ app.put('/skyTrails/api/admin/updatePackageBanner',SchemaValidator(schemas.updat
 app.put('/skyTrails/api/admin/updatePopularDestination',SchemaValidator(schemas.updateDestinationSchema),controller.updatePopularDestination);
 app.post('/skyTrails/api/admin/createPackageCategory',upload.single('images'),controller.createPackageCategory);
 app.post('/skyTrails/api/admin/createDailyQuiz',controller.createDailyQuiz);
+app.post('/skyTrails/api/admin/createDailyQuizzes',controller.createDailyQuizzes);
 app.put('/skyTrails/api/admin/updateQuizStatus',controller.dailyQuizStatus);
 app.delete("/skyTrails/api/admin/deleteAgent",agentController.deleteAgent);
 app.get('/skyTrails/api/admin/getAllPackageEnquiryOnCRM',packageControlelr.packageEnquiryListForCrm);
