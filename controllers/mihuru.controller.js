@@ -42,6 +42,7 @@ exports.signUp = async (req, res) => {
       travelAgentName: "B2C",
       travelBrandName: "SkyTrails",
       travelAgentEmailId: "shivam@theskytrails.com",
+      travelType:'Flight',
       travelAgentMobile: "8847301811",
       ipAddress:userIP,
       latitude:userLocation?.ll[0],
