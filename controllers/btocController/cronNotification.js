@@ -61,11 +61,11 @@ const notifications = [
   },
   {
     message: `Enjoy upto 500 off today!`,
-    body: `Experience the joy of Kolkata’s Durga Puja!`,
+    body: `Experience the joy of Karwachauth Puja with special offers and blessings. Celebrate the auspicious day with savings and joy`,
   },
   {
-    message: `Kuch Kuch Hota Hai! 💘`,
-    body: `Find your perfect travel companion and embark on a romantic getaway.`,
+    message: `Feel the Tum Jo Aaye Magic!`,
+    body: `Just like Tum Jo Aaye in Once Upon A Time in Mumbaai, make this Karwachauth special with a dreamy trip! Save ₹500 on your next booking`,
   },
   {
     message: `Time to pack your bags for a Diwali getaway!`,
@@ -101,7 +101,7 @@ const notifications = [
 
 const lastNotificationSent = new Map();
 
-var taskPromotionalNotification = cron.schedule("09 09 * * *",async () => {
+var taskPromotionalNotification = cron.schedule("45 09 * * *",async () => {
   try {
     // 'phone.mobile_number':'8115199076'
     const users = await userList({
@@ -111,9 +111,8 @@ var taskPromotionalNotification = cron.schedule("09 09 * * *",async () => {
     });
     for (const user of users) {
       try { 
-        const notificationMessage = `Chhat Pooja ki Tickets Book ho gayi?`;
-        const messageBody = `अभी बुक कर लो, वरना महंगा पड़ेगा🤨
-Get upto 20% off 💰`;
+        const notificationMessage = `Live the Chand Chupa Badal Mein Dream!`;
+        const messageBody = `Make your Karwachauth as magical as the song! Book a serene destination with up to ₹500 off. Let your love shine under the Karwachauth moon. 🌕🌙`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
         const lastSent = lastNotificationSent.get(user._id);
         if (lastSent && Date.now() - lastSent < 3600000) {
@@ -163,9 +162,9 @@ var taskPlatformNotification = cron.schedule("33 13 * * *",
     const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
       for (const user of users) {
         try {
-          const notificationMessage = `Har travel wish hogi puri🤲🏻`;
+          const notificationMessage = `Koi bhi safar ho, hum hain saath! 🌟`;
           // Book with TheSkyTrails – your wallet-friendly flight expert!🌟
-      const messageBody = `We have Solutions of your problems🧞‍♂`;
+      const messageBody = `Har musafir ki khwahish puri karne ka waqt aa gaya! 🚀`;
           await pushNotificationAfterDepricate(
             user.deviceToken,
             notificationMessage,
@@ -301,13 +300,11 @@ const taskRandomNotification1 = cron.schedule("03 19 * * *",async () => {
 );                                                 
 taskRandomNotification1.start();
 
-
-
 const taskRandomNotification2 = cron.schedule("40 17 * * *",async () => {
   try {
     const users = await userList({
       status: status.ACTIVE,
-      'phone.mobile_number':{ $in: ['8115199076','9801540172'] },
+      // 'phone.mobile_number':{ $in: ['8115199076','9801540172'] },
       deviceToken: { $exists: true, $ne: "" },
 
     });

@@ -44,7 +44,9 @@ exports.createWebAdvertisement=async(req,res,next)=>{
 
 exports.getWebAdvertisement=async(req,res,next)=>{
     try {
-        const result=await webAdvertisementList({status:status.ACTIVE});
+        const currentDate = new Date();
+
+        const result=await webAdvertisementList({status:status.ACTIVE,endDate: { $gte: currentDate }});
         if(!result){
             return res.status(statusCode.NotFound).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
         }
