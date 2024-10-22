@@ -279,7 +279,7 @@ process.on("uncaughtException", (err) => {
 
 //================================> handle  Unhandled Promise Rejection errors <=====================================//
 
-// console.log('testing');
+console.log('testing');
 
 process.on("unhandledRejection", (err) => {
   console.log(`server rejected ${err.message}`);
