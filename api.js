@@ -279,6 +279,8 @@ process.on("uncaughtException", (err) => {
 
 //================================> handle  Unhandled Promise Rejection errors <=====================================//
 
+console.log('testing');
+
 process.on("unhandledRejection", (err) => {
   console.log(`server rejected ${err.message}`);
   console.log("server shutdown due to unhandled rejection");
