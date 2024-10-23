@@ -11,7 +11,8 @@ const userTransactionsController=require('../../controllers/btocController/userT
 const userSearchHistoryController=require('../../controllers/btocController/userSearchesController');
 const userBookingFailed=require('../../controllers/btocController/userTransactionController');
 const webAdvertismentController=require('../../controllers/btocController/webAdvertisemnetController');
-const userRechargeController=require('../../controllers/btocController/userRechargeController')
+const userRechargeController=require('../../controllers/btocController/userRechargeController');
+const userRatingController=require('../../controllers/ratingController')
 const schemas = require('../../utilities/schema.utilities');
 const SchemaValidator = require('../../utilities/validations.utilities');
 // const upload=require('../../utilities/uploadHandler')
@@ -101,4 +102,5 @@ module.exports = function (app) {
     app.get('/skyTrails/api/user/flightBooking/:id',flightBookingController.getFlightBookingByUserId);
    app.post('/skyTrails/api/admin/sendBusBookingUpdate',busBookingController.sendUpdateToUser);
    app.post('/skyTrails/api/admin/sendFlightBookingUpdate',flightBookingController.sendUpdateToUser);
+app.get('/skyTrails/api/user/getFaqRating',userRatingController.getCombineRatingFAQ)
 }

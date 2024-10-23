@@ -16,6 +16,8 @@ const{userServices}=require("../services/userServices");
 const {createUser,findUser,getUser,findUserData,deleteUser,userList,updateUser,countTotalUser,aggregatePaginateUser,aggregatePaginateUserList}=userServices;
 const {ratingServices}=require("../services/ratingServices");
 const {createRating,findRating,findRatingData,deleteRating,ratingList,updateRating,paginateRatingSearch,countTotalRating}=ratingServices;
+const { faqServices } = require('../services/faqServices');
+const { createfaq, findfaq, findfaqData, deletefaqStatic, updatefaqStatic } = faqServices;
 
 exports.rateOurApp=async(req,res,next)=>{
     try {
@@ -102,6 +104,33 @@ exports.getAllRating=async(req,res,next)=>{
             result: result,
           });
     } catch (error) {
-        return next(error)
+        return next(error);
+    }
+}
+
+exports.getCombineRatingFAQ=async(req,res,next)=>{
+    try {
+        const rating=await ratingList({});
+        if(rating.length<1){
+            return res.status(statusCode.OK).send({
+                statusCode: statusCode.NotFound,
+                responseMessage: responseMessage.DATA_NOT_FOUND,
+              });
+        }
+        const faqRes=await findfaqData({});
+        if(faqRes.length<1){
+            return res.status(statusCode.OK).send({
+                statusCode: statusCode.NotFound,
+                responseMessage: responseMessage.DATA_NOT_FOUND,
+              });
+        }
+        const result={rating,faqRes}
+        return res.status(statusCode.OK).send({
+            statusCode: statusCode.OK,
+            responseMessage: responseMessage.DATA_FOUND,
+            result: result,
+          });
+    } catch (error) {
+        return next(error);
     }
 }

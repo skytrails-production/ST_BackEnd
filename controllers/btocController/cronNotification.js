@@ -111,8 +111,8 @@ var taskPromotionalNotification = cron.schedule("45 09 * * *",async () => {
     });
     for (const user of users) {
       try { 
-        const notificationMessage = `Live the Chand Chupa Badal Mein Dream!`;
-        const messageBody = `Make your Karwachauth as magical as the song! Book a serene destination with up to ₹500 off. Let your love shine under the Karwachauth moon. 🌕🌙`;
+        const notificationMessage = `Fly with TheSkyTrails!`;
+        const messageBody = `Travel smart, fly affordable. Only with TheSkyTrails`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
         const lastSent = lastNotificationSent.get(user._id);
         if (lastSent && Date.now() - lastSent < 3600000) {
