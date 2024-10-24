@@ -27,6 +27,9 @@ const ratingServices = {
     ratingList: async (query) => {
         return await ratingModel.find(query);
     },
+    ratingListPopulate: async (query) => {
+        return await ratingModel.find(query).populate( {path: 'userId',select: 'profilePic'});
+    },
     updateRating: async (query, updateObj) => {
         return await ratingModel.findOneAndUpdate(query, updateObj, { new: true });
     },

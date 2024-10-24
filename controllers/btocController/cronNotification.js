@@ -63,10 +63,10 @@ const notifications = [
     message: `Enjoy upto 500 off today!`,
     body: `Experience the joy of Karwachauth Puja with special offers and blessings. Celebrate the auspicious day with savings and joy`,
   },
-  {
-    message: `Feel the Tum Jo Aaye Magic!`,
-    body: `Just like Tum Jo Aaye in Once Upon A Time in Mumbaai, make this Karwachauth special with a dreamy trip! Save ₹500 on your next booking`,
-  },
+  // {
+  //   message: `Feel the Tum Jo Aaye Magic!`,
+  //   body: `Just like Tum Jo Aaye in Once Upon A Time in Mumbaai, make this Karwachauth special with a dreamy trip! Save ₹500 on your next booking`,
+  // },
   {
     message: `Time to pack your bags for a Diwali getaway!`,
     body: `Remember, calories don’t count on vacation… especially if it’s sweets!" 🍬✈️`,

@@ -696,7 +696,9 @@ const schemas = {
   }),
   ratingSchema:joi.object().keys({
     rate: joi.number().required(),
-    comments: joi.string().optional()
+    comments: joi.string().optional(),
+    destination: joi.string().optional(),
+    section: joi.string().optional()
   }),
   rmSchema:joi.object().keys({
     userName: joi.string().required(),

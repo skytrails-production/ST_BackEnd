@@ -1,6 +1,6 @@
 
 const nodemailer = require('nodemailer');
-const openapiKey="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";
+// const openapiKey="sBlbkFJxDNGxZgW2VC8Csv3yzJJ";
 
 // const nodemailerConfig = nodemailer.createTransport({
 //   service: 'gmail', 

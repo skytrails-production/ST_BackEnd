@@ -23,6 +23,15 @@ const ratingSchema = new mongoose.Schema({
     },
     comments:{
         type:String
+    },
+    destination:{
+        type:String
+    },
+    section:{
+        type:String
+    },
+    icon:{
+        type:String
     }
 },{timestamps:true});
 ratingSchema.plugin(mongoosePaginate);
