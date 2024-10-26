@@ -3,6 +3,7 @@ var bcrypt = require("bcryptjs");
 const { userInfo } = require("os");
 const commonFunction = require("../utilities/commonFunctions");
 const approvestatus = require("../enums/approveStatus");
+const ratingIcons=require("../utilities/icons/icons")
 //require responsemessage and statusCode
 const statusCode = require("../utilities/responceCode");
 const responseMessage = require("../utilities/responses");
@@ -65,19 +66,17 @@ exports.rateOurApp = async (req, res, next) => {
      if (!sectionIcon) {
        switch (section) {
          case 'FLIGHTS':
-           sectionIcon = 'flight_icon.png';
+           sectionIcon = ratingIcons.flightIcon;
            break;
          case 'HOTELS':
-           sectionIcon = 'hotel_icon.png';
+           sectionIcon = ratingIcons.hotelIcon;
            break;
          case 'BUSES':
-           sectionIcon = 'car_icon.png';
+           sectionIcon = ratingIcons.busIcon;
            break;
          case 'HOLIDAYPACKAGE':
-           sectionIcon = 'holiday_icon.png';
+           sectionIcon = ratingIcons.holidayPackageIcon;
            break;
-         default:
-           sectionIcon = 'default_icon.png'; 
        }
      }
  
