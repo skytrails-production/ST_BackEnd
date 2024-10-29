@@ -300,7 +300,7 @@ const taskRandomNotification1 = cron.schedule("03 19 * * *",async () => {
 );                                                 
 taskRandomNotification1.start();
 
-const taskRandomNotification2 = cron.schedule("40 17 * * *",async () => {
+const taskRandomNotification2 = cron.schedule("30 12 * * *",async () => {
   try {
     const users = await userList({
       status: status.ACTIVE,
