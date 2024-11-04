@@ -23,6 +23,12 @@ const RandomPaymentSchema=new mongoose.Schema({
     bookingType :{
         type:String,
     },
+    email:{
+        type:String
+    },
+    phone:{
+        type:String
+    },
     transactionStatus: {
         type: String,
         enum: ['PENDING', 'SUCCESS', 'FAILED'],

@@ -98,6 +98,13 @@ const internationlSchema = mongoose.Schema(
         type: Number,
         default: activeStatus.IN_ACTIVE,
       },
+      package_expiry_date: {
+        type: Date,
+        default: () => {
+          const now = new Date();
+          return new Date(now.setMonth(now.getMonth() + 6));
+        }
+      }
       
     },
     {

@@ -106,6 +106,8 @@ exports.internationalCreate = async (req, res) => {
   const dataDestination=reqData?.destination?.map(item => {
     if (item.addMore) {
       item.addMore = item.addMore.toLowerCase().trim(); // Convert to lowercase and trim whitespace
+       // Capitalize the first letter
+      item.addMore = item.addMore.charAt(0).toUpperCase() + item.addMore.slice(1);
     }
     return item;
   });

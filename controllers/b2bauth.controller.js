@@ -1931,7 +1931,10 @@ exports.randomPayment=async (req, res, next) => {
         amount: amount,
         paymentId: txnId,
         bookingType: bookingType,
-        easepayid:'NA'
+        easepayid:'NA',
+        email:email,
+        phone:phone
+
       };
       const createData = await randomPayments.create(object);
       res.status(201).send({
