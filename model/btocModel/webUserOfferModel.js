@@ -39,7 +39,7 @@ const advertisementSchema = new mongoose.Schema({
     },
     addType:{
         type:String,
-        enum:[offerType.BUS,offerType.FLIGHTS,offerType.BANKOFFERS,offerType.HOLIDAYS,offerType.HOTELS],
+        enum:[offerType.BUS,offerType.DEALS,offerType.FLIGHTS,offerType.BANKOFFERS,offerType.HOLIDAYS,offerType.HOTELS],
         
     }
 },{timestamps:true})
