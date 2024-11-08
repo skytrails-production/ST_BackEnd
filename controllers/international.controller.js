@@ -129,15 +129,16 @@ exports.internationalCreate = async (req, res) => {
           currency: reqData.pakage_amount.currency,
           amount: reqData.pakage_amount.amount,
         },
-        insclusions: reqData.insclusions,
-        hotel_details: reqData.hotel_details,
-        insclusion_note: reqData.insclusion_note,
-        exclusion_note: reqData.exclusion_note,
-        detailed_ltinerary: reqData.detailed_ltinerary,
-        overview: reqData.overview,
-        select_tags: reqData.select_tags,
-        term_Conditions: reqData.term_Conditions,
-        cancellation_Policy: reqData.cancellation_Policy,
+        insclusions: reqData?.insclusions,
+        hotel_details: reqData?.hotel_details,
+        insclusion_note: reqData?.insclusion_note,
+        exclusion_note: reqData?.exclusion_note,
+        detailed_ltinerary: reqData?.detailed_ltinerary,
+        overview: reqData?.overview,
+        select_tags: reqData?.select_tags,
+        term_Conditions: reqData?.term_Conditions,
+        cancellation_Policy: reqData?.cancellation_Policy,
+        package_expiry_date:reqData?.package_expiry_date
       });
       try {
         const response = await data1.save();
@@ -852,10 +853,21 @@ exports.editPackage = async (req, res, next) => {
         return res.status(500).send(error);
       }
     }
+
+    const dataDestination=destination?.map(item => {
+      if (item.addMore) {
+        item.addMore = item.addMore.toLowerCase().trim(); // Convert to lowercase and trim whitespace
+         // Capitalize the first letter
+        item.addMore = item.addMore.charAt(0).toUpperCase() + item.addMore.slice(1);
+      }
+      return item;
+    });
+
+
     const object = {
       pakage_title:pakage_title,
       pakage_img:req.body.pakage_img,
-      destination:destination,
+      destination:dataDestination,
       country:country,
       schedule: schedule,
       days:days,
@@ -1125,7 +1137,7 @@ exports.beachesPackagesCategoryArr = async (req, res, next) => {
           page: Number(page) || 1,
           limit: Number(limit) || 5,
           sort: { createdAt: -1 },
-          select:{pakage_amount:1,pakage_title:1,pakage_img:1,days:1,package_img:1}
+          select:{pakage_amount:1,pakage_title:1,pakage_img:1,days:1,package_img:1,insclusions:1}
         };
         // Perform pagination query
         const result = await internationl.paginate(queryObj, options);

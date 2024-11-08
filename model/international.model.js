@@ -101,8 +101,18 @@ const internationlSchema = mongoose.Schema(
       package_expiry_date: {
         type: Date,
         default: () => {
+          
+
           const now = new Date();
-          return new Date(now.setMonth(now.getMonth() + 6));
+          now.setMonth(now.getMonth() + 6);
+  
+          // Format the date as YYYY-MM-DD
+          const year = now.getFullYear();
+          const month = String(now.getMonth() + 1).padStart(2, '0');
+          const day = String(now.getDate()).padStart(2, '0');
+          
+          return `${year}-${month}-${day}`;
+
         }
       }
       
