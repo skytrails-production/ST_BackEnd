@@ -229,3 +229,25 @@ exports.airlineDetails= async (req, res) =>{
   
   
 }
+
+
+exports.getAirlineDetailsById=async(req,res,next)=>{
+  try {
+    const result=await airlineData.find({airlineCode:req.query.airlineCode});
+    if(!result){
+      const data={airlineCode:req.query.airlineCode,airlineName:"Flight"}
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.DATA_FOUND,
+        result: data,
+      });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
