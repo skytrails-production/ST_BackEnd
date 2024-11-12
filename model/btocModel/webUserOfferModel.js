@@ -39,9 +39,14 @@ const advertisementSchema = new mongoose.Schema({
     },
     addType:{
         type:String,
-        enum:[offerType.BUS,offerType.DEALS,offerType.FLIGHTS,offerType.BANKOFFERS,offerType.HOLIDAYS,offerType.HOTELS],
+        enum:[offerType.BUS,offerType.DEALS,offerType.FLIGHTS,offerType.BANKOFFERS,offerType.HOLIDAYS,offerType.HOTELS,offerType.FORALL],
         
-    }
+    },
+    termsAndCond:[],
+    whtDoUGet:[],
+    howDoUGetit:[],
+    elseNeedToKnow:[],
+    dashboardImg:{type:String}
 },{timestamps:true})
 advertisementSchema.plugin(mongoosePaginate);
 

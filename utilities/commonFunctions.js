@@ -5931,9 +5931,9 @@ module.exports = {
   getImageUrlAWSByFolder: async (file,folderName) => {
     const params = {
       Bucket: process.env.AWS_BUCKET_NAME,
-      Key: `${folderName}/uploadedFile_${Date.now()}_${file.originalname.replace(/\s/g, "")}`,
-      Body: file.buffer,
-      ContentType: file.mimetype,
+      Key: `${folderName}/uploadedFile_${Date.now()}_${file[0].originalname.replace(/\s/g, "")}`,
+      Body: file[0].buffer,
+      ContentType: file[0].mimetype,
       ACL: "public-read",
     };
     try {

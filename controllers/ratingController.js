@@ -3,7 +3,7 @@ var bcrypt = require("bcryptjs");
 const { userInfo } = require("os");
 const commonFunction = require("../utilities/commonFunctions");
 const approvestatus = require("../enums/approveStatus");
-const ratingIcons=require("../utilities/icons/icons")
+const ratingIcons = require("../utilities/icons/icons");
 //require responsemessage and statusCode
 const statusCode = require("../utilities/responceCode");
 const responseMessage = require("../utilities/responses");
@@ -49,11 +49,22 @@ const {
 
 exports.rateOurApp = async (req, res, next) => {
   try {
+    // Helper function to trim spaces from both keys and values in req.body
+    const sanitizeRequestBody = (body) => {
+      for (let key in body) {
+        if (body.hasOwnProperty(key) && typeof body[key] === "string") {
+          body[key] = body[key].trim();
+        }
+      }
+    };
+
+    // Sanitize req.body values without changing keys
+    sanitizeRequestBody(req.body);
     let { rate, comments, destination, section } = req.body;
-   // Convert section to lowercase for uniformity
-   if(section){
-    section = section.toUpperCase();
-   }
+    // Convert section to lowercase for uniformity
+    if (section) {
+      section = section.toUpperCase();
+    }
     const isUserExist = await findUserData({ _id: req.userId });
     if (!isUserExist) {
       return res.status(statusCode.OK).send({
@@ -62,36 +73,39 @@ exports.rateOurApp = async (req, res, next) => {
       });
     }
     const Positive = rate >= 3;
-     let sectionIcon ;
-     if (!sectionIcon) {
-       switch (section) {
-         case 'FLIGHTS':
-           sectionIcon = ratingIcons.flightIcon;
-           break;
-         case 'HOTELS':
-           sectionIcon = ratingIcons.hotelIcon;
-           break;
-         case 'BUSES':
-           sectionIcon = ratingIcons.busIcon;
-           break;
-         case 'HOLIDAYPACKAGE':
-           sectionIcon = ratingIcons.holidayPackageIcon;
-           break;
-       }
-     }
- 
-     // Construct rating object
-     const object = {
-       userId: isUserExist._id,
-       userName: isUserExist.username,
-       rate: rate,
-       isPositive: Positive,
-       comments: comments,
-       destination,
-       section,
-       icon: sectionIcon,
-     };
-    const isRatingExist = await findRating({ userId: isUserExist._id,destination: { $exists: false} });
+    let sectionIcon;
+    if (!sectionIcon) {
+      switch (section) {
+        case "FLIGHTS":
+          sectionIcon = ratingIcons.flightIcon;
+          break;
+        case "HOTELS":
+          sectionIcon = ratingIcons.hotelIcon;
+          break;
+        case "BUSES":
+          sectionIcon = ratingIcons.busIcon;
+          break;
+        case "HOLIDAYPACKAGE":
+          sectionIcon = ratingIcons.holidayPackageIcon;
+          break;
+      }
+    }
+
+    // Construct rating object
+    const object = {
+      userId: isUserExist._id,
+      userName: isUserExist.username,
+      rate: rate,
+      isPositive: Positive,
+      comments: comments,
+      destination,
+      section,
+      icon: sectionIcon,
+    };
+    const isRatingExist = await findRating({
+      userId: isUserExist._id,
+      destination: { $exists: false },
+    });
     if (isRatingExist) {
       const result = await updateRating({ _id: isRatingExist._id }, object);
       return res.status(statusCode.OK).send({

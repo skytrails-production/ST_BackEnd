@@ -15,7 +15,7 @@ const faqSchema = new mongoose.Schema({
     category: {
         type: String,
         enums:{
-        values:[staticContentsType.ABOUTTHESITE,staticContentsType.ABOUTUS,staticContentsType.BOOKINGPOLICY,staticContentsType.BUSES,staticContentsType.CABS,staticContentsType.CORPORATETRAVEL,staticContentsType.FLIGHTS,staticContentsType.FORXCARD,staticContentsType.HOLIDAYPACKAGE,staticContentsType.HOTELS,staticContentsType.IMPORTANTLINKS,staticContentsType.PRIVACYPOLICY,staticContentsType.PRODUCTOFFERING,staticContentsType.QUICKLINKS,staticContentsType.RETURNPOLICY,staticContentsType.staticContentsType,staticContentsType.TRAINS,staticContentsType.TRAVELINSURENCE,staticContentsType.REFFAQ,staticContentsType.TRIVIAFAQ],
+        values:[staticContentsType.ABOUTTHESITE,staticContentsType.ABOUTUS,staticContentsType.BOOKINGPOLICY,staticContentsType.BUSES,staticContentsType.CABS,staticContentsType.CORPORATETRAVEL,staticContentsType.FLIGHTS,staticContentsType.FORXCARD,staticContentsType.HOLIDAYPACKAGE,staticContentsType.HOTELS,staticContentsType.IMPORTANTLINKS,staticContentsType.PRIVACYPOLICY,staticContentsType.PRODUCTOFFERING,staticContentsType.QUICKLINKS,staticContentsType.RETURNPOLICY,staticContentsType.staticContentsType,staticContentsType.TRAINS,staticContentsType.TRAVELINSURENCE,staticContentsType.REFFAQ,staticContentsType.TRIVIAFAQ,staticContentsType.VISA],
         message:"{type supported example:--'FLIGHTS','HOTELS','BUSES','TRAINS','HOLIDAYPACKAGE','CABS','FORXCARD','ABOUTTHESITE','QUICKLINKS','IMPORTANTLINKS',CORPORATETRAVEL:'CORPORATETRAVEL','TNC','PRIVACYPOLICY','ABOUTUS','RETURNPOLICY','BOOKINGPOLICY','CORPORATETRAVEL','QUESTION','REFFAQ','TRIVIAFAQ}"   }
         }
 }, { timestamps: true })

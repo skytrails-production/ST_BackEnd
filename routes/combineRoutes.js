@@ -1,5 +1,6 @@
 const combineApiController= require("../controllers/combinedApiResponse");
-const combineBookingDetailsCOntroller=require('../controllers/combineAPIS/combineUserBookings')
+const combineBookingDetailsCOntroller=require('../controllers/combineAPIS/combineUserBookings');
+const combineOffer= require("../controllers/combineAPIS/combineOffer");
 const multer = require("multer");
 // Set up multer for image upload
 const storage = multer.memoryStorage();
@@ -17,5 +18,7 @@ module.exports = function (app) {
   app.get('/skyTrails/api/user/getCombineHotelBookingHistory',[authJwt.verifcationToken],combineBookingDetailsCOntroller.getCombineHotelBookingList);
   app.post("/skyTrails/api/combine/combineRoundTripApiRes", combineApiController.combineTvoKafilaRoundTrip);
   app.get('/skyTrails/api/amadeus/user/getAllBookingHistory',[authJwt.verifcationToken],combineBookingDetailsCOntroller.getCombineFlightBookingResp);
-  app.get('/skyTrails/api/amadeus/user/combine/getAllBookingHistoryAggregate',[authJwt.verifcationToken],combineBookingDetailsCOntroller.getCombineFlightBookingRespAggregate)
+  app.get('/skyTrails/api/amadeus/user/combine/getAllBookingHistoryAggregate',[authJwt.verifcationToken],combineBookingDetailsCOntroller.getCombineFlightBookingRespAggregate);
+  app.get('/skyTrails/api/combine/combieOffers',combineOffer.getCombineOffer);
+  app.get('/skyTrails/api/combine/combieOffers/:id',combineOffer.getOfferById)
 };

@@ -32,7 +32,16 @@ const {
 
 exports.createDayWiseActivity = async (req, res, next) => {
   try {
-    const { destination, origin, dayAt,activities ,noOfDays} = req.body;
+    const sanitizeRequestBody = (body) => {
+      for (let key in body) {
+        if (body.hasOwnProperty(key) && typeof body[key] === "string") {
+          body[key] = body[key].trim();
+        }
+      }
+    };
+    // Sanitize req.body values without changing keys
+    sanitizeRequestBody(req.body);
+    let { destination, origin, dayAt,activities ,noOfDays} = req.body;
     const object = {
       destination,
       origin,

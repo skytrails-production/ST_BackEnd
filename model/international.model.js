@@ -269,6 +269,7 @@ const packageCityData = mongoose.model(
     {
       cityName:{
         type:String,
+        lowercase: true
       },    
       description:{
         type:String,

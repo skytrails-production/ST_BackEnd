@@ -502,6 +502,10 @@ const schemas = {
     endDate: joi.string().required(),
     remainingDays: joi.number().optional(),
     addType: joi.valid(...Object.values(queryType)).required(),
+    howDoUGetit:joi.array().required(),
+    termsAndCond:joi.array().required(),
+    elseNeedToKnow:joi.array().required(),
+    whtDoUGet:joi.array().required(),
   }),
   transactionSchema: joi.object().keys({
     firstname: joi.string().required(),

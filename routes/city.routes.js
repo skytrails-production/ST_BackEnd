@@ -16,4 +16,5 @@ module.exports = function (app) {
   app.get("/skyTrails/searchCity", controller.searchCityFlight);
 
   app.get("/skyTrails/airline",controller.airlineDetails);
+  app.get("/skyTrails/airlineName",controller.getAirlineDetailsById);
 };

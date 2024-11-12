@@ -60,16 +60,16 @@ const notifications = [
     body: `Amazing offers are available. Book now!`,
   },
   {
-    message: `Enjoy upto 500 off today!`,
-    body: `Experience the joy of Karwachauth Puja with special offers and blessings. Celebrate the auspicious day with savings and joy`,
+    message: `Your bus is ready to roll! 🚌💨`,
+    body: `Pack your bags, the adventure starts soon!`,
   },
   // {
   //   message: `Feel the Tum Jo Aaye Magic!`,
   //   body: `Just like Tum Jo Aaye in Once Upon A Time in Mumbaai, make this Karwachauth special with a dreamy trip! Save ₹500 on your next booking`,
   // },
   {
-    message: `Time to pack your bags for a Diwali getaway!`,
-    body: `Remember, calories don’t count on vacation… especially if it’s sweets!" 🍬✈️`,
+    message: `Time to pack your bags for a Diwali getaway!Don't miss the bus! 🚏`,
+    body: `But don't worry, we’ve got your seat reserved. 🏖" 🍬✈️`,
   },
  
   {
@@ -77,8 +77,8 @@ const notifications = [
     body:`Just remember to save the ‘overpacking’ for your suitcase, not your plans!" 🧳✨`
   },
   {
-    message: `Chhath Puja vibes: Book your riverside getaway!`,
-    body: `Just don't forget your puja thali—your GPS won't guide you there!" 🗺️🛶`,
+    message: `Great news! 🎉Enjoy 20% OFF on your next bus booking! `,
+    body: `Time to hit the road and save some cash! 🚌💸`,
   },
 //   {
 //     message: `Thara Paisa 💸💵`,

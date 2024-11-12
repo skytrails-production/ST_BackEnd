@@ -44,6 +44,7 @@ const couponSchema = new Schema(
     image: {
       type: String,
     },
+    dashboardImg:{type:String},
     title: {
       type: String,
     },
@@ -93,7 +94,10 @@ const couponSchema = new Schema(
     
     },
     userApplied: [{ type: mongoose.Schema.Types.ObjectId, ref: "userBtoC" }],
-    applicableUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "userBtoC" }] 
+    applicableUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "userBtoC" }],
+    whtDoUGet:[],
+    howDoUGetit:[],
+    elseNeedToKnow:[]
   },
   { timestamps: true }
 );

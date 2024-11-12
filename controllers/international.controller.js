@@ -996,6 +996,12 @@ exports.getAllPackagesList=async(req,res,next)=>{
 exports.packageCityData = async (req, res) =>{ 
   const file = req.file; // Access the uploaded file
   const { cityName, description } = req.body;
+
+  const isExistingCityName=await packageCityData.findOne(cityName);
+
+  if(isExistingCityName){
+    return  actionCompleteResponse(res, isExistingCityName, "Package city data already exist.");
+  }
   const s3Params = {
     Bucket: process.env.AWS_BUCKET_NAME,
     Key: `packageImages/${file.originalname}`,
@@ -1024,7 +1030,7 @@ exports.packageCityData = async (req, res) =>{
 
 
 exports.getPackageCityData = async (req, res) =>{
-  const data = req.query.keyword;
+  const data = req?.query?.keyword?.toLowerCase();
     try{
       const response=await packageCityData.findOne({cityName:data}).select('-createdAt -updatedAt -__v');
 

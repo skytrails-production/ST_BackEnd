@@ -8,6 +8,7 @@ const sendSMSUtils = require("../../utilities/sendSms");
 const commonFunction = require("../../utilities/commonFunctions");
 const whatsApi = require("../../utilities/whatsApi");
 const AdminNumber = process.env.ADMINNUMBER;
+const {airlineData} = require("../../model/city.model");
 const bookingStatus = require("../../enums/bookingStatus");
 /**********************************SERVICES********************************** */
 const { userServices } = require("../../services/userServices");
@@ -116,7 +117,9 @@ exports.amdsFlightBooking = async (req, res, next) => {
       const depTime=new Date(data.airlineDetails[0].Origin.DepTime);
       const arrTime=new Date(data.airlineDetails[0].Destination.ArrTime);
       const userName = `${data?.passengerDetails[0]?.firstName} ${data?.passengerDetails[0]?.lastName}`;
-      const templates=[String(userName),String(data.pnr),String(data.airlineDetails[0].Airline.AirlineName),String(depDate.toLocaleDateString('en-GB', options)),String(depTime.toLocaleTimeString('en-GB')),String(arrTime.toLocaleTimeString('en-GB')),String(data.totalAmount)];
+       const result=await airlineData.find({airlineCode:data.airlineDetails[0].Airline.AirlineCode});
+     const airLineName = data.airlineDetails[0].Airline.AirlineName || data.airlineDetails[0].Airline.AirlineCode
+      const templates=[String(userName),String(data.pnr),String(airLineName),String(depDate.toLocaleDateString('en-GB', options)),String(depTime.toLocaleTimeString('en-GB')),String(arrTime.toLocaleTimeString('en-GB')),String(data.totalAmount)];
       await whatsApi.sendWhtsAppOTPAISensy(phone,templates,"flightBooking");
       await sendSMSUtils.sendSMSForFlightBooking(data);
       await commonFunction.FlightBookingConfirmationMail(result);

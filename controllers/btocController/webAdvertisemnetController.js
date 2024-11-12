@@ -13,7 +13,19 @@ const SCOPES = ['https://www.googleapis.com/auth/drive'];
 //Essential Services***************************************************
 const {webAdvertisementServices}=require("../../services/btocServices/webUserOfferServices");
 const {createWebadvertisement,findWebadvertisementData,deletWebeadvertisement,webAdvertisementList,updateWebadvertisement,countTotalWebadvertisement,getWebAdvertisment}=webAdvertisementServices;
-
+const {
+    couponServices,
+  } = require("../../services/btocServices/couponServices");
+  const {
+    createCoupon,
+    findCoupon,
+    getCoupon,
+    findCouponData,
+    deleteCoupon,
+    couponList,
+    updateCoupon,
+    paginateCouponSearch,
+  } = couponServices;
 exports.createWebAdvertisement=async(req,res,next)=>{
     try {
         if (!req.file) {
@@ -103,3 +115,42 @@ exports.sendNotification = async (req, res, next) => {
     }
 };
 
+exports.createWebAdvertisement1=async(req,res,next)=>{
+    try {
+        let  image;
+        let dashboardImg;
+        if (!req.files) {
+            return res.status(400).send({ message: "No file uploaded." });
+          }
+        const {title, content, startDate, endDate, remainingDays,addType,elseNeedToKnow,howDoUGetit,whtDoUGet,termsAndCond}=req.body;
+        // const imageFiles = await commonFunction.getImageUrlAWS(req.file);
+        // if (!imageFiles) {
+        //     return res.status(statusCode.InternalError).send({ statusCode: statusCode.OK, message: responseMessage.INTERNAL_ERROR });
+        // }
+        if (req.files) {
+              image =await commonFunction.getImageUrlAWSByFolder(req.files.image,"webOffers");
+             dashboardImg = await commonFunction.getImageUrlAWSByFolder(req.files.dashboardImg,"webOfferDashboard");
+          }
+        const object = {
+            image: image,
+            dashboardImg:dashboardImg,
+            title: title,
+            content: content,
+            startDate: startDate,
+            endDate: endDate,
+            remainingDays: remainingDays,
+            addType:addType,
+            termsAndCond:termsAndCond,
+            whtDoUGet:whtDoUGet,
+            howDoUGetit:howDoUGetit,
+            elseNeedToKnow:elseNeedToKnow
+
+        }
+        const result=await createWebadvertisement(object);
+
+        if(result){
+            return res.status(statusCode.OK).send({ statusCode: statusCode.OK, message: responseMessage.ADS_CREATED, result: result });}
+    } catch (error) {
+        return next(error)
+    }
+}
