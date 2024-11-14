@@ -49,7 +49,7 @@ const forumQueServices={
           }
         },
         {
-          $sort: { createdAt: -1 } 
+          $sort: { updatedAt: -1 } 
         }
       ]
       if (questionId) {
@@ -213,7 +213,7 @@ const forumQueServices={
         let options = {
           page: parseInt(page, 10) || 1,
           limit: parseInt(limit, 10) || 10,
-          sort: { createdAt: -1 },
+          sort: { updatedAt: -1 },
         };
         const info=await forumQueModel.aggregatePaginate(aggregate, options);
         return info;

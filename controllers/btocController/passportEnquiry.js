@@ -144,12 +144,12 @@ exports.getAllPassportEnquiry = async (req, res, next) => {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
-        result: result,
+        // result: result,
       });
     }
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
-      responseMessage: responseMessage.CREATED_SUCCESS,
+      responseMessage: responseMessage.DATA_FOUND,
       result: result,
     });
   } catch (error) {
@@ -179,7 +179,7 @@ exports.getPassportEnquiry = async (req, res, next) => {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
-        result: result,
+        // result: result,
       });
     }
     return res.status(statusCode.OK).send({

@@ -7,7 +7,8 @@ const {
   packagebookingSchema,
   confirmPackagebookingSchema,
   packageCityData,
-  packageEnquirySchema
+  packageEnquirySchema,
+  specialPackageCityData
 } = require("../model/international.model");
 const aws = require("aws-sdk");
 const Internationalapi = require("../utilities/Internationalapi");
@@ -427,7 +428,13 @@ function escapeRegex(text) {
 
 exports.packageCityList = async (req, res) => {
   try {
-    const regex = new RegExp(escapeRegex(req.query.keyword), "gi");
+
+    const keyword=req?.query?.keyword
+    if(!keyword){
+      return res.status(404).send({status:404,message:"Please Select keyword"})
+
+    }else{
+    const regex = new RegExp(escapeRegex(keyword), "gi");
 
     const cityResponse = await internationl.aggregate([
       { $match: { "destination.addMore": regex ,is_active:1} },
@@ -458,6 +465,7 @@ exports.packageCityList = async (req, res) => {
       const msg = "No matching Package City values found";
       actionCompleteResponse(res, [], msg);
     }
+  }
   } catch (error) {
     sendActionFailedResponse(res, {}, error.message);
   }
@@ -1300,4 +1308,210 @@ exports.packagesEnquiry = async (req, res) =>{
     
   }
   
+}
+
+
+
+
+//getLocationWisePackages
+
+exports.getLocationWisePackages = async (req, res) =>{
+
+
+  try{
+  const data=await internationl.find({})
+
+
+ 
+
+    actionCompleteResponse(res, data, "msg");
+} catch (err) {
+  sendActionFailedResponse(res, {}, err.message);
+}
+  
+
+
+
+}
+
+
+
+//createPackageSpecialCity
+
+exports.createPackageSpecialCity = async (req, res) =>{
+
+    const file = req?.file; // Access the uploaded file
+    // const { country, destination ,startFrom} = JSON.parse(req?.body?.data);
+    const { country, destination ,startFrom} = req?.body;
+
+    if(!file){
+      return  res.status(404).send({status:404,message:"select jpg/png file"});
+    }
+
+    if(!country || !destination || !startFrom){
+      return  res.status(404).send({status:404,message:"country, destination and startFrom value can't be null"});
+    }
+
+    
+
+    // console.log(req.body.data,req.body)
+  
+    const isExistingSpecialCityName=await specialPackageCityData.findOne({destination});
+  
+    if(isExistingSpecialCityName){
+      return  actionCompleteResponse(res, isExistingSpecialCityName, "Special Package city data already exist.");
+    }
+    const s3Params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: `packageImages/packageSpecialCity/${file.originalname}`,
+      Body: file.buffer,
+      ContentType: file.mimetype,
+      ACL: "public-read",
+    }; 
+  
+      try {
+         // Upload file to S3
+         const data = await s3.upload(s3Params).promise();
+         // Store the URL of the uploaded image
+         const newData = new specialPackageCityData({
+          country,
+          destination,
+          imageUrl: data.Location, // Store the URL of the uploaded image
+          startFrom
+        });
+         // Save to database
+         const response = await newData.save();
+         msg = "Special Package Data Created";
+          actionCompleteResponse(res, response, msg);
+
+} catch (err) {
+  sendActionFailedResponse(res, {}, err.message);
+}
+  
+
+
+
+}
+
+
+
+//getPackageSpecialCity
+exports.getPackageSpecialCity = async (req, res) =>{
+  try{
+    const data=await specialPackageCityData.find({ status: "ACTIVE" })
+    .sort({ createdAt: -1 }).select('-createdAt -updatedAt -__v');
+    if(data.length===0){
+    return res.status(404).send({status:404, message:"No data Found"})
+    }
+
+    actionCompleteResponse(res, data, "Special Package Cities retrieved successfully.");
+} catch (err) {
+  sendActionFailedResponse(res, {}, err.message);
+}
+  
+
+
+
+}
+
+exports.getPackageSpecialCityById = async (req, res) =>{
+
+  try {
+    const id=req?.params?.id;
+    
+    if (!id) {
+      return res.status(400).json({
+        status: 400,
+        message: 'No valid data provided for update.',
+      });
+    }
+
+    const packageCityData = await specialPackageCityData.findById(id)
+
+    if (!packageCityData) {
+      return res.status(404).json({
+        status: 404,
+        message: 'Special City Package not found.',
+      });
+    }
+
+    // Send back the updated data
+    actionCompleteResponse(res,packageCityData ,'Special City Package found successfully.');
+
+    
+  } catch (err) {
+    sendActionFailedResponse(res, {}, err.message);    
+  }
+}
+//updatePackageSpecialCityById
+
+exports.updatePackageSpecialCityById = async (req, res) =>{
+
+  try {
+    const id=req?.params?.id;
+    const updateData = req?.body;
+    // console.log(updateData)
+
+    if (!updateData || Object.keys(updateData).length === 0) {
+      return res.status(400).json({
+        status: 400,
+        message: 'No valid data provided for update.',
+      });
+    }
+
+    const updatedCityData = await specialPackageCityData.findByIdAndUpdate(
+      id,
+      { $set: updateData },
+      { new: true, runValidators: true }  // `new: true` to return updated document
+    );
+
+    if (!updatedCityData) {
+      return res.status(404).json({
+        status: 404,
+        message: 'Special City Package not found.',
+      });
+    }
+
+    // Send back the updated data
+    actionCompleteResponse(res,updatedCityData ,'Special City Package updated successfully.');
+
+    
+  } catch (err) {
+    sendActionFailedResponse(res, {}, err.message);    
+  }
+}
+
+
+//deletePackageSpecialCity
+
+exports.deletePackageSpecialCity = async (req, res) => {
+      
+    try {
+      const id = req?.params?.id;
+  
+      if (!id) {
+        return res.status(400).json({
+          status:400,
+          message: "ID parameter is required."
+        });
+      }
+  
+      // Attempt to delete the record
+      const data = await specialPackageCityData.findByIdAndRemove(id);
+  
+      // Check if deletion was successful
+      if (data) {
+        return res.status(200).json({
+          status:200,
+          message: "Special package city deleted successfully."
+        });
+      } else {
+        return res.status(404).json({
+          status:404,
+          message: "Special package city not found."
+        });
+      }
+  } catch (err) {
+    sendActionFailedResponse(res, {}, err.message);    
+  }
 }

@@ -91,5 +91,18 @@ module.exports = function (app) {
   app.get("/skyTrails/api/packages/packagesCategory1", controller.beachesPackagesCategoryArr1);
 
   app.post("/skyTrails/api/packagesenquiry",controller.packagesEnquiry);
-  // app.put("/skyTrails/api/admin/package/approveMultiplePackages",controller.approveMultiplePackages)
+  // app.put("/skyTrails/api/admin/package/approveMultiplePackages",controller.approveMultiplePackages);
+
+
+  app.get("/skyTrails/api/packages/locationwise", controller.getLocationWisePackages);
+
+  app.post("/skyTrails/api/packages/createspecialcity",upload.single("file"), controller.createPackageSpecialCity);
+
+  app.get("/skyTrails/api/packages/specialcity", controller.getPackageSpecialCity);
+
+  app.get("/skyTrails/api/packages/specialcity/:id", controller.getPackageSpecialCityById);
+
+  app.put("/skyTrails/api/packages/specialcity/:id", controller.updatePackageSpecialCityById);
+
+  app.delete("/skyTrails/api/packages/specialcity/:id", controller.deletePackageSpecialCity);
 };

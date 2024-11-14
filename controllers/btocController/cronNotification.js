@@ -67,10 +67,10 @@ const notifications = [
   //   message: `Feel the Tum Jo Aaye Magic!`,
   //   body: `Just like Tum Jo Aaye in Once Upon A Time in Mumbaai, make this Karwachauth special with a dreamy trip! Save ₹500 on your next booking`,
   // },
-  {
-    message: `Time to pack your bags for a Diwali getaway!Don't miss the bus! 🚏`,
-    body: `But don't worry, we’ve got your seat reserved. 🏖" 🍬✈️`,
-  },
+  // {
+  //   message: `Time to pack your bags for a Diwali getaway!Don't miss the bus! 🚏`,
+  //   body: `But don't worry, we’ve got your seat reserved. 🏖" 🍬✈️`,
+  // },
  
   {
     message: `New Year’s resolution: Travel more!`,
@@ -93,10 +93,10 @@ const notifications = [
     body: `Travel smart, fly affordable. Only with TheSkyTrails!`,
   },
  
-  {
-    message: `Suna Kya?`,
-    body: `TheSkyTrails is offering festive seasons deals.`,
-  },
+  // {
+  //   message: `Suna Kya?`,
+  //   body: `TheSkyTrails is offering festive seasons deals.`,
+  // },
 ];
 
 const lastNotificationSent = new Map();

@@ -288,6 +288,46 @@ const packageCityData = mongoose.model(
 );
 
 
+//============================== Specail Package City Data  =========================
+
+
+
+
+const specialPackageCityData = mongoose.model(
+  "specialPackageCityDatas",
+  mongoose.Schema(
+    {
+      country:{
+        type:String,
+        lowercase:true,
+        trim:true
+      },
+      destination:{
+        type:String,
+        lowercase: true,
+        trim:true
+      },          
+      imageUrl: { 
+        type: String,
+        required: false,
+      },
+      startFrom:{
+        type:Number
+      },
+      status:{
+        type:String,
+        enum:["ACTIVE","BLOCK"],
+        default:"ACTIVE"
+      }
+           
+    },
+    {
+      timestamps: true,
+    }
+  )
+);
+
+
 // package enquirey shcehma
 
 
@@ -318,5 +358,6 @@ module.exports = {
   packagebookingSchema,
   confirmPackagebookingSchema,
   packageCityData,
-  packageEnquirySchema
+  packageEnquirySchema,
+  specialPackageCityData
 };

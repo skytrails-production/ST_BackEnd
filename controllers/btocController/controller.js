@@ -517,6 +517,10 @@ exports.uploadImage = async (req, res, next) => {
         message: responseMessage.USERS_NOT_FOUND,
       });
     }
+    const token = await commonFunction.getToken({
+      _id: isUserExist._id,
+      mobile_number: isUserExist.phone.mobile_number,
+    });
     const imageFiles = await commonFunction.getImageUrlAWS(req.file);
     if (!imageFiles) {
       return res.status(statusCode.InternalError).send({
@@ -524,10 +528,14 @@ exports.uploadImage = async (req, res, next) => {
         message: responseMessage.INTERNAL_ERROR,
       });
     }
-    const result = await updateUser(
+    let updatedUser = await updateUser(
       { _id: isUserExist._id },
       { profilePic: imageFiles }
     );
+    const result = {
+      ...updatedUser._doc, 
+      token: token, 
+    };
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       message: responseMessage.UPLOAD_SUCCESS,
@@ -730,16 +738,17 @@ exports.editProfile = async (req, res, next) => {
     if (req.body.email) {
       req.body.email = req.body.email.toLowerCase();
     }
-    const isUSer = await findUser({ _id: req.userId, status: status.ACTIVE });
-    if (!isUSer) {
+    const isUser = await findUser({ _id: req.userId, status: status.ACTIVE });
+    if (!isUser) {
       return res
         .status(statusCode.Unauthorized)
         .send({ message: responseMessage.UNAUTHORIZED });
     }
+    
     if (mobile_number) {
       const isExistMobile = await findUser({
         "phone.mobile_number": mobile_number,
-        _id: { $ne: isUSer._id },
+        _id: { $ne: isUser._id },
       });
       if (isExistMobile) {
         return res
@@ -749,7 +758,7 @@ exports.editProfile = async (req, res, next) => {
     } else if (email) {
       const isExistEmail = await findUser({
         email: email,
-        _id: { $ne: isUSer._id },
+        _id: { $ne: isUser._id },
       });
 
       if (isExistEmail) {
@@ -758,10 +767,30 @@ exports.editProfile = async (req, res, next) => {
           .send({ message: responseMessage.USER_ALREADY_EXIST });
       }
     }
-    const result = await updateUser({ _id: isUSer._id }, req.body);
+    const token = await commonFunction.getToken({
+      _id: isUser._id,
+      mobile_number: mobile_number,
+    });
+    const obj={
+      username,
+      email,
+      phone:{mobile_number:mobile_number},
+      gender,
+      Nationality,
+      City,
+      State,
+      pincode,
+      dob,
+      address,
+      bio,
+      coverPic,
+    }
+    const result = await updateUser({ _id: isUser._id }, obj);
+    const data={...result._doc, 
+      token: token }
     return res
       .status(statusCode.OK)
-      .send({ message: responseMessage.UPDATE_SUCCESS, result: result });
+      .send({ message: responseMessage.UPDATE_SUCCESS, result: data });
   } catch (error) {
     return next(error);
   }
@@ -1921,7 +1950,7 @@ exports.socialLogin = async (req, res, next) => {
     const obj = {
       username,
       dob,
-      profilePic,
+      profilePic:isUserExist.profilePic ? isUserExist.profilePic : newImageFile,
       email,
       referrerCode,
       socialId,

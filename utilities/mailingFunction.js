@@ -2916,84 +2916,94 @@ function ResetPassword(userId) {
 
 
 function SubAdminResetPassword(token) {
-    return `<!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Password Reset</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                margin: 0;
-                padding: 0;
-                background-color: #f4f4f4;
-            }
-            .container {
-                width: 100%;
-                max-width: 600px;
-                margin: 0 auto;
-                background-color: #ffffff;
-                padding: 20px;
-                border-radius: 10px;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            }
-            .header {
-                text-align: center;
-                margin-bottom: 20px;
-            }
-            .header img {
-                max-width: 150px;
-            }
-            h1 {
-                color: #333333;
-            }
-            p {
-                color: #666666;
-                line-height: 1.6;
-            }
-            .button {
-                display: inline-block;
-                padding: 10px 20px;
-                margin: 20px 0;
-                background-color: #007BFF;
-                color: #ffffff;
-                text-decoration: none;
-                cursor:pointer;
-                border-radius: 5px;
-                font-size: 16px;
-            }
-            .footer {
-                margin-top: 20px;
-                font-size: 12px;
-                color: #999999;
-                text-align: center;
-            }
-            @media (max-width: 600px) {
-                .container {
-                    padding: 15px;
-                }
-                .button {
-                    padding: 12px 24px;
-                    font-size: 18px;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="header">
-                <img src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/mailingImages/logo.png" alt="Company Logo">
-            </div>
-            <h1>Password Reset Request</h1>
-            <p>Hello User,</p>
-            <p>We received a request to reset your password for your account. To reset your password, click the button below:</p>
-            <a href="https://thehawaiyatra.com/subAdminforgetPassword?token=${token}" class="button">Reset Password</a>
-            <p>If you did not request a password reset, please ignore this email. This link will expire in 24 hours.</p>
-            <p>Thank you,<br>The HawaiYatra PVT. LTD. Team</p>
+    return `<html>
+  <head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        color: #333;
+      }
+      .container {
+        width: 100%;
+        max-width: 600px;
+        margin: auto;
+        background: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .header {
+        text-align: center;
+        background-color: #004e92;
+        color: white;
+        padding: 10px 0;
+        border-radius: 8px 8px 0 0;
+      }
+      .logo {
+        max-width: 150px;
+        margin: 0 auto;
+        display: block;
+      }
+      .content {
+        margin: 20px 0;
+        line-height: 1.6;
+      }
+      .cta-container {
+        text-align: center; /* Centers the button horizontally */
+      }
+      .cta {
+        display: inline-block;
+        margin: 20px auto; /* Centering and adding top spacing */
+        padding: 10px 20px;
+        color: white;
+        background-color: #004e92;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+      .footer {
+        margin-top: 20px;
+        text-align: center;
+        font-size: 12px;
+        color: #aaa;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <img src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/mailingImages/logo.png" alt="TheSkyTrails Logo" class="logo">
+      </div>
+      <div class="content">
+        <p>Dear Subscriber,</p>
+        <p>
+          Thank you for subscribing to TheSkyTrails updates! We're thrilled to have you on board. 
+          As a valued subscriber, you'll be among the first to receive:
+        </p>
+        <ul>
+          <li>Exclusive offers on travel packages</li>
+          <li>Updates on new destinations and adventures</li>
+          <li>Travel tips and guides to make your journeys unforgettable</li>
+        </ul>
+        <p>
+          Stay tuned for amazing deals and updates that can help you explore the world!
+        </p>
+        <div class="cta-container">
+          <a href="https://theskytrails.com/" class="cta">Explore Latest Offers</a>
         </div>
-    </body>
-    </html>`;
+      </div>
+      <div class="footer">
+        <p>
+          TheSkyTrails Pvt Ltd | Your gateway to unforgettable travel experiences.<br>
+          This email was sent to example@example.com. If you wish to unsubscribe, <a href="https://theskytrails.com/">click here</a>.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
+`;
 }
     
 
@@ -3164,4 +3174,95 @@ function InventoryPartnerResetPassword(token){
 }
 
 
-module.exports = {flightMail, busMail, hotelMail, otpMail, welcomeMail,welcomeAgentMail ,ssdcMail, packageLandingMail,hotelGrnMail,ResetPassword, SubAdminResetPassword ,RelationShipManagerResetPassword,InventoryPartnerResetPassword};
+function offerUpdateSubscription(personalizedGreeting,email){
+    return `<html>
+  <head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        color: #333;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 600px;
+        margin: auto;
+        background: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .header {
+        text-align: center;
+        background-color: #004e92;
+        color: white;
+        padding: 10px 0;
+        border-radius: 8px 8px 0 0;
+      }
+
+      .logo {
+        max-width: 150px;
+        margin: 0 auto;
+        display: block;
+      }
+
+      .content {
+        margin: 20px 0;
+        line-height: 1.6;
+      }
+
+      .cta-container {
+        text-align: center;
+        /* Centers the button horizontally */
+      }
+
+      .cta {
+        display: inline-block;
+        margin: 20px auto;
+        /* Centering and adding top spacing */
+        padding: 10px 20px;
+        color: white;
+        background-color: #004e92;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+
+      .footer {
+        margin-top: 20px;
+        text-align: center;
+        font-size: 12px;
+        color: #aaa;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <img src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/mailingImages/logo.png" alt="TheSkyTrails Logo" class="logo">
+      </div>
+      <div class="content">
+        <p>${personalizedGreeting}</p>
+        <p> Thank you for subscribing to TheSkyTrails updates! We're thrilled to have you on board. As a valued subscriber, you'll be among the first to receive: </p>
+        <ul>
+          <li>Exclusive offers on travel packages</li>
+          <li>Updates on new destinations and adventures</li>
+          <li>Travel tips and guides to make your journeys unforgettable</li>
+        </ul>
+        <p> Stay tuned for amazing deals and updates that can help you explore the world! </p>
+        <div class="cta-container">
+          <a href="https://theskytrails.com/" class="cta">Explore Latest Offers</a>
+        </div>
+      </div>
+      <div class="footer">
+        <p> TheSkyTrails Pvt Ltd | Your gateway to unforgettable travel experiences. <br> This email was sent to ${email}. If you wish to unsubscribe, <a href="https://theskytrails.com/">click here</a>. </p>
+      </div>
+    </div>
+  </body>
+</html>`
+}
+
+module.exports = {flightMail, busMail, hotelMail, otpMail, welcomeMail,welcomeAgentMail ,ssdcMail, packageLandingMail,hotelGrnMail,ResetPassword, SubAdminResetPassword ,RelationShipManagerResetPassword,InventoryPartnerResetPassword,offerUpdateSubscription};
