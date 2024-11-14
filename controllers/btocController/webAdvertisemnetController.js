@@ -26,6 +26,10 @@ const {
     updateCoupon,
     paginateCouponSearch,
   } = couponServices;
+  const {promotionalEmailServices}=require("../../services/btocServices/promotionalEmailServices");
+const {createPromotionaEmail,findPromotionaEmail,findPromotionaEmailList,deletePromotionaEmail,updatePromotionaEmail}=promotionalEmailServices;
+
+
 exports.createWebAdvertisement=async(req,res,next)=>{
     try {
         if (!req.file) {
@@ -36,6 +40,7 @@ exports.createWebAdvertisement=async(req,res,next)=>{
         if (!imageFiles) {
             return res.status(statusCode.InternalError).send({ statusCode: statusCode.OK, message: responseMessage.INTERNAL_ERROR });
         }
+        const allSubscribedUser=await findPromotionaEmailList({})
         const object = {
             image: imageFiles,
             title: title,

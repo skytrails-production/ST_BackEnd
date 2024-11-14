@@ -61,6 +61,9 @@ const {
 const { booking } = require("../universaltransfer.controller");
 const {promotionalEmailServices}=require("../../services/btocServices/promotionalEmailServices");
 const {createPromotionaEmail,findPromotionaEmail,findPromotionaEmailList,deletePromotionaEmail,updatePromotionaEmail}=promotionalEmailServices;
+const {callbackRequestServices}=require("../../services/btocServices/callBackRequestServices");
+const {createCallbackRequest,findCallbackRequest,deleteCallbackRequest,findCallbackRequestList,updateCallbackRequest,countTotalCallbackRequest}=callbackRequestServices;
+
 //*************************************************API********************************************* */
 
 exports.createPromotionalEmail = async (req, res, next) => {
@@ -69,7 +72,7 @@ exports.createPromotionalEmail = async (req, res, next) => {
   const isRequestExist=await findPromotionaEmail({email: email});
   if(isRequestExist){
     return res.status(statusCode.OK).send({
-      statusCode: statusCode.OK,
+      statusCode: statusCode.Conflict,
       responseMessage: responseMessage.REQUEST_ALREADY_EXIST,
     });
   }
@@ -94,16 +97,39 @@ exports.createPromotionalEmail = async (req, res, next) => {
 };
 exports.getAllPromotionalEmail = async (req, res, next) => {
   try {
-    const result = await userPassportEnquiryListSorted({
+    const result = await findPromotionaEmailList({
       status: status.ACTIVE,
     });
     if (result.length < 1) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
-        result: result,
       });
     }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+exports.createCallBackRequest=async(req,res,next)=>{
+  try {
+    const {destination,departureCity,name,phone,email,consent}=req.body;
+    const isUserExist = await findUser({$or:[{ email: email },{'phone.mobile_number':phone}]});
+    const obj={
+      destination,departureCity,name,phone,email,consent
+    }
+    if(isUserExist){
+        obj.userId=isUserExist._id;
+    }
+    const result=await createCallbackRequest(obj);
+    // const TemplateNames=['Flight',String(data.pnr),String(notObject.to),String(formattedDate)];
+
+    // await whatsApi.sendWhtsAppAISensyMultiUSer(adminContact,TemplateNames,'adminBookingFailure');
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.CREATED_SUCCESS,
@@ -112,4 +138,23 @@ exports.getAllPromotionalEmail = async (req, res, next) => {
   } catch (error) {
     return next(error);
   }
-};
+}
+
+exports.getAllCallBackRequest=async(req,res,next)=>{
+  try {
+    const result=await findCallbackRequestList();
+    if (result.length < 1) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
+      });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
+  } catch (error) {
+    return next(error);
+  }
+}

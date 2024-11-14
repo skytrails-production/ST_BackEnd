@@ -19,5 +19,6 @@ module.exports = function (app) {
     app.get('/skyTrails/api/user/promotionalEmails/getAllPromotionalEmail',promotionalEmailController.getAllPromotionalEmail);
     // app.get('/skyTrails/api/user/quiz/getAllQuiz',quizController.getAllQuizQustion);
     // app.get('/skyTrails/api/user/quiz/getQuizWinnerToday',quizController.getWinnerOfQuiz);
-    // app.post('/skyTrails/api/user/uploadImage',upload.single("images"),flightAdsCOntroller.uploadImage);
+    app.post('/skyTrails/api/user/callBackRequests/createCallBackRequest',promotionalEmailController.createCallBackRequest);
+    app.get('/skyTrails/api/user/callBackRequests/getAllCallBackRequests',promotionalEmailController.getAllCallBackRequest);
 }

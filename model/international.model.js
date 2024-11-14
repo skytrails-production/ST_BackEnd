@@ -299,13 +299,11 @@ const specialPackageCityData = mongoose.model(
     {
       country:{
         type:String,
-        lowercase:true,
-        trim:true
+        set: (value) => value.trim().charAt(0).toUpperCase() + value.trim().slice(1).toLowerCase()
       },
       destination:{
         type:String,
-        lowercase: true,
-        trim:true
+        set: (value) => value.trim().charAt(0).toUpperCase() + value.trim().slice(1).toLowerCase()
       },          
       imageUrl: { 
         type: String,

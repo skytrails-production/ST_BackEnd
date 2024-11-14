@@ -8,7 +8,7 @@ mongoose.pluralize(null);
 const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const advertisementSchema = new mongoose.Schema({
+const webUserOffersSchema = new mongoose.Schema({
     image: {
         type: String
     },
@@ -48,9 +48,9 @@ const advertisementSchema = new mongoose.Schema({
     elseNeedToKnow:[],
     dashboardImg:{type:String}
 },{timestamps:true})
-advertisementSchema.plugin(mongoosePaginate);
+webUserOffersSchema.plugin(mongoosePaginate);
 
-advertisementSchema.plugin(aggregatePaginate);
-const Advertisement = mongoose.model('webUserOffers', advertisementSchema);
+webUserOffersSchema.plugin(aggregatePaginate);
+const Advertisement = mongoose.model('webUserOffers', webUserOffersSchema);
 
 module.exports = Advertisement;
