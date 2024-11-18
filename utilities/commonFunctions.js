@@ -5945,6 +5945,22 @@ module.exports = {
       throw error;
     }
   },
+  getImageUrlAWSByFolderSingle: async (file,folderName) => {
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: `${folderName}/uploadedFile_${Date.now()}_${file.originalname.replace(/\s/g, "")}`,
+      Body: file.buffer,
+      ContentType: file.mimetype,
+      ACL: "public-read",
+    };
+    try {
+      const result = await s3.upload(params).promise();
+      return result.Location; // Assuming Location contains the S3 URL
+    } catch (error) {
+      console.error("Error uploading to S3:", error);
+      throw error;
+    }
+  },
   getNotificationImageUrlAWS: async (file) => {
     const params = {
       Bucket: process.env.AWS_BUCKET_NAME,

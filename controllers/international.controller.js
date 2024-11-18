@@ -473,24 +473,54 @@ exports.packageCityList = async (req, res) => {
 
 //get latest packages
 
+// exports.latestPackages = async (req, res) => {
+//   try {
+//     const packages = await internationl
+//       .find({is_active:1})
+//       .sort({createdAt: -1 })
+//       .limit(6);
+
+//     if (packages.length > 0) {
+//       const msg = "Latest 6 packages search successfully";
+//       actionCompleteResponse(res, packages, msg);
+//     } else {
+//       const msg = "No data found";
+//       actionCompleteResponse(res, [], msg);
+//     }
+//   } catch (error) {
+//     sendActionFailedResponse(res, {}, error.message);
+//   }
+// };
+
+
 exports.latestPackages = async (req, res) => {
   try {
-    const packages = await internationl
-      .find({is_active:1})
-      .sort({createdAt: -1 })
-      .limit(6);
+    // Get the current date
+    
 
-    if (packages.length > 0) {
-      const msg = "Latest 6 packages search successfully";
-      actionCompleteResponse(res, packages, msg);
-    } else {
-      const msg = "No data found";
-      actionCompleteResponse(res, [], msg);
+    // Fetch all active packages from the database
+    const allPackages = await internationl.find({ is_active: 1 }).sort({ createdAt: -1 });
+
+    // If no packages are available, return an empty response
+    if (allPackages.length === 0) {
+      const msg = "No active packages found";
+      return actionCompleteResponse(res, [], msg);
     }
+
+    // Shuffle the packages using the daily seed
+    const shuffledPackages = shuffleArray(allPackages);
+
+    // Pick the first 6 packages after shuffling
+    const packagesForToday = shuffledPackages.slice(0, 6);
+
+    const msg = "Latest packages fetched successfully for today!";
+    actionCompleteResponse(res, packagesForToday, msg);
+
   } catch (error) {
     sendActionFailedResponse(res, {}, error.message);
   }
 };
+
 
 //Packages search by insclusions category
 
@@ -1514,4 +1544,26 @@ exports.deletePackageSpecialCity = async (req, res) => {
   } catch (err) {
     sendActionFailedResponse(res, {}, err.message);    
   }
+}
+
+
+
+
+
+
+
+// Function to shuffle an array using the Fisher-Yates (Durstenfeld) algorithm
+function shuffleArray(array) {
+  const arr = [...array]; // Clone the array to avoid mutation
+  let currentIndex = arr.length, randomIndex, temporaryValue;
+
+  while (currentIndex !== 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex); // Random index
+    currentIndex -= 1;
+    temporaryValue = arr[currentIndex];
+    arr[currentIndex] = arr[randomIndex];
+    arr[randomIndex] = temporaryValue;
+  }
+
+  return arr;
 }

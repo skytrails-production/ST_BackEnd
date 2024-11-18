@@ -267,13 +267,13 @@ exports.verifyUserOtp = async (req, res, next) => {
     const { otp, fullName, dob, email, referrerCode } = req.body;
     const isUserExist = await findUserData({ _id: req.userId });
     if (!isUserExist) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.USERS_NOT_FOUND,
       });
     }
     if (isUserExist.otp !== otp) {
-      return res.status(statusCode.badRequest).json({
+      return res.status(statusCode.OK).json({
         statusCode: statusCode.badRequest,
         message: responseMessage.INCORRECT_OTP,
       });
@@ -304,7 +304,7 @@ exports.verifyUserOtp = async (req, res, next) => {
       });
     }
     if (new Date().getTime() > isUserExist.otpExpireTime) {
-      return res.status(statusCode.badRequest).json({
+      return res.status(statusCode.OK).json({
         statusCode: statusCode.badRequest,
         message: responseMessage.OTP_EXPIRED,
       });
@@ -1960,6 +1960,7 @@ exports.socialLogin = async (req, res, next) => {
       otpVerified: true,
       firstTime: false,
       isSocial: true,
+      balance:isUserExist.balance
     };
     let result = await updateUser({ _id: isUserExist._id }, obj);
     const token = await commonFunction.getToken({
@@ -2045,4 +2046,53 @@ exports.addProfileContactDetail=async(req,res,next)=>{
     
   }
 }
-
+exports.socialLoginVerifyOtp=async(req,res,next)=>{
+  try {
+    const {mobileNumber}=req.params;
+    const isUserExist = await findUserData({ _id: req.userId });
+    if (!isUserExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+    if (isUserExist.otp !== otp) {
+      return res.status(statusCode.OK).json({
+        statusCode: statusCode.badRequest,
+        message: responseMessage.INCORRECT_OTP,
+      });
+    }
+    if (new Date().getTime() > isUserExist.otpExpireTime) {
+      return res.status(statusCode.OK).json({
+        statusCode: statusCode.badRequest,
+        message: responseMessage.OTP_EXPIRED,
+      });
+    }
+    const token = await commonFunction.getToken({
+      _id: updation._id,
+      mobile_number: updation.phone.mobile_number,
+    });
+    const updationData = await updateUser(
+      { _id: isUserExist._id, status: status.ACTIVE },
+      { otp: " " ,'phone.mobile_number':mobileNumber}
+    );
+    const obj={
+      firstTime: updation.firstTime,
+      _id: updation._id,
+      phone: updation.phone,
+      userType: updation.userType,
+      username: updation.username,
+      otpVerified: updation.otpVerified,
+      balance: updation.balance,
+      status: updation.status,
+      token: token,
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      message: responseMessage.OTP_VERIFY,
+      result: obj,
+    });
+  } catch (error) {
+    return next(error)
+  }
+}

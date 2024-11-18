@@ -118,11 +118,19 @@ exports.getAllPromotionalEmail = async (req, res, next) => {
 
 exports.createCallBackRequest=async(req,res,next)=>{
   try {
-    const {destination,departureCity,name,phone,email,consent}=req.body;
+    const {destination,departureCity,name,phone,email,consent,travelDate,preferedHotelStar,numberOfNight,numberofTraveller,budget,adult,child,msg}=req.body;
     const isUserExist = await findUser({$or:[{ email: email },{'phone.mobile_number':phone}]});
-    const obj={
-      destination,departureCity,name,phone,email,consent
+    const isAlreadyRequestExist=await findCallbackRequest({email:email,destination:destination,departureCity:departureCity,phone:phone,name:name});
+    if(isAlreadyRequestExist){
+      const newObj={travelDate,preferedHotelStar,numberOfNight,budget,adult,child,msg};
+      const updateData=await updateCallbackRequest({_id:isAlreadyRequestExist._id},newObj);
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.UPDATE_SUCCESS,
+        result: updateData,
+      });
     }
+    const obj={destination,departureCity,name,phone,email,consent}
     if(isUserExist){
         obj.userId=isUserExist._id;
     }
@@ -142,7 +150,7 @@ exports.createCallBackRequest=async(req,res,next)=>{
 
 exports.getAllCallBackRequest=async(req,res,next)=>{
   try {
-    const result=await findCallbackRequestList();
+    const result=await findCallbackRequestList({});
     if (result.length < 1) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
@@ -158,3 +166,4 @@ exports.getAllCallBackRequest=async(req,res,next)=>{
     return next(error);
   }
 }
+

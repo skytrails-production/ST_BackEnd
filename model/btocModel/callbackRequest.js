@@ -12,29 +12,25 @@ const callbackSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "userBtoC",
     },
-    destination: {
-      type: String,
-    },
-    departureCity: {
-      type: String,
-    },
-    name: {
-      type: String,
-    },
-    phone: {
-      type: String,
-    },
-    email: {
-      type: String,
-    },
-    consent: {
-      type: Boolean,
-    },
+    destination: { type: String },
+    departureCity: { type: String },
+    name: { type: String },
+    phone: { type: String },
+    email: { type: String },
+    consent: { type: Boolean },
+    travelDate: { type: String },
+    preferedHotelStar: { type: Number },
+    numberOfNight: { type: Number },
+    numberofTraveller: { type: Number },
+    adult: { type: Number },
+    child: { type: Number },
+    budget: { type: Number },
     status: {
       type: String,
       enum: [status.ACTIVE, status.BLOCK, status.DELETE],
       default: status.ACTIVE,
     },
+    msg:{type:String}
   },
   { timestamps: true }
 );
