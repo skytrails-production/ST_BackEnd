@@ -63,7 +63,8 @@ const flightStaticPayloadContent = new mongoose.Schema(
           id: {
             type: String,
           },
-    }
+    },
+    isTrending:{type:Boolean}
   },
   { timestamps: true }
 );

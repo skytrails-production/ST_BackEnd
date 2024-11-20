@@ -1,8 +1,8 @@
-const commonFunction = require("../utilities/commonFunctions");
-const approvestatus = require("../enums/approveStatus");
+const commonFunction = require("../../utilities/commonFunctions");
+const approvestatus = require("../../enums/approveStatus");
 //require responsemessage and statusCode
-const statusCode = require("../utilities/responceCode");
-const responseMessage = require("../utilities/responses");
+const statusCode = require("../../utilities/responceCode");
+const responseMessage = require("../../utilities/responses");
 // const sendSMS = require("../utilities/sendSms");
 // const whatsappAPIUrl = require("../utilities/whatsApi");
 // const userType = require("../enums/userType");
@@ -15,8 +15,8 @@ const {
     newhotelCityCode,
     cityBusProductionData,
     airlineData
-  } = require("../model/city.model");
-const { userServices } = require("../services/userServices");
+  } = require("../../model/city.model");
+const { userServices } = require("../../services/userServices");
 const {
     createUser,
     findUser,
@@ -27,11 +27,13 @@ const {
     countTotalUser,
     aggregatePaginateUser,
   } = userServices;
-  const { flightPayloadServices } = require("../services/flightStaticPayload");
+const { flightPayloadServices } = require("../../services/staticPayloads/flightStaticPayload");
 const {createflightPayload,findflightPayload,findflightPayloadData,deleteflightPayloadStatic,updateflightPayloadStatic} = flightPayloadServices;
 function escapeRegex(text) {
     return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
   }
+  const { hotelPayloadServices } = require("../../services/staticPayloads/hotelStaticPayload");
+  const {createhotelPayload,findhotelPayload,findhotelPayloadData,deletehotelPayloadStatic,updatehotelPayloadStatic} = hotelPayloadServices;
 
   
 exports.createStaticFlightPayload=async(req,res,next)=>{
@@ -56,8 +58,10 @@ exports.createStaticFlightPayload=async(req,res,next)=>{
 
 exports.getListOfStaticFlightPayload=async(req,res,next)=>{
     try {
-        const result=await findflightPayloadData({});
-        if(result.length<1){
+        const flightPayloadResult=await findflightPayloadData({});
+        const hotelPayloadResult=await findhotelPayloadData({});
+        const result={flightPayloadResult,hotelPayloadResult}
+        if(flightPayloadResult.length<1&&hotelPayloadResult<1){
             return res.status(statusCode.OK).json({
                 statusCode: statusCode.NotFound,
                 message: responseMessage.DATA_NOT_FOUND,
@@ -67,6 +71,20 @@ exports.getListOfStaticFlightPayload=async(req,res,next)=>{
             statusCode: statusCode.OK,
             responseMessage: responseMessage.DATA_FOUND,
             result:result
+          });
+    } catch (error) {
+        return next(error);
+    }
+}
+
+exports.makeTrending=async(req,res,next)=>{
+    try {
+        const {payloadId,value}=req.body;
+        const updatePayload=await updateflightPayloadStatic({_id:payloadId},{isTrending:value});
+        return res.status(statusCode.OK).json({
+            statusCode: statusCode.OK,
+            responseMessage: responseMessage.DATA_FOUND,
+            result:updatePayload
           });
     } catch (error) {
         return next(error);

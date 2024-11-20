@@ -20,5 +20,5 @@ module.exports = function (app) {
     app.post('/skyTrails/api/user/quiz/submitQuizResponse',[authJwt.verifcationToken],quizController.submitDailyQuizResponse)
     app.get('/skyTrails/api/user/quiz/getAllQuiz',quizController.getAllQuizQustion);
     app.get('/skyTrails/api/user/quiz/getQuizWinnerToday',quizController.getWinnerOfQuiz);
-    app.post('/skyTrails/api/user/uploadImage',upload.single("images"),flightAdsCOntroller.uploadImage);
+    app.post('/skyTrails/api/upload/uploadImage',upload.single("images"),flightAdsCOntroller.uploadImage);
 }

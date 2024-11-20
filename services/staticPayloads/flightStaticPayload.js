@@ -1,5 +1,5 @@
 // const status = require("../enums/status");
-const flightPayloadModel=require("../model/flightPayload")
+const flightPayloadModel=require("../../model/payloadModel/flightPayload")
 
 //**************************************WORK BY */
 //**********CHARU YADAV*****************//

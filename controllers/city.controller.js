@@ -10,6 +10,10 @@ const {
   airlineData
 } = require("../model/city.model");
 
+const responseMessage = require("../utilities/responses");
+const statusCode = require("../utilities/responceCode");
+
+
 const requestIp = require('request-ip');
 const geoip = require('geoip-lite');
 

@@ -88,10 +88,10 @@ const notifications = [
 // Thara Deal 🤗`,
 //   },
  
-  {
-    message: `Fly with TheSkyTrails`,
-    body: `Travel smart, fly affordable. Only with TheSkyTrails!`,
-  },
+  // {
+  //   message: `Fly with TheSkyTrails`,
+  //   body: `Travel smart, fly affordable. Only with TheSkyTrails!`,
+  // },
  
   // {
   //   message: `Suna Kya?`,
@@ -105,14 +105,14 @@ var taskPromotionalNotification = cron.schedule("45 09 * * *",async () => {
   try {
     // 'phone.mobile_number':'8115199076'
     const users = await userList({
-    // 'phone.mobile_number':{ $in: ['8115199076'] },
+    // 'phone.mobile_number':{ $in: ['8115199076','7830130697'] },
       status: status.ACTIVE,
       deviceToken: { $exists: true, $ne: "" },
     });
     for (const user of users) {
       try { 
-        const notificationMessage = `Fly with TheSkyTrails!`;
-        const messageBody = `Travel smart, fly affordable. Only with TheSkyTrails`;
+        const notificationMessage = `Great news! 🎉Enjoy 20% OFF on your next bus booking!`;
+        const messageBody = `Time to hit the road and save some cash! 🚌💸`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
         const lastSent = lastNotificationSent.get(user._id);
         if (lastSent && Date.now() - lastSent < 3600000) {
