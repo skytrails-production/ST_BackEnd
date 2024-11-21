@@ -224,6 +224,7 @@ require("./routes/Flightinventory/flightinventoryRoutes")(app);
 require("./routes/combineRoutes")(app);
 require("./routes/kafilaBookingRoutes")(app);
 require("./routes/btocRoutes/promotionalEmail")(app)
+require("./routes/reviewRoutes/packagereviewRoutes")(app)
 mongoose.connect(configs.mongoUrl.DEVELOPMENT, {useNewUrlParser: true,useUnifiedTopology: true,})
   .then(() => {
     initial();

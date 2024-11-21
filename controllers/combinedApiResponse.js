@@ -1301,6 +1301,7 @@ exports.combineTvoKafila1 = async (req, res, next) => {
       axios.post(api1Url, data),
       axios.post(kafilaUrl, generateKafilaRequest(data)),
     ]);
+    console.log(data,"data")
     let tvoArray =
       tvoResponse.data.Response.ResponseStatus === 1
         ? tvoResponse.data.Response.Results[0]
@@ -1634,19 +1635,28 @@ exports.combineTvoKafila = async (req, res, next) => {
     const getToken = await kafilaToken();
     data.KafilaToken = getToken.TokenId;
 
+    console.log("hello")
+
     const [tvoResponse, KafilaResponse] = await Promise.all([
-      axios.post(api1Url, data),
-      axios.post(kafilaUrl, generateKafilaRequest(data)),
+      axios.post(api1Url, data).catch((error) => {
+        return { data: {} };
+      }),
+      axios.post(kafilaUrl, generateKafilaRequest(data)).catch((error) => {
+        return { data: {} };
+      }),
     ]);
+    console.log(tvoResponse.data,"data")
+
+
 
     let tvoArray =
-      tvoResponse.data.Response.ResponseStatus === 1
-        ? tvoResponse.data.Response.Results[0]
+      tvoResponse?.data?.Response?.ResponseStatus === 1
+        ? tvoResponse?.data?.Response?.Results[0]
         : [];
     tvoArray = removeDuplicates(tvoArray, `FlightNumber`);
 
-    let kafilaArray = KafilaResponse.data.Schedules[0] || [];
-    if (tvoArray.length === 0 && kafilaArray.length > 0) {
+    let kafilaArray = KafilaResponse?.data?.Schedules[0] || [];
+    if (tvoArray?.length === 0 && kafilaArray?.length > 0) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.DATA_FOUND,
@@ -1655,51 +1665,51 @@ exports.combineTvoKafila = async (req, res, next) => {
           sortedFinalRes: kafilaArray,
         },
       });
-    } else if (kafilaArray.length === 0 && tvoArray.length > 0) {
+    } else if (kafilaArray?.length === 0 && tvoArray?.length > 0) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.DATA_FOUND,
         result: {
-          tvoTraceId: tvoResponse.data.Response.TraceId,
+          tvoTraceId: tvoResponse?.data?.Response?.TraceId,
           sortedFinalRes: tvoArray,
         },
       });
     }
 
     const tvoMap = new Map();
-    tvoArray.forEach((tvoFlight) => {
-      const key = `${tvoFlight.Segments[0][0].Airline.FlightNumber.trim()}-${tvoFlight.Segments[0][0].Origin.DepTime.trim()}`;
+    tvoArray?.forEach((tvoFlight) => {
+      const key = `${tvoFlight?.Segments[0][0]?.Airline?.FlightNumber?.trim()}-${tvoFlight?.Segments[0][0]?.Origin?.DepTime?.trim()}`;
       tvoMap.set(key, tvoFlight);
     });
 
-    kafilaArray.forEach((kafilaFlight) => {
-      const kafilaDepTimeISO = moment(kafilaFlight.Itinerary[0].DDate).format(
+    kafilaArray?.forEach((kafilaFlight) => {
+      const kafilaDepTimeISO = moment(kafilaFlight?.Itinerary[0]?.DDate).format(
         "YYYY-MM-DDTHH:mm:ss"
       );
       const key = `${kafilaFlight.Itinerary[0].FNo.trim()}-${kafilaDepTimeISO.trim()}`;
       const matchingTvoFlight = tvoMap.get(key);
 
       if (matchingTvoFlight) {
-        const tvoFare = matchingTvoFlight.Fare.OfferedFare;
-        const kafilaFare = kafilaFlight.Fare.GrandTotal;
+        const tvoFare = matchingTvoFlight?.Fare?.OfferedFare;
+        const kafilaFare = kafilaFlight?.Fare?.GrandTotal;
         if (kafilaFare <= tvoFare) {
-          finalResArray.push(kafilaFlight);
+          finalResArray?.push(kafilaFlight);
         } else {
-          finalResArray.push(matchingTvoFlight);
+          finalResArray?.push(matchingTvoFlight);
         }
 
-        tvoMap.delete(key);
+        tvoMap?.delete(key);
       } else {
-        finalResArray.push(kafilaFlight);
+        finalResArray?.push(kafilaFlight);
       }
-      flightKeySet.add(key);
+      flightKeySet?.add(key);
     });
 
-    tvoMap.forEach((unmatchedTvoFlight, key) => {
-      finalResArray.push(unmatchedTvoFlight);
+    tvoMap?.forEach((unmatchedTvoFlight, key) => {
+      finalResArray?.push(unmatchedTvoFlight);
     });
 
-    const sortedFinalRes = finalResArray.sort((a, b) => {
+    const sortedFinalRes = finalResArray?.sort((a, b) => {
       const fareA = a.Fare ? a.Fare.OfferedFare || a.Fare.GrandTotal : 0;
       const fareB = b.Fare ? b.Fare.OfferedFare || b.Fare.GrandTotal : 0;
       return fareA - fareB;
@@ -2009,6 +2019,7 @@ const generateKafilaRequest = (data) => {
   const formattedDate = moment(data.Segments[0].PreferredDepartureTime).format(
     "YYYY-MM-DD"
   );
+  console.log(formattedDate,"date")
   const KafilaAgentId = process.env.KAFILA_AGENT_ID;
   const pyload = {
     Trip: "D1",
@@ -2041,6 +2052,7 @@ const generateKafilaRequest = (data) => {
       TPnr: false,
     },
   };
+  console.log(pyload,"pyload")
   return pyload;
 };
 const generateKafilaRoundTripRequest = (data) => {

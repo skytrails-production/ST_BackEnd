@@ -13,6 +13,7 @@ const axios = require("axios");
 const whatsApi = require("../../utilities/whatsApi");
 const bookingStatus = require("../../enums/bookingStatus");
 const AdminNumber = process.env.ADMINNUMBER;
+
 /**********************************SERVICES********************************** */
 const { userServices } = require("../../services/userServices");
 const {
@@ -101,12 +102,18 @@ exports.packageBooking = async (req, res, next) => {
       status: status.ACTIVE,
     });
     if (!isUserExist) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.USERS_NOT_FOUND,
       });
     }
     const isPackageExist = await internationl.findOne({ _id: packageId });
+    if(!isPackageExist){
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.PACKAGE_NOT_EXIST,
+      });
+    }
     const addition = Number(adults) + Number(child);
     const object = {
       packageId: isPackageExist._id,
@@ -167,7 +174,7 @@ exports.getPackageBookigs = async (req, res, next) => {
       status: status.ACTIVE,
     });
     if (!isUserExist) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.USERS_NOT_FOUND,
       });
@@ -177,7 +184,7 @@ exports.getPackageBookigs = async (req, res, next) => {
       status: status.ACTIVE,
     });
     if (!result) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });
@@ -197,7 +204,7 @@ exports.getAllPackageEnquiry = async (req, res, next) => {
     const { page, limit, search } = req.query;
     const result = await getPackageEnquiry(req.query);
     if (!result) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });
