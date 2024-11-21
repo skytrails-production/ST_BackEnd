@@ -359,9 +359,9 @@ exports.AMADEUSPriceSort = async (req, res, next) => {
       .catch((error) => {
         return { data: {} };
       });
-    let jsonResult = await xmlToJson(amadeusResponse.data);
+    let jsonResult = await xmlToJson(amadeusResponse?.data);
     if (
-      amadeusResponse.status === 200 &&
+      amadeusResponse?.status === 200 &&
       !jsonResult["soapenv:Envelope"]["soapenv:Body"][
         "Fare_MasterPricerTravelBoardSearchReply"
       ]["errorMessage"]
@@ -371,25 +371,25 @@ exports.AMADEUSPriceSort = async (req, res, next) => {
         jsonResult["soapenv:Envelope"]["soapenv:Body"][
           "Fare_MasterPricerTravelBoardSearchReply"
         ];
-      const recommendationObject = await obj.recommendation;
-      const baggageReference = await obj.serviceFeesGrp;
+      const recommendationObject = await obj?.recommendation;
+      const baggageReference = await obj?.serviceFeesGrp;
       const freeBaggageAllowance = baggageReference?.freeBagAllowanceGrp;
       let count = 0;
-      const segNumber = recommendationObject.map((item, index) => {
+      const segNumber = recommendationObject?.map((item, index) => {
         return item.segmentFlightRef.length || 1;
       });
-      segNumber.forEach((item, index) => {
+      segNumber?.forEach((item, index) => {
         count = count + item;
       });
-      const baggaReferenceArray = recommendationObject.reduce(
+      const baggaReferenceArray = recommendationObject?.reduce(
         (accumulator, item) => {
-          if (Array.isArray(item.segmentFlightRef)) {
-            accumulator.push(...item.segmentFlightRef);
+          if (Array?.isArray(item?.segmentFlightRef)) {
+            accumulator?.push(...item?.segmentFlightRef);
           } else if (
-            item.segmentFlightRef &&
-            item.segmentFlightRef.referencingDetail
+            item?.segmentFlightRef &&
+            item?.segmentFlightRef?.referencingDetail
           ) {
-            accumulator.push({ ...item.segmentFlightRef });
+            accumulator?.push({ ...item?.segmentFlightRef });
           }
           return accumulator;
         },
@@ -400,29 +400,29 @@ exports.AMADEUSPriceSort = async (req, res, next) => {
       for (let i = 0; i < segNumber.length; i++) {
         for (let j = 0; j < segNumber[i]; j++) {
           modifiedArray.push({
-            ...obj.flightIndex.groupOfFlights[j + tempIndex],
-            ...obj.recommendation[i].paxFareProduct,
-            ...obj.recommendation[i].recPriceInfo,
+            ...obj?.flightIndex?.groupOfFlights[j + tempIndex],
+            ...obj?.recommendation[i]?.paxFareProduct,
+            ...obj?.recommendation[i]?.recPriceInfo,
           });
         }
         tempIndex = tempIndex + segNumber[i];
       }
-      flattenedArray.push(...modifiedArray);
-      const newFlattnedArray = flattenedArray.map((item, index) => {
+      flattenedArray?.push(...modifiedArray);
+      const newFlattnedArray = flattenedArray?.map((item, index) => {
         return { ...item, baggage: baggaReferenceArray[index] };
       });
-      finalFlattenedArray = newFlattnedArray.map((item, index) => {
-        const tempItemBaggage = item.baggage.referencingDetail[1].refNumber;
+      finalFlattenedArray = newFlattnedArray?.map((item, index) => {
+        const tempItemBaggage = item?.baggage?.referencingDetail[1]?.refNumber;
 
         // Check if baggageReference.serviceCoverageInfoGrp exists
         if (
-          !baggageReference.serviceCoverageInfoGrp ||
-          !baggageReference.serviceCoverageInfoGrp[tempItemBaggage - 1]
+          !baggageReference?.serviceCoverageInfoGrp ||
+          !baggageReference?.serviceCoverageInfoGrp[tempItemBaggage - 1]
         ) {
           return { ...item, baggage: undefined };
         }
         const serviceCovInfoGrp =
-          baggageReference.serviceCoverageInfoGrp[tempItemBaggage - 1]
+          baggageReference?.serviceCoverageInfoGrp[tempItemBaggage - 1]
             .serviceCovInfoGrp;
 
         // Check if refInfo exists
@@ -430,9 +430,9 @@ exports.AMADEUSPriceSort = async (req, res, next) => {
         if (!refInfo) {
           return { ...item, baggage: undefined };
         }
-        const freeAllowanceLuggageIndex = Array.isArray(refInfo)
-          ? refInfo.map((info) => info.referencingDetail.refNumber)
-          : [refInfo.referencingDetail.refNumber];
+        const freeAllowanceLuggageIndex = Array?.isArray(refInfo)
+          ? refInfo.map((info) => info?.referencingDetail?.refNumber)
+          : [refInfo?.referencingDetail?.refNumber];
 
         return {
           ...item,
@@ -446,10 +446,10 @@ exports.AMADEUSPriceSort = async (req, res, next) => {
     var selectedArray = [];
     finalResult = [...finalFlattenedArray];
     const length = {
-      finalFlattenedArray: finalFlattenedArray.length,
-      tvoArray: tvoArray.length,
-      finalResult: finalResult.length,
-      selectedArray: selectedArray.length,
+      finalFlattenedArray: finalFlattenedArray?.length,
+      tvoArray: tvoArray?.length,
+      finalResult: finalResult?.length,
+      selectedArray: selectedArray?.length,
     };
     for (const finalRep of finalResult) {
       let totalPublishFare = 0;
@@ -463,9 +463,9 @@ exports.AMADEUSPriceSort = async (req, res, next) => {
         // const totalAmount = totalFare + totalTax;
         // const totalFare =  parseInt(finalRep.paxFareDetail?.totalFareAmount-finalRep?.paxFareDetail?.totalTaxAmount);
         const totalFare =
-          Number(finalRep.paxFareDetail?.totalFareAmount) -
+          Number(finalRep?.paxFareDetail?.totalFareAmount) -
           Number(finalRep?.paxFareDetail?.totalTaxAmount);
-        const totalTax = parseInt(finalRep.monetaryDetail[1].amount);
+        const totalTax = parseInt(finalRep?.monetaryDetail[1].amount);
         const totalAmount = totalFare + totalTax;
         // finalRep.totalAmount = totalAmount;
         finalRep.TotalPublishFare = totalFare;
@@ -474,8 +474,8 @@ exports.AMADEUSPriceSort = async (req, res, next) => {
         //   // }
         // }
         // finalRep.TotalPublishFare = totalPublishFare;
-      } else if (finalRep.Segments) {
-        const totalPublishFare = finalRep.Fare.BaseFare;
+      } else if (finalRep?.Segments) {
+        const totalPublishFare = finalRep?.Fare?.BaseFare;
         finalRep.TotalPublishFare = totalPublishFare;
         // const totalPublishFare = finalRep.Fare.PublishedFare;
         // finalRep.TotalPublishFare = totalPublishFare;

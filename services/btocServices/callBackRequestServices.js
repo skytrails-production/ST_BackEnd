@@ -23,7 +23,7 @@ const callbackRequestServices={
     },
 
     findCallbackRequestList: async (query) => {
-        return await callbackRequestModel.find(query)
+        return await callbackRequestModel.find(query).sort({createdAt:-1})
     },
     // promoBannnerSortedList: async (query) => {
     //     return await callbackRequestModel.find(query).sort({createdAt: -1})
