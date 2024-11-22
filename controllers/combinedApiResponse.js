@@ -65,8 +65,8 @@ async function xmlToJson(xml) {
 const getLowestFareFlights = (flights) => {
   const uniqueFlights = {};
   flights.forEach((flight) => {
-    const key = `${flight.flightNumber}_${flight.origin}_${flight.departureTime}`;
-    if (!uniqueFlights[key] || flight.BaseFare < uniqueFlights[key].BaseFare) {
+    const key = `${flight?.flightNumber}_${flight?.origin}_${flight?.departureTime}`;
+    if (!uniqueFlights[key] || flight?.BaseFare < uniqueFlights[key]?.BaseFare) {
       uniqueFlights[key] = flight;
     }
   });
@@ -77,9 +77,9 @@ const getLowestFareFlights = (flights) => {
 // Function to remove duplicates based on a key
 function removeDuplicates(arr, key) {
   const seen = [];
-  return arr.filter((item) => {
-    const duplicate = seen.includes(item.Segments[0][0].Airline[key]);
-    seen.push(item.Segments[0][0].Airline[key]);
+  return arr?.filter((item) => {
+    const duplicate = seen?.includes(item?.Segments[0][0]?.Airline[key]);
+    seen?.push(item?.Segments[0][0]?.Airline[key]);
     return !duplicate;
   });
 }
@@ -88,7 +88,7 @@ exports.combinedAPI1 = async (req, res, next) => {
   try {
     const data = req.body;
     data.formattedDate = await moment(
-      data.Segments[0].PreferredDepartureTime
+      data?.Segments[0]?.PreferredDepartureTime
     ).format("DDMMYY"); // Format the date as "DDMMYY"
     const api1Url = commonUrl.api.flightSearchURL;
 
@@ -106,35 +106,35 @@ exports.combinedAPI1 = async (req, res, next) => {
         }),
     ]);
     var tvoArray = [];
-    if (tvoResponse.data.Response.ResponseStatus === 1) {
-      tvoArray = tvoResponse.data.Response.Results[0];
+    if (tvoResponse?.data?.Response?.ResponseStatus === 1) {
+      tvoArray = tvoResponse?.data?.Response?.Results[0];
     } else {
       tvoArray = [];
     }
     let jsonResult = {};
-    if (amadeusResponse.status == 200) {
+    if (amadeusResponse?.status == 200) {
       jsonResult = await xmlToJson(amadeusResponse.data);
       const obj =
         jsonResult["soapenv:Envelope"]["soapenv:Body"][
           "Fare_MasterPricerTravelBoardSearchReply"
         ];
       const recommendationObject = await obj.recommendation;
-      const segNumber = recommendationObject.map((item, index) => {
-        return item.segmentFlightRef.length || 1;
+      const segNumber = recommendationObject?.map((item, index) => {
+        return item?.segmentFlightRef?.length || 1;
       });
 
       for (let i = 0; i < segNumber.length; i++) {
         const modifiedArray = [];
         for (let j = 0; j < segNumber[i]; j++) {
           modifiedArray.push({
-            ...obj.flightIndex.groupOfFlights[j],
-            ...recommendationObject[i].paxFareProduct,
+            ...obj?.flightIndex?.groupOfFlights[j],
+            ...recommendationObject[i]?.paxFareProduct,
           });
         }
-        flattenedArray.push(...modifiedArray);
+        flattenedArray?.push(...modifiedArray);
       }
     }
-    const combinedArray = await tvoArray.concat(flattenedArray);
+    const combinedArray = await tvoArray?.concat(flattenedArray);
 
     if (tvoArray.length > 0) {
     } else if (flattenedArray.length <= 0) {
@@ -147,11 +147,11 @@ exports.combinedAPI1 = async (req, res, next) => {
 exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
   try {
     const data = req.body;
-    data.formattedDate = moment(data.Segments[0].PreferredDepartureTime).format(
+    data.formattedDate = moment(data?.Segments[0]?.PreferredDepartureTime).format(
       "DDMMYY"
     ); // Format the date as "DDMMYY"
-    const api1Url = commonUrl.api.flightSearchURL;
-    data.totalPassenger = parseInt(data.AdultCount) + parseInt(data.ChildCount);
+    const api1Url = commonUrl?.api?.flightSearchURL;
+    data.totalPassenger = parseInt(data?.AdultCount) + parseInt(data?.ChildCount);
 
     const flattenedArray = [];
     let finalFlattenedArray = [];
@@ -168,35 +168,35 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
         }),
     ]);
     let tvoArray =
-      tvoResponse.data.Response.ResponseStatus === 1
-        ? tvoResponse.data.Response.Results[0]
+      tvoResponse?.data?.Response?.ResponseStatus === 1
+        ? tvoResponse?.data?.Response?.Results[0]
         : [];
 
     tvoArray = removeDuplicates(tvoArray, `FlightNumber`);
 
-    let jsonResult = await xmlToJson(amadeusResponse.data);
+    let jsonResult = await xmlToJson(amadeusResponse?.data);
     // let finalFlattenedArray = [];
 
     // let jsonResult = {};
     // jsonResult = await xmlToJson(amadeusResponse.data);
     if (
-      amadeusResponse.status == 200 &&
+      amadeusResponse?.status == 200 &&
       !jsonResult["soapenv:Envelope"]["soapenv:Body"][
         "Fare_MasterPricerTravelBoardSearchReply"
       ]["errorMessage"]
     ) {
-      jsonResult = await xmlToJson(amadeusResponse.data);
+      jsonResult = await xmlToJson(amadeusResponse?.data);
       const obj =
         jsonResult["soapenv:Envelope"]["soapenv:Body"][
           "Fare_MasterPricerTravelBoardSearchReply"
         ];
-      const recommendationObject = await obj.recommendation;
+      const recommendationObject = await obj?.recommendation;
 
-      const baggageReference = await obj.serviceFeesGrp;
+      const baggageReference = await obj?.serviceFeesGrp;
       const freeBaggageAllowance = baggageReference?.freeBagAllowanceGrp;
       let count = 0;
-      const segNumber = recommendationObject.map((item, index) => {
-        return item.segmentFlightRef.length || 1;
+      const segNumber = recommendationObject?.map((item, index) => {
+        return item?.segmentFlightRef?.length || 1;
       });
       segNumber.forEach((item, index) => {
         count = count + item;
@@ -204,13 +204,13 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
 
       const baggaReferenceArray = recommendationObject.reduce(
         (accumulator, item) => {
-          if (Array.isArray(item.segmentFlightRef)) {
-            accumulator.push(...item.segmentFlightRef);
+          if (Array.isArray(item?.segmentFlightRef)) {
+            accumulator.push(...item?.segmentFlightRef);
           } else if (
-            item.segmentFlightRef &&
-            item.segmentFlightRef.referencingDetail
+            item?.segmentFlightRef &&
+            item?.segmentFlightRef?.referencingDetail
           ) {
-            accumulator.push({ ...item.segmentFlightRef });
+            accumulator.push({ ...item?.segmentFlightRef });
           }
           return accumulator;
         },
@@ -221,30 +221,30 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
       for (let i = 0; i < segNumber.length; i++) {
         for (let j = 0; j < segNumber[i]; j++) {
           modifiedArray.push({
-            ...obj.flightIndex.groupOfFlights[j + tempIndex],
-            ...obj.recommendation[i].paxFareProduct,
-            ...obj.recommendation[i].recPriceInfo,
+            ...obj?.flightIndex?.groupOfFlights[j + tempIndex],
+            ...obj?.recommendation[i]?.paxFareProduct,
+            ...obj?.recommendation[i]?.recPriceInfo,
           });
         }
         tempIndex = tempIndex + segNumber[i];
       }
       flattenedArray.push(...modifiedArray);
 
-      const newFlattnedArray = flattenedArray.map((item, index) => {
+      const newFlattnedArray = flattenedArray?.map((item, index) => {
         return { ...item, baggage: baggaReferenceArray[index] };
       });
-      finalFlattenedArray = newFlattnedArray.map((item, index) => {
-        const tempItemBaggage = item.baggage.referencingDetail[1].refNumber;
+      finalFlattenedArray = newFlattnedArray?.map((item, index) => {
+        const tempItemBaggage = item?.baggage?.referencingDetail[1]?.refNumber;
 
         // Check if baggageReference.serviceCoverageInfoGrp exists
         if (
-          !baggageReference.serviceCoverageInfoGrp ||
-          !baggageReference.serviceCoverageInfoGrp[tempItemBaggage - 1]
+          !baggageReference?.serviceCoverageInfoGrp ||
+          !baggageReference?.serviceCoverageInfoGrp[tempItemBaggage - 1]
         ) {
           return { ...item, baggage: undefined };
         }
         const serviceCovInfoGrp =
-          baggageReference.serviceCoverageInfoGrp[tempItemBaggage - 1]
+          baggageReference?.serviceCoverageInfoGrp[tempItemBaggage - 1]
             .serviceCovInfoGrp;
 
         // Check if refInfo exists
@@ -253,8 +253,8 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
           return { ...item, baggage: undefined };
         }
         const freeAllowanceLuggageIndex = Array.isArray(refInfo)
-          ? refInfo.map((info) => info.referencingDetail.refNumber)
-          : [refInfo.referencingDetail.refNumber];
+          ? refInfo.map((info) => info.referencingDetail?.refNumber)
+          : [refInfo?.referencingDetail?.refNumber];
 
         return {
           ...item,
@@ -268,10 +268,10 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
     var finalResult = [];
     var selectedArray = [];
     if (tvoArray.length > 0) {
-      selectedArray = await tvoArray.filter((value) => value.IsLCC === true);
+      selectedArray = await tvoArray?.filter((value) => value?.IsLCC === true);
       if (selectedArray.length > 0) {
-        finalResult = finalFlattenedArray.concat(selectedArray);
-      } else if (finalFlattenedArray.length <= 0) {
+        finalResult = finalFlattenedArray?.concat(selectedArray);
+      } else if (finalFlattenedArray?.length <= 0) {
         finalResult = [...tvoArray];
       } else {
         finalResult = [...finalFlattenedArray];
@@ -287,7 +287,7 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
     };
     for (const finalRep of finalResult) {
       let totalPublishFare = 0;
-      if (finalRep.propFlightGrDetail) {
+      if (finalRep?.propFlightGrDetail) {
         // Iterate over each key and calculate totalAmount separately
         // for (const key of Object.keys(finalRep)) {
         //   const obj = finalRep[key];
@@ -297,9 +297,9 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
         // const totalAmount = totalFare + totalTax;
         // const totalFare =  parseInt(finalRep.paxFareDetail?.totalFareAmount-finalRep?.paxFareDetail?.totalTaxAmount);
         const totalFare =
-          Number(finalRep.paxFareDetail?.totalFareAmount) -
+          Number(finalRep?.paxFareDetail?.totalFareAmount) -
           Number(finalRep?.paxFareDetail?.totalTaxAmount);
-        const totalTax = parseInt(finalRep.monetaryDetail[1].amount);
+        const totalTax = parseInt(finalRep?.monetaryDetail[1]?.amount);
         const totalAmount = totalFare + totalTax;
         // finalRep.totalAmount = totalAmount;
         finalRep.TotalPublishFare = totalFare;
@@ -309,7 +309,7 @@ exports.combineTVOAMADEUSPriceSort = async (req, res, next) => {
         // }
         // finalRep.TotalPublishFare = totalPublishFare;
       } else if (finalRep.Segments) {
-        const totalPublishFare = finalRep.Fare.BaseFare;
+        const totalPublishFare = finalRep?.Fare?.BaseFare;
         finalRep.TotalPublishFare = totalPublishFare;
         // const totalPublishFare = finalRep.Fare.PublishedFare;
         // finalRep.TotalPublishFare = totalPublishFare;
@@ -341,10 +341,10 @@ exports.AMADEUSPriceSort = async (req, res, next) => {
   try {
     let tvoArray = [];
     const data = req.body;
-    data.formattedDate = moment(data.Segments[0].PreferredDepartureTime).format(
+    data.formattedDate = moment(data?.Segments[0]?.PreferredDepartureTime).format(
       "DDMMYY"
     );
-    data.totalPassenger = parseInt(data.AdultCount) + parseInt(data.ChildCount);
+    data.totalPassenger = parseInt(data?.AdultCount) + parseInt(data?.ChildCount);
     const flattenedArray = [];
     let finalFlattenedArray = [];
 
@@ -536,8 +536,8 @@ exports.AMADEUSPriceSortOptimize = async (req, res, next) => {
       const { recommendation, serviceFeesGrp: baggageReference } = obj;
 
       // Flatten recommendations
-      let flattenedArray = recommendation.flatMap((rec, i) => {
-        const segNumber = rec.segmentFlightRef.length || 1;
+      let flattenedArray = recommendation?.flatMap((rec, i) => {
+        const segNumber = rec?.segmentFlightRef?.length || 1;
         return Array.from({ length: segNumber }, (_, j) => ({
           ...obj.flightIndex.groupOfFlights[
             j +
@@ -561,7 +561,7 @@ exports.AMADEUSPriceSortOptimize = async (req, res, next) => {
         )
         .map((ref) => ({ ...ref }));
 
-      const newFlattnedArray = flattenedArray.map((item, index) => {
+      const newFlattnedArray = flattenedArray?.map((item, index) => {
         const tempItemBaggage = item.baggage?.referencingDetail[1]?.refNumber;
 
         if (!baggageReference?.serviceCoverageInfoGrp?.[tempItemBaggage - 1]) {
@@ -569,15 +569,15 @@ exports.AMADEUSPriceSortOptimize = async (req, res, next) => {
         }
 
         const serviceCovInfoGrp =
-          baggageReference.serviceCoverageInfoGrp[tempItemBaggage - 1]
+          baggageReference?.serviceCoverageInfoGrp[tempItemBaggage - 1]
             .serviceCovInfoGrp;
         const refInfo = serviceCovInfoGrp?.refInfo;
 
         if (!refInfo) return { ...item, baggage: undefined };
 
         const freeAllowanceLuggageIndex = Array.isArray(refInfo)
-          ? refInfo.map((info) => info.referencingDetail.refNumber)
-          : [refInfo.referencingDetail.refNumber];
+          ? refInfo.map((info) => info?.referencingDetail?.refNumber)
+          : [refInfo?.referencingDetail?.refNumber];
 
         return {
           ...item,
@@ -591,12 +591,12 @@ exports.AMADEUSPriceSortOptimize = async (req, res, next) => {
       newFlattnedArray.forEach((finalRep) => {
         if (finalRep.paxFareDetail) {
           const totalFare =
-            Number(finalRep.paxFareDetail.totalFareAmount) -
-            Number(finalRep.paxFareDetail.totalTaxAmount);
-          const totalTax = parseInt(finalRep.monetaryDetail?.[1]?.amount || 0);
+            Number(finalRep?.paxFareDetail?.totalFareAmount) -
+            Number(finalRep?.paxFareDetail?.totalTaxAmount);
+          const totalTax = parseInt(finalRep?.monetaryDetail?.[1]?.amount || 0);
           finalRep.TotalPublishFare = totalFare + totalTax;
-        } else if (finalRep.Segments) {
-          finalRep.TotalPublishFare = finalRep.Fare.BaseFare;
+        } else if (finalRep?.Segments) {
+          finalRep.TotalPublishFare = finalRep?.Fare?.BaseFare;
         }
       });
 
@@ -646,29 +646,29 @@ exports.combineTVOAMADEUS = async (req, res, next) => {
     ]);
     var tvoArray = [];
 
-    if (tvoResponse.data.Response.ResponseStatus === 1) {
-      tvoArray = tvoResponse.data.Response.Results[0];
+    if (tvoResponse?.data?.Response?.ResponseStatus === 1) {
+      tvoArray = tvoResponse?.data?.Response?.Results[0];
     } else {
       tvoArray = [];
     }
     let jsonResult = {};
-    if (amadeusResponse.status == 200) {
+    if (amadeusResponse?.status == 200) {
       jsonResult = await xmlToJson(amadeusResponse.data);
       const obj =
         jsonResult["soapenv:Envelope"]["soapenv:Body"][
           "Fare_MasterPricerTravelBoardSearchReply"
         ];
-      const recommendationObject = await obj.recommendation;
-      const segNumber = recommendationObject.map((item, index) => {
-        return item.segmentFlightRef.length || 1;
+      const recommendationObject = await obj?.recommendation;
+      const segNumber = recommendationObject?.map((item, index) => {
+        return item?.segmentFlightRef?.length || 1;
       });
 
       for (let i = 0; i < segNumber.length; i++) {
         const modifiedArray = [];
         for (let j = 0; j < segNumber[i]; j++) {
           modifiedArray.push({
-            ...obj.flightIndex.groupOfFlights[j],
-            ...recommendationObject[i].paxFareProduct,
+            ...obj?.flightIndex?.groupOfFlights[j],
+            ...recommendationObject[i]?.paxFareProduct,
           });
         }
         flattenedArray.push(...modifiedArray);
@@ -677,10 +677,10 @@ exports.combineTVOAMADEUS = async (req, res, next) => {
     var finalResult = [];
     var selectedArray = [];
     if (tvoArray.length > 0) {
-      selectedArray = await tvoArray.filter((value) => value.IsLCC === true);
+      selectedArray = await tvoArray?.filter((value) => value?.IsLCC === true);
       if (selectedArray.length > 0) {
-        finalResult = await selectedArray.concat(flattenedArray);
-      } else if (flattenedArray.length <= 0) {
+        finalResult = await selectedArray?.concat(flattenedArray);
+      } else if (flattenedArray?.length <= 0) {
         finalResult = [...tvoArray];
       }
     } else {
@@ -708,14 +708,14 @@ exports.combineTVOAMADEUS = async (req, res, next) => {
 exports.cobinedAsPerPrice = async (req, res, next) => {
   try {
     const data = req.body;
-    data.formattedDate = moment(data.Segments[0].PreferredDepartureTime).format(
+    data.formattedDate = moment(data?.Segments[0]?.PreferredDepartureTime).format(
       "DDMMYY"
     ); // Format the date as "DDMMYY"
     data.totalPassenger =
-      parseInt(data.AdultCount) +
-      parseInt(data.ChildCount) +
-      parseInt(data.InfantCount);
-    const api1Url = commonUrl.api.flightSearchURL;
+      parseInt(data?.AdultCount) +
+      parseInt(data?.ChildCount) +
+      parseInt(data?.InfantCount);
+    const api1Url = commonUrl?.api?.flightSearchURL;
 
     const headers = {
       "Content-Type": "text/xml;charset=UTF-8",
@@ -733,22 +733,22 @@ exports.cobinedAsPerPrice = async (req, res, next) => {
         }),
     ]);
     var tvoArray =
-      tvoResponse.data.Response.ResponseStatus === 1
-        ? tvoResponse.data.Response.Results[0]
+      tvoResponse?.data?.Response?.ResponseStatus === 1
+        ? tvoResponse?.data?.Response?.Results[0]
         : [];
 
     let jsonResult = {};
     if (amadeusResponse.status == 200) {
-      jsonResult = await xmlToJson(amadeusResponse.data);
+      jsonResult = await xmlToJson(amadeusResponse?.data);
       const obj =
         jsonResult["soapenv:Envelope"]["soapenv:Body"][
           "Fare_MasterPricerTravelBoardSearchReply"
         ];
-      const recommendationObject = await obj.recommendation;
+      const recommendationObject = await obj?.recommendation;
       var segNumber = [];
       // if(recommendationObject.length>0){
-      segNumber = recommendationObject.map((item, index) => {
-        return item.segmentFlightRef.length || 1;
+      segNumber = recommendationObject?.map((item, index) => {
+        return item?.segmentFlightRef?.length || 1;
       });
       // }
 
@@ -756,11 +756,11 @@ exports.cobinedAsPerPrice = async (req, res, next) => {
         const modifiedArray = [];
         for (let j = 0; j < segNumber[i]; j++) {
           modifiedArray.push({
-            ...obj.flightIndex.groupOfFlights[j],
-            ...recommendationObject[i].paxFareProduct,
+            ...obj?.flightIndex?.groupOfFlights[j],
+            ...recommendationObject[i]?.paxFareProduct,
           });
         }
-        flattenedArray.push(...modifiedArray);
+        flattenedArray?.push(...modifiedArray);
       }
     }
     // Keep track of added objects during price comparison
@@ -775,63 +775,63 @@ exports.cobinedAsPerPrice = async (req, res, next) => {
         // Perform comparisons
         if (
           Segments[0][0].Airline.FlightNumber ===
-            amadeusObj.flightDetails.flightInformation.flightOrtrainNumber &&
-          moment(Segments[0][0].Origin.DepTime).format("YYYY-MM-DD") ===
+            amadeusObj?.flightDetails?.flightInformation?.flightOrtrainNumber &&
+          moment(Segments[0][0]?.Origin?.DepTime).format("YYYY-MM-DD") ===
             moment(
-              amadeusObj.flightDetails.flightInformation.productDateTime
+              amadeusObj?.flightDetails?.flightInformation?.productDateTime
                 .dateOfDeparture,
               "DDMMYYYY"
             ).format("YYYY-MM-DD") &&
-          moment(Segments[0][0].Origin.DepTime).format("HH:mm") ===
+          moment(Segments[0][0]?.Origin?.DepTime).format("HH:mm") ===
             moment(
-              amadeusObj.flightDetails.flightInformation.productDateTime
+              amadeusObj?.flightDetails?.flightInformation?.productDateTime
                 .timeOfDeparture,
               "Hmm"
             ).format("HH:mm") &&
-          moment(Segments[0][0].Destination.ArrTime).format("YYYY-MM-DD") ===
+          moment(Segments[0][0]?.Destination?.ArrTime).format("YYYY-MM-DD") ===
             moment(
-              amadeusObj.flightDetails.flightInformation.productDateTime
+              amadeusObj?.flightDetails?.flightInformation?.productDateTime
                 .dateOfArrival,
               "DDMMYYYY"
             ).format("YYYY-MM-DD") &&
           moment(Segments[0][0].Destination.ArrTime).format("HH:mm") ===
             moment(
-              amadeusObj.flightDetails.flightInformation.productDateTime
+              amadeusObj?.flightDetails?.flightInformation?.productDateTime
                 .timeOfArrival,
               "Hmm"
             ).format("HH:mm") &&
           Segments[0][0].Airline.AirlineCode ===
-            amadeusObj.flightDetails.flightInformation.companyId
+            amadeusObj?.flightDetails?.flightInformation?.companyId
               .marketingCarrier
         ) {
           // Compare prices and push to finalResult
           if (
-            parseInt(Fare.PublishedFare) <
-            parseInt(paxFareDetail.totalFareAmount)
+            parseInt(Fare?.PublishedFare) <
+            parseInt(paxFareDetail?.totalFareAmount)
           ) {
-            if (!addedObjects.has(tvoObj)) {
-              finalResult.push(tvoObj);
-              addedObjects.add(tvoObj);
+            if (!addedObjects?.has(tvoObj)) {
+              finalResult?.push(tvoObj);
+              addedObjects?.add(tvoObj);
             }
           } else {
-            if (!addedObjects.has(amadeusObj)) {
-              finalResult.push(amadeusObj);
-              addedObjects.add(amadeusObj);
+            if (!addedObjects?.has(amadeusObj)) {
+              finalResult?.push(amadeusObj);
+              addedObjects?.add(amadeusObj);
             }
           }
         } else {
-          if (!addedObjects.has(tvoObj)) {
-            finalResult.push(tvoObj);
-            addedObjects.add(tvoObj);
+          if (!addedObjects?.has(tvoObj)) {
+            finalResult?.push(tvoObj);
+            addedObjects?.add(tvoObj);
           }
         }
       }
     }
     // Iterate through each object in amadeus that hasn't been added
     for (const amadeusObj of flattenedArray) {
-      if (!addedObjects.has(amadeusObj)) {
-        finalResult.push(amadeusObj);
-        addedObjects.add(amadeusObj);
+      if (!addedObjects?.has(amadeusObj)) {
+        finalResult?.push(amadeusObj);
+        addedObjects?.add(amadeusObj);
       }
     }
     // for(const finalSort of finalResult){
@@ -855,12 +855,12 @@ exports.cobinedAsPerPrice = async (req, res, next) => {
 
 exports.combineTVOAMADEUSOptimised = async (req, res, next) => {
   try {
-    const data = req.body;
-    data.formattedDate = moment(data.Segments[0].PreferredDepartureTime).format(
+    const data = req?.body;
+    data.formattedDate = moment(data?.Segments[0]?.PreferredDepartureTime).format(
       "DDMMYY"
     );
-    data.totalPassenger = parseInt(data.AdultCount) + parseInt(data.ChildCount);
-    const api1Url = commonUrl.api.flightSearchURL;
+    data.totalPassenger = parseInt(data?.AdultCount) + parseInt(data?.ChildCount);
+    const api1Url = commonUrl?.api?.flightSearchURL;
 
     const headers = {
       "Content-Type": "text/xml;charset=UTF-8",
@@ -877,29 +877,29 @@ exports.combineTVOAMADEUSOptimised = async (req, res, next) => {
     ]);
 
     let tvoArray = [];
-    if (tvoResponse.data.Response.ResponseStatus === 1) {
-      tvoArray = tvoResponse.data.Response.Results[0];
+    if (tvoResponse?.data?.Response?.ResponseStatus === 1) {
+      tvoArray = tvoResponse?.data?.Response?.Results[0];
     }
     let finalFlattenedArray = [];
     if (amadeusResponse.status === 200) {
-      const jsonResult = await xmlToJson(amadeusResponse.data);
+      const jsonResult = await xmlToJson(amadeusResponse?.data);
       const obj =
         jsonResult["soapenv:Envelope"]["soapenv:Body"][
           "Fare_MasterPricerTravelBoardSearchReply"
         ];
-      const recommendationObject = obj.recommendation;
-      const baggageReference = obj.serviceFeesGrp;
+      const recommendationObject = obj?.recommendation;
+      const baggageReference = obj?.serviceFeesGrp;
       const freeBaggageAllowance = baggageReference?.freeBagAllowanceGrp;
 
-      const flattenedArray = recommendationObject.reduce((acc, item, index) => {
-        const segRefs = Array.isArray(item.segmentFlightRef)
-          ? item.segmentFlightRef
-          : [item.segmentFlightRef];
-        const flightGroup = obj.flightIndex.groupOfFlights[index];
-        const fareProduct = item.paxFareProduct;
-        const recPriceInfo = item.recPriceInfo;
+      const flattenedArray = recommendationObject?.reduce((acc, item, index) => {
+        const segRefs = Array.isArray(item?.segmentFlightRef)
+          ? item?.segmentFlightRef
+          : [item?.segmentFlightRef];
+        const flightGroup = obj?.flightIndex?.groupOfFlights[index];
+        const fareProduct = item?.paxFareProduct;
+        const recPriceInfo = item?.recPriceInfo;
 
-        segRefs.forEach((segRef, i) => {
+        segRefs?.forEach((segRef, i) => {
           const baggage = segRefs[i];
           acc.push({
             ...flightGroup,
@@ -911,11 +911,11 @@ exports.combineTVOAMADEUSOptimised = async (req, res, next) => {
         return acc;
       }, []);
 
-      finalFlattenedArray = flattenedArray.map((item, index) => {
-        const baggageIndex = item.baggage.referencingDetail[1].refNumber - 1;
+      finalFlattenedArray = flattenedArray?.map((item, index) => {
+        const baggageIndex = item?.baggage?.referencingDetail[1]?.refNumber - 1;
         const freeAllowanceIndex =
-          baggageReference.serviceCoverageInfoGrp[baggageIndex]
-            .serviceCovInfoGrp.refInfo.referencingDetail.refNumber - 1;
+          baggageReference?.serviceCoverageInfoGrp[baggageIndex]
+            .serviceCovInfoGrp?.refInfo?.referencingDetail?.refNumber - 1;
         return { ...item, baggage: freeBaggageAllowance[freeAllowanceIndex] };
       });
     }
@@ -929,16 +929,16 @@ exports.combineTVOAMADEUSOptimised = async (req, res, next) => {
 
     finalResult = finalResult.map((finalRep) => {
       if (finalRep.propFlightGrDetail) {
-        const totalFare = parseInt(finalRep.monetaryDetail[0].amount);
-        const totalTax = parseInt(finalRep.monetaryDetail[1].amount);
+        const totalFare = parseInt(finalRep?.monetaryDetail[0]?.amount);
+        const totalTax = parseInt(finalRep?.monetaryDetail[1]?.amount);
         finalRep.TotalPublishFare = totalFare + totalTax;
-      } else if (finalRep.Segments) {
-        finalRep.TotalPublishFare = finalRep.Fare.PublishedFare;
+      } else if (finalRep?.Segments) {
+        finalRep.TotalPublishFare = finalRep?.Fare?.PublishedFare;
       }
       return finalRep;
     });
 
-    const sortedData = finalResult.sort(
+    const sortedData = finalResult?.sort(
       (a, b) => a.TotalPublishFare - b.TotalPublishFare
     );
 
@@ -1091,14 +1091,14 @@ exports.combineTvoAmadeusReturn = async (req, res, next) => {
   try {
     const data = req.body;
     data.formattedDate = moment(
-      data.Segments[0].PreferredDepartureTime,
+      data?.Segments[0]?.PreferredDepartureTime,
       "YYYY-MM-DDTHH:mm:ss"
     ).format("DDMMYY");
-    data.formattedDate1 = moment(data.returnDate, "YYYY-MM-DDTHH:mm:ss").format(
+    data.formattedDate1 = moment(data?.returnDate, "YYYY-MM-DDTHH:mm:ss").format(
       "DDMMYY"
     );
-    const api1Url = commonUrl.api.flightSearchURL;
-    data.totalPassenger = parseInt(data.AdultCount) + parseInt(data.ChildCount);
+    const api1Url = commonUrl?.api?.flightSearchURL;
+    data.totalPassenger = parseInt(data?.AdultCount) + parseInt(data?.ChildCount);
     const flattenedArray = [];
     let finalFlattenedArray = [];
     let flatendReturnArray = [];
@@ -1116,38 +1116,38 @@ exports.combineTvoAmadeusReturn = async (req, res, next) => {
         }),
     ]);
 
-    let jsonResult = await xmlToJson(amadeusResponse.data);
+    let jsonResult = await xmlToJson(amadeusResponse?.data);
     if (
       amadeusResponse.status == 200 &&
       !jsonResult["soapenv:Envelope"]["soapenv:Body"][
         "Fare_MasterPricerTravelBoardSearchReply"
       ]["errorMessage"]
     ) {
-      jsonResult = await xmlToJson(amadeusResponse.data);
+      jsonResult = await xmlToJson(amadeusResponse?.data);
       const obj =
         jsonResult["soapenv:Envelope"]["soapenv:Body"][
           "Fare_MasterPricerTravelBoardSearchReply"
         ];
-      const recommendationObject = await obj.recommendation;
-      const baggageReference = await obj.serviceFeesGrp;
+      const recommendationObject = await obj?.recommendation;
+      const baggageReference = await obj?.serviceFeesGrp;
       const freeBaggageAllowance = baggageReference?.freeBagAllowanceGrp;
       let count = 0;
 
-      const segNumber = recommendationObject.map((item) => {
-        return item.segmentFlightRef.length || 1;
+      const segNumber = recommendationObject?.map((item) => {
+        return item?.segmentFlightRef?.length || 1;
       });
 
-      segNumber.forEach((item) => {
+      segNumber?.forEach((item) => {
         count = count + item;
       });
 
-      const baggaReferenceArray = recommendationObject.reduce(
+      const baggaReferenceArray = recommendationObject?.reduce(
         (accumulator, item) => {
           if (Array.isArray(item.segmentFlightRef)) {
             accumulator.push(...item.segmentFlightRef);
           } else if (
-            item.segmentFlightRef &&
-            item.segmentFlightRef.referencingDetail
+            item?.segmentFlightRef &&
+            item?.segmentFlightRef?.referencingDetail
           ) {
             accumulator.push({ ...item.segmentFlightRef });
           }
@@ -1162,36 +1162,36 @@ exports.combineTvoAmadeusReturn = async (req, res, next) => {
 
         for (let j = 0; j < segNumber[i]; j++) {
           modifiedArray.push({
-            ...obj.flightIndex[0].groupOfFlights[j],
-            ...recommendationObject[i].paxFareProduct,
+            ...obj?.flightIndex[0]?.groupOfFlights[j],
+            ...recommendationObject[i]?.paxFareProduct,
           });
           modifiedReturnArray.push({
-            ...obj.flightIndex[1].groupOfFlights[j],
-            ...recommendationObject[i].paxFareProduct,
+            ...obj?.flightIndex[1]?.groupOfFlights[j],
+            ...recommendationObject[i]?.paxFareProduct,
           });
         }
 
-        flattenedArray.push(...modifiedArray);
-        flatendReturnArray.push(...modifiedReturnArray);
+        flattenedArray?.push(...modifiedArray);
+        flatendReturnArray?.push(...modifiedReturnArray);
       }
 
       // Perform operations on flattenedArray
-      const newFlattnedArray = flattenedArray.map((item, index) => {
+      const newFlattnedArray = flattenedArray?.map((item, index) => {
         return { ...item, baggage: baggaReferenceArray[index] };
       });
 
-      finalFlattenedArray = newFlattnedArray.map((item) => {
-        const tempItemBaggage = item.baggage.referencingDetail[1].refNumber;
+      finalFlattenedArray = newFlattnedArray?.map((item) => {
+        const tempItemBaggage = item?.baggage?.referencingDetail[1]?.refNumber;
 
         if (
-          !baggageReference.serviceCoverageInfoGrp ||
-          !baggageReference.serviceCoverageInfoGrp[tempItemBaggage - 1]
+          !baggageReference?.serviceCoverageInfoGrp ||
+          !baggageReference?.serviceCoverageInfoGrp[tempItemBaggage - 1]
         ) {
           return { ...item, baggage: undefined };
         }
 
         const serviceCovInfoGrp =
-          baggageReference.serviceCoverageInfoGrp[tempItemBaggage - 1]
+          baggageReference?.serviceCoverageInfoGrp[tempItemBaggage - 1]
             .serviceCovInfoGrp;
 
         const refInfo = serviceCovInfoGrp?.refInfo;
@@ -1200,8 +1200,8 @@ exports.combineTvoAmadeusReturn = async (req, res, next) => {
         }
 
         const freeAllowanceLuggageIndex = Array.isArray(refInfo)
-          ? refInfo.map((info) => info.referencingDetail.refNumber)
-          : [refInfo.referencingDetail.refNumber];
+          ? refInfo?.map((info) => info?.referencingDetail?.refNumber)
+          : [refInfo?.referencingDetail?.refNumber];
 
         return {
           ...item,
@@ -1212,22 +1212,22 @@ exports.combineTvoAmadeusReturn = async (req, res, next) => {
       });
 
       // Perform operations on flatendReturnArray
-      const newFlattenedReturnArray = flatendReturnArray.map((item, index) => {
+      const newFlattenedReturnArray = flatendReturnArray?.map((item, index) => {
         return { ...item, baggage: baggaReferenceArray[index] };
       });
 
-      finalFlattenedReturnArray = newFlattenedReturnArray.map((item) => {
-        const tempItemBaggage = item.baggage.referencingDetail[1].refNumber;
+      finalFlattenedReturnArray = newFlattenedReturnArray?.map((item) => {
+        const tempItemBaggage = item?.baggage?.referencingDetail[1]?.refNumber;
 
         if (
-          !baggageReference.serviceCoverageInfoGrp ||
-          !baggageReference.serviceCoverageInfoGrp[tempItemBaggage - 1]
+          !baggageReference?.serviceCoverageInfoGrp ||
+          !baggageReference?.serviceCoverageInfoGrp[tempItemBaggage - 1]
         ) {
           return { ...item, baggage: undefined };
         }
 
         const serviceCovInfoGrp =
-          baggageReference.serviceCoverageInfoGrp[tempItemBaggage - 1]
+          baggageReference?.serviceCoverageInfoGrp[tempItemBaggage - 1]
             .serviceCovInfoGrp;
 
         const refInfo = serviceCovInfoGrp?.refInfo;
@@ -1236,8 +1236,8 @@ exports.combineTvoAmadeusReturn = async (req, res, next) => {
         }
 
         const freeAllowanceLuggageIndex = Array.isArray(refInfo)
-          ? refInfo.map((info) => info.referencingDetail.refNumber)
-          : [refInfo.referencingDetail.refNumber];
+          ? refInfo?.map((info) => info?.referencingDetail?.refNumber)
+          : [refInfo?.referencingDetail?.refNumber];
 
         return {
           ...item,
@@ -1294,14 +1294,18 @@ exports.combineTvoKafila1 = async (req, res, next) => {
     let flightKeySet = new Set(); // Set to track unique flight keys
     const kafilaUrl =
       api.kafilaGetFlight || "http://stage1.ksofttechnology.com/api/FSearch";
-    const api1Url = commonUrl.api.flightSearchURL;
+    const api1Url = commonUrl?.api?.flightSearchURL;
     const getToken = await kafilaToken();
-    data.KafilaToken = getToken.TokenId;
+    data.KafilaToken = getToken?.TokenId;
     const [tvoResponse, KafilaResponse] = await Promise.all([
-      axios.post(api1Url, data),
-      axios.post(kafilaUrl, generateKafilaRequest(data)),
+      axios.post(api1Url, data).catch((error) => {
+          return { data: {} };
+        }),
+      axios.post(kafilaUrl, generateKafilaRequest(data)).catch((error) => {
+          return { data: {} };
+        }),
     ]);
-    console.log(data,"data")
+
     let tvoArray =
       tvoResponse.data.Response.ResponseStatus === 1
         ? tvoResponse.data.Response.Results[0]
@@ -1313,36 +1317,36 @@ exports.combineTvoKafila1 = async (req, res, next) => {
     // Step 1: Create a Map of TVO flights for efficient comparison
     const tvoMap = new Map();
     tvoArray.forEach((tvoFlight) => {
-      const key = `${tvoFlight.Segments[0][0].Airline.FlightNumber}-${tvoFlight.Segments[0][0].Origin.DepTime}`;
+      const key = `${tvoFlight?.Segments[0][0]?.Airline?.FlightNumber}-${tvoFlight?.Segments[0][0]?.Origin?.DepTime}`;
       tvoMap.set(key, tvoFlight);
     });
 
     // Step 2: Compare Kafila flights with TVO flights
-    kafilaArray.forEach((kafilaFlight) => {
-      const key = `${kafilaFlight.Itinerary[0].FNo}-${kafilaFlight.Itinerary[0].DDate}`;
+    kafilaArray?.forEach((kafilaFlight) => {
+      const key = `${kafilaFlight?.Itinerary[0].FNo}-${kafilaFlight?.Itinerary[0]?.DDate}`;
       const matchingTvoFlight = tvoMap.get(key);
       // console.log("matchingTvoFlight======",matchingTvoFlight.length)
       if (matchingTvoFlight) {
         // console.log("matchingTvoFlight=======",matchingTvoFlight)
-        const tvoFare = matchingTvoFlight.Fare.OfferedFare;
-        const kafilaFare = kafilaFlight.Fare.GrandTotal;
+        const tvoFare = matchingTvoFlight?.Fare?.OfferedFare;
+        const kafilaFare = kafilaFlight?.Fare?.GrandTotal;
         if (kafilaFare <= tvoFare) {
           // console.log("flightKeySet.add(key);=========",flightKeySet.add(key),kafilaFare <= tvoFare);
 
-          finalResArray.push(kafilaFlight); // Kafila flight is cheaper
-          flightKeySet.add(key); // Add key to the set
+          finalResArray?.push(kafilaFlight); // Kafila flight is cheaper
+          flightKeySet?.add(key); // Add key to the set
         } else {
           // console.log("kafilaFare <= tvoFare========ELSE==",flightKeySet.add(key))
-          finalResArray.push(matchingTvoFlight); // TVO flight is cheaper
-          flightKeySet.add(key); // Add key to the set
+          finalResArray?.push(matchingTvoFlight); // TVO flight is cheaper
+          flightKeySet?.add(key); // Add key to the set
         }
 
         // Remove the matched flight from TVO map
-        tvoMap.delete(key);
+        tvoMap?.delete(key);
       } else {
         // No matching TVO flight, push Kafila flight
-        finalResArray.push(kafilaFlight);
-        flightKeySet.add(key); // Add key to the set
+        finalResArray?.push(kafilaFlight);
+        flightKeySet?.add(key); // Add key to the set
       }
     });
 
@@ -1356,11 +1360,11 @@ exports.combineTvoKafila1 = async (req, res, next) => {
     //     flightKeySet.add(key); // Add key to the set
     //   }
     // });
-    console.log("finalResArray===========", finalResArray.length);
+    // console.log("finalResArray===========", finalResArray.length);
     // Step 4: Sort the final result array by fare (ascending order)
-    const sortedFinalRes = finalResArray.sort((a, b) => {
-      const fareA = a.Fare ? a.Fare.OfferedFare || a.Fare.GrandTotal : 0;
-      const fareB = b.Fare ? b.Fare.OfferedFare || b.Fare.GrandTotal : 0;
+    const sortedFinalRes = finalResArray?.sort((a, b) => {
+      const fareA = a?.Fare ? a?.Fare?.OfferedFare || a?.Fare?.GrandTotal : 0;
+      const fareB = b?.Fare ? b?.Fare?.OfferedFare || b?.Fare?.GrandTotal : 0;
       return fareA - fareB; // Sort in ascending order of fare
     });
 
@@ -1383,13 +1387,17 @@ exports.combineTvoKafilaRoundTrip = async (req, res, next) => {
     const data = req.body;
     const kafilaUrl =
       api.kafilaGetFlight || "http://stage1.ksofttechnology.com/api/FSearch";
-    const api1Url = commonUrl.api.flightSearchURL;
+    const api1Url = commonUrl?.api?.flightSearchURL;
     const getToken = await kafilaToken();
     data.KafilaToken = getToken.TokenId;
 
     const [tvoResponse, kafilaResponse] = await Promise.all([
-      axios.post(api1Url, data),
-      axios.post(kafilaUrl, generateKafilaRoundTripRequest(data)),
+      axios.post(api1Url, data).catch((error) => {
+        return { data: {} };
+      }),
+      axios.post(kafilaUrl, generateKafilaRoundTripRequest(data)).catch((error) => {
+        return { data: {} };
+      }),
     ]);
 
     let tvoArray =
@@ -1398,58 +1406,58 @@ exports.combineTvoKafilaRoundTrip = async (req, res, next) => {
         : [];
     let tvoArray1 = removeDuplicates(tvoArray[0], `FlightNumber`);
     let tvoReturnArray = removeDuplicates(tvoArray[1], `FlightNumber`);
-    let kafilaArrayCombine = kafilaResponse.data.Schedules || [];
+    let kafilaArrayCombine = kafilaResponse?.data?.Schedules || [];
     let kafilaArray = kafilaArrayCombine[0];
     let kafilaReturnArray = kafilaArrayCombine[1];
     const tvoMap = new Map();
     tvoArray1.forEach((tvoFlight) => {
-      const key = `${tvoFlight.Segments[0][0].Airline.FlightNumber}-${tvoFlight.Segments[0][0].Origin.DepTime}`;
-      tvoMap.set(key, tvoFlight);
+      const key = `${tvoFlight?.Segments[0][0]?.Airline?.FlightNumber}-${tvoFlight?.Segments[0][0]?.Origin?.DepTime}`;
+      tvoMap?.set(key, tvoFlight);
     });
 
     const tvoReturnMap = new Map();
-    tvoReturnArray.forEach((tvoFlight) => {
-      const key = `${tvoFlight.Segments[0][0].Airline.FlightNumber}-${tvoFlight.Segments[0][0].Origin.DepTime}`;
-      tvoReturnMap.set(key, tvoFlight);
+    tvoReturnArray?.forEach((tvoFlight) => {
+      const key = `${tvoFlight?.Segments[0][0]?.Airline?.FlightNumber}-${tvoFlight?.Segments[0][0]?.Origin?.DepTime}`;
+      tvoReturnMap?.set(key, tvoFlight);
     });
 
     const unmatchedKafilaFlights = [];
     const matchedFlights = [];
 
     kafilaArray.forEach((kafilaFlight) => {
-      const key = `${kafilaFlight.Itinerary[0].FNo}-${kafilaFlight.Itinerary[0].DDate}`;
-      if (tvoMap.has(key)) {
-        const tvoFlight = tvoMap.get(key);
-        const kafilaFare = kafilaFlight.Fare
+      const key = `${kafilaFlight?.Itinerary[0]?.FNo}-${kafilaFlight?.Itinerary[0]?.DDate}`;
+      if (tvoMap?.has(key)) {
+        const tvoFlight = tvoMap?.get(key);
+        const kafilaFare = kafilaFlight?.Fare
           ? kafilaFlight.Fare.GrandTotal
           : Infinity;
-        const tvoFare = tvoFlight.Fare ? tvoFlight.Fare.OfferedFare : Infinity;
+        const tvoFare = tvoFlight.Fare ? tvoFlight?.Fare?.OfferedFare : Infinity;
         matchedFlights.push(kafilaFare <= tvoFare ? kafilaFlight : tvoFlight);
-        tvoMap.delete(key);
+        tvoMap?.delete(key);
       } else {
-        unmatchedKafilaFlights.push(kafilaFlight);
+        unmatchedKafilaFlights?.push(kafilaFlight);
       }
     });
 
-    const unmatchedTvoFlights = Array.from(tvoMap.values());
+    const unmatchedTvoFlights = Array.from(tvoMap?.values());
 
     const unmatchedKafilaReturnFlights = [];
     const matchedReturnFlights = [];
 
-    kafilaReturnArray.forEach((kafilaFlight) => {
-      const key = `${kafilaFlight.Itinerary[0].FNo}-${kafilaFlight.Itinerary[0].DDate}`;
-      if (tvoReturnMap.has(key)) {
+    kafilaReturnArray?.forEach((kafilaFlight) => {
+      const key = `${kafilaFlight?.Itinerary[0]?.FNo}-${kafilaFlight?.Itinerary[0]?.DDate}`;
+      if (tvoReturnMap?.has(key)) {
         const tvoFlight = tvoReturnMap.get(key);
         const kafilaFare = kafilaFlight.Fare
           ? kafilaFlight.Fare.GrandTotal
           : Infinity;
-        const tvoFare = tvoFlight.Fare ? tvoFlight.Fare.OfferedFare : Infinity;
-        matchedReturnFlights.push(
+        const tvoFare = tvoFlight?.Fare ? tvoFlight?.Fare?.OfferedFare : Infinity;
+        matchedReturnFlights?.push(
           kafilaFare <= tvoFare ? kafilaFlight : tvoFlight
         );
         tvoReturnMap.delete(key);
       } else {
-        unmatchedKafilaReturnFlights.push(kafilaFlight);
+        unmatchedKafilaReturnFlights?.push(kafilaFlight);
       }
     });
 
@@ -1467,15 +1475,15 @@ exports.combineTvoKafilaRoundTrip = async (req, res, next) => {
       ...unmatchedTvoReturnFlights,
     ];
 
-    const sortedFinalRes = mergedOutboundFlights.sort((a, b) => {
-      const fareA = a.Fare ? a.Fare.OfferedFare || a.Fare.GrandTotal : 0;
-      const fareB = b.Fare ? b.Fare.OfferedFare || b.Fare.GrandTotal : 0;
+    const sortedFinalRes = mergedOutboundFlights?.sort((a, b) => {
+      const fareA = a?.Fare ? a?.Fare?.OfferedFare || a?.Fare?.GrandTotal : 0;
+      const fareB = b?.Fare ? b?.Fare?.OfferedFare || b?.Fare?.GrandTotal : 0;
       return fareA - fareB;
     });
 
-    const sortedReturnFinalRes = mergedReturnFlights.sort((a, b) => {
-      const fareA = a.Fare ? a.Fare.OfferedFare || a.Fare.GrandTotal : 0;
-      const fareB = b.Fare ? b.Fare.OfferedFare || b.Fare.GrandTotal : 0;
+    const sortedReturnFinalRes = mergedReturnFlights?.sort((a, b) => {
+      const fareA = a?.Fare ? a?.Fare?.OfferedFare || a?.Fare?.GrandTotal : 0;
+      const fareB = b?.Fare ? b?.Fare?.OfferedFare || b?.Fare?.GrandTotal : 0;
       return fareA - fareB;
     });
 
@@ -1505,8 +1513,12 @@ exports.combineTvoKafilaRoundTrip2 = async (req, res, next) => {
 
     // Fetch data from both APIs
     const [tvoResponse, kafilaResponse] = await Promise.all([
-      axios.post(api1Url, data),
-      axios.post(kafilaUrl, generateKafilaRoundTripRequest(data)),
+      axios.post(api1Url, data).catch((error) => {
+        return { data: {} };
+      }),
+      axios.post(kafilaUrl, generateKafilaRoundTripRequest(data)).catch((error) => {
+        return { data: {} };
+      }),
     ]);
 
     // Process TVO and Kafila data
@@ -1520,69 +1532,69 @@ exports.combineTvoKafilaRoundTrip2 = async (req, res, next) => {
       tvoArray1 = removeDuplicates(tvoArray[0], `FlightNumber`);
       tvoReturnArray = removeDuplicates(tvoArray[1], `FlightNumber`);
     }
-    let kafilaArrayCombine = kafilaResponse.data.Schedules || [];
+    let kafilaArrayCombine = kafilaResponse?.data?.Schedules || [];
     let kafilaArray = kafilaArrayCombine[0];
     let kafilaReturnArray = kafilaArrayCombine[1];
 
     const tvoMap = new Map();
     tvoArray1.forEach((tvoFlight) => {
-      const key = `${tvoFlight.Segments[0][0].Airline.FlightNumber}-${tvoFlight.Segments[0][0].Origin.DepTime}`;
+      const key = `${tvoFlight?.Segments[0][0]?.Airline?.FlightNumber}-${tvoFlight?.Segments[0][0]?.Origin?.DepTime}`;
       tvoMap[key] = tvoFlight;
     });
 
     const tvoReturnMap = new Map();
-    tvoReturnArray.forEach((tvoFlight) => {
-      const key = `${tvoFlight.Segments[0][0].Airline.FlightNumber}-${tvoFlight.Segments[0][0].Origin.DepTime}`;
+    tvoReturnArray?.forEach((tvoFlight) => {
+      const key = `${tvoFlight?.Segments[0][0]?.Airline?.FlightNumber}-${tvoFlight?.Segments[0][0]?.Origin?.DepTime}`;
       tvoReturnMap[key] = tvoFlight;
     });
 
     const unmatchedKafilaFlights = [];
     const matchedFlights = [];
 
-    kafilaArray.forEach((kafilaFlight) => {
-      const key = `${kafilaFlight.Itinerary[0].FNo}-${kafilaFlight.Itinerary[0].DDate}`;
-      if (tvoMap.has(key)) {
+    kafilaArray?.forEach((kafilaFlight) => {
+      const key = `${kafilaFlight?.Itinerary[0]?.FNo}-${kafilaFlight?.Itinerary[0]?.DDate}`;
+      if (tvoMap?.has(key)) {
         const tvoFlight = tvoMap[key];
 
-        const kafilaFare = kafilaFlight.Fare
-          ? kafilaFlight.Fare.OfferedFare || kafilaFlight.Fare.GrandTotal
+        const kafilaFare = kafilaFlight?.Fare
+          ? kafilaFlight?.Fare?.OfferedFare || kafilaFlight?.Fare?.GrandTotal
           : Infinity;
-        const tvoFare = tvoFlight.Fare
-          ? tvoFlight.Fare.OfferedFare || tvoFlight.Fare.GrandTotal
+        const tvoFare = tvoFlight?.Fare
+          ? tvoFlight?.Fare?.OfferedFare || tvoFlight?.Fare?.GrandTotal
           : Infinity;
-        matchedFlights.push(kafilaFare < tvoFare ? kafilaFlight : tvoFlight);
+        matchedFlights?.push(kafilaFare < tvoFare ? kafilaFlight : tvoFlight);
         delete tvoMap[key];
       } else {
-        unmatchedKafilaFlights.push(kafilaFlight);
+        unmatchedKafilaFlights?.push(kafilaFlight);
       }
     });
 
-    const unmatchedTvoFlights = Object.values(tvoMap);
+    const unmatchedTvoFlights = Object?.values(tvoMap);
 
     const unmatchedKafilaReturnFlights = [];
     const matchedReturnFlights = [];
 
     kafilaReturnArray.forEach((kafilaFlight) => {
-      const key = `${kafilaFlight.Itinerary[0].FNo}-${kafilaFlight.Itinerary[0].DDate}`;
-      if (tvoReturnMap.has(key)) {
+      const key = `${kafilaFlight?.Itinerary[0]?.FNo}-${kafilaFlight?.Itinerary[0]?.DDate}`;
+      if (tvoReturnMap?.has(key)) {
         const tvoFlight = tvoReturnMap[key];
 
-        const kafilaFare = kafilaFlight.Fare
-          ? kafilaFlight.Fare.OfferedFare || kafilaFlight.Fare.GrandTotal
+        const kafilaFare = kafilaFlight?.Fare
+          ? kafilaFlight?.Fare?.OfferedFare || kafilaFlight?.Fare?.GrandTotal
           : Infinity;
-        const tvoFare = tvoFlight.Fare
-          ? tvoFlight.Fare.OfferedFare || tvoFlight.Fare.GrandTotal
+        const tvoFare = tvoFlight?.Fare
+          ? tvoFlight?.Fare?.OfferedFare || tvoFlight?.Fare?.GrandTotal
           : Infinity;
-        matchedReturnFlights.push(
+        matchedReturnFlights?.push(
           kafilaFare < tvoFare ? kafilaFlight : tvoFlight
         );
         delete tvoReturnMap[key];
       } else {
-        unmatchedKafilaReturnFlights.push(kafilaFlight);
+        unmatchedKafilaReturnFlights?.push(kafilaFlight);
       }
     });
 
-    const unmatchedTvoReturnFlights = Object.values(tvoReturnMap);
+    const unmatchedTvoReturnFlights = Object?.values(tvoReturnMap);
 
     const mergedOutboundFlights = [
       ...unmatchedKafilaFlights,
@@ -1595,15 +1607,15 @@ exports.combineTvoKafilaRoundTrip2 = async (req, res, next) => {
       ...unmatchedTvoReturnFlights,
     ];
 
-    const sortedFinalRes = mergedOutboundFlights.sort((a, b) => {
-      const fareA = a.Fare ? a.Fare.OfferedFare || a.Fare.GrandTotal : 0;
-      const fareB = b.Fare ? b.Fare.OfferedFare || b.Fare.GrandTotal : 0;
+    const sortedFinalRes = mergedOutboundFlights?.sort((a, b) => {
+      const fareA = a?.Fare ? a?.Fare?.OfferedFare || a?.Fare?.GrandTotal : 0;
+      const fareB = b?.Fare ? b?.Fare?.OfferedFare || b?.Fare?.GrandTotal : 0;
       return fareA - fareB;
     });
 
     const sortedReturnFinalRes = mergedReturnFlights.sort((a, b) => {
-      const fareA = a.Fare ? a.Fare.OfferedFare || a.Fare.GrandTotal : 0;
-      const fareB = b.Fare ? b.Fare.OfferedFare || b.Fare.GrandTotal : 0;
+      const fareA = a?.Fare ? a?.Fare?.OfferedFare || a?.Fare?.GrandTotal : 0;
+      const fareB = b.Fare ? b?.Fare?.OfferedFare || b?.Fare?.GrandTotal : 0;
       return fareA - fareB;
     });
 
@@ -1645,7 +1657,7 @@ exports.combineTvoKafila = async (req, res, next) => {
         return { data: {} };
       }),
     ]);
-    console.log(tvoResponse.data,"data")
+    // console.log(tvoResponse.data,"data")
 
 
 
@@ -1686,8 +1698,8 @@ exports.combineTvoKafila = async (req, res, next) => {
       const kafilaDepTimeISO = moment(kafilaFlight?.Itinerary[0]?.DDate).format(
         "YYYY-MM-DDTHH:mm:ss"
       );
-      const key = `${kafilaFlight.Itinerary[0].FNo.trim()}-${kafilaDepTimeISO.trim()}`;
-      const matchingTvoFlight = tvoMap.get(key);
+      const key = `${kafilaFlight?.Itinerary[0]?.FNo?.trim()}-${kafilaDepTimeISO?.trim()}`;
+      const matchingTvoFlight = tvoMap?.get(key);
 
       if (matchingTvoFlight) {
         const tvoFare = matchingTvoFlight?.Fare?.OfferedFare;
@@ -1710,8 +1722,8 @@ exports.combineTvoKafila = async (req, res, next) => {
     });
 
     const sortedFinalRes = finalResArray?.sort((a, b) => {
-      const fareA = a.Fare ? a.Fare.OfferedFare || a.Fare.GrandTotal : 0;
-      const fareB = b.Fare ? b.Fare.OfferedFare || b.Fare.GrandTotal : 0;
+      const fareA = a?.Fare ? a?.Fare?.OfferedFare || a?.Fare?.GrandTotal : 0;
+      const fareB = b?.Fare ? b?.Fare?.OfferedFare || b?.Fare?.GrandTotal : 0;
       return fareA - fareB;
     });
 
@@ -1777,7 +1789,7 @@ const generateAmadeusRequest = (data) => {
         <Fare_MasterPricerTravelBoardSearch xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd="http://www.w3.org/2001/XMLSchema&quot;>
         <numberOfUnit xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A&quot;>
             <unitNumberDetail>
-            <numberOfUnits>${data.totalPassenger}</numberOfUnits>
+            <numberOfUnits>${data?.totalPassenger}</numberOfUnits>
             <typeOfUnit>PX</typeOfUnit>
         </unitNumberDetail>
         <unitNumberDetail>
@@ -1795,23 +1807,23 @@ const generateAmadeusRequest = (data) => {
                   `;
   }
   soapRequest += `</paxReference>`;
-  if (data.ChildCount > 0) {
+  if (data?.ChildCount > 0) {
     soapRequest += `<paxReference xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A">
     <ptc>CH</ptc>`;
-    for (let i = 0; i < data.ChildCount; i++) {
+    for (let i = 0; i < data?.ChildCount; i++) {
       soapRequest += `
   
                       <traveller>
-                          <ref>${data.px + i + 1}</ref>
+                          <ref>${data?.px + i + 1}</ref>
                       </traveller>
                        `;
     }
     soapRequest += `</paxReference>`;
   }
-  if (data.InfantCount > 0) {
+  if (data?.InfantCount > 0) {
     soapRequest += `<paxReference xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A">
     <ptc>INF</ptc>`;
-    for (let i = 0; i < data.InfantCount; i++) {
+    for (let i = 0; i < data?.InfantCount; i++) {
       soapRequest += `
                       <traveller>
                           <ref>${i + 1}</ref>
@@ -1843,17 +1855,17 @@ const generateAmadeusRequest = (data) => {
                   </requestedSegmentRef>
                   <departureLocalization>
                       <departurePoint>
-                          <locationId>${data.from}</locationId>
+                          <locationId>${data?.from}</locationId>
                       </departurePoint>
                   </departureLocalization>
                   <arrivalLocalization>
                       <arrivalPointDetails>
-                          <locationId>${data.to}</locationId>
+                          <locationId>${data?.to}</locationId>
                       </arrivalPointDetails>
                   </arrivalLocalization>
                   <timeDetails>
                       <firstDateTimeDetail>
-                          <date>${data.formattedDate}</date>
+                          <date>${data?.formattedDate}</date>
                       </firstDateTimeDetail>
                   </timeDetails>
               </itinerary>
@@ -1909,7 +1921,7 @@ const generateAmadeusReturn = (data) => {
         <Fare_MasterPricerTravelBoardSearch xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd="http://www.w3.org/2001/XMLSchema&quot;>
         <numberOfUnit xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A&quot;>
             <unitNumberDetail>
-            <numberOfUnits>${data.totalPassenger}</numberOfUnits>
+            <numberOfUnits>${data?.totalPassenger}</numberOfUnits>
             <typeOfUnit>PX</typeOfUnit>
         </unitNumberDetail>
         <unitNumberDetail>
@@ -1927,7 +1939,7 @@ const generateAmadeusReturn = (data) => {
                   `;
   }
   soapRequest += `</paxReference>`;
-  if (data.ChildCount > 0) {
+  if (data?.ChildCount > 0) {
     soapRequest += `<paxReference xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A">
     <ptc>CH</ptc>`;
     for (let i = 0; i < data.ChildCount; i++) {
@@ -1941,7 +1953,7 @@ const generateAmadeusReturn = (data) => {
     soapRequest += `</paxReference>`;
   }
 
-  if (data.InfantCount > 0) {
+  if (data?.InfantCount > 0) {
     for (let i = 0; i < data.InfantCount; i++) {
       soapRequest += `<paxReference xmlns="http://xml.amadeus.com/FMPTBQ_19_3_1A">
       <ptc>INF</ptc>
@@ -1975,17 +1987,17 @@ const generateAmadeusReturn = (data) => {
                   </requestedSegmentRef>
                   <departureLocalization>
                       <departurePoint>
-                          <locationId>${data.from}</locationId>
+                          <locationId>${data?.from}</locationId>
                       </departurePoint>
                   </departureLocalization>
                   <arrivalLocalization>
                       <arrivalPointDetails>
-                          <locationId>${data.to}</locationId>
+                          <locationId>${data?.to}</locationId>
                       </arrivalPointDetails>
                   </arrivalLocalization>
                   <timeDetails>
                       <firstDateTimeDetail>
-                          <date>${data.formattedDate}</date>
+                          <date>${data?.formattedDate}</date>
                       </firstDateTimeDetail>
                   </timeDetails>
               </itinerary>
@@ -1995,17 +2007,17 @@ const generateAmadeusReturn = (data) => {
         </requestedSegmentRef>
         <departureLocalization>
             <departurePoint>
-                <locationId>${data.to}</locationId>
+                <locationId>${data?.to}</locationId>
             </departurePoint>
         </departureLocalization>
         <arrivalLocalization>
             <arrivalPointDetails>
-                <locationId>${data.from}</locationId>
+                <locationId>${data?.from}</locationId>
             </arrivalPointDetails>
         </arrivalLocalization>
         <timeDetails>
             <firstDateTimeDetail>
-                <date>${data.formattedDate1}</date>
+                <date>${data?.formattedDate1}</date>
             </firstDateTimeDetail>
         </timeDetails>
     </itinerary>
@@ -2016,10 +2028,10 @@ const generateAmadeusReturn = (data) => {
 };
 
 const generateKafilaRequest = (data) => {
-  const formattedDate = moment(data.Segments[0].PreferredDepartureTime).format(
+  const formattedDate = moment(data?.Segments[0]?.PreferredDepartureTime).format(
     "YYYY-MM-DD"
   );
-  console.log(formattedDate,"date")
+  // console.log(formattedDate,"date")
   const KafilaAgentId = process.env.KAFILA_AGENT_ID;
   const pyload = {
     Trip: "D1",
@@ -2052,41 +2064,41 @@ const generateKafilaRequest = (data) => {
       TPnr: false,
     },
   };
-  console.log(pyload,"pyload")
+  // console.log(pyload,"pyload")
   return pyload;
 };
 const generateKafilaRoundTripRequest = (data) => {
-  const formattedDate = moment(data.Segments[0].PreferredDepartureTime).format(
+  const formattedDate = moment(data?.Segments[0]?.PreferredDepartureTime).format(
     "YYYY-MM-DD"
   );
-  const formattedDate1 = moment(data.Segments[1].PreferredDepartureTime).format(
+  const formattedDate1 = moment(data?.Segments[1]?.PreferredDepartureTime).format(
     "YYYY-MM-DD"
   );
-  const KafilaAgentId = `${kafilaTokenGenerator.AID}`;
+  const KafilaAgentId = `${kafilaTokenGenerator?.AID}`;
   const pyload = {
     Trip: "D1",
-    Adt: data.AdultCount,
-    Chd: data.ChildCount,
-    Inf: data.InfantCount,
+    Adt: data?.AdultCount,
+    Chd: data?.ChildCount,
+    Inf: data?.InfantCount,
     Sector: [
       {
-        Src: data.Segments[0].Origin,
-        Des: data.Segments[0].Destination,
+        Src: data?.Segments[0]?.Origin,
+        Des: data?.Segments[0]?.Destination,
         DDate: formattedDate,
       },
       {
-        Src: data.Segments[1].Origin,
-        Des: data.Segments[1].Destination,
+        Src: data?.Segments[1]?.Origin,
+        Des: data?.Segments[1]?.Destination,
         DDate: formattedDate1,
       },
     ],
     PF: "",
     PC: "",
     Routing: "ALL",
-    Ver: `${kafilaTokenGenerator.Version}`,
+    Ver: `${kafilaTokenGenerator?.Version}`,
     Auth: {
       AgentId: KafilaAgentId,
-      Token: data.KafilaToken,
+      Token: data?.KafilaToken,
     },
     Env: process.env.KAFILA_ENV,
     Module: "B2B",
@@ -2104,16 +2116,18 @@ const generateKafilaRoundTripRequest = (data) => {
 
 const kafilaToken = async () => {
   const data = {
-    P_TYPE: `${kafilaTokenGenerator.P_TYPE}`,
-    R_TYPE: `${kafilaTokenGenerator.R_TYPE}`,
-    R_NAME: `${kafilaTokenGenerator.R_NAME}`,
-    AID: `${kafilaTokenGenerator.AID}`,
-    UID: `${kafilaTokenGenerator.UID}`,
-    PWD: `${kafilaTokenGenerator.PWD}`,
-    Version: `${kafilaTokenGenerator.Version}`,
+    P_TYPE: `${kafilaTokenGenerator?.P_TYPE}`,
+    R_TYPE: `${kafilaTokenGenerator?.R_TYPE}`,
+    R_NAME: `${kafilaTokenGenerator?.R_NAME}`,
+    AID: `${kafilaTokenGenerator?.AID}`,
+    UID: `${kafilaTokenGenerator?.UID}`,
+    PWD: `${kafilaTokenGenerator?.PWD}`,
+    Version: `${kafilaTokenGenerator?.Version}`,
   };
 
-  const response = await axios.post(`${api.kafilatokenURL}`, data);
+  const response = await axios.post(`${api.kafilatokenURL}`, data).catch((error) => {
+    return { data: {} };
+  });
   msg = "Token Generated";
   // const TokenId=response?.data?.TokenId
   const result = {
