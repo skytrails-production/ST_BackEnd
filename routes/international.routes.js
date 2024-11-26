@@ -75,7 +75,7 @@ module.exports = function (app) {
   app.get('/skyTrails/agent/leads/:userId',controller.agentLeads);
   app.get("/skyTrails/international/getAllAdminPackage", controller.internationalgetAdminAll);
 
-
+  app.get("/skyTrails/holidaypackages/getalladminpackages", controller.getAllHolidayPackagesForAdmin)
 
   //package city Data
   app.post("/skyTrails/package/packageCityData",upload.single("file"), controller.packageCityData);

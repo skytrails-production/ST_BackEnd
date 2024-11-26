@@ -18,6 +18,8 @@ const failMsg ="error";
 
 //today work on this
 exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
+
+  const {to,from,date,px}=req?.body;
     
   // Generate new UUID for each request
   const messageId = uuidv4();
@@ -88,7 +90,7 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
             <typeOfUnit>RC</typeOfUnit>
         </unitNumberDetail>
         <unitNumberDetail>
-            <numberOfUnits>1</numberOfUnits>
+            <numberOfUnits>${px}</numberOfUnits>
             <typeOfUnit>PX</typeOfUnit>
         </unitNumberDetail>
     </numberOfUnit>
@@ -98,7 +100,6 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
             <ref>1</ref>
         </traveller>
     </paxReference>
-
     <fareOptions>
         <pricingTickInfo>
             <pricingTicketing>
@@ -121,37 +122,17 @@ exports.fareMasterPricerTravelBoardSearch = async (req, res) => {
         </requestedSegmentRef>
         <departureLocalization>
             <departurePoint>
-                <locationId>DEL</locationId>
+                <locationId>${to}</locationId>
             </departurePoint>
         </departureLocalization>
         <arrivalLocalization>
             <arrivalPointDetails>
-                <locationId>BOM</locationId>
+                <locationId>${from}</locationId>
             </arrivalPointDetails>
         </arrivalLocalization>
         <timeDetails>
             <firstDateTimeDetail>
-                <date>101124</date>
-            </firstDateTimeDetail>
-        </timeDetails>
-    </itinerary>
-    <itinerary>
-        <requestedSegmentRef>
-            <segRef>2</segRef>
-        </requestedSegmentRef>
-        <departureLocalization>
-            <departurePoint>
-                <locationId>BOM</locationId>
-            </departurePoint>
-        </departureLocalization>
-        <arrivalLocalization>
-            <arrivalPointDetails>
-                <locationId>DEL</locationId>
-            </arrivalPointDetails>
-        </arrivalLocalization>
-        <timeDetails>
-            <firstDateTimeDetail>
-                <date>201124</date>
+                <date>${date}</date>
             </firstDateTimeDetail>
         </timeDetails>
     </itinerary>

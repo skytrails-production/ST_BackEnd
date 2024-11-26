@@ -170,6 +170,10 @@ require("./routes/amadeus.routes")(app);
 //ssdc
 require("./routes/ssdc.routes")(app);
 
+//skyTrails packages
+
+require("./routes/holidaypackage.routes")(app)
+
 //mihuru api
 
 require("./routes/mihuru.routes")(app);
