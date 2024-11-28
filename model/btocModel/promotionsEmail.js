@@ -19,7 +19,8 @@ const promoEmailSchema=new mongoose.Schema(
             type: String,
             enum: [status.ACTIVE, status.BLOCK, status.DELETE],
             default: status.ACTIVE,
-          }
+          },
+          isEmailVerified:{type:Boolean}
         },
         { timestamps: true }
 );

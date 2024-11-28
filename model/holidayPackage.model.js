@@ -12,7 +12,10 @@ const { activeStatus } = require("../common/const");
 
 const hotelEventsSchema=new mongoose.Schema({
   _id:false,
-  type:String,
+  type:{
+    type:String,
+    default:"Hotel"
+  },
   title:String,
   name:String,
   description:String
@@ -48,7 +51,6 @@ const activityEventsSchema= new mongoose.Schema({
     default:"Activity"
   },
   title:String
-
 });
 
 const descriptionEventsSchema= new mongoose.Schema({
@@ -64,7 +66,11 @@ const attractionEventsSchema=new mongoose.Schema({
 
 const leisureDayEventsSchema=new mongoose.Schema({
   _id:false,
-
+type:{
+  type:String,
+  default:"Leisure Day"
+},
+title:String
 });
 
 
@@ -88,7 +94,7 @@ const itinerarySchema = new mongoose.Schema({
     title: {
       type: String,
     },
-    day_number: {
+    dayNumber: {
       type: Number,
     },
     hotelEvents: {

@@ -34,6 +34,12 @@ const flightStaticPayloadContent = new mongoose.Schema(
       CountryCode: {
         type: String,
       },
+      code: {
+        type: String,
+      },
+      name: {
+        type: String,
+      },
       airportName: {
         type: String,
       },
@@ -44,27 +50,33 @@ const flightStaticPayloadContent = new mongoose.Schema(
         type: String,
       },
     },
-    to:{
-        AirportCode: {
-            type: String,
-          },
-          CityCode: {
-            type: String,
-          },
-          CountryCode: {
-            type: String,
-          },
-          airportName: {
-            type: String,
-          },
-          cityName: {
-            type: String,
-          },
-          id: {
-            type: String,
-          },
+    to: {
+      AirportCode: {
+        type: String,
+      },
+      CityCode: {
+        type: String,
+      },
+      CountryCode: {
+        type: String,
+      },
+      code: {
+        type: String,
+      },
+      name: {
+        type: String,
+      },
+      airportName: {
+        type: String,
+      },
+      cityName: {
+        type: String,
+      },
+      id: {
+        type: String,
+      },
     },
-    isTrending:{type:Boolean}
+    isTrending: { type: Boolean },
   },
   { timestamps: true }
 );

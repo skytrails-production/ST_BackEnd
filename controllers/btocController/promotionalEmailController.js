@@ -84,6 +84,9 @@ exports.createPromotionalEmail = async (req, res, next) => {
         obj.userId=isUserExist._id;
     }
     const userName = isUserExist?.username || "";
+    // const token=await commonFunction.getToken({ _id: isUserExist._id,
+    //   mobile_number: isUserExist.phone.mobile_number,})
+    //   result.token=token;
     const result=await createPromotionaEmail(obj);
     await commonFunctions.sendPromotionalEmailCofirmationMail(email,userName)
     return res.status(statusCode.OK).send({
@@ -92,6 +95,28 @@ exports.createPromotionalEmail = async (req, res, next) => {
         result: result,
       });
    } catch (error) {
+    return next(error);
+  }
+};
+
+exports.verifyEMail=async(req,res,next)=>{
+  try {
+    // const 
+    // const isEmailExist=await findPromotionaEmail({_id:req.params.userId});
+    // if(isUserExist){
+    //   return res.status(statusCode.OK).send({
+    //     statusCode: statusCode.OK,
+    //     responseMessage: responseMessage.INVALD_REQUEST,
+    //   });
+    // }
+    // if(isEmailExist.)
+    
+    const obj={
+      email,
+  }
+    const result=await createPromotionaEmail(obj);
+  } catch (error) {
+    // console.error("error while trying to verify email==",error);
     return next(error);
   }
 };

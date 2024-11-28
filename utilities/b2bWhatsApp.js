@@ -248,5 +248,5 @@ const response=await axios.request(config)
     console.log("erorr while send whatsapp=====>>>>>>",error.response)
   }
 }
-module.exports = {sendMessageWhatsApp,sendWhatsAppMsgAdmin,sendWhatsAppMsgAdminPackage,sendWhatsAppMsgRM,sendWhtsAppAISensy };
+module.exports = {sendMessageWhatsApp,sendWhatsAppMsgAdmin,sendWhatsAppMsgAdminPackage,sendWhatsAppMsgRM,sendWhtsAppAISensy }; 
 

@@ -891,7 +891,7 @@ exports.updateDeviceToken = async (req, res, next) => {
       });
     }
     // Check if the deviceToken already exists in the array
-    if (!isUserExist.deviceTokens.includes(deviceToken)) {
+    if (isUserExist.deviceTokens.includes(deviceToken)) {
       // Add the deviceToken to the array
       deviceTokens.push(deviceToken);
     }
@@ -1909,12 +1909,14 @@ exports.socialLogin = async (req, res, next) => {
       socialId,
       socialType,
       mobile_number,
+      newImageFile,
       deviceType,
       deviceToken,
     } = req.body;
     if (req.body.email) {
       req.body.email = req.body.email.toLowerCase();
     }
+    // const newImageFile="";
     const isUserExist = await findUser({ email: email });
     const checkReward = await findReferralAmount({});
     if (!isUserExist) {
@@ -1928,7 +1930,7 @@ exports.socialLogin = async (req, res, next) => {
         socialType,
         deviceType,
         deviceToken,
-        phone: { mobile_number: mobile_number || "" },
+        // phone: { mobile_number: mobile_number || "" },
         otpVerified: true,
         firstTime: false,
         isSocial: true,
@@ -2007,7 +2009,7 @@ exports.addMobileNumber = async (req, res, next) => {
       { _id: isUserExist._id },
       {
         $set: {
-          "phone.mobile_number": mobile_number,
+          temp_mobile_number: mobile_number,
           otp: otp,
           otpExpireTime: otpExpireTime,
           otpVerified:false,
@@ -2048,7 +2050,7 @@ exports.addProfileContactDetail=async(req,res,next)=>{
 }
 exports.socialLoginVerifyOtp=async(req,res,next)=>{
   try {
-    const {mobileNumber}=req.params;
+    const {otp,mobileNumber}=req.body
     const isUserExist = await findUserData({ _id: req.userId });
     if (!isUserExist) {
       return res.status(statusCode.OK).send({
@@ -2068,14 +2070,15 @@ exports.socialLoginVerifyOtp=async(req,res,next)=>{
         message: responseMessage.OTP_EXPIRED,
       });
     }
+   
+    const updation = await updateUser(
+      { _id: isUserExist._id},
+      { otp: " " ,'phone.mobile_number':mobileNumber}
+    );
     const token = await commonFunction.getToken({
       _id: updation._id,
       mobile_number: updation.phone.mobile_number,
     });
-    const updationData = await updateUser(
-      { _id: isUserExist._id, status: status.ACTIVE },
-      { otp: " " ,'phone.mobile_number':mobileNumber}
-    );
     const obj={
       firstTime: updation.firstTime,
       _id: updation._id,
@@ -2085,12 +2088,14 @@ exports.socialLoginVerifyOtp=async(req,res,next)=>{
       otpVerified: updation.otpVerified,
       balance: updation.balance,
       status: updation.status,
+      walletHistory:updation.walletHistory,
       token: token,
     }
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       message: responseMessage.OTP_VERIFY,
       result: obj,
+      updation
     });
   } catch (error) {
     return next(error)

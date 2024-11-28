@@ -19,6 +19,7 @@ const packageRatingSchema = new mongoose.Schema(
     },
     section: {
       type: String,
+      default:"Package"
     },
     gallery:[],
     starRating: {

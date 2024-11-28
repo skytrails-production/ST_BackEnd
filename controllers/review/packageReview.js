@@ -14,6 +14,7 @@ const {createpackageReviews,findpackageReviews,findpackageReviewsData,deletepack
 
 //*****************************************APIS implementation*****************************/
 
+
 exports.createPackageReview = async (req, res, next) => {
     try {
         const {name,title,description,section,starRating,travelDate,packageId,packageType,isPositive}=req.body;
@@ -37,7 +38,6 @@ exports.createPackageReview = async (req, res, next) => {
             statusCode: statusCode.OK,
             responseMessage: responseMessage.CREATED_SUCCESS,
             result:result,
-            data:isPackageExist
           });
 
     } catch (error) {
