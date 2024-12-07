@@ -139,7 +139,9 @@ try{
 
   // return;
 
-  if(isPackageExist?.days===isPackageExist?.detailed_ltinerary?.length){
+  // console.log(isPackageExist?.detailed_ltinerary?.length,"",isPackageExist?.days)
+
+  if(isPackageExist.detailed_ltinerary.length>=isPackageExist.days){
     return res.status(400).send({status:400, message:"You cannot add more itinerary items than the number of days in the package. Please adjust the itinerary."})
   }
 
