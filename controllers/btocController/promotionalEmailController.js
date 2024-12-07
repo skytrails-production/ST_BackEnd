@@ -91,7 +91,7 @@ exports.createPromotionalEmail = async (req, res, next) => {
     await commonFunctions.sendPromotionalEmailCofirmationMail(email,userName)
     return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
-        responseMessage: responseMessage.CREATED_SUCCESS,
+        responseMessage: responseMessage.OFFER_SUBSCRIBED,
         result: result,
       });
    } catch (error) {

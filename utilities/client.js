@@ -1,6 +1,16 @@
-const {Redis}=require('ioredis');
+const {createClient}=require('redis');
+const client=createClient({url:"redis://localhost:6379"});
 
-const redis = new Redis();
+
+client.on('error',(err)=>{
+    console.log('Error====',+err);
+}).on('connect',()=>{
+    console.log('Connected to Redis');
+    });
 
 
-module.exports=redis; 
+    // client.connect();
+
+    module.exports=client;
+
+

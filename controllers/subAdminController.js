@@ -13,7 +13,8 @@ const whatsappAPIUrl = require("../utilities/whatsApi");
 const hwaiYatrawhatsappUrl=require("../utilities/b2bWhatsApp")
 const approvalStatus = require("../enums/approveStatus");
 const storyStatus=require("../enums/storyStatus");
-const authType=require("../enums/authType")
+const authType=require("../enums/authType");
+const client=require("../utilities/client")
 //********************MODELS**********************/
 const flightModel = require("../model/flightBookingData.model");
 const hotelBookingModel = require("../model/hotelBooking.model");
@@ -511,6 +512,9 @@ exports.approveStory=async(req,res,next)=>{
     if(!isPostExist){
       return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.POST_NOT_FOUND});
     }
+    if(isPostExist.status.ACTIVE){
+      return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.POST_ALREADY_APPROVED});
+    }
     const result=await updateforumQue({_id:isPostExist._id},{status:storyStatus.ACTIVE});
    
     const findUser=await findUserData({_id:isPostExist.userId});
@@ -527,7 +531,17 @@ exports.getPost = async (req, res, next) => {
   try {
     const result = {}; // Declare as an object
     const { search, page, limit, questionId, userId } = req.query;
-    const post = await forumQueListLookUpAdmin({});
+    const cacheKey = JSON.stringify(req.query);
+const isExistIntoCache = await client.get(cacheKey);
+if (isExistIntoCache) {
+  return res.status(statusCode.OK).send({
+    statusCode: statusCode.OK,
+    responseMessage: responseMessage.DATA_FOUND,
+    result: JSON.parse(isExistIntoCache),
+  });
+}
+
+    const post = await forumQueListLookUpAdmin(req.query);
     if (post) {
       result.post = post;
     } else {
@@ -545,7 +559,10 @@ exports.getPost = async (req, res, next) => {
         message: responseMessage.DATA_NOT_FOUND,
       });
     }
-    if (result.unanswered) {
+    // const cacheKey1 = `appPosts:posts`;
+       const data1= await client.set(cacheKey, JSON.stringify(result),{ EX: 3600 });
+
+    if (result) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.DATA_FOUND,

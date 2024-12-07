@@ -1,6 +1,7 @@
 // const status = require("../enums/status");
 const forumQueModel=require("../model/forum/forumQue")
 const status=require ('../enums/storyStatus')
+const mongoose=require("mongoose")
 //**************************************WORK BY */
 //**********CHARU YADAV*****************//
 //**********NODE JS DEVELOPER, This is a services which we need mongodb queries to perform operation on db********//
@@ -240,7 +241,22 @@ const forumQueServices={
             }
           },
           {
-            $sort: { createdAt: -1 } 
+            $project:{
+              _id:1,
+              userId:1,
+              likes:1,
+              content:1,
+              image:1,
+              likesCount:1,
+              trending:1,
+              status:1,
+              createdAt:1,
+              "userDetail.username":1,
+
+            }
+          },
+          {
+            $sort: {createdAt: -1 }
           }
         ]
         if (questionId) {

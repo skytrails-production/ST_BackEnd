@@ -3,6 +3,7 @@ const status = require("../../enums/status");
 const whatsappAPIUrl = require("../../utilities/whatsApi");
 const sendSMS = require("../../utilities/sendSms");
 const moment = require('moment');
+const client=require("../../utilities/client");
 //******************************SERVICES********************************************/
 const { quizServices } = require("../../services/btocServices/quizServices");
 const {
@@ -54,6 +55,19 @@ const {
 const {notificationServices}=require("../../services/notificationServices");
 const {createNotification,findNotification,findNotificationData,deleteNotification,updateNotification,countNotification}=notificationServices;
 
+const { forumQueServices } = require("../../services/forumQueServices");
+const {
+  createforumQue,
+  findforumQue,
+  findforumQueData,
+  deleteforumQue,
+  updateforumQue,
+  forumQueListLookUpAdmin,
+  forumQueListLookUp,
+  forumQueListLookUp1,
+  getTopSTories,
+  forumQueListLookUpOfUser,
+} = forumQueServices;
 const notifications = [
     {
     message: `Like Jolly LLB, we'll make you laugh and save you money!`,
@@ -111,8 +125,8 @@ var taskPromotionalNotification = cron.schedule("45 09 * * *",async () => {
     });
     for (const user of users) {
       try { 
-        const notificationMessage = `Great news! 🎉Enjoy 20% OFF on your next bus booking!`;
-        const messageBody = `Time to hit the road and save some cash! 🚌💸`;
+        const notificationMessage = `Kitna kam Kroge yaar??🤔`;
+        const messageBody = `Ek Trip to Banti hai✈️🚌🪂✨`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
         const lastSent = lastNotificationSent.get(user._id);
         if (lastSent && Date.now() - lastSent < 3600000) {
@@ -337,3 +351,43 @@ const taskRandomNotification2 = cron.schedule("30 12 * * *",async () => {
 }
 );
 taskRandomNotification2.start();
+
+const redisUpdate = cron.schedule(
+  "*/30 * * * *",
+  async () => {
+    try {
+      // Fetch all current data from the database
+      const dataToUpdate = await findforumQueData({});
+
+      // Cache all existing records
+      for (const item of dataToUpdate) {
+        const cacheKey = JSON.stringify({ id: item._id });
+        const dat = await client.set(cacheKey, JSON.stringify(item), { EX: 3600 });
+      }
+
+      // Identify deleted records by comparing existing cache keys with database IDs
+      const cachedKeys = await client.keys('*'); // Get all cache keys
+      const validKeys = dataToUpdate.map((item) => JSON.stringify({ id: item._id }));
+      
+      // Find keys to delete
+      const keysToDelete = cachedKeys.filter((key) => !validKeys.includes(key));
+      if (keysToDelete.length > 0) {
+        console.log("Keys to Delete:", keysToDelete);
+
+        // Remove invalid cache entries
+        for (const key of keysToDelete) {
+          await client.del(key);
+          console.log(`Deleted Cache Key: ${key}`);
+        }
+      }
+    } catch (error) {
+      console.log("Error in Redis Update Job:", error);
+    }
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Kolkata", // Timezone setting
+  }
+);
+
+redisUpdate.start();

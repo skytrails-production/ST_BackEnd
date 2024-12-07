@@ -140,9 +140,9 @@ const itinerarySchema = new mongoose.Schema({
 const SkyTrailsPackageSchema = new mongoose.Schema(
   {
     userId: {
-      // type: mongoose.Schema.Types.ObjectId,
-      // ref: "userb2bs",
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "userb2bs",
+      // type: String,
     },
     title: {
       type: String,
@@ -153,6 +153,10 @@ const SkyTrailsPackageSchema = new mongoose.Schema(
         type:String,
         required:true,
         trim:true
+    },
+    packageHighLight:{
+      type: [String],
+      default: [],
     },
     coverImage: String,
     packageType: {
@@ -207,6 +211,11 @@ const SkyTrailsPackageSchema = new mongoose.Schema(
         default: [], // Default to an empty array
       },
     },
+    wishlist: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "userBtoC",
+      default: []
+    }],
     is_active: {
       type: Number,
       default: activeStatus.IN_ACTIVE,
