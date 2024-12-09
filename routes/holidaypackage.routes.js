@@ -51,6 +51,10 @@ module.exports = function (app) {
 
     
 
+    //package set Active for Admin only
+
+    app.post("/skytrails/holidaypackage/setactive",controller.holidayPackageSetActive);
+
     
 
 

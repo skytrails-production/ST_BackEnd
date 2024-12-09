@@ -4,6 +4,9 @@ const {
   sendActionFailedResponse,
 } = require("../common/common");
 
+const User = require("../model/user.model");
+const Role = require("../model/role.model");
+
 const { SkyTrailsPackageModel } = require("../model/holidayPackage.model");
 const commonFunctions = require("../utilities/commonFunctions");
 
@@ -33,10 +36,26 @@ exports.createHolidayPackage = async (req, res) => {
     ContentType: file.mimetype,
     ACL: "public-read",
   };
+
+  
+
   s3.upload(s3Params, async (err, data) => {
     if (err) {
       res.status(500).send(err);
     } else {
+      reqData.destination=reqData?.destination?.map(item => {
+        if (item.addMore) {
+          item.addMore = item.addMore.toLowerCase().trim(); // Convert to lowercase and trim whitespace
+        }
+        return item;
+      });
+      reqData.country=reqData?.country?.map(item=>{
+        if(item){
+          item=item.toLowerCase().trim();
+        }
+        return item;
+      })
+      
       data1 = new SkyTrailsPackageModel({
         ...reqData,
         coverImage: data.Location,
@@ -492,3 +511,34 @@ exports.getSingleHolidayPackage = async (req, res) =>{
 
 
 }
+
+
+
+
+//holidayPackageSetActive only for Admin
+
+exports.holidayPackageSetActive = async (req, res) => {
+  const { pakageId, isAdmin, activeStatus } = req.body;
+  try {
+    const user = await User.findById(isAdmin);
+    const role = await Role.findById(user.roles[0].toString());
+    if (role.name === "admin") {
+      const response = await SkyTrailsPackageModel.findById(pakageId);
+      let size = Object.keys(response).length;
+      if (size > 0) {
+        const user = await SkyTrailsPackageModel.findOneAndUpdate(
+          { _id: pakageId },
+          { $set: { is_active: activeStatus } },
+          { new: true }
+        );
+        msg = "pakage successfully Active";
+        actionCompleteResponse(res, user, msg);
+      }
+    } else {
+      msg = "only Admin can upadate Active status";
+      actionCompleteResponse(res, {}, msg);
+    }
+  } catch (err) {
+    sendActionFailedResponse(res, {}, err.message);
+  }
+};
