@@ -8,6 +8,8 @@ const User = require("../model/user.model");
 const Role = require("../model/role.model");
 
 const { SkyTrailsPackageModel } = require("../model/holidayPackage.model");
+
+const PackageCategoryModel=require("../model/packageCategoryModel")
 const commonFunctions = require("../utilities/commonFunctions");
 
 const s3 = new aws.S3({
@@ -147,9 +149,9 @@ exports.createPackageAddItinerary = async (req, res) =>{
 
 try{
   const data=req.body;
-  const pacakgeId=data?.packageId;
+  const packageId=data?.packageId;
   // console.log(data?.packageId,"packageId");
-  const isPackageExist=await SkyTrailsPackageModel.findById({_id:pacakgeId});
+  const isPackageExist=await SkyTrailsPackageModel.findById({_id:packageId});
 
   if(!isPackageExist){
    return res.status(200).send({status:404, message:"Package not found."})
@@ -173,6 +175,80 @@ try{
   } catch (err) {
     sendActionFailedResponse(res, {}, err.message);    
   }
+
+}
+
+
+//add itinerary images in daywise
+
+exports.createPackageAddItineraryImages = async (req, res) =>{
+
+  try {
+
+    const { itineraryDay, packageId } = req.body;
+    const files = req?.files;
+    // console.log(itineraryDay, packageId)
+    
+      // Validate inputs
+      if (!itineraryDay || !files || Object.keys(files).length === 0 || !packageId) {
+        return res.status(400).send({ status: 400, message: 'Please select Itinerary Day and upload at least one image.' });
+      }
+  
+      const numberDays = Number(itineraryDay);
+      if (isNaN(numberDays)) {
+        return res.status(400).send({ status: 400, message: 'Itinerary Day must be a valid number.' });
+      }    
+
+    const isPackageExist=await SkyTrailsPackageModel.findById({_id:packageId});
+
+    if(!isPackageExist){
+     return res.status(200).send({status:404, message:"Package not found."})
+    }
+
+    if(isPackageExist.detailed_ltinerary.length===0){
+      return res.status(400).send({status:400, message:"Please add itinerary details first."})
+    }
+  
+    if(numberDays>isPackageExist.detailed_ltinerary.length){
+      return res.status(400).send({status:400, message:"You cannot add more itinerary items than the number of days in the package. Please adjust the itinerary."})
+    }
+
+    // return;
+
+    const country = isPackageExist?.country[0];
+    const imageUrls = [];
+    for (const file of files) {
+      const s3Params = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: `packageImages/${country}/itineraryimages/${file.originalname}`,
+        Body: file.buffer,
+        ContentType: file.mimetype,
+        ACL: "public-read",
+      };
+  
+      try {
+        // Upload file to S3
+        const data = await s3.upload(s3Params).promise();
+        // Store the URL of the uploaded image
+        imageUrls.push(data.Location);
+      } catch (err) {
+        return res.status(500).send({status:500,message:"Error for image uploading."});
+      }
+  
+  
+    }
+
+    isPackageExist?.detailed_ltinerary[numberDays-1]?.itineraryImages.push(...imageUrls);
+
+  
+  await isPackageExist.save();
+  actionCompleteResponse(res, imageUrls,"images added successfully")
+
+    
+  } catch (err) {
+    sendActionFailedResponse(res, {}, err.message);     
+  }
+
 
 }
 
@@ -492,7 +568,7 @@ exports.getSingleHolidayPackage = async (req, res) =>{
     if (!packageId) {
       return res.status(200).json({status:400, message: 'packageId are required' });
     }
-    const package = await SkyTrailsPackageModel.findById({_id:packageId});
+    const package = await SkyTrailsPackageModel.findById(packageId);
 
 
 
@@ -518,16 +594,16 @@ exports.getSingleHolidayPackage = async (req, res) =>{
 //holidayPackageSetActive only for Admin
 
 exports.holidayPackageSetActive = async (req, res) => {
-  const { pakageId, isAdmin, activeStatus } = req.body;
+  const { packageId, isAdmin, activeStatus } = req.body;
   try {
     const user = await User.findById(isAdmin);
     const role = await Role.findById(user.roles[0].toString());
     if (role.name === "admin") {
-      const response = await SkyTrailsPackageModel.findById(pakageId);
+      const response = await SkyTrailsPackageModel.findById({_id: packageId});
       let size = Object.keys(response).length;
       if (size > 0) {
         const user = await SkyTrailsPackageModel.findOneAndUpdate(
-          { _id: pakageId },
+          { _id: packageId },
           { $set: { is_active: activeStatus } },
           { new: true }
         );
@@ -542,3 +618,191 @@ exports.holidayPackageSetActive = async (req, res) => {
     sendActionFailedResponse(res, {}, err.message);
   }
 };
+
+
+
+
+
+
+//get filter packages based on the amount
+
+exports.holidayPackageFilterByAmount = async (req, res) => {
+  try {
+    const { amount } = req?.query;
+
+    // console.log(amount)
+
+    // return;
+
+    if (!amount) {
+      return res.status(400).json({ status:400 ,message: 'Amount parameter is required.' });
+    }
+
+    // Parse the amount into an integer
+    const parsedAmount = parseInt(amount);
+    if (isNaN(parsedAmount)) {
+      return res.status(400).json({ status:400, message: 'Invalid amount parameter.' });
+    }
+
+    let query = { is_active: 1 };
+
+    // Determine the range based on the `amount` parameter
+    if (parsedAmount === 100000) {
+      query['packageAmount.amount'] = { $lt: parsedAmount };
+    } else if (parsedAmount === 200000) {
+      query['packageAmount.amount'] = { $gt: 99999, $lt: parsedAmount };
+    } else if (parsedAmount === 300000) {
+      query['packageAmount.amount'] = { $gt: 199999, $lt: parsedAmount };
+    } else if (parsedAmount === 400000) {
+      query['packageAmount.amount'] = { $gt: 299999 };
+    } else {
+      return res.status(400).json({status:400,  message: 'Invalid amount range.' });
+    }
+
+    // Perform the query
+    const packages = await SkyTrailsPackageModel.find(query)
+      .sort({ 'packageAmount.amount': 1, createdAt: -1 })
+      .select('_id title days country coverImage destination packageAmount packageHighLight specialTag inclusions wishlist')
+      .lean();
+
+    // Return response based on whether packages were found
+    if (packages && packages.length > 0) {
+      const msg = `Packages found for less than ${amount}`;
+      return actionCompleteResponse(res, packages, msg);
+    } else {
+      const msg = `No packages found for this range`;
+      return actionCompleteResponse(res, [], msg);
+    }
+  } catch (err) {
+    sendActionFailedResponse(res, {}, err.message);
+  }
+};
+
+
+
+
+//holiday package by category
+
+
+exports.getHolidayPackageFilterByCategory= async (req, res)=>{
+
+  try {
+    const { seeAll,keyword } = req.query;
+
+    const page = parseInt(req.query.page) || 1;  // Default to page 1 if no page is provided
+    const limit = parseInt(req.query.limit) || 5;  // Default to 5 items per page if no limit is provided
+    const skip = (page - 1) * limit;  // Calculate the number of items to skip
+
+    let queryObj = {};
+    if(seeAll=="true"){
+      // for (const key of keywordsArray) {
+        queryObj = {
+          [`insclusions.${keyword}`]: "true",
+          is_active: 1
+        };
+        const results=await SkyTrailsPackageModel.find(queryObj)
+        .sort({ createdAt: -1 })  // Sort by creation date in descending order
+          .select('_id title days country coverImage destination packageAmount packageHighLight specialTag inclusions wishlist')
+          .exec();
+        return res.status(200).send({
+          status: 200,
+          message: `${keyword} Package Found`,
+          data: results,
+          resultsl:results.length
+        });
+    }
+
+    const categoryArray=await PackageCategoryModel.find();
+     // Check if keyword exists and is an array
+     if (categoryArray.length > 0) {
+      const finalRes=[]
+      const results = {};
+      // Iterate over each keyword
+      for (const key of categoryArray) {
+        queryObj = {
+          [`insclusions.${key.inclusion}`]: "true",
+          is_active: 1
+        };
+       
+        // Perform pagination query
+        const result = await SkyTrailsPackageModel.find(queryObj).skip(skip)  // Skip the appropriate number of items
+        .limit(limit)  // Limit the number of items returned
+        .sort({ createdAt: -1 })  // Sort by creation date in descending order
+          .select('_id title days country coverImage destination packageAmount packageHighLight specialTag inclusions wishlist')
+          .exec();
+        results[key.inclusion] = result;
+      // Push result along with additional information to finalRes array
+      finalRes.push({
+        inclusion: key.inclusion,
+        result: result,
+        colorCode: key.colorCode,
+        Icon: key.images,
+        headingCode:key.headingCode
+      });
+
+      }
+      
+      return res.status(200).send({
+        statusCode: 200,
+        responseMessage: "Category Data Found",
+        data: finalRes,
+      });
+    }
+
+    
+  } catch (err) {
+    sendActionFailedResponse(res, {}, err.message);    
+  }
+
+}
+
+
+//get Latest Holiday packages
+
+exports.getLatestHolidayPackages = async (req, res) => {
+  try {
+    
+
+    // Fetch all active packages from the database
+    const allPackages = await SkyTrailsPackageModel.find({ is_active: 1 })
+    .sort({ createdAt: -1 })
+    .select('_id title days country coverImage destination packageAmount packageHighLight specialTag inclusions wishlist')
+    .exec();;
+
+    // If no packages are available, return an empty response
+    if (allPackages.length === 0) {
+      const msg = "No active packages found";
+      return actionCompleteResponse(res, [], msg);
+    }
+
+    // Shuffle the packages using the daily seed
+    const shuffledPackages = shuffleArray(allPackages);
+
+    // Pick the first 6 packages after shuffling
+    const packagesForToday = shuffledPackages.slice(0, 6);
+
+    const msg = "Latest packages fetched successfully for today!";
+    actionCompleteResponse(res, packagesForToday, msg);
+
+  } catch (error) {
+    sendActionFailedResponse(res, {}, error.message);
+  }
+};
+
+
+
+// Function to shuffle an array using the Fisher-Yates (Durstenfeld) algorithm
+function shuffleArray(array) {
+  const arr = [...array]; // Clone the array to avoid mutation
+  let currentIndex = arr.length, randomIndex, temporaryValue;
+
+  while (currentIndex !== 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex); // Random index
+    currentIndex -= 1;
+    temporaryValue = arr[currentIndex];
+    arr[currentIndex] = arr[randomIndex];
+    arr[randomIndex] = temporaryValue;
+  }
+
+  return arr;
+}

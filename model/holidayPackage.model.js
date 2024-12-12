@@ -94,8 +94,15 @@ const itinerarySchema = new mongoose.Schema({
     title: {
       type: String,
     },
+    description:{
+      type:String,
+    },
     dayNumber: {
       type: Number,
+    },
+    itineraryImages: {
+      type: [String], // Array of image URLs/strings
+      default: [], // Default to an empty array
     },
     hotelEvents: {
       type: [hotelEventsSchema],

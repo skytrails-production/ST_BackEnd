@@ -25,6 +25,8 @@ module.exports = function (app) {
     
     app.post("/skyTrails/holidaypackage/additinerary", controller.createPackageAddItinerary);
 
+    app.post("/skytrails/holidaypackage/additinerary/images", upload.array("files", { minCount: 1, maxCount: 5 }), controller.createPackageAddItineraryImages);
+
     //packagecity list
 
     app.get("/skytrails/holidaypackage/packagecitylist", controller.getPackageCityAndCountryList);
@@ -46,14 +48,21 @@ module.exports = function (app) {
     app.get("/skytrails/holidaypackage/wishlist/addorremove/:packageId", [authJwt.verifcationToken], controller.addOrRemoveUserIdWishlist);
 
 
-    app.get("/skytrails/holidaypackage/:packageId", controller.getSingleHolidayPackage);
+    app.get("/skytrails/holidaypackage/singlepackage/:packageId", controller.getSingleHolidayPackage);
 
 
     
 
     //package set Active for Admin only
 
-    app.post("/skytrails/holidaypackage/setactive",controller.holidayPackageSetActive);
+    app.post("/skytrails/holidaypackage/setactive", controller.holidayPackageSetActive);
+
+
+    app.get("/skytrails/holidaypackage/filterbyamount", controller.holidayPackageFilterByAmount);
+
+    app.get("/skytrails/holidaypackage/categoryfilter", controller.getHolidayPackageFilterByCategory);
+
+    app.get("/skytrails/holidaypackage/latestpackages", controller.getLatestHolidayPackages);
 
     
 
