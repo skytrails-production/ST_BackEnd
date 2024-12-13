@@ -402,7 +402,8 @@ if (item.packageId.select_tags.some(tag => tag.domestic)) {
         isInternational: item.packageId.select_tags.some(tag => !tag.domestic && tag.international),
         inter_domes: inter_domes,
         destination: item.packageId.destination[0].addMore,
-        country: item.packageId.country
+        country: item.packageId.country,
+        createdAt:item.packageId.createdAt
       };
     });
     return res.status(statusCode.OK).send({

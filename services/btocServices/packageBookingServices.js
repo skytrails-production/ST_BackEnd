@@ -22,7 +22,7 @@ const packageBookingModelServices = {
         return await packageBookingModel.find(query)
     },
     findAllPackageEnquiryPopulate: async (query) => {
-        return await packageBookingModel.find(query).populate('packageId').exec();
+        return await packageBookingModel.find(query).populate('packageId').sort({createdAt:-1}).exec();
     },
     deletePackage: async (query) => {
         return await packageBookingModel.deleteOne(query);

@@ -1,9 +1,3 @@
-let cloudinary = require("cloudinary");
-cloudinary.config({
-  cloud_name: "dultedeh8",
-  api_key: "461991833927796",
-  api_secret: "ruuF-4CFhQVh205cif_tQqNBBcA",
-});
 const status = require("../enums/status");
 const responseMessage = require("../utilities/responses");
 const statusCode = require("../utilities/responceCode");
