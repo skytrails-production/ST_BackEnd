@@ -18,8 +18,11 @@ const hotelEventsSchema=new mongoose.Schema({
   },
   title:String,
   name:String,
-  description:String
-
+  description:String,
+  hotelStar:Number,
+  checkIn:String,
+  checkOut:String,
+  NumberOfNights:Number,
 });
 
 
@@ -29,7 +32,16 @@ const flightEventsSchema= new mongoose.Schema({
     type:String,
     default:"Flight"
   },
-  title:String
+  from:String,
+  to:String,
+  fromAirPortCode: {
+    type: String,
+    set: (v) => v.toUpperCase() // Setter to convert to uppercase
+  },
+  toAirPortCode: {
+    type: String,
+    set: (v) => v.toUpperCase() // Setter to convert to uppercase
+  }
 
 });
 
@@ -40,7 +52,9 @@ const transferEventsSchema= new mongoose.Schema({
     type:String,
     default:"Transfer"
   },
-  title:String
+  title:String,
+  fromLocation:String,
+  toLocation:String,
 });
 
 
