@@ -3,9 +3,10 @@ const {
   actionCompleteResponse,
   sendActionFailedResponse,
 } = require("../common/common");
-
+const statusCode = require("../utilities/responceCode");
 const User = require("../model/user.model");
 const Role = require("../model/role.model");
+// const client=require("../utilities/client");
 
 const { SkyTrailsPackageModel } = require("../model/holidayPackage.model");
 
@@ -124,7 +125,13 @@ exports.createPackageAddImages = async (req, res) =>{
 
     // Update package images based on the keyword
     if (data === 'stays') {
-      isPackageExist.images.stays.push(...imageUrls);
+      const hotelType=req?.body?.hotelType;
+      const hotelName=req?.body?.hotelName;
+      const days=Number(req?.body?.day);
+      // console.log(hotelType,hotelName)
+      // return;
+
+      isPackageExist.images.stays.push({Images:imageUrls,itineraryDay:days,hotelType:hotelType,hotelName:hotelName});
     } else if (data === 'destinations') {
       isPackageExist.images.destinations.push(...imageUrls);
     } else if (data === 'activities') {
@@ -350,7 +357,16 @@ exports.getAllPackageByUser =async (req, res) =>{
 
 exports.getDomesticorInternationPackages = async (req, res) => {
   const packageType = req?.params?.packageType;
+  // const cacheKey = JSON.stringify(packageType);
+  // const isExistIntoCache = await client.get(cacheKey);
 
+  // if (isExistIntoCache) {
+   
+  //   return res.status(statusCode.OK).json({ status: 200, message:`Get Package related to ${keyword}`,
+  //     result: JSON.parse(isExistIntoCache),
+  //   });
+    
+  // }
   const page = parseInt(req.query.page) || 1;  // Default to page 1 if no page is provided
   const limit = parseInt(req.query.limit) || 10;  // Default to 10 items per page if no limit is provided
   const skip = (page - 1) * limit;  // Calculate the number of items to skip
@@ -396,6 +412,16 @@ exports.getDomesticorInternationPackages = async (req, res) => {
     },
     data:packages
       });
+      const finalRes={pagination: {
+      currentPage: page,
+      totalPages: totalPages,
+      totalCount: totalCount,
+      limit: limit
+    },
+    data:packages
+      }
+      // const data1= await client.set(cacheKey, JSON.stringify(finalRes),{ EX: 3600 });
+      // console.log("redis overwrite",data1);
   } catch (err) {
     console.error('Error fetching packages:', err);
     sendActionFailedResponse(res, {}, err.message); 
@@ -414,7 +440,16 @@ exports.getAllPackageDestinationOrCountryWise = async (req, res) => {
     if (!keyword) {
       return res.status(200).json({staus:400, message: 'Keyword is required' });
     }
+    // const cacheKey = JSON.stringify(keyword);
+    // const isExistIntoCache = await client.get(cacheKey);
 
+    // if (isExistIntoCache) {
+     
+    //   return res.status(statusCode.OK).json({ status: 200, message:`Get Package related to ${keyword}`,
+    //     result: JSON.parse(isExistIntoCache),
+    //   });
+      
+    // }
     const page = parseInt(req.query.page) || 1;  // Default to page 1 if no page is provided
     const limit = parseInt(req.query.limit) || 10;  // Default to 10 items per page if no limit is provided
     const skip = (page - 1) * limit;  // Calculate the number of items to skip
@@ -480,6 +515,13 @@ exports.getAllPackageDestinationOrCountryWise = async (req, res) => {
       limit: limit
     }, data: packages
       });
+      // const result={ pagination: {
+      //   currentPage: page,
+      //   totalPages: totalPages,
+      //   totalCount: totalCount,
+      //   limit: limit
+      // }, data: packages}
+      // const data1= await client.set(cacheKey, JSON.stringify(result),{ EX: 60 });
   } catch (err) {
     console.error('Error fetching packages:', err);
     sendActionFailedResponse(res, {}, err.message); // Assuming this is a predefined error handler
@@ -629,15 +671,17 @@ exports.holidayPackageSetActive = async (req, res) => {
 exports.holidayPackageFilterByAmount = async (req, res) => {
   try {
     const { amount } = req?.query;
-
-    // console.log(amount)
-
-    // return;
-
     if (!amount) {
       return res.status(400).json({ status:400 ,message: 'Amount parameter is required.' });
     }
+    // const cacheKey = JSON.stringify(amount);
+    // const isExistIntoCache = await client.get(cacheKey);
 
+    // if (isExistIntoCache) {
+    //   return res.status(statusCode.OK).json({ status: 200, message:`Packages found for less than ${amount}`,result: JSON.parse(isExistIntoCache),
+    //   });
+    // }
+    // return; 
     // Parse the amount into an integer
     const parsedAmount = parseInt(amount);
     if (isNaN(parsedAmount)) {
@@ -668,6 +712,7 @@ exports.holidayPackageFilterByAmount = async (req, res) => {
     // Return response based on whether packages were found
     if (packages && packages.length > 0) {
       const msg = `Packages found for less than ${amount}`;
+      // const data1= await client.set(cacheKey, JSON.stringify(packages),{ EX: 3600 });
       return actionCompleteResponse(res, packages, msg);
     } else {
       const msg = `No packages found for this range`;
@@ -688,7 +733,14 @@ exports.getHolidayPackageFilterByCategory= async (req, res)=>{
 
   try {
     const { seeAll,keyword } = req.query;
+    const cacheKey = JSON.stringify(req.query);
+    // const isExistIntoCache = await client.get(cacheKey);
 
+    // if (isExistIntoCache) {
+    //   return res.status(statusCode.OK).json({ status: 200, message:`Get Package related to ${keyword}`,
+    //     result: JSON.parse(isExistIntoCache),
+    //   });
+    // }
     const page = parseInt(req.query.page) || 1;  // Default to page 1 if no page is provided
     const limit = parseInt(req.query.limit) || 5;  // Default to 5 items per page if no limit is provided
     const skip = (page - 1) * limit;  // Calculate the number of items to skip
@@ -704,6 +756,8 @@ exports.getHolidayPackageFilterByCategory= async (req, res)=>{
         .sort({ createdAt: -1 })  // Sort by creation date in descending order
           .select('_id title days country coverImage destination packageAmount packageHighLight specialTag inclusions wishlist')
           .exec();
+        // const data1= await client.set(cacheKey, JSON.stringify(results),{ EX: 3600 });
+   
         return res.status(200).send({
           status: 200,
           message: `${keyword} Package Found`,
@@ -741,7 +795,7 @@ exports.getHolidayPackageFilterByCategory= async (req, res)=>{
       });
 
       }
-      
+      // const data1= await client.set(cacheKey, JSON.stringify(finalRes),{ EX: 3600 });
       return res.status(200).send({
         statusCode: 200,
         responseMessage: "Category Data Found",
@@ -762,7 +816,15 @@ exports.getHolidayPackageFilterByCategory= async (req, res)=>{
 exports.getLatestHolidayPackages = async (req, res) => {
   try {
     
+    // const cacheKey = JSON.stringify("packagesForToday");
+    // const isExistIntoCache = await client.get(cacheKey);
 
+    // if (isExistIntoCache) {
+    //   return res.status(statusCode.OK).json({ status: 200, message:`Get Package for today`,
+    //     result: JSON.parse(isExistIntoCache),
+    //   });
+      
+    // }
     // Fetch all active packages from the database
     const allPackages = await SkyTrailsPackageModel.find({ is_active: 1 })
     .sort({ createdAt: -1 })
@@ -783,7 +845,7 @@ exports.getLatestHolidayPackages = async (req, res) => {
 
     const msg = "Latest packages fetched successfully for today!";
     actionCompleteResponse(res, packagesForToday, msg);
-
+    // const data1= await client.set(cacheKey, JSON.stringify(packagesForToday),{ EX: 1800 });
   } catch (error) {
     sendActionFailedResponse(res, {}, error.message);
   }

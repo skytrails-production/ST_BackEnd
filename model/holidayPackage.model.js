@@ -23,6 +23,7 @@ const hotelEventsSchema=new mongoose.Schema({
   checkIn:String,
   checkOut:String,
   NumberOfNights:Number,
+  hotelType:String
 });
 
 
@@ -194,7 +195,20 @@ const SkyTrailsPackageSchema = new mongoose.Schema(
       type: Array,
       require: true,
     },
-    packageAmount: {
+    // packageAmount: {
+    //   currency: {
+    //     type: String,
+    //     enum: ["USD", "EUR", "INR"],
+    //     required: true,
+    //     default: "INR",
+    //   },
+    //   amount: {
+    //     type: Number,
+    //     required: true,
+    //   },
+    // },
+    packageAmount: [{
+      _id:false,
       currency: {
         type: String,
         enum: ["USD", "EUR", "INR"],
@@ -205,7 +219,12 @@ const SkyTrailsPackageSchema = new mongoose.Schema(
         type: Number,
         required: true,
       },
-    },
+      packageCategory: {
+        type: String,
+        enum: ["Deluxe", "Standard", "Luxury"],  // Enum with predefined values
+        required: true,  // This field is mandatory
+      }
+    }],
     specialTag: {
       type: Array,
       require: true,
@@ -219,10 +238,28 @@ const SkyTrailsPackageSchema = new mongoose.Schema(
     term_Conditions: [String],
     cancellation_Policy: [String],
     images: {
-      stays: {
-        type: [String], // Array of image URLs/strings
-        default: [], // Default to an empty array
-      },
+      // stays: {
+      //   type: [String], // Array of image URLs/strings
+      //   default: [], // Default to an empty array
+      // },
+      stays:{
+        type:[{
+          _id: false,
+        hotelType: {
+          type: String,
+        },
+        hotelName: {
+          type: String,
+        },
+        itineraryDay:{
+          type:Number
+        },
+        Images: [{
+          type: String,  // Image URLs or strings
+        }]
+      }],
+      default:[]
+    },
       destinations: {
         type: [String], // Array of image URLs/strings
         default: [], // Default to an empty array
