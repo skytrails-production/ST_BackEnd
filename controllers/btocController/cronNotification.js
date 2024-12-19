@@ -70,21 +70,22 @@ const {
 } = forumQueServices;
 const notifications = [
     {
-    message: `Like Jolly LLB, we'll make you laugh and save you money!`,
-    body: `Amazing offers are available. Book now!`,
+    message: `🎆New Year par 'Manali' Chale?🤓`,
+    body: `Bag Pack karo... Plan hum kar lenge😎✌🏻`,
   },
   {
     message: `Your bus is ready to roll! 🚌💨`,
     body: `Pack your bags, the adventure starts soon!`,
   },
+
   // {
   //   message: `Feel the Tum Jo Aaye Magic!`,
   //   body: `Just like Tum Jo Aaye in Once Upon A Time in Mumbaai, make this Karwachauth special with a dreamy trip! Save ₹500 on your next booking`,
   // },
-  // {
-  //   message: `Time to pack your bags for a Diwali getaway!Don't miss the bus! 🚏`,
-  //   body: `But don't worry, we’ve got your seat reserved. 🏖" 🍬✈️`,
-  // },
+  {
+    message: `Winter aa gyi hai🥶 Ladakh Chalo na🏍️`,
+    body: `The Skytrails' par Mast offer hai😎`,
+  },
  
   {
     message: `New Year’s resolution: Travel more!`,
@@ -163,7 +164,7 @@ var taskPromotionalNotification = cron.schedule("45 09 * * *",async () => {
 taskPromotionalNotification.start(); // Start the task2
 
 // Define and schedule task2 separately
-var taskPlatformNotification = cron.schedule("33 13 * * *",
+var taskPlatformNotification = cron.schedule("20 17 * * *",
   async () => {
     try {  
       // 'contactNo.mobile_number': { $in: ['8115199076', '9135219071'] },

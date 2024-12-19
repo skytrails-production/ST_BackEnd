@@ -22,7 +22,7 @@ const hotelEventsSchema=new mongoose.Schema({
   hotelStar:Number,
   checkIn:String,
   checkOut:String,
-  NumberOfNights:Number,
+  NumberOfNights:String,
   hotelType:String
 });
 
