@@ -1126,7 +1126,7 @@ exports.packageCityData = async (req, res) =>{
   const file = req.file; // Access the uploaded file
   const { cityName, description } = req.body;
 
-  const isExistingCityName=await packageCityData.findOne(cityName);
+  const isExistingCityName=await packageCityData.findOne({cityName});
 
   if(isExistingCityName){
     return  actionCompleteResponse(res, isExistingCityName, "Package city data already exist.");
