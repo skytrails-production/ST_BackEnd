@@ -10,21 +10,6 @@ const { activeStatus } = require("../common/const");
 //   default:""
 // });
 
-const hotelEventsSchema=new mongoose.Schema({
-  _id:false,
-  type:{
-    type:String,
-    default:"Hotel"
-  },
-  title:String,
-  name:String,
-  description:String,
-  hotelStar:Number,
-  checkIn:String,
-  checkOut:String,
-  numberOfNights:String,
-  hotelType:String
-});
 
 
 const flightEventsSchema= new mongoose.Schema({
@@ -59,15 +44,6 @@ const transferEventsSchema= new mongoose.Schema({
 });
 
 
-const activityEventsSchema= new mongoose.Schema({
-  _id:false,
-  type:{
-    type:String,
-    default:"Activity"
-  },
-  title:String
-});
-
 const descriptionEventsSchema= new mongoose.Schema({
   _id:false,
 
@@ -93,15 +69,6 @@ title:String
 
 
 
-const mealsIncludedWithHotelsSchema= new mongoose.Schema({
-  _id:false,
-    location:{
-        type:String,
-    },
-    meal:{
-        type:String,
-    }
-})
 
 
 // Define the itinerary schema
@@ -119,20 +86,12 @@ const itinerarySchema = new mongoose.Schema({
       type: [String], // Array of image URLs/strings
       default: [], // Default to an empty array
     },
-    hotelEvents: {
-      type: [hotelEventsSchema],
-      default: [],
-    },
     flightEvents: {
       type: [flightEventsSchema],
       default: [],
     },
     transferEvents: {
       type: [transferEventsSchema],
-      default: [],
-    },
-    activityEvents: {
-      type: [activityEventsSchema],
       default: [],
     },
     descriptionEvents: {
@@ -147,14 +106,7 @@ const itinerarySchema = new mongoose.Schema({
       type: [leisureDayEventsSchema],
       default: [],
     },
-    mealsIncluded: {
-      type: [String],
-      default: [],
-    },
-    mealsIncludedWithHotels: {
-      type: [mealsIncludedWithHotelsSchema],
-      default: [],
-    },
+    
   });
 
 
@@ -195,18 +147,7 @@ const SkyTrailsPackageSchema = new mongoose.Schema(
       type: Array,
       require: true,
     },
-    // packageAmount: {
-    //   currency: {
-    //     type: String,
-    //     enum: ["USD", "EUR", "INR"],
-    //     required: true,
-    //     default: "INR",
-    //   },
-    //   amount: {
-    //     type: Number,
-    //     required: true,
-    //   },
-    // },
+   
     packageAmount: [{
       _id:false,
       currency: {
@@ -254,6 +195,15 @@ const SkyTrailsPackageSchema = new mongoose.Schema(
         itineraryDay:{
           type:Number
         },
+        description:String,
+        hotelStar:Number,
+        checkIn:String,
+        checkOut:String,
+        numberOfNights:Number,
+        mealsIncluded: {
+          type: [String],
+          default: [],
+        },
         Images: [{
           type: String,  // Image URLs or strings
         }]
@@ -265,8 +215,19 @@ const SkyTrailsPackageSchema = new mongoose.Schema(
         default: [], // Default to an empty array
       },
       activities: {
-        type: [String], // Array of image URLs/strings
-        default: [], // Default to an empty array
+        type:[{
+          _id: false,
+        title: {
+          type: String,
+        },
+        itineraryDay:{
+          type:Number
+        },
+        Images: [{
+          type: String,  // Image URLs or strings
+        }]
+      }],
+      default:[]
       },
     },
     wishlist: [{
