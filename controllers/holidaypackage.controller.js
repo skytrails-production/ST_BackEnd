@@ -125,14 +125,15 @@ exports.createPackageAddImages = async (req, res) => {
     if (data === "stays") {
       const hotelType = req?.body?.hotelType;
       const hotelName = req?.body?.hotelName;
-      const days = Number(req?.body?.day);
+      let days = Number(req?.body?.day);
       const description = req?.body?.description;
       const hotelStar = Number(req?.body?.hotelStar);
       const checkIn = req?.body?.checkIn;
       const checkOut = req?.body?.checkOut;
-      const numberOfNights = req?.body?.numberOfNights;
+      const numberOfNights = Number(req?.body?.numberOfNights);
       const mealsIncluded = req?.body?.mealsIncluded;
 
+      for(let i=0; i<numberOfNights; i++){
       // console.log(hotelType,hotelName)
       // return;
 
@@ -148,6 +149,8 @@ exports.createPackageAddImages = async (req, res) => {
         hotelType: hotelType,
         hotelName: hotelName,
       });
+      days++;
+    }
     } else if (data === "destinations") {
       isPackageExist.images.destinations.push(...imageUrls);
     } else if (data === "activities") {
@@ -172,6 +175,7 @@ exports.createPackageAddImages = async (req, res) => {
 exports.createPackageAddItinerary = async (req, res) => {
   try {
     const data = req.body;
+    const day  = req.body.dayNumber;
     const packageId = data?.packageId;
     // console.log(data?.packageId,"packageId");
     const isPackageExist = await SkyTrailsPackageModel.findById({
@@ -189,6 +193,19 @@ exports.createPackageAddItinerary = async (req, res) => {
 
     // console.log(isPackageExist?.detailed_ltinerary?.length,"",isPackageExist?.days)
 
+
+    const existingItinerary = await SkyTrailsPackageModel.findOne({ "detailed_ltinerary.dayNumber": day });
+
+    if (existingItinerary) {
+      return res
+        .status(400)
+        .send({
+          status: 400,
+          message:
+            "Already added this day itinerary.",
+        });
+    }
+
     if (isPackageExist.detailed_ltinerary.length >= isPackageExist.days) {
       return res
         .status(400)
@@ -198,6 +215,8 @@ exports.createPackageAddItinerary = async (req, res) => {
             "You cannot add more itinerary items than the number of days in the package. Please adjust the itinerary.",
         });
     }
+
+    
 
     isPackageExist.detailed_ltinerary.push(data);
 
@@ -372,6 +391,53 @@ exports.getAllPackageByUser = async (req, res) => {
       .sort({ createdAt: -1 })
       .select("_id title days")
       .lean();
+
+    actionCompleteResponse(res, packages, "Get Package");
+  } catch (error) {
+    sendActionFailedResponse(res, {}, err.message);
+  }
+};
+
+
+
+
+//getAllHolidayPacagkeByAdmin
+
+exports.getAllHolidayPacagkeByAdmin =async (req, res) => {
+  try {
+    
+    const page = parseInt(req.query.page) || 1; // Default to page 1 if no page is provided
+    const limit = parseInt(req.query.limit) || 100; // Default to 10 items per page if no limit is provided
+    const skip = (page - 1) * limit; // Calculate the number of items to skip
+
+    const packages = await SkyTrailsPackageModel.find()
+      .sort({ createdAt: -1 })
+      .skip(skip) // Skip the appropriate number of items
+      .limit(limit) // Limit the number of items returned
+      .select("_id title days is_active packageAmount")
+      .lean();
+
+      if (packages.length === 0) {
+        return res
+          .status(200)
+          .send({ status: 404, message: "No related package found." });
+      }
+
+      const totalCount = await SkyTrailsPackageModel.countDocuments();
+  
+      // Calculate total pages
+      const totalPages = Math.ceil(totalCount / limit);
+      res.status(200).send({
+        status: 200,
+        message: `Get All package successfully`,
+        pagination: {
+          currentPage: page,
+          totalPages: totalPages,
+          totalCount: totalCount,
+          limit: limit,
+        },
+        data: packages,
+      });
 
     actionCompleteResponse(res, packages, "Get Package");
   } catch (error) {

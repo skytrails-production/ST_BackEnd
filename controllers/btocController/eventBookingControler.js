@@ -98,7 +98,7 @@ exports.eventBooking1 = async (req, res, next) => {
       status: status.ACTIVE,
     });
     if (!isUserExist) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.USERS_NOT_FOUND,
       });
@@ -108,7 +108,7 @@ exports.eventBooking1 = async (req, res, next) => {
       status: status.ACTIVE,
     });
     if (!isEventExist) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.EVENT_NOT_FOUND,
       });
@@ -117,7 +117,7 @@ exports.eventBooking1 = async (req, res, next) => {
       (slot) => slot.startTime === startTime && slot.isAvailable === true
     );
     if (!selectedSlot) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.SLOT_NOT_AVAILABLE,
       });
@@ -137,7 +137,7 @@ exports.eventBooking1 = async (req, res, next) => {
         transactionStatus: paymentStatus.SUCCESS,
       });
       if (!isPaid) {
-        return res.status(statusCode.NotFound).send({
+        return res.status(statusCode.OK).send({
           statusCode: statusCode.NotFound,
           responseMessage: responseMessage.TRANSACTION_NOT_FOUND,
         });
@@ -247,14 +247,14 @@ exports.bookFreeEvents = async (req, res, next) => {
     });
 
     if (!isUserExist) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.USERS_NOT_FOUND,
       });
     }
     const isEventExist = await findEventData({ _id: eventId });
     if (!isEventExist) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.EVENT_NOT_FOUND,
       });
@@ -286,7 +286,7 @@ exports.bookFreeEvents = async (req, res, next) => {
         result: makeBooking,
       });
     } else {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.SLOT_NOT_AVAILABLE,
       });
@@ -303,7 +303,7 @@ exports.eventBooking = async (req, res, next) => {
     const {name,mobileNumber,city,deviceToken,deviceType,eventDate,eventId,noOfMember,profession} = req.body;
     const isUserExist = await findUserData({_id: req.userId,status: status.ACTIVE,});
     if (!isUserExist) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.USERS_NOT_FOUND,
       });
@@ -313,15 +313,15 @@ exports.eventBooking = async (req, res, next) => {
       status: status.ACTIVE,
     });
     if (!isEventExist) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.EVENT_NOT_FOUND,
       });
     }
     const isBookingExist=await findBookingEventData({$and:[{userId:isUserExist._id,eventId:isEventExist._id}]});
     if(isBookingExist){
-      return res.status(statusCode.NotFound).send({
-        statusCode: statusCode.NotFound,
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.Conflict,
         message: responseMessage.EVENT_ALREADY_BOOKED,
       });
     }

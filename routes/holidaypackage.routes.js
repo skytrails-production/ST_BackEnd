@@ -34,6 +34,9 @@ module.exports = function (app) {
 
 
 
+    //admin route to get all holiday package
+
+    app.get("/skytrails/holidaypackage/admin/getallholidaypackage", controller.getAllHolidayPacagkeByAdmin)
     //get all domestic and international packages route
 
     app.get("/skyTrails/holidaypackage/getdomesticorinternational/:packageType", controller.getDomesticorInternationPackages);

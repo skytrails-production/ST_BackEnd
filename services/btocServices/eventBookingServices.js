@@ -85,14 +85,14 @@ const eventBookingServices={
         let query = {status:status.ACTIVE,}
         if (search) {
             query.$or = [
-                { profession: { $regex: search, $options: 'i' } },
+                // { profession: { $regex: search, $options: 'i' } },
                 { name: { $regex: search, $options: 'i' } },
                 { city: { $regex: search, $options: 'i' } },
                 { 'contactNo.mobile_number': { $regex: search, $options: 'i' } },
             ]
         }
         const currentDate = new Date().toISOString();
-        query.eventDate = { $gte: currentDate }; 
+        // query.eventDate = { $gte: currentDate }; 
         let pipeline = [
             {
                 $lookup: {
