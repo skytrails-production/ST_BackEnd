@@ -175,7 +175,7 @@ exports.createPackageAddImages = async (req, res) => {
 exports.createPackageAddItinerary = async (req, res) => {
   try {
     const data = req.body;
-    const day  = req.body.dayNumber;
+    const day  = Number(req.body.dayNumber);
     const packageId = data?.packageId;
     // console.log(data?.packageId,"packageId");
     const isPackageExist = await SkyTrailsPackageModel.findById({
@@ -193,20 +193,22 @@ exports.createPackageAddItinerary = async (req, res) => {
 
     // console.log(isPackageExist?.detailed_ltinerary?.length,"",isPackageExist?.days)
 
-
-    const existingItinerary = await SkyTrailsPackageModel.findOne({ "detailed_ltinerary.dayNumber": day });
+   
+     // Check if the detailed itinerary for this package already contains the day
+     const existingItinerary = isPackageExist.detailed_ltinerary.find(
+      (itinerary) => itinerary.dayNumber === day
+    );
 
     if (existingItinerary) {
-      return res
-        .status(400)
-        .send({
-          status: 400,
-          message:
-            "Already added this day itinerary.",
-        });
+      return res.status(400).send({
+        status: 400,
+        message: "This day itinerary is already added."
+      });
     }
 
-    if (isPackageExist.detailed_ltinerary.length >= isPackageExist.days) {
+    
+
+    if (isPackageExist.detailed_ltinerary.length >= isPackageExist.days || day > isPackageExist.days ) {
       return res
         .status(400)
         .send({
