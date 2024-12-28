@@ -416,7 +416,7 @@ exports.getAllHolidayPacagkeByAdmin =async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip) // Skip the appropriate number of items
       .limit(limit) // Limit the number of items returned
-      .select("_id title days is_active packageAmount")
+      .select("_id title days is_active packageAmount createdAt")
       .lean();
 
       if (packages.length === 0) {
@@ -441,11 +441,11 @@ exports.getAllHolidayPacagkeByAdmin =async (req, res) => {
         data: packages,
       });
 
-    actionCompleteResponse(res, packages, "Get Package");
-  } catch (error) {
+  } catch (err) {
     sendActionFailedResponse(res, {}, err.message);
   }
 };
+
 
 //getDomesticorInternationPackages
 
@@ -721,6 +721,7 @@ exports.getSingleHolidayPackage = async (req, res) => {
 
 exports.holidayPackageSetActive = async (req, res) => {
   const { packageId, isAdmin, activeStatus } = req.body;
+  console.log(req.body)
   try {
     const user = await User.findById(isAdmin);
     const role = await Role.findById(user.roles[0].toString());
@@ -728,16 +729,34 @@ exports.holidayPackageSetActive = async (req, res) => {
       const response = await SkyTrailsPackageModel.findById({ _id: packageId });
       let size = Object.keys(response).length;
       if (size > 0) {
-        const user = await SkyTrailsPackageModel.findOneAndUpdate(
+        const pacakge = await SkyTrailsPackageModel.findOneAndUpdate(
           { _id: packageId },
           { $set: { is_active: activeStatus } },
           { new: true }
         );
-        msg = "pakage successfully Active";
-        actionCompleteResponse(res, user, msg);
+        msg = "change package status";
+        actionCompleteResponse(res, pacakge.is_active, msg);
       }
     } else {
       msg = "only Admin can upadate Active status";
+      actionCompleteResponse(res, {}, msg);
+    }
+  } catch (err) {
+    sendActionFailedResponse(res, {}, err.message);
+  }
+};
+
+
+exports.holidayPackageDelete = async (req, res) => {
+  try {
+    const user = await User.findById(req.body.isAdmin);
+    const role = await Role.findById(user.roles[0].toString());
+    if (role.name === "admin") {
+      const package = await SkyTrailsPackageModel.findByIdAndRemove(req.params.packageId);
+      msg = "Package successfully deleted";
+      actionCompleteResponse(res, package.title, msg);
+    } else {
+      msg = "only admin can delete pakage";
       actionCompleteResponse(res, {}, msg);
     }
   } catch (err) {

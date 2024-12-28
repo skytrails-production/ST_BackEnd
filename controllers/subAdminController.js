@@ -532,14 +532,14 @@ exports.getPost = async (req, res, next) => {
     const result = {}; // Declare as an object
     const { search, page, limit, questionId, userId } = req.query;
     const cacheKey = JSON.stringify(req.query);
-const isExistIntoCache = await client.get(cacheKey);
-if (isExistIntoCache) {
-  return res.status(statusCode.OK).send({
-    statusCode: statusCode.OK,
-    responseMessage: responseMessage.DATA_FOUND,
-    result: JSON.parse(isExistIntoCache),
-  });
-}
+// const isExistIntoCache = await client.get(cacheKey);
+// if (isExistIntoCache) {
+//   return res.status(statusCode.OK).send({
+//     statusCode: statusCode.OK,
+//     responseMessage: responseMessage.DATA_FOUND,
+//     result: JSON.parse(isExistIntoCache),
+//   });
+// }
 
     const post = await forumQueListLookUpAdmin(req.query);
     if (post) {
@@ -560,7 +560,7 @@ if (isExistIntoCache) {
       });
     }
     // const cacheKey1 = `appPosts:posts`;
-       const data1= await client.set(cacheKey, JSON.stringify(result),{ EX: 3600 });
+      //  const data1= await client.set(cacheKey, JSON.stringify(result),{ EX: 3600 });
 
     if (result) {
       return res.status(statusCode.OK).send({

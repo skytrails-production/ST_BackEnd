@@ -67,6 +67,11 @@ const bookEventSchema = new mongoose.Schema(
       enum: [status.ACTIVE, status.BLOCK, status.DELETE],
       default: status.ACTIVE,
     },
+    bookingStatus:{
+      type:String,
+      enum:[bookingStatus.BOOKED,bookingStatus.CANCEL,bookingStatus.FAILED,bookingStatus.PENDING],
+      default:bookingStatus.PENDING
+    }
   },
   { timestamps: true }
 );

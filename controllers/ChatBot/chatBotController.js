@@ -127,7 +127,8 @@ exports.initialiseBot = async (req, res, next) => {
     }
     const userPrompt = req.body.userPrompt.trim().toLowerCase();
     const includeWords = userPrompt.split(/\s+/); 
-    let response = []; 
+    let response = [];
+    let botResponse = ""; 
     if (includeWords.includes("package") || includeWords.includes("price")) {
       const allPackages = await SkyTrailsPackageModel.find({})
         .select("_id title packageAmount specialTag");
@@ -144,21 +145,25 @@ exports.initialiseBot = async (req, res, next) => {
           price: pkg.packageAmount?.[0]?.amount || "N/A",
           details: `https://theskytrails.com/holidaypackages/packagedetails/${pkg._id}`,
         }));
-        response=await getAiResponseCustomPackage(userPrompt,inhouseResponse)
+        response=await getAiResponseCustomPackage(userPrompt,inhouseResponse);
+        botResponse = response.aiResp;
       } else {
         // If no matches, query OpenAI
         console.log("No matching packages found. Calling OpenAI for response...");
         response = await getAiResponse(
           `${req.body.userPrompt} and tell me about https://theskytrails.com/`
         );
+        botResponse = response;
       }
     } else if (userPrompt.includes("website")) {
       // Respond with the website URL for website-related queries
-      response = ["https://theskytrails.com/"];
+      botResponse = "https://theskytrails.com/";
+      response = [botResponse];
     } else {
       // For other queries, call OpenAI
       console.log("Non-package query. Calling OpenAI...");
       response = await getAiResponse(req.body.userPrompt);
+      botResponse = response;
     }
     res.status(200).json({ message: response });
   } catch (error) {

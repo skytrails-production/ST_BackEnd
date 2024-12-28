@@ -300,7 +300,7 @@ exports.bookFreeEvents = async (req, res, next) => {
 //*********************************PEFA EVENT BOOKING*****************************/
 exports.eventBooking = async (req, res, next) => {
   try {
-    const {name,mobileNumber,city,deviceToken,deviceType,eventDate,eventId,noOfMember,profession} = req.body;
+    const {name,mobileNumber,city,deviceToken,deviceType,eventDate,eventId,noOfMember,profession,bookingStatus} = req.body;
     const isUserExist = await findUserData({_id: req.userId,status: status.ACTIVE,});
     if (!isUserExist) {
       return res.status(statusCode.OK).send({
@@ -333,6 +333,7 @@ exports.eventBooking = async (req, res, next) => {
     const object = {
       userId:isUserExist._id,
       name: name,
+      bookingStatus:bookingStatus,
       contactNo: { mobile_number: mobileNumber },
       city: city,
       eventDate: isEventExist.startDate,
