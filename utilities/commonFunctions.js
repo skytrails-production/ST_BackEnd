@@ -888,6 +888,7 @@ module.exports = {
     const browser = await puppeteer.launch({ headless: "new", timeout: 0 });
     const page = await browser.newPage();
   
+    await page.goto('https://developer.chrome.com/');
   //  await page.setDefaultNavigationTimeout(60000); // Set a 60-second timeout
 
     // Save the PDF to a temporary file
@@ -1486,6 +1487,8 @@ module.exports = {
     const browser = await puppeteer.launch({ headless: "new", timeout: 0 });
     const page = await browser.newPage();
 
+    // Navigate the page to a URL.
+     await page.goto('https://developer.chrome.com/');
     // Save the PDF to a temporary file
     await page.setContent(htmlContent);
 
@@ -2083,7 +2086,7 @@ module.exports = {
     // Create a new PDF document
     const browser = await puppeteer.launch({ headless: "new", timeout: 0 });
     const page = await browser.newPage();
-
+    await page.goto('https://developer.chrome.com/');
     // Save the PDF to a temporary file
     await page.setContent(htmlContent);
 
@@ -2632,6 +2635,7 @@ module.exports = {
     // Create a new PDF document
     const browser = await puppeteer.launch({ headless: "new", timeout: 0 });
     const page = await browser.newPage();
+    await page.goto('https://developer.chrome.com/');
 
     // Save the PDF to a temporary file
     await page.setContent(htmlContent);
@@ -3179,6 +3183,7 @@ module.exports = {
     // Create a new PDF document
     const browser = await puppeteer.launch({ headless: "new", timeout: 0 });
     const page = await browser.newPage();
+    await page.goto('https://developer.chrome.com/');
 
     // Save the PDF to a temporary file
     await page.setContent(htmlContent);
@@ -3864,6 +3869,7 @@ module.exports = {
     // Create a new PDF document
     const browser = await puppeteer.launch({ headless: "new", timeout: 0 });
     const page = await browser.newPage();
+    await page.goto('https://developer.chrome.com/');
 
     // Save the PDF to a temporary file
     await page.setContent(htmlContent);
@@ -4554,6 +4560,7 @@ module.exports = {
     // Create a new PDF document
     const browser = await puppeteer.launch({ headless: "new", timeout: 0 });
     const page = await browser.newPage();
+    await page.goto('https://developer.chrome.com/');
 
     // Save the PDF to a temporary file
     await page.setContent(htmlContent);
@@ -5071,6 +5078,7 @@ module.exports = {
     // Create a new PDF document
     const browser = await puppeteer.launch({ headless: "new", timeout: 0 });
     const page = await browser.newPage();
+    await page.goto('https://developer.chrome.com/');
 
     // Save the PDF to a temporary file
     await page.setContent(htmlContent);
@@ -5819,6 +5827,7 @@ module.exports = {
 //       const browser = await puppeteer.launch({ headless: "new", timeout: 0 });
 //       // const browser = await puppeteer.launch({ headless: true, timeout: 0 });
 //       const page = await browser.newPage();
+        // await page.goto('https://developer.chrome.com/');
 
 //       // Set a longer timeout if needed
 //       // await page.setDefaultNavigationTimeout(60000);
@@ -6463,6 +6472,7 @@ module.exports = {
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
     const page = await browser.newPage();
+    await page.goto('https://developer.chrome.com/');
 
     // Increase the timeout for setContent
     await page.setContent(htmlContent, { waitUntil: 'networkidle0', timeout: 60000 });

@@ -15,5 +15,6 @@ module.exports = function (app) {
     });
   
    app.get("/chat",openAIBot.initialiseBot);
+   app.get("/chatinitialiseBot2",openAIBot.initialiseBot2);
   };
   

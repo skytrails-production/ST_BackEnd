@@ -161,5 +161,6 @@ module.exports = {
 	INCORRECT_PASS:"Incorrect password!",
 	USER_NAME_REQUIRED: "Username should not be empty.",
 	OFFER_SUBSCRIBED:"Thank you for subscribing to TheSkyTrails! We're excited to have you in our community of explorers.",
-	POST_ALREADY_APPROVED:"Post already approved."
+	POST_ALREADY_APPROVED:"Post already approved.",
+	USER_PROMPT_REQ:"Invalid request: 'userPrompt' is required."
 };

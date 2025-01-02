@@ -100,6 +100,7 @@ const getAiResponse = async (prompt, formattedPackages) => {
 };
 const getAiResponseCustomPackage = async (prompt,data) => {
   try {
+    const start = performance.now(); 
     const aboutOurApp = await findstaticContent({ type: "CONTACTUS" });
     // const data = await SkyTrailsPackageModel.find({});
     const completion = await openai.chat.completions.create({
@@ -108,7 +109,7 @@ const getAiResponseCustomPackage = async (prompt,data) => {
       messages: [
         {
           role: "system",
-          content: "You are a customer support assistant for The Sky Trails.",
+          content: `You are a customer support assistant for The Sky Trails.,suggest some packages which we have,${data} suggest ur like ,which is dynamic `,
         },
         {
           role: "user",
@@ -122,7 +123,7 @@ const getAiResponseCustomPackage = async (prompt,data) => {
           `,
         },
       ],
-      max_tokens: 1000,
+      // max_tokens: 16384,
       // stream:true
     });
       // console.log("completion===",completion.id,completion.created,completion.system_fingerprint);
@@ -130,6 +131,8 @@ const getAiResponseCustomPackage = async (prompt,data) => {
     const response={
       aiResp,data
     }
+    const end = performance.now(); // End time
+    console.log(`Bot response time: ${(end - start).toFixed(2)} ms`);
     return response;
   } catch (error) {
     console.error("Error communicating with OpenAI API:", error);
