@@ -893,10 +893,14 @@ module.exports = {
     const page = await browser.newPage();
   
     // await page.goto('https://developer.chrome.com/');
-  //  await page.setDefaultNavigationTimeout(60000); // Set a 60-second timeout
+   await page.setDefaultNavigationTimeout(60000); // Set a 60-second timeout
+   await page.setDefaultTimeout(60000)
 
     // Save the PDF to a temporary file
-    await page.setContent(htmlContent);
+    await page.setContent(htmlContent,{
+      waitUntil: ["domcontentloaded"],
+      timeout: 60000,
+    });
 
     const pdfFilePath = "flightbooking.pdf";
 
@@ -1494,11 +1498,16 @@ module.exports = {
     });
 
     const page = await browser.newPage();
-
     // Navigate the page to a URL.
     //  await page.goto('https://developer.chrome.com/');
     // Save the PDF to a temporary file
-    await page.setContent(htmlContent);
+
+    await page.setDefaultNavigationTimeout(60000); // Set a 60-second timeout for navigation
+    await page.setDefaultTimeout(60000);
+    await page.setContent(htmlContent,{
+      waitUntil: ["domcontentloaded"],
+      timeout: 60000,
+    });
 
     const pdfFilePath = "flightbooking.pdf";
 
@@ -2100,7 +2109,12 @@ module.exports = {
     const page = await browser.newPage();
     // await page.goto('https://developer.chrome.com/');
     // Save the PDF to a temporary file
-    await page.setContent(htmlContent);
+    await page.setDefaultNavigationTimeout(60000); // Set a 60-second timeout for navigation
+    await page.setDefaultTimeout(60000)
+    await page.setContent(htmlContent,{
+      waitUntil: ["domcontentloaded"],
+      timeout: 60000,
+    });
 
     const pdfFilePath = "flightbooking.pdf";
 
@@ -2652,9 +2666,14 @@ module.exports = {
     });
     const page = await browser.newPage();
     // await page.goto('https://developer.chrome.com/');
+    await page.setDefaultNavigationTimeout(60000); // Set a 60-second timeout for navigation
+    await page.setDefaultTimeout(60000)
 
     // Save the PDF to a temporary file
-    await page.setContent(htmlContent);
+    await page.setContent(htmlContent,{
+      waitUntil: ["domcontentloaded"],
+      timeout: 60000,
+    });
 
     const pdfFilePath = "Bus_Booking.pdf";
 
@@ -3204,9 +3223,14 @@ module.exports = {
     });
     const page = await browser.newPage();
     // await page.goto('https://developer.chrome.com/');
+    await page.setDefaultNavigationTimeout(60000); // Set a 60-second timeout for navigation
+    await page.setDefaultTimeout(60000)
 
     // Save the PDF to a temporary file
-    await page.setContent(htmlContent);
+    await page.setContent(htmlContent, {
+      waitUntil: ["domcontentloaded"],
+      timeout: 60000,
+    });
 
     const pdfFilePath = "Bus_Booking.pdf";
 
@@ -3894,9 +3918,14 @@ module.exports = {
     });
     const page = await browser.newPage();
     // await page.goto('https://developer.chrome.com/');
+    await page.setDefaultNavigationTimeout(60000); // Set a 60-second timeout for navigation
+    await page.setDefaultTimeout(60000)
 
     // Save the PDF to a temporary file
-    await page.setContent(htmlContent);
+    await page.setContent(htmlContent, {
+      waitUntil: ["domcontentloaded"],
+      timeout: 60000,
+    });
 
     const pdfFilePath = "hotelBooking.pdf";
 
@@ -4590,8 +4619,14 @@ module.exports = {
     const page = await browser.newPage();
     // await page.goto('https://developer.chrome.com/');
 
+    await page.setDefaultNavigationTimeout(60000); // Set a 60-second timeout for navigation
+    await page.setDefaultTimeout(60000)
+
     // Save the PDF to a temporary file
-    await page.setContent(htmlContent);
+    await page.setContent(htmlContent,{
+      waitUntil: ["domcontentloaded"],
+      timeout: 60000,
+    });
 
     const pdfFilePath = "hotelBooking.pdf";
 
@@ -5111,9 +5146,14 @@ module.exports = {
     });
     const page = await browser.newPage();
     // await page.goto('https://developer.chrome.com/');
+    await page.setDefaultNavigationTimeout(60000); // Set a 60-second timeout for navigation
+    await page.setDefaultTimeout(60000)
 
     // Save the PDF to a temporary file
-    await page.setContent(htmlContent);
+    await page.setContent(htmlContent,{
+      waitUntil: ["domcontentloaded"],
+      timeout: 60000,
+    });
 
     const pdfFilePath = "hotelBooking.pdf";
 
@@ -5866,12 +5906,13 @@ module.exports = {
         // await page.goto('https://developer.chrome.com/');
 
 //       // Set a longer timeout if needed
-//       // await page.setDefaultNavigationTimeout(60000);
+//       await page.setDefaultNavigationTimeout(60000);
+// await page.setDefaultTimeout(60000)
 
 //       // Wait for some time to let dynamic content load (adjust the time as needed)
 //       await page.waitForTimeout(2000);
 
-//       await page.setContent(htmlContent);
+//       await page.setContent(htmlContent,{ waitUntil: ["domcontentloaded"],  timeout: 60000 });
 //       const pdfFilePath = "Package_Booking.pdf";
 //       const pdfBytes = await page.pdf({ path: pdfFilePath, format: "A4" });
 //       await browser.close();
@@ -6510,9 +6551,14 @@ module.exports = {
     
     const page = await browser.newPage();
     // await page.goto('https://developer.chrome.com/');
+    await page.setDefaultNavigationTimeout(60000); // Set a 60-second timeout for navigation
+    await page.setDefaultTimeout(60000)
 
     // Increase the timeout for setContent
-    await page.setContent(htmlContent, { waitUntil: 'networkidle0', timeout: 60000 });
+    await page.setContent(htmlContent, {
+      waitUntil: ["domcontentloaded"],
+      timeout: 60000
+    });
 
     // Optionally, disable loading of external resources
     await page.setRequestInterception(true);
