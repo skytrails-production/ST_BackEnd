@@ -132,7 +132,7 @@ const getAiResponseCustomPackage = async (prompt,data) => {
       aiResp,data
     }
     const end = performance.now(); // End time
-    // console.log(`Bot response time: ${(end - start).toFixed(2)} ms`);
+    console.log(`Bot response time: ${(end - start).toFixed(2)} ms`);
     return response;
   } catch (error) {
     console.error("Error communicating with OpenAI API:", error);

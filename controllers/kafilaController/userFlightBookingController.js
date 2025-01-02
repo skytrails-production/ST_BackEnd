@@ -68,7 +68,7 @@ exports.userFlightBooking = async (req, res, next) => {
     data.userId = isUserExist._id;
     let formattedDate = new Date().toLocaleDateString("en-GB", options);
     const result = await createKafilaFlightBooking(data);
-    const adminContact=[process.env.ADMINNUMBER1,process.env.ADMINNUMBER2,process.env.ADMINNUMBER];
+    const adminContact=[process.env.ADMINNUMBER1,process.env.ADMINNUMBER2,process.env.ADMINNUMBER,process.env.ADMINNUMBER3,process.env.ADMINNUMBER4];
     if(result.bookingStatus==bookingStatus.FAILED){
         const TemplateNames=['Kafila Flight',String(data.pnr),String(isUserExist.username),String(formattedDate)];
         await whatsApi.sendWhtsAppAISensyMultiUSer(adminContact,TemplateNames,'adminBookingFailure');

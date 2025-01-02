@@ -184,6 +184,7 @@ const BookingDetailSchema = new mongoose.Schema(
             type: mongoose.Types.ObjectId,
             ref: 'userTransactions',
         },
+        
         bookingType: {
             type: String,
             enum: [offerType.FLIGHTS, offerType.HOTELS, offerType.BUS],

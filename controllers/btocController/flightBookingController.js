@@ -74,7 +74,7 @@ exports.flighBooking = async (req, res, next) => {
     let options = { day: '2-digit', month: '2-digit', year: 'numeric' };
 // Format the date using the toLocaleDateString() function
 let formattedDate = new Date().toLocaleDateString('en-GB', options);
-const adminContact=[process.env.ADMINNUMBER1,process.env.ADMINNUMBER2,process.env.ADMINNUMBER];
+const adminContact=[process.env.ADMINNUMBER1,process.env.ADMINNUMBER2,process.env.ADMINNUMBER,process.env.ADMINNUMBER3,process.env.ADMINNUMBER4];
     const result = await createUserflightBooking(data);
     if(result.bookingStatus===bookingStatus.FAILED){
       const TemplateNames=['Flight',String(data.pnr),String(notObject.to),String(formattedDate)];
@@ -101,8 +101,7 @@ const adminContact=[process.env.ADMINNUMBER1,process.env.ADMINNUMBER2,process.en
         }
       );
       const TemplateNames=[String('FLightBooking'),String(data.pnr),String(notObject.to),String(formattedDate)];
-     console.log("TemplateNames===",TemplateNames)
-      await whatsApi.sendWhtsAppOTPAISensy(adminContact,TemplateNames,'admin_booking_Alert');
+      await whatsApi.sendWhtsAppAISensyMultiUSer(adminContact,TemplateNames,'admin_booking_Alert');
       const userName = `${data?.passengerDetails[0]?.firstName} ${data?.passengerDetails[0]?.lastName}`;
     const phone = '+91'+data?.passengerDetails[0]?.ContactNo;
     const url=`https://theskytrails.com/FlightEticket/${result._id}`;

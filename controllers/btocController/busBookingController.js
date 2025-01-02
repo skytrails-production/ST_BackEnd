@@ -117,7 +117,7 @@ exports.busBooking = async (req, res, next) => {
         String(notObject.to),
         String(formattedDate),
       ];
-      const adminContact=[process.env.ADMINNUMBER1,process.env.ADMINNUMBER2,process.env.ADMINNUMBER];
+      const adminContact=[process.env.ADMINNUMBER1,process.env.ADMINNUMBER2,process.env.ADMINNUMBER,process.env.ADMINNUMBER3,process.env.ADMINNUMBER4];
       await whatsApi.sendWhtsAppAISensyMultiUSer(
         adminContact,
         TemplateNames,
