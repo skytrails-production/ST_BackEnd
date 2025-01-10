@@ -117,12 +117,14 @@ exports.amdsFlightBooking = async (req, res, next) => {
       const depTime=new Date(data.airlineDetails[0].Origin.DepTime);
       const arrTime=new Date(data.airlineDetails[0].Destination.ArrTime);
       const userName = `${data?.passengerDetails[0]?.firstName} ${data?.passengerDetails[0]?.lastName}`;
-       const result=await airlineData.find({airlineCode:data.airlineDetails[0].Airline.AirlineCode});
+       const airlineDetails=await airlineData.find({airlineCode:data.airlineDetails[0].Airline.AirlineCode});
      const airLineName = data.airlineDetails[0].Airline.AirlineName || data.airlineDetails[0].Airline.AirlineCode
       const templates=[String(userName),String(data.pnr),String(airLineName),String(depDate.toLocaleDateString('en-GB', options)),String(depTime.toLocaleTimeString('en-GB')),String(arrTime.toLocaleTimeString('en-GB')),String(data.totalAmount)];
       await whatsApi.sendWhtsAppOTPAISensy(phone,templates,"flightBooking");
       await sendSMSUtils.sendSMSForFlightBooking(data);
-      await commonFunction.FlightBookingConfirmationMail(result);
+
+      // await commonFunction.FlightBookingConfirmationMail(airlineDetails);
+
       return res.status(statusCode.OK).send({statusCode: statusCode.OK, message: responseMessage.FLIGHT_BOOKED,result });
     }
     
@@ -307,7 +309,7 @@ exports.UpdateTicket1 = async (req, res, next) => {
 
 exports.UpdateTicket = async (req, res, next) => {
   try {
-    const { bookingId, firstName } = req.body;
+  const { bookingId, passengerDetails } = req.body;
     const isBookingExist = await findUserAmadeusFlightBooking({ _id: bookingId });
     
     if (!isBookingExist) {
@@ -321,7 +323,7 @@ exports.UpdateTicket = async (req, res, next) => {
     var finalResult ;
     let depDate, depTime, arrTime, templates;
 
-    for (const passenger of firstName) {
+    for (const passenger of passengerDetails) {
       const result = await updateUserAmadeusFlightBooking(
         {
           _id: bookingId,

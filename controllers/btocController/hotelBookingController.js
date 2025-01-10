@@ -50,24 +50,43 @@ const {
   countTotalhotelBooking,
   aggregatePaginateHotelBookingList,
 } = userhotelBookingModelServices;
+
+const {
+  userGrnBookingModelServices,
+} = require("../../services/btocServices/grnBookingServices");
+
+const {
+  createUserGrnBooking,
+  findUserGrnBooking,
+  findUserGrnBookingList,
+  getUserGrnBooking,
+  deleteUserGrnBooking,
+  userGrnBooking,
+  updateGrnBooking,
+  paginateUserGrnBooking,
+  countTotalUserGrnBooking,
+  aggrPagiGrnBookingList,
+} = userGrnBookingModelServices;
+
 exports.hotelBooking = async (req, res, next) => {
   try {
     const {
-      name,
-      email,
+      rating,
+      imageUrl,
+      roomName,
+      mapUrl,
       address,
       bookingId,
       CheckInDate,
-      HotelName,
+      hotelName,
       cityName,
       hotelId,
-      noOfPeople,
       country,
       CheckOutDate,
-      amount,
+      amount,      
+      refundable,
       room,
-      phoneNumber,
-      hotelName,
+      paxes
     } = req.body;
     const isUserExist = await findUser({
       _id: req.userId,
@@ -81,26 +100,27 @@ exports.hotelBooking = async (req, res, next) => {
     }
     const bookingObject = {
       userId: isUserExist._id,
-      name,
-      email,
+      rating,
+      imageUrl,
+      roomName,
+      mapUrl,
       address,
-      bookingId: bookingId,
+      bookingId,
       CheckInDate,
-      hotelName: HotelName,
+      hotelName,
       cityName,
       hotelId,
-      noOfPeople,
       country,
       CheckOutDate,
       amount,
+      refundable,
       room,
-      phone: phoneNumber,
-      hotelName,
+      paxes
     };
     const result = await createUserhotelBookingModel(bookingObject);
     if (result) {
-      const contactNo = "+91" + phoneNumber;
-      const url = `https://theskytrails.com/hotel`;
+      const contactNo = "+91" + paxes[0].phoneNo;
+      const url = `https://theskytrails.com/st-hotel`;
       const notObject = {
         userId: isUserExist._id,
         title: "Hotel Booking by User",
@@ -125,7 +145,7 @@ exports.hotelBooking = async (req, res, next) => {
       );
       const checkin = new Date(CheckInDate);
       const template = [
-        String(name),
+        String(paxes[0].firstName+paxes[0].lastName),
         String(hotelName),
         String(bookingId),
         String(hotelName),
@@ -240,3 +260,103 @@ exports.getUserHotelBookingById = async (req, res, next) => {
     return next(error);
   }
 };
+
+
+
+//pdf generation tpo by _id
+exports.getTboPdfGeneration = async (req, res , next ) =>  {
+  try {
+    const response = await findUserhotelBookingModel({
+      _id: req.params.bookingId,
+    });
+    if (!response) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        message: responseMessage.DATA_NOT_FOUND,
+      });
+    }
+
+    await commonFunction.HotelBookingConfirmationMail(response);
+
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: "Pdf Generate successfully.",
+      result: response,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+
+
+//getCombineHotelBooking
+
+exports.getCombineHotelBooking = async (req, res, next) => {
+
+  try{
+   
+  const { page, limit, search, fromDate, toDate } = req.query;
+
+  let result;
+    const isUserExist = await findUser({
+      _id :req.userId,
+      status: status.ACTIVE,
+    });
+    if (!isUserExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        message: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+    const body = {
+      page,
+      limit,
+      search,
+      fromDate,
+      toDate,
+      userId: isUserExist._id,
+    };
+
+
+
+    // Fetch bookings from three sources concurrently
+
+    // console.log(body,"data")
+        const [tboResponse, grnResponse, ] = await Promise.all([
+          aggregatePaginateHotelBookingList(body),
+          aggrPagiGrnBookingList(body),
+        ]);
+
+        result={
+          tbo:tboResponse.docs,
+          grn:grnResponse.docs
+        }
+
+        // Safely destructure or assign default values for each response
+    // const tbo = tboResponse && Array.isArray(tboResponse.docs) ? tboResponse : { docs: [], totalDocs: 0, totalPages: 0 };
+    // const grn = grnResponse && Array.isArray(grnResponse.docs) ? grnResponse : { docs: [], totalDocs: 0, totalPages: 0 };
+    
+    // // Combine docs and total counts
+    // result.docs = [tbo, grn];
+    // result.totalDocs = tbo.totalDocs + grn.totalDocs;
+    // result.totalTboPages = tbo.totalPages;
+    // result.totalGrnPages = grn.totalPages;
+    
+        // Send the combined result back
+        return res.status(statusCode.OK).send({
+          statusCode: statusCode.OK,
+          responseMessage: responseMessage.DATA_FOUND,
+          result: {
+            user: isUserExist._id,
+            result
+          },
+        });
+      } catch (error) {
+        // Handle errors gracefully
+        return next(error);
+      }
+
+
+
+}

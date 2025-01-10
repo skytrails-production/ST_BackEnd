@@ -89,7 +89,8 @@ const userGrnHotelBookingSchema=new mongoose.Schema({
         default:offerType.HOTELS
     },
     isHomeHotel:{type:Boolean,defaul:false},
-    homeHotelId:{type:mongoose.Types.ObjectId,ref:'hotelInventory'}
+    homeHotelId:{type:mongoose.Types.ObjectId,ref:'hotelInventory'},
+    bookingPartyType:{type:String,default:'GRN'}
 },{ timestamps: true });
 
 userGrnHotelBookingSchema.plugin(mongoosePaginate);

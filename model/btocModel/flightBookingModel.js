@@ -70,7 +70,7 @@ const BookingDetailSchema = new mongoose.Schema(
           type:Boolean,
         },
         bookingId: {
-          type:Number,
+          type:String,
         },
         pnr: {
           type: String,
@@ -163,6 +163,14 @@ const BookingDetailSchema = new mongoose.Schema(
               amount:{
                 type :Number,
               },
+              passportNo:{
+                type:String,
+                default:""
+              },
+              passportExpiry: {
+              type:String,
+              default:""
+            },
             },
           ],
         },

@@ -124,8 +124,14 @@ const amadeusFlightBookingData = new mongoose.Schema(
             DateOfBirth: {
               type: String,
             },
-            passportNo:String,
-            passportExpiry:String,
+            passportNo:{
+              type:String,
+              default:""
+            },
+            passportExpiry: {
+            type:String,
+            default:""
+          },
             email: {
               type: String,
               

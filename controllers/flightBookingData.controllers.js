@@ -313,17 +313,23 @@ exports.allAmaduesAgentBooking = async (req, res) => {
   }
 };
 
-exports.updateAmadeusTicket = async (req, res) => {
-  const { bookingId, passengerDetails } = req.body;
+exports.updateAmadeusTicket = async (req, res,next) => {
   try {
+  const { bookingId, passengerDetails } = req.body;
     const updatePromises = passengerDetails.map(async (passenger) => {
       const result = await amadeusFlightBookingData.updateOne(
-        { _id: bookingId, "passengerDetails._id": passenger._id },
+        { _id: bookingId,"passengerDetails.firstName":passengerDetails.firstName},
         { $set: { "passengerDetails.$.TicketNumber": passenger.TicketNumber } }
       );
       return result.modifiedCount;
     });
+    
     const updateResults = await Promise.all(updatePromises);
+    // const updatedBooking = await amadeusFlightBookingData.findOne({ _id: bookingId });
+
+    // if (!updatedBooking) {
+    //   throw new Error("Booking not found!");
+    // }
     const depDate = new Date(updateResults.airlineDetails[0].Origin.DepTime);
     const depTime = new Date(updateResults.airlineDetails[0].Origin.DepTime);
     var arrTime = new Date(updateResults.airlineDetails[0].Origin.DepTime);
@@ -361,6 +367,7 @@ exports.updateAmadeusTicket = async (req, res) => {
     actionCompleteResponse(res, updateResults, "update Ticket");
   } catch (error) {
     sendActionFailedResponse(res, {}, error.message);
+    return next(error)
   }
 };
 

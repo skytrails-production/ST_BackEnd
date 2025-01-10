@@ -14,55 +14,38 @@ const hotelBookingDetailSchema = new mongoose.Schema(
             type: Schema.Types.ObjectId,
             ref: "userBtoC",
         },
-        name: {
-            type: String,
-            required: [true, 'Name is required'],
-        },
-        phone:
-        {      
-                type: String
-            },
-        
-        email: {
-            type: String,
-        },
-        address: {
-            type: String,
-        },
-        bookingId: {
-            type: Number,
-        },
-        CheckInDate: {
-            type: String,
-        },
-        hotelName: {
-            type: String,
-        },
-        cityName: {
-            type: String,
-        },
-        hotelId: {
-            type: Number,
-        },
-        noOfPeople: {
-            type: Number,
-        },
-        room:{
-            type:Number
-        },
-        country: {
-            type: String,
-        },
-        
-        hotelName: {
-            type: String,
-        },
-        
-        CheckOutDate: {
-            type: String,
-        },
-        amount: {
-            type: Number,
+        rating:Number,
+        imageUrl:String,
+        roomName:String,
+        mapUrl:String,       
+        address: String,
+        bookingId: String,
+        CheckInDate:String,
+        hotelName: String,
+        cityName: String,
+        hotelId: Number,
+        room:Number,
+        country: String,               
+        CheckOutDate:  String,
+        amount:Number,
+        paxes:[
+            {
+                title: String,
+                firstName:String,
+                lastName:String,
+                phoneNo:String,
+                paxType:Number,
+                email:String,
+                panNo:String,
+                age:Number,
+                leadPassenger:Boolean,
+                passportNumber:String,
+                passportExpire:String,
+            }
+        ],
+        refundable:{
+            type:String,
+            default:""
         },
         status: {
             type: String,
@@ -81,7 +64,8 @@ const hotelBookingDetailSchema = new mongoose.Schema(
             type:String,
             enum: [offerType.FLIGHTS, offerType.HOTELS, offerType.BUS],
             default:offerType.HOTELS
-        }
+        },
+        bookingPartyType:{type:String,default:'TBO'},
     },
     { timestamps: true }
 )

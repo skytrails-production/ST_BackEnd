@@ -126,6 +126,7 @@ const getAiResponseCustomPackage = async (prompt,data) => {
       // max_tokens: 16384,
       // stream:true
     });
+    // console.log("completion=====1111",completion)
       // console.log("completion===",completion.id,completion.created,completion.system_fingerprint);
     let aiResp=completion.choices[0].message.content;
     const response={

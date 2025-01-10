@@ -1,33 +1,33 @@
 const formatDate = (dateString) => {
-    const options = {
-      hour: 'numeric',
-      minute: 'numeric',
-      hour12: true,
-      weekday: 'short',
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    };
-  
-    const date = new Date(dateString);
-    return date.toLocaleString('en-US', options);
-  };
-  const formatDateonlyDate = (dateString) => {
-    const options = {
-      weekday: 'short',
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    };
-  
-    const date = new Date(dateString);
-    return date.toLocaleString('en-US', options);
+  const options = {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+    weekday: "short",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
   };
 
-function flightMail(to){
-    const name = `${to?.passengerDetails[0]?.firstName} ${to?.passengerDetails[0]?.lastName}`;
+  const date = new Date(dateString);
+  return date.toLocaleString("en-US", options);
+};
+const formatDateonlyDate = (dateString) => {
+  const options = {
+    weekday: "short",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  };
 
-    const design=`<!DOCTYPE html>
+  const date = new Date(dateString);
+  return date.toLocaleString("en-US", options);
+};
+
+function flightMail(to) {
+  const name = `${to?.passengerDetails[0]?.firstName} ${to?.passengerDetails[0]?.lastName}`;
+
+  const design = `<!DOCTYPE html>
 
     <html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
     <head>
@@ -240,7 +240,11 @@ function flightMail(to){
     <td class="pad">
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 18px; color: #555555; line-height: 1.5;">
-    <p style="margin: 0; font-size: 15px; text-align: center; mso-line-height-alt: 22.5px;"><span style="color:#0d0d32;"><strong><span style="font-size:15px;"><em><span style="">Your trip to ${to?.airlineDetails[to?.airlineDetails.length-1]?.Destination?.CityName} is scheduled for ${formatDate(to?.airlineDetails[0]?.Origin?.DepTime)} check in for yourself and you travelling companions online</span></em></span></strong></span></p>
+    <p style="margin: 0; font-size: 15px; text-align: center; mso-line-height-alt: 22.5px;"><span style="color:#0d0d32;"><strong><span style="font-size:15px;"><em><span style="">Your trip to ${
+      to?.airlineDetails[to?.airlineDetails.length - 1]?.Destination?.CityName
+    } is scheduled for ${formatDate(
+    to?.airlineDetails[0]?.Origin?.DepTime
+  )} check in for yourself and you travelling companions online</span></em></span></strong></span></p>
     <p style="margin: 0; font-size: 15px; text-align: center; mso-line-height-alt: 22.5px;"><span style="color:#0d0d32;"><strong><span style="font-size:15px;"><em><span style=""> right way to make your trip smoother, make most of your trip by looking into the additional services we </span></em><em><span style="">provide below .</span></em></span></strong></span></p>
     </div>
     </div>
@@ -303,7 +307,9 @@ function flightMail(to){
     <td class="pad">
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
-    <p style="margin: 0; font-size: 16px; text-align: center; mso-line-height-alt: 19.2px;"><span style="font-size:18px;color:#000000;">Your first trip ${to.pnr} departs from ${to.airlineDetails[0]?.Origin?.CityName}</span></p>
+    <p style="margin: 0; font-size: 16px; text-align: center; mso-line-height-alt: 19.2px;"><span style="font-size:18px;color:#000000;">Your first trip ${
+      to.pnr
+    } departs from ${to.airlineDetails[0]?.Origin?.CityName}</span></p>
     </div>
     </div>
     </td>
@@ -332,8 +338,12 @@ function flightMail(to){
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 21.6px; color: #555555; line-height: 1.8;">
     <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;color:#000000;">From </span></p>
-    <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;color:#000000;">${formatDate(to?.airlineDetails[0]?.Origin?.DepTime)}</span></p>
-    <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;color:#000000;">${to.airlineDetails[0]?.Origin?.CityName}</span></p>
+    <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;color:#000000;">${formatDate(
+      to?.airlineDetails[0]?.Origin?.DepTime
+    )}</span></p>
+    <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;color:#000000;">${
+      to.airlineDetails[0]?.Origin?.CityName
+    }</span></p>
     </div>
     </div>
     </td>
@@ -358,8 +368,12 @@ function flightMail(to){
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 21.6px; color: #555555; line-height: 1.8;">
     <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;color:#000000;">To </span></p>
-    <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;color:#000000;">${formatDate(to?.airlineDetails[to.airlineDetails.length-1]?.Destination?.ArrTime)}</span></p>
-    <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;color:#000000;">${to?.airlineDetails[to?.airlineDetails.length-1]?.Destination?.CityName}</span></p>
+    <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;color:#000000;">${formatDate(
+      to?.airlineDetails[to.airlineDetails.length - 1]?.Destination?.ArrTime
+    )}</span></p>
+    <p style="margin: 0; font-size: 18px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;color:#000000;">${
+      to?.airlineDetails[to?.airlineDetails.length - 1]?.Destination?.CityName
+    }</span></p>
     </div>
     </div>
     </td>
@@ -476,13 +490,12 @@ function flightMail(to){
     </tbody>
     </table><!-- End -->
     </body>
-    </html>`
-    return design;
+    </html>`;
+  return design;
 }
 
-
-function busMail(to){
-    return `<!DOCTYPE html>
+function busMail(to) {
+  return `<!DOCTYPE html>
 
     <html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
     <head>
@@ -769,7 +782,9 @@ function busMail(to){
     <td class="pad">
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 21.6px; color: #555555; line-height: 1.8;">
-    <p style="margin: 0; font-size: 12px; text-align: center; mso-line-height-alt: 21.6px;"><span style="color:#0a0909;"><strong><span style="font-size:16px;">From : </span></strong><span style="font-size:16px;">${to.origin}</span><span style="font-size:16px;"> </span></span></p>
+    <p style="margin: 0; font-size: 12px; text-align: center; mso-line-height-alt: 21.6px;"><span style="color:#0a0909;"><strong><span style="font-size:16px;">From : </span></strong><span style="font-size:16px;">${
+      to.origin
+    }</span><span style="font-size:16px;"> </span></span></p>
     </div>
     </div>
     </td>
@@ -793,7 +808,9 @@ function busMail(to){
     <td class="pad">
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 21.6px; color: #555555; line-height: 1.8;">
-    <p style="margin: 0; font-size: 12px; text-align: center; mso-line-height-alt: 21.6px;"><span style="color:#0a0909;"><strong><span style="font-size:16px;">To : </span></strong><span style="font-size:16px;">${to.destination}</span></span></p>
+    <p style="margin: 0; font-size: 12px; text-align: center; mso-line-height-alt: 21.6px;"><span style="color:#0a0909;"><strong><span style="font-size:16px;">To : </span></strong><span style="font-size:16px;">${
+      to.destination
+    }</span></span></p>
     </div>
     </div>
     </td>
@@ -850,7 +867,9 @@ function busMail(to){
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 21.6px; color: #555555; line-height: 1.8;">
     <p style="margin: 0; font-size: 12px; text-align: left; mso-line-height-alt: 28.8px;"><span style="font-size:16px;"><strong><span style="color:#000000;">BUS NAME</span></strong></span></p>
-    <p style="margin: 0; font-size: 12px; text-align: left; mso-line-height-alt: 25.2px;"><span style="font-size:14px;">${to.busType}</span></p>
+    <p style="margin: 0; font-size: 12px; text-align: left; mso-line-height-alt: 25.2px;"><span style="font-size:14px;">${
+      to.busType
+    }</span></p>
     </div>
     </div>
     </td>
@@ -863,7 +882,9 @@ function busMail(to){
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 21.6px; color: #555555; line-height: 1.8;">
     <p style="margin: 0; font-size: 12px; mso-line-height-alt: 21.6px;"><span style="color:#0a0909;"><strong><span style="font-size:16px;">PNR</span></strong></span></p>
-    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 25.2px;"><span style="font-size:14px;">${to.pnr}</span></p>
+    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 25.2px;"><span style="font-size:14px;">${
+      to.pnr
+    }</span></p>
     </div>
     </div>
     </td>
@@ -877,7 +898,9 @@ function busMail(to){
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 21.6px; color: #555555; line-height: 1.8;">
     <p style="margin: 0; font-size: 12px; mso-line-height-alt: 21.6px;"><span style="color:#0a0909;"><strong><span style="font-size:16px;">BOARDING TIME</span></strong></span></p>
-    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 25.2px;"><span style="font-size:14px;">${formatDate(to?.departureTime)}</span></p>
+    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 25.2px;"><span style="font-size:14px;">${formatDate(
+      to?.departureTime
+    )}</span></p>
     </div>
     </div>
     </td>
@@ -890,7 +913,9 @@ function busMail(to){
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 21.6px; color: #555555; line-height: 1.8;">
     <p style="margin: 0; font-size: 12px; mso-line-height-alt: 21.6px;"><span style="color:#0a0909;"><strong><span style="font-size:16px;">MEMBERS</span></strong></span></p>
-    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 25.2px;"><span style="font-size:14px;">${to.noOfSeats}</span></p>
+    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 25.2px;"><span style="font-size:14px;">${
+      to.noOfSeats
+    }</span></p>
     </div>
     </div>
     </td>
@@ -985,24 +1010,23 @@ function busMail(to){
     </tbody>
     </table><!-- End -->
     </body>
-    </html>`
+    </html>`;
 }
 
-function hotelMail(to){
+function hotelMail(to) {
+  const checkInDate = new Date(to.CheckInDate);
+  const checkOutDate = new Date(to.CheckOutDate);
 
-    const checkInDate = new Date(to.CheckInDate);
-    const checkOutDate = new Date(to.CheckOutDate);
+  // Calculate the difference in milliseconds
+  const differenceInTime = checkOutDate.getTime() - checkInDate.getTime();
 
-    // Calculate the difference in milliseconds
-    const differenceInTime = checkOutDate.getTime() - checkInDate.getTime();
+  // Convert milliseconds to days
+  const differenceInDays = differenceInTime / (1000 * 3600 * 24);
 
-    // Convert milliseconds to days
-    const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+  // Display the number of nights
+  const numberOfNights = Math.floor(differenceInDays);
 
-    // Display the number of nights
-    const numberOfNights = Math.floor(differenceInDays);
-
-    return`<!DOCTYPE html>
+  return `<!DOCTYPE html>
 
     <html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
     <head>
@@ -1241,7 +1265,8 @@ function hotelMail(to){
     <td class="pad">
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
-    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="color:#ffffff;">${to.noOfPeople} Guests</span></p>
+    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="color:#ffffff;">${
+      to.paxes.length} Guests</span></p>
     </div>
     </div>
     </td>
@@ -1263,7 +1288,9 @@ function hotelMail(to){
     <td class="pad" style="padding-left:10px;padding-right:10px;padding-top:10px;">
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
-    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="color:#ffffff;">${to.name} (Primary Guest)</span></p>
+    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="color:#ffffff;">${
+      to.paxes[0].firstName
+    } (Primary Guest)</span></p>
     </div>
     </div>
     </td>
@@ -1274,7 +1301,9 @@ function hotelMail(to){
     <td class="pad">
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
-    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="color:#ffffff;">${to.email},</span></p>
+    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="color:#ffffff;">${
+      to.paxes[0].email
+    },</span></p>
     </div>
     </div>
     </td>
@@ -1285,7 +1314,9 @@ function hotelMail(to){
     <td class="pad" style="padding-bottom:10px;padding-left:10px;padding-right:10px;">
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
-    <p style="margin: 0; mso-line-height-alt: 14.399999999999999px;"><span style="color:#ffffff;">${to.phone}</span></p>
+    <p style="margin: 0; mso-line-height-alt: 14.399999999999999px;"><span style="color:#ffffff;">${
+      to.paxes[0].phoneNo
+    }</span></p>
     </div>
     </div>
     </td>
@@ -1309,7 +1340,9 @@ function hotelMail(to){
     <td class="pad">
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
-    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="font-size:15px;color:#ffffff;">${formatDateonlyDate(to.CheckInDate)}</span></p>
+    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="font-size:15px;color:#ffffff;">${formatDateonlyDate(
+      to.CheckInDate
+    )}</span></p>
     </div>
     </div>
     </td>
@@ -1344,7 +1377,9 @@ function hotelMail(to){
     <td class="pad">
     <div style="font-family: sans-serif">
     <div class="" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
-    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="font-size:15px;color:#ffffff;">${formatDateonlyDate(to.CheckInDate)}</span></p>
+    <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="font-size:15px;color:#ffffff;">${formatDateonlyDate(
+      to.checkOutDate
+    )}</span></p>
     </div>
     </div>
     </td>
@@ -1449,11 +1484,11 @@ function hotelMail(to){
     </tbody>
     </table><!-- End -->
     </body>
-    </html>`
+    </html>`;
 }
 
-function otpMail(otp){
-    return `<!DOCTYPE html>
+function otpMail(otp) {
+  return `<!DOCTYPE html>
 
     <html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
     <head>
@@ -1635,12 +1670,11 @@ function otpMail(otp){
     </tbody>
     </table><!-- End -->
     </body>
-    </html>`
+    </html>`;
 }
 
-
-function welcomeMail(to,userName,pass){
-    return `<!DOCTYPE html>
+function welcomeMail(to, userName, pass) {
+  return `<!DOCTYPE html>
 
     <html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
     <head>
@@ -1823,12 +1857,11 @@ function welcomeMail(to,userName,pass){
     </tbody>
     </table><!-- End -->
     </body>
-    </html>`
+    </html>`;
 }
 
-
-function welcomeAgentMail(to,pass){
-    return `<!DOCTYPE html>
+function welcomeAgentMail(to, pass) {
+  return `<!DOCTYPE html>
     <html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
     <head>
     <title></title>
@@ -2305,15 +2338,13 @@ function welcomeAgentMail(to,pass){
     </tbody>
     </table><!-- End -->
     </body>
-    </html>`
-
+    </html>`;
 }
 
-
-function ssdcMail(to){
-
-    const isRomania = to.country === "ROMANIA";
-      const mailData=isRomania ?` <div class="container">
+function ssdcMail(to) {
+  const isRomania = to.country === "ROMANIA";
+  const mailData = isRomania
+    ? ` <div class="container">
       <h1>Confirmation of Interview Schedule</h1>
       <p>Dear ${to.name},</p>
       <p>We appreciate your interest in joining our team and taking the time to register for the upcoming interview.</p>
@@ -2330,10 +2361,11 @@ function ssdcMail(to){
       </ul>
       <p>Please arrive at least 15 minutes prior to your scheduled time. Should you encounter any unforeseen circumstances or need to reschedule, please contact us at least 24 hours in advance.</p>
       <p>We look forward to meeting you and discussing the potential opportunities within our organization. Should you have any questions or need further information, please do not hesitate to reach out.</p>
-    </div>`:`<div class="container"><h1>Confirmation of interview to be declared.</h1>
+    </div>`
+    : `<div class="container"><h1>Confirmation of interview to be declared.</h1>
     <p>Dear ${to.name},</p>
     <p>Thank you for registering with us. We will be in touch with you shortly.</p></div>`;
-    return `<html>
+  return `<html>
     <head>
       <style>
         body {
@@ -2360,22 +2392,16 @@ function ssdcMail(to){
     <body>
      ${mailData}
     </body>
-  </html>`
-
+  </html>`;
 }
 
-
-
-function packageLandingMail(to){
-
-    
-
-      const mailData=`<div class="container">
+function packageLandingMail(to) {
+  const mailData = `<div class="container">
       <h1>Packaging Booking Enquiry</h1>
       <p>Dear ${to.name},</p>
       <p>Thank you for reaching out to us regarding your packaging needs. We have received your enquiry and appreciate your interest in our services.</p>
       <p>Thank you for registering with us. We will be in touch with you shortly.</p></div>`;
-    return `<html>
+  return `<html>
     <head>
       <style>
         body {
@@ -2402,27 +2428,23 @@ function packageLandingMail(to){
     <body>
      ${mailData}
     </body>
-  </html>`
-
+  </html>`;
 }
 
+function hotelGrnMail(to) {
+  const checkInDate = new Date(to.CheckInDate);
+  const checkOutDate = new Date(to.CheckOutDate);
 
+  // Calculate the difference in milliseconds
+  const differenceInTime = checkOutDate.getTime() - checkInDate.getTime();
 
-function hotelGrnMail(to){
+  // Convert milliseconds to days
+  const differenceInDays = differenceInTime / (1000 * 3600 * 24);
 
-    const checkInDate = new Date(to.CheckInDate);
-    const checkOutDate = new Date(to.CheckOutDate);
+  // Display the number of nights
+  const numberOfNights = Math.floor(differenceInDays);
 
-    // Calculate the difference in milliseconds
-    const differenceInTime = checkOutDate.getTime() - checkInDate.getTime();
-
-    // Convert milliseconds to days
-    const differenceInDays = differenceInTime / (1000 * 3600 * 24);
-
-    // Display the number of nights
-    const numberOfNights = Math.floor(differenceInDays);
-
-    return`<!DOCTYPE html>
+  return `<!DOCTYPE html>
 
     <html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
     <head>
@@ -2829,11 +2851,11 @@ function hotelGrnMail(to){
     </table><!-- End -->
     </body>
     </html>
-    `
+    `;
 }
 
 function ResetPassword(userId) {
-    return `<!DOCTYPE html>
+  return `<!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -2913,10 +2935,8 @@ function ResetPassword(userId) {
     </html>`;
 }
 
-
-
 function SubAdminResetPassword(token) {
-    return `<html>
+  return `<html>
   <head>
     <style>
       body {
@@ -3005,10 +3025,9 @@ function SubAdminResetPassword(token) {
 </html>
 `;
 }
-    
 
-function RelationShipManagerResetPassword(token){
-    return `<!DOCTYPE html>
+function RelationShipManagerResetPassword(token) {
+  return `<!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -3085,14 +3104,11 @@ function RelationShipManagerResetPassword(token){
             <p>Thank you,<br>The HawaiYatra PVT. LTD. Team</p>
         </div>
     </body>
-    </html>`
-
+    </html>`;
 }
 
-
-
-function InventoryPartnerResetPassword(token){
-    return `<!DOCTYPE html>
+function InventoryPartnerResetPassword(token) {
+  return `<!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -3169,13 +3185,11 @@ function InventoryPartnerResetPassword(token){
             <p>Thank you,<br>The HawaiYatra PVT. LTD. Team</p>
         </div>
     </body>
-    </html>`
-
+    </html>`;
 }
 
-
-function offerUpdateSubscription(personalizedGreeting,email){
-    return `<html>
+function offerUpdateSubscription(personalizedGreeting, email) {
+  return `<html>
   <head>
     <style>
       body {
@@ -3262,7 +3276,22 @@ function offerUpdateSubscription(personalizedGreeting,email){
       </div>
     </div>
   </body>
-</html>`
+</html>`;
 }
 
-module.exports = {flightMail, busMail, hotelMail, otpMail, welcomeMail,welcomeAgentMail ,ssdcMail, packageLandingMail,hotelGrnMail,ResetPassword, SubAdminResetPassword ,RelationShipManagerResetPassword,InventoryPartnerResetPassword,offerUpdateSubscription};
+module.exports = {
+  flightMail,
+  busMail,
+  hotelMail,
+  otpMail,
+  welcomeMail,
+  welcomeAgentMail,
+  ssdcMail,
+  packageLandingMail,
+  hotelGrnMail,
+  ResetPassword,
+  SubAdminResetPassword,
+  RelationShipManagerResetPassword,
+  InventoryPartnerResetPassword,
+  offerUpdateSubscription,
+};

@@ -70,48 +70,29 @@ const {
 } = forumQueServices;
 const notifications = [
     {
-    message: `🎆New Year par 'Manali' Chale?🤓`,
-    body: `Bag Pack karo... Plan hum kar lenge😎✌🏻`,
+    message: ` Office se bore ho gye na!!🥺`,
+    body: `Trip par chale?🤩✈`,
   },
   {
-    message: `Your bus is ready to roll! 🚌💨`,
-    body: `Pack your bags, the adventure starts soon!`,
+    message: `Sirf Plan hi karna hai ?`,
+    body: `Ya kahin ghumne chaloge bhi🤬`,
   },
 
-  // {
-  //   message: `Feel the Tum Jo Aaye Magic!`,
-  //   body: `Just like Tum Jo Aaye in Once Upon A Time in Mumbaai, make this Karwachauth special with a dreamy trip! Save ₹500 on your next booking`,
-  // },
   {
-    message: `Winter aa gyi hai🥶 Ladakh Chalo na🏍️`,
-    body: `The Skytrails' par Mast offer hai😎`,
+    message: `Dost ke papa nahi maan rahe?😠`,
+    body: `Solo Trip book Kar du??😎✈`,
   },
  
   {
-    message: `New Year’s resolution: Travel more!`,
-    body:`Just remember to save the ‘overpacking’ for your suitcase, not your plans!" 🧳✨`
+    message: `Long distance bestie se milna hai??🫂`,
+    body:`Bus Ticket book Kar du?🚌🤩✨`
   },
   {
-    message: `Great news! 🎉Enjoy 20% OFF on your next bus booking! `,
-    body: `Time to hit the road and save some cash! 🚌💸`,
+    message: `Tarikh pe Tarikh📆 
+`,
+    body: 'Ghumne chalna bhi hai ya Tarikh hi deni hai??😡'
   },
-//   {
-//     message: `Thara Paisa 💸💵`,
-//     body: `Thari Daulat 🤑
-// Thara Hotel 🏟️
-// Thari Flight ✈️
-// Thara Deal 🤗`,
-//   },
- 
-  // {
-  //   message: `Fly with TheSkyTrails`,
-  //   body: `Travel smart, fly affordable. Only with TheSkyTrails!`,
-  // },
- 
-  // {
-  //   message: `Suna Kya?`,
-  //   body: `TheSkyTrails is offering festive seasons deals.`,
-  // },
+
 ];
 
 const lastNotificationSent = new Map();
@@ -126,8 +107,8 @@ var taskPromotionalNotification = cron.schedule("45 09 * * *",async () => {
     });
     for (const user of users) {
       try { 
-        const notificationMessage = `Kitna kam Kroge yaar??🤔`;
-        const messageBody = `Ek Trip to Banti hai✈️🚌🪂✨`;
+        const notificationMessage = `6 mahine se kahin ghumne nahi gye ho na?✈`;
+        const messageBody = `Sab Pata chal raha hai🫦`;
       const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
         const lastSent = lastNotificationSent.get(user._id);
         if (lastSent && Date.now() - lastSent < 3600000) {
@@ -164,12 +145,12 @@ var taskPromotionalNotification = cron.schedule("45 09 * * *",async () => {
 taskPromotionalNotification.start(); // Start the task2
 
 // Define and schedule task2 separately
-var taskPlatformNotification = cron.schedule("20 17 * * *",
+var taskPlatformNotification = cron.schedule("55 17 * * *",
   async () => {
     try {  
       // 'contactNo.mobile_number': { $in: ['8115199076', '9135219071'] },
       const users = await userList({
-        // 'phone.mobile_number': { $in: ['8802737860','8115199076'] },
+        // 'phone.mobile_number': { $in: ['9135211234','8115199076','9135219071','9801540172'] },
         status: status.ACTIVE,
         deviceToken: { $exists: true, $ne: "" },
       });
@@ -180,16 +161,16 @@ var taskPlatformNotification = cron.schedule("20 17 * * *",
           const notificationMessage = `Koi bhi safar ho, hum hain saath! 🌟`;
           // Book with TheSkyTrails – your wallet-friendly flight expert!🌟
       const messageBody = `Har musafir ki khwahish puri karne ka waqt aa gaya! 🚀`;
-          await pushNotificationAfterDepricate(
+        await pushNotificationAfterDepricate(
             user.deviceToken,
             notificationMessage,
             messageBody,
             // imageurl
           );
-         
+        //  console.log("sent===>>",sent)
         } catch (pushError) {
           // Handle if any user is not registered
-          
+          // console.log("pushError===",pushError)
           // continue to the next user even if one fails
           continue;
         }
@@ -197,7 +178,7 @@ var taskPlatformNotification = cron.schedule("20 17 * * *",
       // Stop the cron job after execution
       taskPlatformNotification.stop();
     } catch (error) {
-      // console.log("error when running task2", error);
+      console.log("error when running task2", error);
     }
   },
   {

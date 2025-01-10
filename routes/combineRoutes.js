@@ -21,4 +21,6 @@ module.exports = function (app) {
   app.get('/skyTrails/api/amadeus/user/combine/getAllBookingHistoryAggregate',[authJwt.verifcationToken],combineBookingDetailsCOntroller.getCombineFlightBookingRespAggregate);
   app.get('/skyTrails/api/combine/combieOffers',combineOffer.getCombineOffer);
   app.get('/skyTrails/api/combine/combieOffers/:id',combineOffer.getOfferById)
+
+
 };

@@ -103,4 +103,10 @@ module.exports = function (app) {
    app.post('/skyTrails/api/admin/sendBusBookingUpdate',busBookingController.sendUpdateToUser);
    app.post('/skyTrails/api/admin/sendFlightBookingUpdate',flightBookingController.sendUpdateToUser);
 app.get('/skyTrails/api/user/getFaqRating',userRatingController.getCombineRatingFAQ)
+
+
+//getTboPdfGeneration
+app.get('/skytrails/api/tbo/hotel/generatepdf/:bookingId', hotelBookingController.getTboPdfGeneration);
+
+app.get('/skytrails/api/hotel/user/getallbookinghisotry', [authJwt.verifcationToken], hotelBookingController.getCombineHotelBooking);
 }
