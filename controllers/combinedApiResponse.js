@@ -1647,7 +1647,7 @@ exports.combineTvoKafila = async (req, res, next) => {
     const getToken = await kafilaToken();
     data.KafilaToken = getToken.TokenId;
 
-    console.log("hello")
+    // console.log("hello")
 
     const [tvoResponse, KafilaResponse] = await Promise.all([
       axios.post(api1Url, data).catch((error) => {
@@ -1667,7 +1667,7 @@ exports.combineTvoKafila = async (req, res, next) => {
         : [];
     tvoArray = removeDuplicates(tvoArray, `FlightNumber`);
 
-    let kafilaArray = KafilaResponse?.data?.Schedules[0] || [];
+    let kafilaArray = KafilaResponse?.data?.Schedules?.[0] || [];
     if (tvoArray?.length === 0 && kafilaArray?.length > 0) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,

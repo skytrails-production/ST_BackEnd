@@ -11,6 +11,7 @@ const paxScehma = new mongoose.Schema({
   age:Number,
   name: String,
   pax_id: Number,
+  paxType: String,
   surname: String,
   title: {
     type: String,

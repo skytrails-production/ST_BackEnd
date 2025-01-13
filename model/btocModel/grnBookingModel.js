@@ -50,6 +50,7 @@ const userGrnHotelBookingSchema=new mongoose.Schema({
         name: String,
         pax_id: Number,
         surname: String,
+        paxType:String,
         title: {
           type: String,
           enum: ["Mr.", "Ms.", "Mrs.", "Mstr."]
