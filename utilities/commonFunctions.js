@@ -6344,7 +6344,7 @@ module.exports = {
                                   <td class="pad">
                                     <div style="font-family: sans-serif">
                                       <div class style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;">
-                                        <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="font-size:18px;color:#ffffff;">Package Name:${to.packageId.pakage_title}</span></p>
+                                        <p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"><span style="font-size:18px;color:#ffffff;">Package Name:${to.packageId.title}</span></p>
                                       </div>
                                     </div>
                                   </td>

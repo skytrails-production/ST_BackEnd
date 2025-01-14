@@ -1,6 +1,7 @@
 const responseMessage = require("../../utilities/responses");
 const statusCode = require("../../utilities/responceCode");
 const { internationl } = require("../../model/international.model");
+const { SkyTrailsPackageModel } = require("../../model/holidayPackage.model")
 const status = require("../../enums/status");
 const moment = require('moment');
 const transactionStatus=require("../../enums/paymentStatus");
@@ -107,7 +108,8 @@ exports.packageBooking = async (req, res, next) => {
         responseMessage: responseMessage.USERS_NOT_FOUND,
       });
     }
-    const isPackageExist = await internationl.findOne({ _id: packageId });
+
+    const isPackageExist = await SkyTrailsPackageModel .findOne({ _id: packageId });
     if(!isPackageExist){
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
@@ -132,13 +134,13 @@ exports.packageBooking = async (req, res, next) => {
     const notObject = {
       userId: isUserExist._id,
       title: "Holiday package Enquiry",
-      description: `New package enquiry for ${isPackageExist.pakage_title} on our platform🙂`,
+      description: `New package enquiry for ${isPackageExist.title} on our platform🙂`,
       from: "holidayEnquiry",
       to: fullName,
     };
     await createPushNotification(notObject);
     const contactNo = "+91" + phone;
-    const url = `https://theskytrails.com/holidaypackages/packagedetails/${packageId}`;
+    const url = `https://theskytrails.com/holidaypackages/packagedetails?packageId=${packageId}`;
     const populatedResult = await findPackagePopulate({ _id: result._id });
     await sendSMS.sendSMSPackageEnquiry(phone, fullName);
     await whatsApi.sendMessageWhatsApp(
@@ -149,7 +151,7 @@ exports.packageBooking = async (req, res, next) => {
     );
     await whatsApi.sendWhatsAppMsgAdminPackage(
       AdminNumber,
-      isPackageExist.pakage_title,
+      isPackageExist.title,
       "adminnotification"
     );
     
@@ -274,7 +276,7 @@ exports.packageBookNow = async (req, res, next) => {
         responseMessage: responseMessage.USERS_NOT_FOUND,
       });
     }
-    const isPackageExist = await internationl.findOne({ _id: packageId });
+    const isPackageExist = await SkyTrailsPackageModel.findOne({ _id: packageId });
     if (!isPackageExist) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
@@ -307,7 +309,7 @@ exports.packageBookNow = async (req, res, next) => {
     };
     const result = await createPackageBookNow(object);
     const contactNo = result.contactNumber.countryCode+result.contactNumber.phone;
-    const url = `https://theskytrails.com/holidayInfo/${packageId}`;
+    const url = `https://theskytrails.com/holidaypackages/packagedetails?packageId=${packageId}`;
     await sendSMS.sendSMSPackageEnquiry(phone, fullName);
     await whatsApi.sendMessageWhatsApp(
       contactNo,

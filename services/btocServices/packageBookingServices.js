@@ -46,7 +46,7 @@ const packageBookingModelServices = {
             page: Number(page) || 1,
             limit: Number(limit) || 8,
             sort: { createdAt: -1 },
-            populate: { path: 'packageId', model: 'internationls',select: 'country destination pakage_title pakage_amount' } 
+            populate: { path: 'packageId', model: 'SkyTrailsPackages',select: 'country destination title packageAmount' } 
         };
         const data = await packageBookingModel.paginate(query, options);
         return data;
