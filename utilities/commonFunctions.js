@@ -970,7 +970,7 @@ module.exports = {
     const page = await browser.newPage();
   
     // await page.goto('https://developer.chrome.com/');
-   await page.setDefaultNavigationTimeout(timeOutTime); // Set a 60-second timeout
+   await page.setDefaultNavigationTimeout(puppeteerTimeOut); // Set a 60-second timeout
    await page.setDefaultTimeout(puppeteerTimeOut)
 
     // Save the PDF to a temporary file
