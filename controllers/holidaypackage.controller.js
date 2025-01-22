@@ -793,14 +793,14 @@ exports.holidayPackageFilterByAmount = async (req, res) => {
     let query = { is_active: 1 };
 
     // Determine the range based on the `amount` parameter
-    if (parsedAmount === 100000) {
+    if (parsedAmount === 50000) {
       query["packageAmount.amount"] = { $lt: parsedAmount };
-    } else if (parsedAmount === 200000) {
+    } else if (parsedAmount === 100000) {
+      query["packageAmount.amount"] = { $gt: 49999, $lt: parsedAmount };
+    } else if (parsedAmount === 150000) {
       query["packageAmount.amount"] = { $gt: 99999, $lt: parsedAmount };
-    } else if (parsedAmount === 300000) {
-      query["packageAmount.amount"] = { $gt: 199999, $lt: parsedAmount };
-    } else if (parsedAmount === 400000) {
-      query["packageAmount.amount"] = { $gt: 299999 };
+    } else if (parsedAmount === 200000) {
+      query["packageAmount.amount"] = { $gt: 149999 };
     } else {
       return res
         .status(400)
