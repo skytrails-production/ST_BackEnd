@@ -2434,8 +2434,7 @@ module.exports = {
     const name = `${to.passenger[0]?.title} ${to.passenger[0]?.firstName} ${to.passenger[0]?.lastName}`;
     // Define your HTML content with nested elements
     const htmlContent = `<!DOCTYPE html>
-      <html lang="en">
-      
+      <html lang="en">      
       <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -2575,17 +2574,8 @@ module.exports = {
               </div>
               `
                 )
-                .join("")}
-      
-      
-      
-      
-      
-      
-      
-      
+                .join("")}      
             </div>
-
             <!-- Bus Detail start -->
 <div style="width: 100%; float: left; margin-top: 15px; border: 1px solid #D6D8E7; box-sizing: border-box;">
 
@@ -2661,9 +2651,7 @@ module.exports = {
   </div>
 
 </div>
-<!-- Bus Detail end -->
-
-      
+<!-- Bus Detail end --> 
       
       
             <!-- Boarding Detail -->
@@ -2959,11 +2947,7 @@ module.exports = {
             </div>
           </div>
         </div>
-      </div>     
-			  
-			  
-                         
-						 
+      </div>     				 
                     
            <div style="float: left; width: 100%; margin:0px; padding:0px;">
             <img src="https://travvolt.s3.amazonaws.com/app_banner.png" alt="SkyTrails_banner" style="width: 100%;
@@ -2971,8 +2955,7 @@ module.exports = {
               border-radius: 15px;">
           </div>
         </div>
-      </body>
-      
+      </body>      
       </html>`;
 
     // Create a new PDF document
@@ -3210,15 +3193,7 @@ module.exports = {
               </div>
               `
                 )
-                .join("")}
-      
-      
-      
-      
-      
-      
-      
-      
+                .join("")}       
             </div>
       
             <!-- Bus Detail start -->
@@ -3595,8 +3570,7 @@ module.exports = {
             </div>
           </div>
         </div>
-      </div> 
-		  
+      </div>   
 		  
            <div style="float: left; width: 100%; margin:0px; padding:0px;">
             <img src="https://travvolt.s3.amazonaws.com/app_banner.png" alt="SkyTrails_banner" style="width: 100%;
@@ -3604,8 +3578,7 @@ module.exports = {
               border-radius: 15px;">
           </div>
         </div>
-      </body>
-      
+      </body>      
       </html>`;
 
     // Create a new PDF document
