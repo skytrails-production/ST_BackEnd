@@ -2031,6 +2031,9 @@ const generateKafilaRequest = (data) => {
   const formattedDate = moment(data?.Segments[0]?.PreferredDepartureTime).format(
     "YYYY-MM-DD"
   );
+
+  const cabinClass=data?.cabinClass=="Y"?"EC":data?.cabinClass=="C"?"BU":data?.cabinClass=="W"?"PE":""
+
   // console.log(formattedDate,"date")
   const KafilaAgentId = process.env.KAFILA_AGENT_ID;
   const pyload = {
@@ -2046,7 +2049,7 @@ const generateKafilaRequest = (data) => {
       },
     ],
     PF: "",
-    PC: "",
+    PC: cabinClass || "",
     Routing: "ALL",
     Ver: "1.0.0.0",
     Auth: {
@@ -2074,6 +2077,8 @@ const generateKafilaRoundTripRequest = (data) => {
   const formattedDate1 = moment(data?.Segments[1]?.PreferredDepartureTime).format(
     "YYYY-MM-DD"
   );
+  const cabinClass=data?.cabinClass=="Y"?"EC":data?.cabinClass=="C"?"BU":data?.cabinClass=="W"?"PE":""
+
   const KafilaAgentId = `${kafilaTokenGenerator?.AID}`;
   const pyload = {
     Trip: "D1",
@@ -2093,7 +2098,7 @@ const generateKafilaRoundTripRequest = (data) => {
       },
     ],
     PF: "",
-    PC: "",
+    PC: cabinClass||"",
     Routing: "ALL",
     Ver: `${kafilaTokenGenerator?.Version}`,
     Auth: {

@@ -30,6 +30,18 @@ const seatDynamicSchema = new mongoose.Schema({
   Price: Number
 });
 
+
+// const seatDynamicSchema = new mongoose.Schema({
+//   _id:false,
+//   AirlineCode: String,
+//   FlightNumber: String,
+//   Origin: String,
+//   Origin: String,
+//   amount: Number
+// });
+
+
+
 const flightBookingSchema = new mongoose.Schema(
   {
     userId: {
