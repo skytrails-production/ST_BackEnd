@@ -115,7 +115,7 @@ exports.hotelSearch = async (req, res) => {
 
     const searchData = {
       rooms: req.body.rooms,
-      rates: "comprehensive",
+      rates: req.body.rates||"concise",
       hotel_codes: hotelCode,
       currency: req.body.currency,
       client_nationality: req.body.client_nationality,
