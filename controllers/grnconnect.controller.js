@@ -111,7 +111,7 @@ exports.hotelSearch = async (req, res) => {
     const data = {
       ...req.body,
     };
-    const hotelCode = await exports.grnHotelCityMap(req.body.cityCode);
+    const hotelCode = await exports.grnHotelCityMapWithPagination(req.body.cityCode,Number(1),Number(100));
 
     const searchData = {
       rooms: req.body.rooms,
@@ -122,7 +122,7 @@ exports.hotelSearch = async (req, res) => {
       checkin: req.body.checkin,
       checkout: req.body.checkout,
       version: req.body.version,
-      cutoff_time: 10000,
+      cutoff_time: 5000,
     };
    
     const response = await axios.post(
@@ -131,8 +131,33 @@ exports.hotelSearch = async (req, res) => {
       { headers }
     );
 
+
+    // console.log(response.data)
+    let validResults=response.data;
+
+    if(validResults.errors){
+      return actionCompleteResponse(res,validResults,validResults?.errors[0]?.messages[0]||"Somthing went wrong.")
+    }
+
+    let keysToRemove = ["hotels", "search_id",];
+    let updatedObj = removeKeys(validResults, keysToRemove);
+
+    let datavalue=[];
+
+    let modifiedResults = validResults?.hotels?.map((hotel) => {
+      return { ...hotel, search_id: validResults?.search_id };
+    });
+    modifiedResults = modifiedResults.filter((hotel) => hotel.images.url !== "")
+
+
+    const mainData = {
+      hotels: modifiedResults,
+      ...updatedObj,
+    };
+
+
     msg = "Hotel Search Successfully!";
-    actionCompleteResponse(res, response.data, msg);
+    actionCompleteResponse(res, mainData, msg);
   } catch (err) {
     sendActionFailedResponse(res, {}, err.message);
   }
