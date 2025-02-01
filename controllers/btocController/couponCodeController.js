@@ -109,14 +109,15 @@ exports.createCoupons = async (req, res, next) => {
       uniqueId,
     } = req.body;
     const isAdminExist = await adminModel.findOne({ _id: uniqueId });
-    if (!isAdminExist) {
-      return res.status(statusCode.NotFound).send({
-        statusCode: statusCode.NotFound,
-        responseMessage: responseMessage.ADMIN_NOT_FOUND,
-      });
-    }
-    const imageUrl = await commonFunction.getImageUrlAWS(req.file);
-    if (!imageUrl) {
+    // if (!isAdminExist) {
+    //   return res.status(statusCode.NotFound).send({
+    //     statusCode: statusCode.NotFound,
+    //     responseMessage: responseMessage.ADMIN_NOT_FOUND,
+    //   });
+    // }
+    const imageUrl = await commonFunction.getImageUrlAWSByFolder(req.files.image,"couponImages");
+    const imageUrl1 = await commonFunction.getImageUrlAWSByFolder(req.files.resultImage,"couponImages");
+    if (!imageUrl&&!imageUrl1) {
       return res.status(statusCode.InternalError).send({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.INTERNAL_ERROR,
@@ -138,6 +139,7 @@ exports.createCoupons = async (req, res, next) => {
       termsAndCond:termsAndCond,
       offerType:offerType,
       image:imageUrl,
+      resultImage:imageUrl1,
       userApplied:[],
     }
     if (isCouponExist) {

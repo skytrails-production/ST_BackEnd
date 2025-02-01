@@ -11,6 +11,6 @@ module.exports = function (app) {
     // SchemaValidator(schemas.userbusBookingSchema),   SchemaValidator(schemas.userflightBookingSchema),  ,SchemaValidator(schemas.userhotelBookingSchema) 
     app.post('/skyTrails/api/admin/review/createPackageReview',upload.array("images"),reviewController.createPackageReview);
     app.get('/skyTrails/api/admin/review/getPackageReview',reviewController.getPackageReview);
-    
+    app.get('/skyTrails/api/user/review/getPackageReview/:packageId',reviewController.getPackageReviewById)
     
 }

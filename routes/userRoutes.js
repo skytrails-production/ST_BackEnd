@@ -74,4 +74,7 @@ module.exports = function (app) {
   app.post("/skyTrails/api/user/socialLogin",userController.socialLogin);
   app.put("/skyTrails/api/user/addPhoneNumber",[authJwt.verifcationToken],userController.addMobileNumber);
   app.put("/skytrails/api/user/socialLoginVerifyOtp",[authJwt.verifcationToken],userController.socialLoginVerifyOtp);
+  app.put("/skytrails/api/user/verifyUserOtpNew",[authJwt.verifcationToken],userController.verifyUserOtpNew);
+  app.post("/skytrails/api/user/userSignUp",[authJwt.verifcationToken],userController.registration);
+  app.put("/skytrails/api/user/checkValidNoOrEmail",[authJwt.verifcationToken],userController.sentOtpForVerification);
 };

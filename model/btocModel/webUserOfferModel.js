@@ -27,6 +27,9 @@ const webUserOffersSchema = new mongoose.Schema({
     remainingDays: {
         type: Number,
     },
+    resultImage: {
+        type: String
+    },
     status: {
         type: String,
         enum: [status.ACTIVE, status.BLOCK, status.DELETE],

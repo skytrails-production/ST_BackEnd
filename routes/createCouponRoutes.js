@@ -16,7 +16,10 @@ module.exports = function (app) {
   //   SchemaValidator(schemas.busBookingSchema),
   //   controller.addBusBookingData
   // );
-  app.post('/skyTrails/api/admin/createCoupons',upload.single('images'),couponController.createCoupons);
+  app.post('/skyTrails/api/admin/createCoupons', upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "resultImage", maxCount: 1 },
+  ]),couponController.createCoupons);
   app.get('/skyTrails/api/coupons/getCoupons',couponController.getAllCoupons);
   app.get('/skyTrails/api/coupons/getCouponsById',couponController.getCouponById);
   app.put('/skyTrails/api/coupons/applyCoupon',[authJwt.verifcationToken],SchemaValidator(schemas.applyCouponSchema),couponController.applyCoupon);

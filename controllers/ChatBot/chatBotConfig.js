@@ -1,5 +1,7 @@
 const OpenAI = require("openai");
-
+const fs = require('fs'); 
+const path =require("path") ;
+const commonFunction=require("../../utilities/commonFunctions")
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_SECRETKEY,
 });
@@ -94,7 +96,7 @@ const getAiResponse = async (prompt, formattedPackages) => {
 
     return completion.choices[0].message.content;
   } catch (error) {
-    console.error("Error communicating with OpenAI API:", error);
+    // console.error("Error communicating with OpenAI API:", error);
     throw error; // Re-throw the error to handle it in the calling function
   }
 };
@@ -102,6 +104,7 @@ const getAiResponseCustomPackage = async (prompt,data) => {
   try {
     const start = performance.now(); 
     const aboutOurApp = await findstaticContent({ type: "CONTACTUS" });
+
     // const data = await SkyTrailsPackageModel.find({});
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
@@ -109,7 +112,8 @@ const getAiResponseCustomPackage = async (prompt,data) => {
       messages: [
         {
           role: "system",
-          content: `You are a customer support assistant for The Sky Trails.,suggest some packages which we have,${data} suggest ur like ,which is dynamic `,
+          content: `You are a customer support assistant for The Sky Trails.,suggest some packages which we have
+          `,
         },
         {
           role: "user",
@@ -126,20 +130,95 @@ const getAiResponseCustomPackage = async (prompt,data) => {
       // max_tokens: 16384,
       // stream:true
     });
-    // console.log("completion=====1111",completion)
       // console.log("completion===",completion.id,completion.created,completion.system_fingerprint);
     let aiResp=completion.choices[0].message.content;
     const response={
       aiResp,data
     }
     const end = performance.now(); // End time
-    console.log(`Bot response time: ${(end - start).toFixed(2)} ms`);
+    console.log(`Bot response time: ${((end - start) / 1000).toFixed(2)} seconds`);
+    createThread(data,aboutOurApp,prompt,response);
+    // console.log("response===",response);
+    
     return response;
   } catch (error) {
     console.error("Error communicating with OpenAI API:", error);
     throw error; // Re-throw the error to handle it in the calling function
   }
 };
+
+const createFileInOpenAi=async()=>{
+  try {
+    const allPackages = await SkyTrailsPackageModel.find({})
+    .select("_id title packageAmount specialTag").sort({ "packageAmount.amount": -1, title: 1 });
+    const lengthofArray=allPackages.length;
+    // console.log("lengthofArray====",lengthofArray)
+    const packagesFile = JSON.stringify(allPackages);
+    // const myAssistantFile = await openai.files.create(
+    //   // "chatcmpl-ApCnv1zjKZEkqPF0xYxamdDE96t1X",
+    //   {
+    //     // file_id: packagesFile,
+    //     file: packagesFile,  
+    //     purpose: 'answers', 
+    //   }
+    // );
+    const myAssistantFile = await openai.files.create({
+      file: fs.createReadStream(packagesFile),
+      purpose: "fine-tune",
+    });
+    // console.log("myAssistantFile=========",myAssistantFile);
+  } catch (error) {
+    console.error("Error communicating with OpenAI API:", error);
+  }
+}
+
+const createThread=async(data,aboutOurApp,prompt,response)=>{
+try {
+  const newThread = await openai.beta.threads.create();
+// console.log("newThread============",newThread);
+
+const assistant = await openai.beta.assistants.create({
+  name: "SkyBot",
+  instructions: `You are a customer support assistant for The Sky Trails.,suggest some packages which we have,${data} suggest ur like ,which is dynamic and our address is ${aboutOurApp} `,
+  tools: [{ type: "code_interpreter" }],
+  model: "gpt-4o-mini"
+});
+// console.log("assistant====",assistant.id,assistant.name)
+const message = await openai.beta.threads.messages.create(
+  newThread.id,
+  {
+    role: "user",
+    content: prompt
+  }
+  );
+  // console.log("message=================>>>>>>>>",message.content);
+
+  let run = await openai.beta.threads.runs.createAndPoll(
+    newThread.id,
+    { 
+      assistant_id: assistant.id,
+      instructions: `Please address the user  Here are the available holiday packages based on your query:
+            ${data}`
+    }
+    );
+    if (run.status === 'completed') {
+      const messages = await openai.beta.threads.messages.list(
+        run.thread_id
+      );
+      // for (const message of messages.data.reverse()) {
+      //   console.log(`${message.role} > ${message.content[0].text.value}`);
+      // }
+      // } else {
+      // console.log(run.status);
+      }
+    // console.log("run====",run)
+} catch (error) {
+  console.log(error);
+  
+}
+}
+
+// createFileInnnOpenAi()
 
 // const streamResp=async() =>{
 //   const stream = await openai.chat.completions.create({
@@ -172,4 +251,81 @@ const getAiResponseCustomPackage = async (prompt,data) => {
 // }
 // chatCompletion()
 // streamResp()
-module.exports = {getAiResponse,getAiResponseCustomPackage};
+
+const transcribeAudio = async (audioBuffer, tempFilePath) => {
+  try {
+    // Write the buffer to a temporary file
+    fs.writeFileSync(tempFilePath, audioBuffer);
+
+    // Call the OpenAI Whisper API
+    const response = await openai.audio.transcriptions.create({
+      file: fs.createReadStream(tempFilePath),
+      model: "whisper-1",
+    });
+
+    // Delete the temporary file
+    fs.unlinkSync(tempFilePath);
+
+    // Return the transcription text
+    return response.text;
+  } catch (error) {
+    console.error("Error in OpenAI transcription:", error);
+    // throw new Error("Failed to transcribe audio. Please try again.");
+  }
+};
+
+const convertTextToSpeech =async(text)=>{
+  try {
+    const mp3 = await openai.audio.speech.create({
+      model: "tts-1",
+      voice: "nova", // You can change to "nova" or "echo" or "alloy"
+      input: text,
+    });
+    const buffer = Buffer.from(await mp3.arrayBuffer());
+    return await commonFunction.getAudioUrlAWS(buffer, "audio/mpeg");
+  } catch (error) {
+    console.error("TTS Error:", error);
+    // throw new Error("Failed to generate audio");
+  }
+}
+
+const askOpenAI = async (query, context) => {
+  try {
+    const formattedContext = context
+    .map(
+      (pkg, index) =>
+        `${index + 1}. ${pkg.title} - Price: ₹${pkg.price}\nDetails: ${pkg.details}`
+    )
+    .join('\n\n');
+      const response = await openai.chat.completions.create({
+          model: 'gpt-4o-mini',
+          messages: [
+              { role: 'system', content: `You are a customer support assistant for The Sky Trails.,suggest some packages  that works with a specific database.` },
+              { role: 'user', content: query },
+              { role: 'assistant', content: `Here are some packages available:\n\n${formattedContext}`},
+          ],
+      });
+      return response.choices[0].message.content;
+  } catch (error) {
+      console.error('Error communicating with OpenAI:', error);
+      return 'I encountered an issue. Please try again later.';
+  }
+};
+
+const askOpenAIGeneralQuery = async (query, context) => {
+  try {
+      const response = await openai.chat.completions.create({
+          model: 'gpt-4o-mini',
+          messages: [
+              { role: 'system', content: `You are a customer support assistant for The Sky Trails.Thank you for contacting us. To get an instant resolution related to your booking, please visit the My Bookings section on the App or Website by tapping on url https://theskytrails.com/.` },
+              { role: 'user', content: query },
+              { role: 'assistant', content: `Thank you for contacting us. To get an instant resolution related to your booking, please visit the My Bookings section on the App or Website by tapping on url(https://theskytrails.com/)`},
+          ],
+      });
+      return response.choices[0].message.content;
+  } catch (error) {
+      console.error('Error communicating with OpenAI:', error);
+      return 'I encountered an issue. Please try again later.';
+  }
+};
+module.exports = {getAiResponse,getAiResponseCustomPackage,transcribeAudio,convertTextToSpeech,askOpenAI,askOpenAIGeneralQuery};

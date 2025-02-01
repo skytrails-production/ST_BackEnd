@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 //**********CHARU YADAV*****************//
 //**********NODE JS DEVELOPER, This is a services which we need mongodb queries to perform operation on db********//
 
+
 const eventServices={
     createEvent: async (insertObj) => {
         return await eventModel.create(insertObj);

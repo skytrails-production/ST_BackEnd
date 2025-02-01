@@ -82,13 +82,24 @@ const eventsSchema = new mongoose.Schema(
     forCouple:{
       type:Boolean,
       default:false
-    }
+    },
+    requiredFormFields: {
+      type: [{
+        key: { type: String}, 
+        dataType: { type: String},
+        isRequired: { type: Boolean, default: false }, 
+        defaultValue: { type: Schema.Types.Mixed }
+      }],
+      default: [],
+    },
+    maxTicketsPerUser: { type: Number,max: 5}
   },
   { timestamps: true }
 );
-eventsSchema.plugin(mongoosePaginate);
+eventsSchema.plugin(mongoosePaginate); 
 
 eventsSchema.plugin(aggregatePaginate);
 const events = mongoose.model("skyTrailsEvents", eventsSchema);
 
 module.exports = events;
+ 

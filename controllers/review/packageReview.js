@@ -5,7 +5,7 @@ const responseMessage = require('../../utilities/responses');
 const statusCode = require('../../utilities/responceCode');
 const { internationl } = require("../../model/international.model");
 const commonFunctions = require("../../utilities/commonFunctions");
-
+const { SkyTrailsPackageModel } = require("../../model/holidayPackage.model");
 //************************************SERVICES**********************************************************/
 
 const {packageReviewsServices}=require('../../services/reviews/packageReviewServices')
@@ -18,7 +18,7 @@ const {createpackageReviews,findpackageReviews,findpackageReviewsData,deletepack
 exports.createPackageReview = async (req, res, next) => {
     try {
         const {name,title,description,section,starRating,travelDate,packageId,packageType,isPositive}=req.body;
-        const isPackageExist=await internationl.findOne({_id:packageId});
+        const isPackageExist=await SkyTrailsPackageModel.findOne({_id:packageId});
         
         if(!isPackageExist){
             return res.status(statusCode.OK).send({
@@ -70,3 +70,24 @@ exports.getPackageReview=async(req,res,next)=>{
 //         return next(error);
 //     }
 // }
+
+exports.getPackageReviewById=async(req,res,next)=>{
+    try {
+        const findPackageExist=await SkyTrailsPackageModel.findOne({_id: req.params.packageId});
+        if(!findPackageExist){
+            return res.status(statusCode.OK).send({
+                statusCode: statusCode.NotFound,
+                responseMessage: responseMessage.PACKAGE_NOT_EXIST,
+              });
+        }
+        const review=await findpackageReviewsData({packageId: req.params.packageId});        
+        return res.status(statusCode.OK).send({
+            statusCode: statusCode.OK,
+            responseMessage: responseMessage.DATA_FOUND,
+            result:review
+          });
+    } catch (error) {
+        return next(error)
+    }
+}
+

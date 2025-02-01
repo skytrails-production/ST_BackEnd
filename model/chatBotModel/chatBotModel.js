@@ -12,6 +12,8 @@ const chatBotSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "userBtoC",
     },
+    agentId:{ type: String},
+    threadId:{ type: String},
     userName: { type: String },
     userPhoneNumber: { type: String },
     query: { type: String },
@@ -25,10 +27,14 @@ const chatBotSchema = new mongoose.Schema(
         sender: { type: String, enum: ["user", "bot"] },
         userQuery: { type: String },
         botRespoense: { type: String },
+        audioUrl:{type:String},
+        // imageUrl:{type:String},
         timestamp: { type: Date, default: Date.now },
       },
     ],
     isLead: { type: Boolean, default: false },
+    queryType:{type:String,enum:['flight','hotel','bus','visa','packages','genereal']},
+    TicketNo:{type:String},
     leadStatus: {
       type: String,
       enum: ["NEW", "FOLLOW_UP", "CLOSED"],
@@ -51,3 +57,4 @@ chatBotSchema.plugin(mongoosePaginate);
 chatBotSchema.plugin(aggregatePaginate);
 
 module.exports = mongoose.model("chatBotConversations", chatBotSchema);
+

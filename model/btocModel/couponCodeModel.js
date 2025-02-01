@@ -45,6 +45,9 @@ const couponSchema = new Schema(
       type: String,
     },
     dashboardImg:{type:String},
+    resultImage: {
+        type: String
+    },
     title: {
       type: String,
     },

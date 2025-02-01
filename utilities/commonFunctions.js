@@ -3007,7 +3007,7 @@ module.exports = {
 
       return info;
     } catch (error) {
-      console.error("Email sending failed:", error);
+      // console.error("Email sending failed:", error);
       throw error;
     }
   },
@@ -4216,7 +4216,7 @@ module.exports = {
     await browser.close();
     // const pdfBytes= await pdf.saveAs(pdfFilePath);
 
-    console.log("PDF generation complete.");
+    // console.log("PDF generation complete.");
 
     fs.writeFileSync(pdfFilePath, pdfBytes);
 
@@ -6516,7 +6516,7 @@ module.exports = {
       const result = await s3.upload(params).promise();
       return result.Location; // Assuming Location contains the S3 URL
     } catch (error) {
-      console.error("Error uploading to S3:", error);
+      // console.error("Error uploading to S3:", error);
       throw error;
     }
   },
@@ -6532,7 +6532,7 @@ module.exports = {
       const result = await s3.upload(params).promise();
       return result.Location; // Assuming Location contains the S3 URL
     } catch (error) {
-      console.error("Error uploading to S3:", error);
+      // console.error("Error uploading to S3:", error);
       throw error;
     }
   },
@@ -6548,7 +6548,7 @@ module.exports = {
       const result = await s3.upload(params).promise();
       return result.Location; // Assuming Location contains the S3 URL
     } catch (error) {
-      console.error("Error uploading to S3:", error);
+      // console.error("Error uploading to S3:", error);
       throw error;
     }
   },
@@ -6572,7 +6572,7 @@ module.exports = {
       const result = await s3.upload(params).promise();
       return result.Location; // Assuming Location contains the S3 URL
     } catch (error) {
-      console.error("Error uploading to S3:", error);
+      // console.error("Error uploading to S3:", error);
       throw error;
     }
   },
@@ -7086,7 +7086,7 @@ module.exports = {
         await nodemailerConfig.sendMail(mailOptions);
         // console.log('Email sent successfully.',pdfBuffer);
     } catch (error) {
-        console.error('Error sending email:', error);
+        // console.error('Error sending email:', error);
     }
 },
 
@@ -7102,6 +7102,24 @@ module.exports = {
     };
     return await nodemailerConfig.sendMail(mailOptions);
   },
+
+ getAudioUrlAWS: async (fileBuffer,mimetype) => {
+    try {
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: `audio/uploadedFile_${Date.now()}}`,
+      Body: fileBuffer,
+      ContentType: mimetype,
+      ACL: "public-read",
+    };
+      const result = await s3.upload(params).promise();
+      
+      return result.Location; // Assuming Location contains the S3 URL
+    } catch (error) {
+      throw error;
+    }
+  },
+
 };
 
 

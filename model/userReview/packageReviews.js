@@ -28,7 +28,7 @@ const packageRatingSchema = new mongoose.Schema(
     travelDate: { type: String },
     packageId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "internationls",
+      ref: "packageReviews",
     },
     packageType:{type:String},
     // packageType: {

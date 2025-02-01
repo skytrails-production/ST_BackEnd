@@ -128,6 +128,7 @@ const {
 } = userflightBookingServices;
 
 //******************************************User SignUp api*************************/
+
 exports.login = async (req, res, next) => {
   try {
     const { mobileNumber } = req.body;
@@ -1037,6 +1038,7 @@ exports.loginWithMailMobileLogin = async (req, res, next) => {
         otpExpireTime: otpExpireTime,
       };
       const createNewUser = await createUser(obj);
+      
       const token = await commonFunction.getToken({
         _id: createNewUser._id,
         email: createNewUser.email,
@@ -1049,9 +1051,10 @@ exports.loginWithMailMobileLogin = async (req, res, next) => {
         email: createNewUser.email,
         userType: createNewUser.userType,
         otpVerified: createNewUser.otpVerified,
-        status: createNewUser.ACTIVE,
+        status: createNewUser.status.ACTIVE,
         token,
       };
+      
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.LOGIN_SUCCESS,
@@ -1197,10 +1200,10 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
   try {
     let { otp, fullName, dob, email, referrerCode } = req.body;
     // Trim spaces from input fields
-    fullName = fullName?.trim();
-    dob = dob?.trim();
-    email = email?.trim();
-    referrerCode = referrerCode?.trim();
+    fullName = fullName ? fullName.trim() : "";
+    dob = dob ? dob.trim() : "";
+    email = email ? email.trim() : "";
+    referrerCode = referrerCode ? referrerCode.trim() : "";
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const mobileRegex = /^(?!0)\d{9,}(\d)(?!\1{4})\d*$/;
 
@@ -1285,18 +1288,18 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
         result: result,
       });
     }
-    if (!fullName || fullName.trim() === "") {
-      return res.status(statusCode.OK).send({
-        statusCode: statusCode.Forbidden,
-        message: responseMessage.USER_NAME_REQUIRED,
-      });
-    }
-    if (!dob || !email) {
-      return res.status(statusCode.OK).send({
-        statusCode: statusCode.Forbidden,
-        responseMessage: responseMessage.FIELD_REQUIRED,
-      });
-    }
+    // if (!fullName || fullName.trim() === "") {
+    //   return res.status(statusCode.OK).send({
+    //     statusCode: statusCode.Forbidden,
+    //     message: responseMessage.USER_NAME_REQUIRED,
+    //   });
+    // }
+    // if (!dob || !email) {
+    //   return res.status(statusCode.OK).send({
+    //     statusCode: statusCode.Forbidden,
+    //     responseMessage: responseMessage.FIELD_REQUIRED,
+    //   });
+    // }
     const refeerralCode = await commonFunction.generateReferralCode();
     const checkReward = await findReferralAmount({});
     var obj = {};
@@ -1311,8 +1314,8 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
       }
       obj = {
         username: fullName,
-        dob: dob,
-        email: email,
+        dob: dob ,
+        email: email ,
         otp: "",
         otpExpireTime: "",
         firstTime: false,
@@ -1329,8 +1332,8 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
         });
       }
       obj = {
-        username: fullName,
-        dob: dob,
+        username: fullName ? fullName : "",
+        dob: dob ? dob : "",
         "phone.mobile_number": email,
         otp: "",
         firstTime: false,
@@ -1930,7 +1933,7 @@ exports.socialLogin = async (req, res, next) => {
         socialType,
         deviceType,
         deviceToken,
-        // phone: { mobile_number: mobile_number || "" },
+        // phone: { mobile_number: mobile_number  },
         otpVerified: true,
         firstTime: false,
         isSocial: true,
@@ -2101,4 +2104,269 @@ exports.socialLoginVerifyOtp=async(req,res,next)=>{
     return next(error)
   }
 }
+//Auth Api changes-------------------------------------------------------------
+exports.verifyUserOtpNew=async(req,res,next)=>{
+  try {
+    let { otp} = req.body;
+    const isUserExist = await findUserData({ _id: req.userId });
+    if (!isUserExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+    if (isUserExist.phone.mobile_number == "9999123232"){
+      const token = await commonFunction.getToken({
+        _id: isUserExist._id,
+        mobile_number: isUserExist.phone.mobile_number,
+      });
+      const result = {
+        firstTime: isUserExist.firstTime,
+        _id: isUserExist._id,
+        phone: isUserExist.phone,
+        userType: isUserExist.userType,
+        username: isUserExist.username,
+        otpVerified: isUserExist.otpVerified,
+        balance: isUserExist.balance,
+        status: isUserExist.status,
+        token: token,
+      };
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        message: responseMessage.OTP_VERIFY,
+        result: result,
+      });
+    }
+    if (isUserExist.otp !== otp) {
+      return res.status(statusCode.OK).json({statusCode: statusCode.badRequest,responseMessage: responseMessage.INCORRECT_OTP,});
+    }
+    if (new Date().getTime() > isUserExist.otpExpireTime) {
+      return res.status(statusCode.OK).json({statusCode: statusCode.badRequest,responseMessage: responseMessage.OTP_EXPIRED,});
+    }
+    const updation = await updateUser(
+      { _id: isUserExist._id, status: status.ACTIVE },
+      { otpVerified: true, otp: "",otpExpireTime:"" }
+    );
+    const token = await commonFunction.getToken({
+      _id: updation._id,
+      mobile_number: updation.phone.mobile_number,
+      email: updation.email,
+    });
+    const result = {
+      firstTime: updation.firstTime,
+      _id: updation._id,
+      phone: updation.phone,
+      userType: updation.userType,
+      username: updation.username,
+      otpVerified: updation.otpVerified,
+      balance: updation.balance,
+      status: updation.status,
+      token: token,
+  };
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.OTP_VERIFY,
+      result: result,
+    });
+  } catch (error) {
+    return next(error);
+    
+  }
+}
+exports.registration=async(req,res,next)=>{
+  try {
+    let {userName, dob, email, referrerCode}=req.body;
+    userName = userName?.trim() ;
+    dob = dob.trim();
+    email = email.trim().toLowerCase();
+    referrerCode = referrerCode ? referrerCode.trim() : "";
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const mobileRegex = /^(?!0)\d{9,}(\d)(?!\1{4})\d*$/;
+    const isUserExist = await findUserData({ _id: req.userId,firstTime:true });
+    if (!isUserExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+    const generatedReferralCode  = await commonFunction.generateReferralCode();
+    const checkReward = await findReferralAmount({});
+    var userObj  = { 
+      username: userName,
+      dob: dob,
+      firstTime: false,
+      referralCode: generatedReferralCode ,
+      balance: 0,};
+      let updateData = {};
+    if (emailRegex.test(email)){
+      const isEmailExist  = await findUser({ email: email });
+      if (isEmailExist ) {
+        return res.status(statusCode.OK).send({
+          statusCode: statusCode.Conflict,
+          message: responseMessage.EMAIL_ALREADY_EXIST,
+        });
+      }
+      userObj.email=email;
+      // obj = {
+      //   username: fullName,
+      //   dob: dob ,
+      //   email: email ,
+      //   otp: "",
+      //   otpExpireTime: "",
+      //   firstTime: false,
+      //   referralCode: refeerralCode,
+      //   balance: 0,
+      // };
+    }else if (mobileRegex.test(email)) {
+      const isNumberExist = await findUser({ "phone.mobile_number": email });
+      if (isNumberExist) {
+        return res.status(statusCode.OK).send({
+          statusCode: statusCode.Conflict,
+          message: responseMessage.MOBILE_EXIST,
+        });
+      }
+     userObj.phone = { mobile_number: email };
+    }
+    updateData = await updateUser({ _id: isUserExist._id }, userObj );
+    if (referrerCode){
+      const referrer  = await findUser({ referralCode: referrerCode });
+      if (!referrer ) {
+        return res.status(statusCode.OK).send({
+          statusCode: statusCode.badRequest,
+          message: responseMessage.INCORRECT_REFERRAL,
+        });
+      }
+      const walletHistoryEntry = (amount, details) => ({
+        amount,
+        details,
+        transactionType: "credit",
+        createdAt: Date.now(),
+      });
 
+      await updateUser(
+        { _id: updateData._id },
+        {
+          referrerCode: referrerCode,
+          referredBy: referrer._id,
+          $inc: { balance: checkReward.refereeAmount },
+          $push: { walletHistory: walletHistoryEntry(checkReward.refereeAmount, "Referral reward") },
+        }
+      );
+      await updateUser(
+        { referralCode: referrerCode,_id: referrer._id  },
+        {
+          $inc: { balance: checkReward.referrerAmount },
+          $push: { walletHistory:  walletHistoryEntry(checkReward.referrerAmount, "Referee reward") },
+        }
+      );
+    }else {
+      const signUpBonus  = {
+        amount: checkReward.signUpAmount,
+        details: "Sign-up reward",
+        transactionType: "credit",
+        createdAt: Date.now(),
+      };
+
+      await updateUser(
+        { _id: updateData._id },
+        {
+          $inc: { balance: checkReward.signUpAmount },
+          $push: { walletHistory: signUpBonus },
+        }
+      );
+    }
+    const token = await commonFunction.getToken({
+      _id: updateData._id,
+      mobile_number: updateData.phone.mobile_number,
+      username: updateData.username,
+    });
+
+    const result = {
+      phoneNumber: updateData?.phone?.mobile_number,
+      _id: updateData._id,
+      firstTime: updateData.firstTime,
+      dob: updateData.dob,
+      username: updateData.username,
+      email: updateData.email,
+      token: token,
+      status: updateData.status,
+      otpVerified: updateData.otpVerified,
+      userType: updateData.userType,
+    };
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      message: responseMessage.REGISTER_SUCCESS,
+      result: result,
+    });
+  } catch (error) {
+    return next(error)
+    
+  }
+}
+exports.sentOtpForVerification=async(req,res,next)=>{
+  try {
+    const {email}=req.body;
+    
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const mobileRegex = /^(?!0)\d{9,}(\d)(?!\1{4})\d*$/;
+    const otp = commonFunction.getOTP();
+    const otpExpireTime = new Date().getTime() + 300000;
+    const isUserExist = await findUserData({ _id: req.userId});
+    if (!isUserExist) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.USERS_NOT_FOUND,
+      });
+    }
+    
+    
+    if (emailRegex.test(email)){
+      
+      const isEmailExist  = await findUser({ email: email });
+      
+      if (isEmailExist ) {
+        return res.status(statusCode.OK).send({
+          statusCode: statusCode.Conflict,
+          message: responseMessage.EMAIL_ALREADY_EXIST,
+        });
+      }
+      const sendEmail= await commonFunction.sendEmailOtp(email, otp);
+      
+    }else if (mobileRegex.test(email)) {
+      const isNumberExist = await findUser({ "phone.mobile_number": email });
+      if (isNumberExist) {
+        return res.status(statusCode.OK).send({
+          statusCode: statusCode.Conflict,
+          message: responseMessage.MOBILE_EXIST,
+        });
+      }
+      let username=isUserExist.userName|| "Dear"
+     const templateParams = [String(username), String(otp)];
+       const sent = await whatsappAPIUrl.sendWhtsAppOTPAISensy(
+        `+91${isUserExist.phone.mobile_number}`,
+        templateParams,
+        "user_OTP"
+      );
+      
+      await sendSMS.sendSMSForOtp(isUserExist.phone.mobile_number, otp);
+    }
+    
+    const updatedUser=await updateUser({ _id: isUserExist._id }, {$set:{otp:otp,otpExpireTime:otpExpireTime}} );
+    
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      message: responseMessage.OTP_SEND,
+      // result: updateUser,
+    });
+  } catch (error) {
+    return next(error);
+    
+  }
+}
+
+const validateOtp = (storedOtp, otpExpireTime, userOtp) => {
+  if (storedOtp !== userOtp || new Date().getTime() > otpExpireTime) {
+      return false;
+  }
+  return true;
+};

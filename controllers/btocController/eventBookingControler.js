@@ -75,6 +75,8 @@ const {
   updateCoupon,
   paginateCouponSearch,
 } = couponServices;
+const {skyEventBookingServices}=require("../../services/btocServices/skyTrailsEventBooking");
+const{createBookingSkyEvent,findBookingSkyEventData,deleteBookingSkyEvent,skyeventBookingList,skyeventBookingListPopulated,updateBookingSkyEvent,countTotalBookingSkyEvent,getBookingSkyEvent}=skyEventBookingServices
 const{pushNotificationServices}=require('../../services/pushNotificationServices');
 const { stringify } = require("querystring");
 const{createPushNotification,findPushNotification,findPushNotificationData,deletePushNotification,updatePushNotification,countPushNotification}=pushNotificationServices;
@@ -303,33 +305,21 @@ exports.eventBooking = async (req, res, next) => {
     const {name,mobileNumber,city,deviceToken,deviceType,eventDate,eventId,noOfMember,profession,bookingStatus} = req.body;
     const isUserExist = await findUserData({_id: req.userId,status: status.ACTIVE,});
     if (!isUserExist) {
-      return res.status(statusCode.OK).send({
-        statusCode: statusCode.NotFound,
-        responseMessage: responseMessage.USERS_NOT_FOUND,
-      });
+      return res.status(statusCode.OK).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.USERS_NOT_FOUND,});
     }
     const isEventExist = await findEventData({
       _id: eventId,
       status: status.ACTIVE,
     });
     if (!isEventExist) {
-      return res.status(statusCode.OK).send({
-        statusCode: statusCode.NotFound,
-        message: responseMessage.EVENT_NOT_FOUND,
-      });
+      return res.status(statusCode.OK).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.EVENT_NOT_FOUND,});
     }
     const isBookingExist=await findBookingEventData({$and:[{userId:isUserExist._id,eventId:isEventExist._id}]});
     if(isBookingExist){
-      return res.status(statusCode.OK).send({
-        statusCode: statusCode.Conflict,
-        message: responseMessage.EVENT_ALREADY_BOOKED,
-      });
+      return res.status(statusCode.OK).send({statusCode: statusCode.Conflict,responseMessage: responseMessage.EVENT_ALREADY_BOOKED,});
     }
-    await updateEvent(
-      { _id: eventId, "slot.startTime": "17:00" },
-      { $inc: { "slot.$.peoples": -noOfMember } }
-    );
-    await updateUser({_id:isUserExist._id},{deviceToken:deviceToken})
+    await updateEvent({ _id: eventId, "slot.startTime": "17:00" },{ $inc: { "slot.$.peoples": -noOfMember } });
+    await updateUser({_id:isUserExist._id},{deviceToken:deviceToken});
     const object = {
       userId:isUserExist._id,
       name: name,
@@ -397,6 +387,64 @@ exports.getEventBookingStatus=async(req,res,next)=>{
   }
 }
 
+
+exports.userEventBooking=async(req,res,next)=>{
+  try {
+    const {deviceToken,deviceType,eventId,price,noOfMember,bookingStatus,details,transactionId,isCoupanApplied, } = req.body;
+    console.log("details=======",req.body)
+    const isUserExist = await findUserData({_id: req.userId,status: status.ACTIVE,});    
+    if (!isUserExist) {
+      return res.status(statusCode.OK).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.USERS_NOT_FOUND,});
+    }
+    const isEventExist = await findEventData({
+      _id: eventId,
+      status: status.ACTIVE,
+    });
+    if (!isEventExist) {
+      return res.status(statusCode.OK).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.EVENT_NOT_FOUND,});
+    }
+    const isBookingExist=await findBookingSkyEventData({$and:[{userId:isUserExist._id,eventId:isEventExist._id}]});
+    if(isBookingExist){
+      return res.status(statusCode.OK).send({statusCode: statusCode.Conflict,responseMessage: responseMessage.EVENT_ALREADY_BOOKED,});
+    }
+    const startTime=isEventExist.slot[0].startTime;
+    const data=await updateBookingSkyEvent({ _id: eventId, "slot.startTime": startTime},{ $inc: { "slot.$.peoples": -noOfMember } });
+    await updateUser({_id:isUserExist._id},{deviceToken:deviceToken});
+    const object = {
+      userId:isUserExist._id,
+      bookingStatus:bookingStatus,
+      eventDate: isEventExist.slot[0].startDate,
+      eventId: eventId,
+      deviceToken: deviceToken,
+      deviceType:deviceType,
+      tickets: [],
+      details: details,
+      transactionId: transactionId,
+      isCoupanApplied: isCoupanApplied || false,
+      price: price
+    };
+    for (var i = 0; i < noOfMember; i++) {
+      const ticketNumber = await generateUniqueRandomString(15);
+   object.tickets.push(ticketNumber);
+   }
+ 
+  const result = await createBookingSkyEvent(object);
+  const contactNo = `+91${result.details.contactNumber}`;
+  const sendt=await sendSMS.sendSMSEventEnquiry(details.contactNumber,isEventExist.title);
+  console.log("sendt============",sendt);
+  
+ const wsendts= await whatsappAPIUrl.sendMessageWhatsApp(contactNo,isEventExist.title,isEventExist.slot[0].startDate,"event4_v3");
+ console.log("wsendts===",wsendts);
+ 
+  return res.status(statusCode.OK).send({
+    statusCode: statusCode.OK,
+    responseMessage: responseMessage.SLOT_BOOKED,
+    result: result,
+  }); 
+  } catch (error) {
+    return next(error);
+  }
+}
 //*****************Geneerate all passes for eventBooking******************************************/
 exports.sendUpdatePasses=async(req,res,next)=>{
   try {
@@ -436,6 +484,7 @@ exports.sendUpdatePasses=async(req,res,next)=>{
     return next(error)
   }
 }
+
 
 //generate function**************************************************************************
 

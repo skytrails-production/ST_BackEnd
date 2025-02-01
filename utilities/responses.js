@@ -162,5 +162,6 @@ module.exports = {
 	USER_NAME_REQUIRED: "Username should not be empty.",
 	OFFER_SUBSCRIBED:"Thank you for subscribing to TheSkyTrails! We're excited to have you in our community of explorers.",
 	POST_ALREADY_APPROVED:"Post already approved.",
-	USER_PROMPT_REQ:"Invalid request: 'userPrompt' is required."
+	USER_PROMPT_REQ:"Invalid request: 'userPrompt' is required.",
+	CHAT_NOT_FIND:"No chat history found. It seems you haven't interacted with the chatbot before."
 };

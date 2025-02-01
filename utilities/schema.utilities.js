@@ -738,7 +738,53 @@ const schemas = {
     status:joi.valid(...Object.values(status)).optional(),
     approveStatus:joi.valid(...Object.values(approveStatus)).optional(),
     reason:joi.string().optional()
-  })
+  }),
+  eventBookingSchemaNew: joi.object().keys({
+    price: joi.number().optional(),
+    transactionId: joi.string().optional().allow(""),
+    eventId: joi.string().required(),
+    noOfMember: joi.number().required(),
+    deviceToken: joi.string().optional().allow(""),
+    deviceType: joi.string().optional().allow(""),
+    bookingStatus: joi.string().required(),
+    details:joi.object().unknown(true).required(),
+  }),
+  eventSchemaNew: joi.object().keys({
+    title: joi.string().required(),
+    content: joi.string().required(),
+    startDate: joi.string().required(),
+    endDate: joi.string().required(),
+    remainingDays: joi.number().optional(),
+    price: joi.number().optional(),
+    bookingPrice: joi.number().optional(),
+    age: joi.string().required(),
+    venue: joi.string().required(),
+    showType: joi.string().required(),
+    adultPrice: joi.number().required(),
+    childPrice: joi.number().required(),
+    couplePrice: joi.number().required(),
+    startTime: joi.string().required(),
+    endTime: joi.string().required(),
+    breakTime: joi.number().required(),
+    noOfShows: joi.string().required(),
+    slotTime: joi.number().required(),
+    latitude: joi.number().required(),
+    longitude: joi.number().required(),
+    isPaid: joi.boolean().required(),
+    noOfMember: joi.number().required(),
+    registrationRequired: joi.boolean().required(),
+    eventCountry: joi.string().optional(),
+    forCouple: joi.boolean().optional(),
+    requiredFormFields:joi.array().items(joi.object({
+      key: joi.string().required(),
+      dataType: joi.string().valid(
+        'String', 'Number', 'Boolean', 'Date', 'Array', 'Object'
+      ).required(),
+      isRequired: joi.boolean().default(false),
+      defaultValue: joi.any().optional(),
+    })).required(),
+    maxCapacity:joi.number().optional(),
+  }),
 };
 
 module.exports = schemas;

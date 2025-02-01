@@ -262,3 +262,90 @@ exports.deleteEvents=async(req,res,next)=>{
     return next(error)
   }
 }
+
+exports.createskyTrailsEvent=async(req,res,next)=>{
+  try {
+    const { title,content,remainingDays,startDate,endDate,price,bookingPrice,showType,age,venue,adultPrice,childPrice,couplePrice,startTime,endTime,breakTime,noOfShows,slotTime,latitude,longitude,noOfMember,registrationRequired,eventCountry,forCouple,requiredFormFields,isPaid,maxTicketsPerUser }=req.body;
+    if (!req.file) {
+      return res.status(400).send({ message: "No file uploaded." });
+    }
+    const imageFiles = await commonFunction.getImageUrlAWS(req.file);
+    if (!imageFiles) {
+      return res.status(statusCode.InternalError).send({
+        statusCode: statusCode.OK,
+        message: responseMessage.INTERNAL_ERROR,
+      });
+    }
+    const object = {
+      image: imageFiles,
+      title: title,
+      content: content,
+      startDate: startDate,
+      endDate: endDate,
+      remainingDays: remainingDays,
+      price: price,
+      bookingPrice: bookingPrice,
+      showType: showType,
+      age: age,
+      venue: venue,
+      adultPrice: adultPrice,
+      childPrice: childPrice,
+      couplePrice: couplePrice,
+      location: { coordinates: [longitude, latitude] },
+      slot: [],
+      isPaid: isPaid,
+      registrationRequired:registrationRequired,
+      eventCountry:eventCountry,
+      forCouple:forCouple,
+      requiredFormFields: requiredFormFields,
+      maxTicketsPerUser:maxTicketsPerUser
+    };
+    
+    const startingDate = Moment(startDate, "YYYY-MM-DD");
+    const endingDate = Moment(endDate, "YYYY-MM-DD");
+    // const storeStartDate = startingDate.format("YYYY-MM-DD");
+    while (startingDate <= endingDate) {
+      console.log("with in while=============");
+      const startingTime = Moment(startTime, "HH:mm");
+      const endingTime = Moment(endTime, "HH:mm");
+
+      for (let i = 0; i < noOfShows; i++) {
+        const slotEndTime = Moment(startingTime).add(slotTime, "minutes");
+        if (slotEndTime.isAfter(endingTime)) {
+          break;
+        }
+
+        object.slot.push({
+          startTime: startingTime.format("HH:mm"),
+          endTime: slotEndTime.format("HH:mm"),
+          startDate: startingDate.format("YYYY-MM-DD"),
+          endDate: endingDate.format("YYYY-MM-DD"),
+          isAvailable: true,
+          peoples: Number(noOfMember),
+        });
+        startingTime.add(slotTime, "minutes");
+        if (i < noOfShows - 1) {
+          startingTime.add(breakTime, "minutes");
+        }
+      }
+
+      startingDate.add(1, "day");
+    }
+    const result = await createEvent(object);
+    if (!result) {
+      return res.status(statusCode.NotFound).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
+      });
+    }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      message: responseMessage.ADS_CREATED,
+      result: result,
+    });
+
+
+  } catch (error) {
+    
+  }
+}

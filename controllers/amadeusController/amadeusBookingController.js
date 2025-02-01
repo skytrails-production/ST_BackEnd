@@ -247,66 +247,6 @@ exports.getAllUserFlightBooking = async (req, res, next) => {
   }
 };
 
-exports.UpdateTicket1 = async (req, res, next) => {
-  try {
-    const { bookingId, ticketNumber, firstName } = req.body;
-    const isBookignExist = await findUserAmadeusFlightBooking({
-      _id: bookingId,
-    });
-    if (!isBookignExist) {
-      return res.status(statusCode.OK).send({
-        statusCode: statusCode.NotFound,
-        responseMessage: responseMessage.DATA_NOT_FOUND,
-      });
-    }
-    const user=await findUser({_id:isBookignExist.userId});
-    var depDate;
-    var depTime;
-    var arrTime;
-    var templates;
-    var finalResult=[];
-    let options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-
-    // Update the ticket number for the specific passenger
-    for(var passenger of firstName){
-       result = await updateUserAmadeusFlightBooking(
-        {
-          _id: bookingId,
-          "passengerDetails.firstName": passenger.firstName,
-        },
-        { $set: { "passengerDetails.$.TicketNumber": passenger.ticketNumber } }
-      );
-      finalResult.push(result);
-       depDate=new Date(result.airlineDetails[0].Origin.DepTime);
-       depTime=new Date(result.airlineDetails[0].Origin.DepTime);
-      var arrTime=new Date(result.airlineDetails[0].Origin.DepTime);
-      arrTime.setHours(arrTime.getHours() - 2);
-       templates=[String(firstName),String(result.pnr),String(result.airlineDetails[0].Airline.AirlineName),String(depDate.toLocaleDateString('en-GB', options)),String(depTime.toLocaleTimeString('en-GB')),String(arrTime.toLocaleTimeString('en-GB')),String(result.totalAmount)];
-       return result;
-    }
-    // const result = await updateUserAmadeusFlightBooking(
-    //   {
-    //     _id: bookingId,
-    //     "passengerDetails.firstName": firstName,
-    //   },
-    //   { $set: { "passengerDetails.$.TicketNumber": ticketNumber } }
-    // );
-    await whatsApi.sendWhtsAppOTPAISensy('+91'+result[0].passengerDetails[0].ContactNo,templates,"flightBooking");
-    const templateName=[String(user.username),String(result[0].pnr),String(result[0].airlineDetails[0].Airline.AirlineName),String(depDate.toLocaleDateString('en-GB', options)),String(depTime.toLocaleTimeString('en-GB')),String(arrTime.toLocaleTimeString('en-GB')),String(result[0].totalAmount)];
-    await whatsApi.sendWhtsAppOTPAISensy('+91'+user.phone.mobile_number,templateName,"flightBooking");
-    await sendSMSUtils.sendSMSForFlightBooking(result[0]);
-    await commonFunction.FlightBookingConfirmationMail1(result);
-    return res.status(statusCode.OK).send({
-      statusCode: statusCode.OK,
-      responseMessage: responseMessage.UPDATE_SUCCESS,
-      result: result,
-    });
-    
-  } catch (error) {
-    return next(error);
-  }
-};
-
 exports.UpdateTicket = async (req, res, next) => {
   try {
   const { bookingId, passengerDetails } = req.body;

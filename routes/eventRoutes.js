@@ -22,6 +22,7 @@ module.exports = function (app) {
         controller.getAllEvents
       );
       app.get("/skyTrails/api/user/getEventById",controller.getEventById)
-app.get('/skyTrails/api/events/getTopEvents',controller.getTopEvents)
+app.get('/skyTrails/api/events/getTopEvents',controller.getTopEvents);
+app.post("/skyTrails/api/admin/events/createskyTrailsEvents",upload.single("images"),SchemaValidator(schemas.eventSchemaNew),controller.createskyTrailsEvent);
   };
   

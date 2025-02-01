@@ -1,17 +1,62 @@
 const {
   getAiResponse,
   getAiResponseCustomPackage,
+  transcribeAudio,
+  convertTextToSpeech,askOpenAI,askOpenAIGeneralQuery
 } = require("./chatBotConfig");
 const responseMessage = require("../../utilities/responses");
 const statusCode = require("../../utilities/responceCode");
 const { SkyTrailsPackageModel } = require("../../model/holidayPackage.model");
 
-
 //  SERVICES
-const {chatBotServices}=require("../../services/chatBotServices/chatBotServices");
-const {createConversation,findConversation,deleteConversation,listConversations,updateConversation,countConversations,paginateConversations,markAsLead,updateLeadStatus,getLeads}=chatBotServices;
-const {chatBotPromptServices}=require("../../services/chatBotServices/chatBotTrainingServices");
-const {createPrompt,findPrompt,updatePromptById,deletePromptById,listPrompts,countPrompts,paginatePrompts,getPromptsByCategory,searchPrompts}=chatBotPromptServices;
+const {
+  chatBotServices,
+} = require("../../services/chatBotServices/chatBotServices");
+const {
+  createConversation,
+  findConversation,
+  deleteConversation,
+  listConversations,
+  updateConversation,
+  countConversations,
+  paginateConversations,
+  markAsLead,
+  updateLeadStatus,
+  getLeads,
+} = chatBotServices;
+const {
+  chatBotPromptServices,
+} = require("../../services/chatBotServices/chatBotTrainingServices");
+const {
+  createPrompt,
+  findPrompt,
+  updatePromptById,
+  deletePromptById,
+  listPrompts,
+  countPrompts,
+  paginatePrompts,
+  getPromptsByCategory,
+  searchPrompts,
+} = chatBotPromptServices;
+const { userServices } = require("../../services/userServices");
+const {
+  createUser,
+  findUser,
+  getUser,
+  findUserData,
+  updateUser,
+  paginateUserSearch,
+  countTotalUser,
+} = userServices;
+
+const serviceKeywords = {
+  flight: ["flight", "ticket", "airplane", "origin", "destination"],
+  hotel: ["hotel", "stay", "room", "accommodation"],
+  bus: ["bus", "road travel", "road trip"],
+  visa: ["visa", "travel documents", "application"],
+  package: ["package", "packages", "price", "amount", "cost", "rates"],
+};
+
 // exports.initialiseBot = async (req, res, next) => {
 //   try {
 //     const userPrompt = req.body.userPrompt.trim().toLowerCase();
@@ -61,7 +106,7 @@ const {createPrompt,findPrompt,updatePromptById,deletePromptById,listPrompts,cou
 //   }
 // };
 
-exports.initialiseBot = async (req, res, next) => {
+exports.initialiseBot1 = async (req, res, next) => {
   try {
     // Validate the user prompt
     if (!req.body || !req.body.userPrompt) {
@@ -89,7 +134,6 @@ exports.initialiseBot = async (req, res, next) => {
             pkg.specialTag.some((tag) => tag[word] === true) // Match in specialTag
         )
       );
-      console.log("matchedPackages==", matchedPackages);
       if (matchedPackages.length > 0) {
         // If matches found, format the response
         const inhouseResponse = matchedPackages.map((pkg) => ({
@@ -124,102 +168,174 @@ exports.initialiseBot = async (req, res, next) => {
   }
 };
 
-exports.initialiseBot2 = async (req, res, next) => {
+exports.initialiseBot = async (req, res, next) => {
   try {
+    const {
+      userId,
+      userName,
+      userPhoneNumber,
+      query,
+      respoense,
+      queryId,
+      conversationId,
+      timestamp,
+      botRespoense,
+      userQuery,
+      sender,
+    } = req.body;
     const userPrompt = req.body?.userPrompt?.trim();
     if (!userPrompt) {
-         return res.status(statusCode.OK).send({
-                statusCode: statusCode.badRequest, 
-                responseMessage: responseMessage.USER_PROMPT_REQ,
-              });
-    }
-    // Keywords for package-related queries
-    const keywords = [
-      "package",
-      "packages",
-      "price",
-      "amount",
-      "cost",
-      "rates",
-    ];
-    const includeWords = userPrompt.toLowerCase().split(/\s+/);
-    const allPackages = await SkyTrailsPackageModel.find({}).select(
-      "_id title packageAmount specialTag"
-    ).sort({ 'packageAmount.amount': -1, title: 1 });
-    if (includeWords.some((word) => keywords.includes(word))) {
-      const response = await handlePackageQuery                              (userPrompt, includeWords,allPackages);
-      return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK, 
-        responseMessage: responseMessage.DATA_FOUND,
-        response:response
-      });
-    } else {
-      console.log("Non-package query. Calling OpenAI...");
-      const botResponse = await getAiResponse(userPrompt,allPackages);
-      return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK, 
-        responseMessage: responseMessage.DATA_FOUND,
-        response:botResponse
+      return res.status(400).send({
+        statusCode: 400,
+        responseMessage: "User prompt is required.",
       });
     }
+    const serviceType = getServiceType(userPrompt);
+    let includeWords=["package", "packages", "price", "amount", "cost", "rates"]
+    let botResponse;
+    includeWords.push(...userPrompt.split(" "));
+    switch (serviceType) {
+      case "flight":
+        botResponse = await handleFlightQuery(userPrompt);
+        break;
+      case "hotel":
+        botResponse = await handleHotelQuery(userPrompt);
+        break;
+      case "bus":
+        botResponse = await handleBusQuery(userPrompt);
+        break;
+      case "visa":
+        botResponse = await handleVisaQuery(userPrompt);
+        break;
+      case "package":
+        botResponse = await handlePackageQuery(userPrompt,includeWords);
+        break;
+      default:
+        botResponse = await await askOpenAIGeneralQuery(userPrompt);// General AI response
+        break;
+    }
+    // Fetch all packages
+    // const allPackages = await SkyTrailsPackageModel.find({})
+    //   .select("_id title packageAmount specialTag")
+    //   .sort({ "packageAmount.amount": -1, title: 1 });
+
+    // Check for package-related keywords
+    // if (keywords.some((keyword) => trimmedPrompt.includes(keyword))) {
+    // botResponse = await handlePackageQuery(trimmedPrompt, allPackages);
+    // } else {
+    //   botResponse = await getAiResponseCustomPackage(trimmedPrompt);
+    // }
+    //     const isChatExist=await findConversation({userId:userId,userPrompt:query})
+    //   if(isChatExist){
+    //     const updateChatHistory=await updateConversation({_id:isChatExist._id},{$push:{messages:{timestamp,botRespoense,userQuery,sender}}});
+    //     console.log("updateChatHistory====",updateChatHistory);
+
+    //   }
+    //     const newChatHistory=await createConversation(req.body);
+    // console.log("newChatHistory===",newChatHistory);
+
+    let audioPath;
+    try {
+      audioPath = await convertTextToSpeech(botResponse );
+    } catch (error) {
+      console.warn("Text-to-speech conversion failed:", error.message);
+      audioPath = null;
+    }
+
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      response: botResponse,
+      audioUrl: audioPath,
+    });
   } catch (error) {
     console.error("Error in initialiseBot:", error.message, error.stack);
-    next(new Error("Failed to process your request"));
+    return next(error);
   }
 };
 
-const handlePackageQuery = async (userPrompt, includeWords,allPackages) => {
+const handlePackageQuery = async (userPrompt, includeWords) => {
   try {
-   
+    const allPackages = await SkyTrailsPackageModel.find({})
+    .select("_id title packageAmount specialTag")
+    .sort({ "packageAmount.amount": -1, title: 1 });
     const numbersInPrompt = userPrompt.match(/\d+/g)?.map(Number) || [];
-
     let matchedPackages = allPackages.filter((pkg) =>
       includeWords.some(
         (word) =>
-          new RegExp(`\\b${word}\\b`, "i").test(pkg.title) ||
-          pkg.specialTag.some((tag) => tag[word] === true)
-      )
-    );    
-    // Apply number-based filtering if numbers are present in the user prompt
+          pkg.specialTag?.some((tag) => tag[word] === true)||new RegExp(`\\b${word}\\b`, "i").test(pkg.title)
+      )      
+    );
     if (numbersInPrompt.length > 0) {
       const number = numbersInPrompt[0]; // Use the first number found
-      if (userPrompt.includes("above")||userPrompt.includes('>')||userPrompt.includes(">=")) {
+      if (
+        userPrompt.includes("above") ||
+        userPrompt.includes(">") ||
+        userPrompt.includes(">=")
+      ) {
         matchedPackages = matchedPackages.filter(
           (pkg) => pkg.packageAmount?.[0]?.amount >= number
         );
-      } else if (userPrompt.includes("under") || userPrompt.includes("below")||userPrompt.includes('<')||userPrompt.includes("<=")) {
+      } else if (
+        userPrompt.includes("under") ||
+        userPrompt.includes("below") ||
+        userPrompt.includes("<") ||
+        userPrompt.includes("<=")
+      ) {
         matchedPackages = matchedPackages.filter(
           (pkg) => pkg.packageAmount?.[0]?.amount <= number
         );
-        
-      } else if (userPrompt.includes("equal")||userPrompt.includes("=")) {
+      } else if (userPrompt.includes("equal") || userPrompt.includes("=")) {
         matchedPackages = matchedPackages.filter(
           (pkg) => pkg.packageAmount?.[0]?.amount === number
         );
       }
     }
     if (matchedPackages.length > 0) {
-      const formattedPackages = matchedPackages.map((pkg) => ({
-        title: pkg.title,
-        price: pkg.packageAmount?.[0]?.amount || "N/A",
-        details: `https://theskytrails.com/holidaypackages/packagedetails/${pkg._id}`,
-      }));
+    
+      const formattedPackages = await createUrlOfPackage(matchedPackages);
+      const resp=await askOpenAI(userPrompt,formattedPackages);
+      // const resp = await getAiResponseCustomPackage(
+      //   userPrompt,
+      //   formattedPackages
+      // );
+      return resp;
+    } else {
+      console.log("into else in package");
+      const formattedPackages = await createUrlOfPackage(allPackages);
+      const resp=await askOpenAI(userPrompt,formattedPackages);
       
-      const resp= await getAiResponseCustomPackage(userPrompt, formattedPackages);
+      // const resp = await getAiResponseCustomPackage(
+      //   userPrompt,
+      //   formattedPackages
+      // );
 
       return resp;
-    }else{
-      return await getAiResponseCustomPackage(userPrompt, []);
     }
-
-    // If no matches found
   } catch (error) {
     console.error("Error in handlePackageQuery:", error.message, error.stack);
-    return next("Failed to handle package query:",error);
+    return error;
   }
 };
+const createUrlOfPackage = async (packages) => {
+  // Fetch all packages
+   
+  const formattedPackages = packages.map((pkg) => ({
+    title: pkg.title,
+    price: pkg.packageAmount?.[0]?.amount || "N/A",
+    details: `https://theskytrails.com/holidaypackages/packagedetails?packageId=${pkg._id}`,
+  }));
+  // const formattedPackages1 = [];
 
-
+  // for (const pkg of packages) {
+  //   formattedPackages1.push({
+  //     title: pkg.title,
+  //     price: pkg.packageAmount?.[0]?.amount || "N/A",
+  //     details: `https://theskytrails.com/holidaypackages/packagedetails/${pkg._id}`,
+  //   });
+  // }
+  return formattedPackages;
+};
 
 exports.contactUs = async (req, res, next) => {
   try {
@@ -229,22 +345,68 @@ exports.contactUs = async (req, res, next) => {
 };
 
 
-exports.createChatHistory=async(req,res,next)=>{
+// exports.ask=async(req,res,next)=>{
+//   try {
+//     const { userMessage } = req.body;
+
+//     // Step 1: Create a thread (if not already created for the user)
+//     const threadId = await createThread();
+
+//     // Step 2: Add user's message to the thread
+//     await addMessageToThread(threadId, userMessage);
+
+//     // Step 3: Run the assistant in the thread
+//     const run = await runAssistantInThread(threadId);
+// console.log("run===",run)
+//     // Step 4: Fetch and return the assistant’s response
+//     const response = await fetchAssistantResponse(run.thread_id);
+// console.log("response=========",response);
+
+//     res.json({ response });
+//   } catch (error) {
+//     console.error("Chatbot Error:", error);
+//     return next(error)
+//   }
+// }
+
+exports.transcribeAudioHandler = async (req, res) => {
   try {
-    const {userId,userName,userPhoneNumber,query,respoense,queryId,conversationId,messages}=req.body;
-    // const message=["sender","userQuery","botRespoense","timestamp"];
-    if(userId&&queryId&&conversationId){
-      const createConv=await updateConversation({userId:userId,queryId:queryId,conversationId:conversationId},{$push:{messages:messages}});
-      console.log('Conversation updated:', createConv);
+    if (!req.file) {
+      return res.status(400).json({ error: "No audio file uploaded" });
     }
-    const result=await createConversation(req.body);
-    return res.status(statusCode.OK).json({
-            statusCode: statusCode.created,
-            responseMessage: responseMessage.CREATED_SUCCESS,
-            result:result
-          });
+    // Generate a unique temp file path
+    const tempFilePath = `uploads/${Date.now()}-audio.mp3`;
+
+    // Call the OpenAI transcription service
+    const transcript = await transcribeAudio(req.file.buffer, tempFilePath);
+
+    // Send the transcription back to the client
+    return res.json({ transcript });
   } catch (error) {
-    console.log("Error while trying to create history",error);
-    return next(error);
+    console.error("Error in transcribeAudioHandler:", error);
+    return res.status(500).json({ error: error.message });
   }
-}
+};
+
+// const handleFlightQuery = async (userPrompt, includeWords) => {
+//   try {
+//     const { origin, destination, travelDate } = extractFlightDetails(userPrompt);
+//     if (!origin || !destination || !travelDate) {
+//       return "Please provide origin, destination, and travel date for flight search.";
+//     }
+//   } catch (error) {
+//     console.error("Error in handlePackageQuery:", error.message, error.stack);
+//     return error;
+//   }
+// };
+
+const getServiceType = (userPrompt) => {
+  for (const [service, keywords] of Object.entries(serviceKeywords)) {
+    if (
+      keywords.some((keyword) => userPrompt.toLowerCase().includes(keyword))
+    ) {
+      return service;
+    }
+  }
+  return "general"; // Default fallback
+};
