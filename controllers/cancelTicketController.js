@@ -73,7 +73,7 @@ exports.getCancelFlightBooking = async (req, res, next) => {
         const { page, limit, search, fromDate } = req.query;
         const result =await aggregatePaginatecancelFlightBookingsList(req.query);
         if (!result) {
-            return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.DATA_NOT_FOUND });
+            return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.DATA_NOT_FOUND });
         }
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.DATA_FOUND, result: result });
     } catch (error) {
@@ -120,7 +120,7 @@ exports.getCancelHotelBooking = async (req, res, next) => {
         const { page, limit, search, fromDate } = req.query;
         const result =await getHotelCancelRequesrByAggregate(req.query);
         if (!result) {
-            return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.DATA_NOT_FOUND });
+            return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.DATA_NOT_FOUND });
         }
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.DATA_FOUND, result: result });
     } catch (error) {
@@ -170,7 +170,7 @@ exports.getCancelBusBooking=async(req,res,next)=>{
         const { page, limit, search, fromDate,toDate } = req.query;
         const result=await getBusCancellation(req.query);
         if (!result) {
-            return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.DATA_NOT_FOUND });
+            return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.DATA_NOT_FOUND });
         }
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.DATA_FOUND, result: result });
     } catch (error) {

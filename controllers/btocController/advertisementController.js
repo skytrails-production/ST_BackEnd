@@ -43,7 +43,7 @@ exports.createadvertismentController = async (req, res, next) => {
         }
         const result = await createadvertisement(object);
         if(!result){
-            return res.status(statusCode.NotFound).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
+            return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
         }
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, message: responseMessage.ADS_CREATED, result: result });
     } catch (error) {
@@ -59,7 +59,7 @@ exports.updateadvertisementController = async (req, res, next) => {
         const {  title, content, startDate, endDate, remainingDays,advertisementId } = req.body
         const isExist=await findadvertisementData({_id:advertisementId,status:status.ACTIVE});
         if(!isExist){
-            return res.status(statusCode.NotFound).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
+            return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
         }
         const imageFiles = await commonFunction.getImageUrlAWS(req.file);
         if (!imageFiles) {
@@ -75,7 +75,7 @@ exports.updateadvertisementController = async (req, res, next) => {
         }
         const result = await updateadvertisement(object);
         if(!result){
-            return res.status(statusCode.NotFound).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
+            return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
         }
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, message: responseMessage.UPDATE_SUCCESS, result: result });
     } catch (error) {
@@ -88,7 +88,7 @@ exports.getadvertisementController = async (req, res, next) => {
        
         const result=await getAdvertisment(req.query);
         if(!result){
-            return res.status(statusCode.NotFound).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
+            return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
         }
         return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.DATA_FOUND,result:result})
     } catch (error) {
@@ -138,7 +138,7 @@ exports.updateflightadvertisementController = async (req, res, next) => {
         const {  title, content, startDate, endDate, remainingDays,advertisementId } = req.body
         const isExist=await findflightadvertisementData({_id:advertisementId,status:status.ACTIVE});
         if(!isExist){
-            return res.status(statusCode.NotFound).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
+            return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
         }
         const imageFiles = await commonFunction.getImageUrlAWS(req.file);
         if (!imageFiles) {
@@ -154,7 +154,7 @@ exports.updateflightadvertisementController = async (req, res, next) => {
         }
         const result = await updateflightadvertisement(object);
         if(!result){
-            return res.status(statusCode.NotFound).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
+            return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
         }
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, message: responseMessage.UPDATE_SUCCESS, result: result });
     } catch (error) {
@@ -169,7 +169,7 @@ exports.getflightadvertisementController = async (req, res, next) => {
 // endDate: { $gt: currentDate },
         const result=await advertisementflightList({status:status.ACTIVE});
         if (!result || result.length === 0) {
-            return res.status(statusCode.NotFound).send({
+            return res.status(statusCode.OK).send({
                 statusCode: statusCode.NotFound,
                 responseMessage: responseMessage.DATA_NOT_FOUND,
             });
@@ -205,7 +205,7 @@ exports.createbustadvertismentController = async (req, res, next) => {
         }
         const result = await createbusadvertisement(object);
         if(!result){
-            return res.status(statusCode.NotFound).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
+            return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
         }
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, message: responseMessage.ADS_CREATED, result: result });
     } catch (error) {
@@ -221,7 +221,7 @@ exports.updatebusadvertisementController = async (req, res, next) => {
         const {  title, content, startDate, endDate, remainingDays,packageId } = req.body
         const isExist=await findbusadvertisementData({_id:packageId,status:status.ACTIVE});
         if(!isExist){
-            return res.status(statusCode.NotFound).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
+            return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
         }
         const imageFiles = await commonFunction.getImageUrlAWS(req.file);
         if (!imageFiles) {
@@ -237,7 +237,7 @@ exports.updatebusadvertisementController = async (req, res, next) => {
         }
         const result = await updatebusadvertisement(object);
         if(!result){
-            return res.status(statusCode.NotFound).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
+            return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
         }
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, message: responseMessage.UPDATE_SUCCESS, result: result });
     } catch (error) {
@@ -252,7 +252,7 @@ exports.getbusadvertisementController = async (req, res, next) => {
         // endDate: { $gt: currentDate },
         const result=await advertisementbusList({status:status.ACTIVE});
         if(!result){
-            return res.status(statusCode.NotFound).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
+            return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
         }
         return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.DATA_FOUND,result:result})
     } catch (error) {
@@ -286,7 +286,7 @@ exports.createhoteladvertismentController = async (req, res, next) => {
         }
         const result = await createhoteladvertisement(object);
         if(!result){
-            return res.status(statusCode.NotFound).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
+            return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
         }
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, message: responseMessage.ADS_CREATED, result: result });
     } catch (error) {
@@ -302,7 +302,7 @@ exports.updatehoteladvertisementController = async (req, res, next) => {
         const {title, content, startDate, endDate, remainingDays,packageId } = req.body
         const isExist=await findhoteladvertisementData({_id:packageId,status:status.ACTIVE});
         if(!isExist){
-            return res.status(statusCode.NotFound).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
+            return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
         }
         const imageFiles = await commonFunction.getImageUrlAWS(req.file);
         if (!imageFiles) {
@@ -318,7 +318,7 @@ exports.updatehoteladvertisementController = async (req, res, next) => {
         }
         const result = await updatehoteladvertisement(object);
         if(!result){
-            return res.status(statusCode.NotFound).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
+            return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
         }
         return res.status(statusCode.OK).send({ statusCode: statusCode.OK, message: responseMessage.UPDATE_SUCCESS, result: result });
     } catch (error) {
@@ -333,7 +333,7 @@ exports.gethoteladvertisementController = async (req, res, next) => {
         // endDate: { $gt: currentDate },
         const result=await hoteladvertisementList({status:status.ACTIVE});
         if(!result){
-            return res.status(statusCode.NotFound).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
+            return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
         }
         return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.DATA_FOUND,result:result})
     } catch (error) {

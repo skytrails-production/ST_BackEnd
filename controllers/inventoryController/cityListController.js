@@ -20,7 +20,7 @@ exports.getCountryList=async(req,res,next)=>{
         const result=await GrnCountryList.find({}).sort({countryName:1}).select('countryName -_id');
         if(result.length<1){
             return res.status(statusCode.OK).send({
-                statusCode: statusCode.OK,
+                statusCode: statusCode.NotFound,
                 responseMessage: responseMessage.DATA_NOT_FOUND
               });
         }
@@ -57,7 +57,7 @@ exports.getStateList=async(req,res,next)=>{
 
         if(result.length<1){
             return res.status(statusCode.OK).send({
-                statusCode: statusCode.OK,
+                statusCode: statusCode.NotFound,
                 responseMessage: responseMessage.DATA_NOT_FOUND
               });
         }       
@@ -79,7 +79,7 @@ exports.getCityList=async(req,res,next)=>{
         const result=await TboHotelCityList.find({stateProvince:req.params.stateName}).sort({cityName:1});
         if(result.length<1){
             return res.status(statusCode.OK).send({
-                statusCode: statusCode.OK,
+                statusCode: statusCode.NotFound,
                 responseMessage: responseMessage.DATA_NOT_FOUND
               });
         }
@@ -123,7 +123,7 @@ exports.getStateAggregateList = async (req, res, next) => {
 
         if (result.length < 1) {
             return res.status(statusCode.OK).send({
-                statusCode: statusCode.OK,
+                statusCode: statusCode.NotFound,
                 responseMessage: responseMessage.DATA_NOT_FOUND
             });
         }

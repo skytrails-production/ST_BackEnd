@@ -174,7 +174,7 @@ exports.likeComments = async (req, res, next) => {
             status: status.ACTIVE,
         });
         if (!isCommentExist) {
-            return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.DATA_NOT_FOUND });
+            return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, message: responseMessage.DATA_NOT_FOUND });
         }
         const isAlreadyLiked = await findlikes({
             commentId: commentId,

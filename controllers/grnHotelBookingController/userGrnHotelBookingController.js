@@ -138,7 +138,7 @@ exports.getUserGrnBooking=async(req,res,next)=>{
     const result=await findUserGrnBookingList({status: status.ACTIVE,userId: isUserExist._id})
     if (result.length<1) {
       return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
+        statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });
     }
@@ -164,7 +164,7 @@ exports.getUserGrnBookingById=async(req,res,next)=>{
     const result=await findUserGrnBooking({_id:bookingId});
     if (!result) {
       return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
+        statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });
     }
@@ -179,7 +179,7 @@ exports.getAllGrnBookingList=async(req,res,next)=>{
     const result=await userGrnBooking({status: status.ACTIVE});
     if (result.length<1) {
       return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
+        statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });
     }

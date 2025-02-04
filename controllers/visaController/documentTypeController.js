@@ -30,7 +30,7 @@ exports.getDocType=async(req,res,next)=>{
     try {
         const result=await docTypeList({});
         if(!result){
-            return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND,result: result,});
+            return res.status(statusCode.OK).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND,result: result,});
         }
         return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result: result,});
     } catch (error) {
@@ -42,7 +42,7 @@ exports.getDocTypeById=async(req,res,next)=>{
         const {docId}=req.query;
         const result=await docTypeList({_id:docId});
         if(!result){
-            return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND,result: result,});
+            return res.status(statusCode.OK).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND,result: result,});
         }
         return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result: result,});
     } catch (error) {

@@ -840,7 +840,7 @@ exports.getReachargeHistory = async (req, res, next) => {
       bookingType: "RECHARGES",
     });
     if (result.length === 0 || !result) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.DATA_NOT_FOUND,
       });

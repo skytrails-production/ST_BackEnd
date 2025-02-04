@@ -31,7 +31,7 @@ exports.getVisaCategory=async(req,res,next)=>{
     try {
         const result=await visaCategoryList({});
         if(!result){
-            return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND,result: result,});
+            return res.status(statusCode.OK).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND,result: result,});
         }
         return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result: result,});
    
@@ -45,7 +45,7 @@ exports.getVisaCategoryById=async(req,res,next)=>{
         const {visaCategoryId}=req.query
         const result=await visaCategoryList({_id:visaCategoryId});
         if(!result){
-            return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND,result: result,});
+            return res.status(statusCode.OK).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND,result: result,});
         }
         return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result: result,});
    

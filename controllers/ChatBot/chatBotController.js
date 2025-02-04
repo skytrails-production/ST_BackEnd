@@ -110,9 +110,7 @@ exports.initialiseBot1 = async (req, res, next) => {
   try {
     // Validate the user prompt
     if (!req.body || !req.body.userPrompt) {
-      return res
-        .status(400)
-        .json({ error: "Invalid request: 'userPrompt' is required." });
+      return res.status(400).json({ error: "Invalid request: 'userPrompt' is required." });
     }
     const userPrompt = req.body.userPrompt.trim().toLowerCase();
     const includeWords = userPrompt.toLowerCase().split(/\s+/);

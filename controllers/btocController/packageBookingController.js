@@ -228,7 +228,7 @@ exports.getPackageEnquiryById = async (req, res, next) => {
     });
     if (!response) {
       return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
+        statusCode: statusCode.NotFound,
         message: responseMessage.DATA_NOT_FOUND,
       });
     }
@@ -377,7 +377,7 @@ exports.packageEnquiryListForCrm = async (req, res, next) => {
   try {
     const result = await findAllPackageEnquiryPopulate();
     if (result.length < 1) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });

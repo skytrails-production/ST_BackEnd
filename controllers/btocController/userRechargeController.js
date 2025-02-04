@@ -85,14 +85,14 @@ exports.getReachargeHistory=async(req,res,next)=>{
         status: status.ACTIVE,
       });
       if (!isUserExist) {
-        return res.status(statusCode.NotFound).send({
+        return res.status(statusCode.OK).send({
           statusCode: statusCode.NotFound,
           message: responseMessage.USERS_NOT_FOUND,
         });
       }
       const result=await userRechargeApplicationfind({userId:isUserExist._id});
       if (result.length === 0 || !result) {
-        return res.status(statusCode.NotFound).send({
+        return res.status(statusCode.OK).send({
           statusCode: statusCode.NotFound,
           message: responseMessage.DATA_NOT_FOUND,
         });

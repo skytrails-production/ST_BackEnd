@@ -68,7 +68,7 @@ exports.getProposalById=async(req,res,next)=>{
     const result=await finOneProposal({_id:proposalId});
     if(!result){
       return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
+        statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });
     }
@@ -87,7 +87,7 @@ exports.getAllProposal=async(req,res,next)=>{
     const result=await findAllProposal({});
     if(result.length<1){
       return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
+        statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });
     }

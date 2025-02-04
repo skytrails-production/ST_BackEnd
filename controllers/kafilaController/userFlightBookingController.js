@@ -136,7 +136,7 @@ exports.getUserFlightBooking=async(req,res,next)=>{
     const result = await aggrPagGetKafilaFlightBooking(body);
     if (result.docs.length == 0) {
       return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
+        statusCode: statusCode.NotFound,
         message: responseMessage.DATA_NOT_FOUND,
       });
     }
@@ -189,7 +189,7 @@ exports.getUserFlightBookings=async(req,res,next)=>{
     const result = await aggrPagGetKafilaFlightBooking(body);
     if (result.docs.length == 0) {
       return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
+        statusCode: statusCode.NotFound,
         message: responseMessage.DATA_NOT_FOUND,
       });
     }

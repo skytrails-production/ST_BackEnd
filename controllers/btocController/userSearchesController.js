@@ -80,7 +80,7 @@ exports.getUserSerchHistory = async (req, res, next) => {
     const { page, limit, search } = req.query;
     const result = await paginateUserSearchHistory(req.query);
     if (!result) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });

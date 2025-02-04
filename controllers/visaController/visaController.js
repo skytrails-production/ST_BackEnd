@@ -223,7 +223,7 @@ exports.getVisaById=async(req,res,next)=>{
         const result=await findWeeklyVisa({_id:visaId,status:status.ACTIVE});
         if(!result){
             return res
-            .status(statusCode.NotFound)
+            .status(statusCode.OK)
             .send({
               statusCode: statusCode.NotFound,
               message: responseMessage.DATA_NOT_FOUND,
@@ -255,7 +255,7 @@ exports.getAllVisaCountry=async(req,res,next)=>{
     try {
        const result=await populatedVisaList({status:status.ACTIVE});
        if(!result||result.length==0){
-        return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.DATA_NOT_FOUND});
+        return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.DATA_NOT_FOUND});
     }
     return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.DATA_FOUND, result: result });
     

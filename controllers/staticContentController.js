@@ -84,7 +84,7 @@ exports.listStaticContent = async (req, res, next) => {
       });
     } else {
       return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
+        statusCode: statusCode.NotFound,
         message: responseMessage.DATA_NOT_FOUND,
         result: result,
       });
@@ -106,7 +106,7 @@ exports.updateStaticContent = async (req, res, next) => {
       req.body
     );
     if (!result) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.DATA_NOT_FOUND,
         result: result,
@@ -135,7 +135,7 @@ exports.deleteStaticContent = async (req, res, next) => {
       status: status.ACTIVE,
     });
     if (!isDataExist) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.DATA_NOT_FOUND,
         result: result,

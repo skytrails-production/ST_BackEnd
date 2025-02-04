@@ -87,8 +87,8 @@ exports.getDailyQuiz = async (req, res, next) => {
                 result: result[0]
             });
         } else {
-            return res.status(statusCode.NOT_FOUND).send({
-                statusCode: statusCode.NOT_FOUND,
+            return res.status(statusCode.OK).send({
+                statusCode: statusCode.NotFound,
                 responseMessage: responseMessage.DATA_NOT_FOUND
             });
         }

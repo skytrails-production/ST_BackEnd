@@ -1224,7 +1224,7 @@ exports.beachesPackagesCategory = async (req, res, next) => {
     const result = await internationl.paginate(queryObj, options);
     if (result.docs.length === 0) {
       return res.status(statusCode.OK).json({
-        statusCode: statusCode.OK,
+        statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });
     }

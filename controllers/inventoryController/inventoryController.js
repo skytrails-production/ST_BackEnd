@@ -688,7 +688,7 @@ exports.getAllHotelInventoryList=async(req,res,next)=>{
       // req.query.userType==="USER"
       const result = await paginateHotelData(req.query);
       if (!result || result.length <= 0) {
-        res.status(statusCode.NotFound).send({
+        res.status(statusCode.OK).send({
           statusCode: statusCode.NotFound,
           responseMessage: responseMessage.DATA_NOT_FOUND,
         });

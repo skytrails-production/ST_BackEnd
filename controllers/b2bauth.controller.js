@@ -654,7 +654,7 @@ exports.getAllAgentHotelBookingList = async (req, res, next) => {
     const isAgent = await findbrbuser({ _id: userId });
     // console.log(isAgent,"agent found");
     if (!isAgent) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.USERS_NOT_FOUND,
       });
@@ -707,7 +707,7 @@ exports.getAllAgentHotelBookingList = async (req, res, next) => {
       options
     );
     if (result.docs.length == 0) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.DATA_NOT_FOUND,
       });
@@ -779,8 +779,8 @@ exports.getAllAgentFlightBookingList = async (req, res, next) => {
     const result = await flightModel.aggregatePaginate(aggregate, options);
     if (result.docs.length == 0) {
       return res
-        .status(statusCode.NotFound)
-        .send({ message: responseMessage.DATA_NOT_FOUND });
+        .status(statusCode.OK)
+        .send({statusCode:statusCode.NotFound, message: responseMessage.DATA_NOT_FOUND });
     }
     return res
       .status(statusCode.OK)
@@ -856,8 +856,8 @@ exports.getAllAgentBusBookingList = async (req, res, next) => {
     const result = await busBookingModel.aggregatePaginate(aggregate, options);
     if (result.docs.length == 0) {
       return res
-        .status(statusCode.NotFound)
-        .send({ message: responseMessage.DATA_NOT_FOUND });
+        .status(statusCode.OK)
+        .send({statusCode:statusCode.NotFound, message: responseMessage.DATA_NOT_FOUND });
     }
     return res
       .status(statusCode.OK)
@@ -1299,8 +1299,8 @@ exports.getAllFixDepartureBooking = async (req, res, next) => {
     );
     if (result.docs.length == 0) {
       return res
-        .status(statusCode.NotFound)
-        .send({ message: responseMessage.DATA_NOT_FOUND });
+        .status(statusCode.OK)
+        .send({statusCode:statusCode.NotFound, message: responseMessage.DATA_NOT_FOUND });
     }
     return res
       .status(statusCode.OK)

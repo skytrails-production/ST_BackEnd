@@ -43,7 +43,7 @@ exports.getDocumnetCategory=async(req,res,next)=>{
     try {
         const result=await docCategoryList({});
         if(!result){
-            return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND,result: result,});
+            return res.status(statusCode.OK).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND,result: result,});
         }
         return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result: result,});
    
@@ -57,7 +57,7 @@ exports.getDocumnetCategoryById=async(req,res,next)=>{
         const {docId}=req.query;
         const result=await findDocCategoryData({_id:docId});
         if(!result){
-            return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND,result: result,});
+            return res.status(statusCode.OK).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND,result: result,});
         }
         return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result: result,});
     } catch (error) {

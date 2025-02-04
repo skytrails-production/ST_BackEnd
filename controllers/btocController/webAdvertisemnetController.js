@@ -65,7 +65,7 @@ exports.getWebAdvertisement=async(req,res,next)=>{
 
         const result=await webAdvertisementList({status:status.ACTIVE,endDate: { $gte: currentDate }});
         if(!result){
-            return res.status(statusCode.NotFound).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
+            return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
         }
         return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.DATA_FOUND,result:result})
     
@@ -79,7 +79,7 @@ exports.getAggregateWebAdvertisement=async(req,res,next)=>{
         const {page,limit}=req.body;
         const result=await getWebAdvertisment(req.body);
         if(!result){
-            return res.status(statusCode.NotFound).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
+            return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
         }
         return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.DATA_FOUND,result:result})
     

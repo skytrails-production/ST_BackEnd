@@ -643,8 +643,8 @@ exports.getAgents = async (req, res, next) => {
     const result = await paginatebrbuserSearch(req.query);
     if (result.docs.length == 0) {
       return res
-        .status(statusCode.NotFound)
-        .send({ message: responseMessage.DATA_NOT_FOUND });
+        .status(statusCode.OK)
+        .send({ statusCode:statusCode.NotFound,message: responseMessage.DATA_NOT_FOUND });
     }
     return res
       .status(statusCode.OK)
@@ -664,8 +664,8 @@ exports.getAllHotelBookingList = async (req, res, next) => {
     const result = await aggregatePaginateHotelBookingList1(req.query);
     if (result.docs.length == 0) {
       return res
-        .status(statusCode.NotFound)
-        .send({ message: responseMessage.DATA_NOT_FOUND });
+        .status(statusCode.OK)
+        .send({statusCode:statusCode.NotFound, message: responseMessage.DATA_NOT_FOUND });
     }
     return res
       .status(statusCode.OK)
@@ -776,8 +776,8 @@ exports.getAllFlightBookingList = async (req, res, next) => {
     );
     if (result.docs.length == 0) {
       return res
-        .status(statusCode.NotFound)
-        .send({ message: responseMessage.DATA_NOT_FOUND });
+        .status(statusCode.OK)
+        .send({ statusCode:statusCode.NotFound,message: responseMessage.DATA_NOT_FOUND });
     }
 
     return res
@@ -938,8 +938,8 @@ exports.getAllBusBookingList = async (req, res, next) => {
     );
     if (result.docs.length == 0) {
       return res
-        .status(statusCode.NotFound)
-        .send({ message: responseMessage.DATA_NOT_FOUND });
+        .status(statusCode.OK)
+        .send({ statusCode:statusCode.NotFound,message: responseMessage.DATA_NOT_FOUND });
     }
     return res
       .status(statusCode.OK)
@@ -1017,8 +1017,8 @@ exports.cancelTickets = async (req, res, next) => {
         });
         if (!isBookingExist) {
           return res
-            .status(statusCode.NotFound)
-            .send({ message: responseMessage.DATA_NOT_FOUND });
+            .status(statusCode.OK)
+            .send({statusCode:statusCode.NotFound, message: responseMessage.DATA_NOT_FOUND });
         }
         if (isBookingExist.bookingStatus == bookingStatus.CANCEL) {
         }
@@ -1117,8 +1117,8 @@ exports.getAllHotelBookingListAgent = async (req, res, next) => {
     const result = await aggregatePaginateHotelBookingList(req.query);
     if (result.docs.length == 0) {
       return res
-        .status(statusCode.NotFound)
-        .send({ message: responseMessage.DATA_NOT_FOUND });
+        .status(statusCode.OK)
+        .send({statusCode:statusCode.NotFound, message: responseMessage.DATA_NOT_FOUND });
     }
     return res
       .status(statusCode.OK)
@@ -1192,8 +1192,8 @@ exports.getAllFlightBookingListAgent = async (req, res, next) => {
     const result = await flightModel.aggregatePaginate(aggregate, options);
     if (result.docs.length == 0) {
       return res
-        .status(statusCode.NotFound)
-        .send({ message: responseMessage.DATA_NOT_FOUND });
+        .status(statusCode.OK)
+        .send({statusCode:statusCode.NotFound, message: responseMessage.DATA_NOT_FOUND });
     }
 
     return res
@@ -1273,8 +1273,8 @@ exports.getAllBusBookingListAgent = async (req, res, next) => {
     const result = await busBookingModel.aggregatePaginate(aggregate, options);
     if (result.docs.length == 0) {
       return res
-        .status(statusCode.NotFound)
-        .send({ message: responseMessage.DATA_NOT_FOUND });
+        .status(statusCode.OK)
+        .send({statusCode:statusCode.NotFound, message: responseMessage.DATA_NOT_FOUND });
     }
     return res
       .status(statusCode.OK)
@@ -1295,7 +1295,7 @@ exports.getCancelUserFlightBooking = async (req, res, next) => {
     const query = { page, limit, search, fromDate };
     const result = await aggregatePaginatecancelFlightBookingsList1(req.query);
     if (!result) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });
@@ -1314,7 +1314,7 @@ exports.getCancelUserHotelBooking = async (req, res, next) => {
     const { page, limit, search, fromDate } = req.query;
     const result = await getHotelCancelRequesrByAggregate(req.query);
     if (!result) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });
@@ -1333,7 +1333,7 @@ exports.getCancelUserBusBooking = async (req, res, next) => {
     const { page, limit, search, fromDate } = req.query;
     const result = await getBusCancelRequestByAggregate(req.query);
     if (!result) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });
@@ -1396,8 +1396,8 @@ exports.getAllFixDepartureBooking = async (req, res, next) => {
     );
     if (result.docs.length == 0) {
       return res
-        .status(statusCode.NotFound)
-        .send({ message: responseMessage.DATA_NOT_FOUND });
+        .status(statusCode.OK)
+        .send({statusCode:statusCode.NotFound, message: responseMessage.DATA_NOT_FOUND });
     }
 
     return res
@@ -1546,7 +1546,7 @@ exports.getCancelAgentFlightBooking = async (req, res, next) => {
     const { page, limit, search, fromDate, toDate } = req.query;
     const result = await aggregatecancelFlightBookingsList(req.query);
     if (!result) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });
@@ -1565,7 +1565,7 @@ exports.getCancelAgentHotelBooking = async (req, res, next) => {
     const { page, limit, search, fromDate } = req.query;
     const result = await getAgentHotelCancelRequesrByAggregate(req.query);
     if (!result) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });
@@ -1584,7 +1584,7 @@ exports.getCancelAgentBusBooking = async (req, res, next) => {
     const { page, limit, search, fromDate } = req.query;
     const result = await getBusCancellationAgent(req.query);
     if (!result) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });
@@ -1765,7 +1765,7 @@ exports.getAllUsers = async (req, res, next) => {
     // req.query.userType==="USER"
     const result = await paginateUserSearch(req.query);
     if (!result || result.length <= 0) {
-      res.status(statusCode.NotFound).send({
+      res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });

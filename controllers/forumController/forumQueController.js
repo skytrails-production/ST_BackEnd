@@ -114,7 +114,7 @@ exports.getPost = async (req, res, next) => {
     if (post) {
       result.post = post;
     } else {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.DATA_NOT_FOUND,
       });
@@ -123,7 +123,7 @@ exports.getPost = async (req, res, next) => {
     if (unanswered) {
       result.unanswered = unanswered;
     } else {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.DATA_NOT_FOUND,
       });
@@ -135,7 +135,7 @@ exports.getPost = async (req, res, next) => {
         result: result,
       });
     } else {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.DATA_NOT_FOUND,
       });
@@ -212,7 +212,7 @@ exports.getPostOfUser = async (req, res, next) => {
     // const likeLength=await findPostlikes({postId:result})
 
     if (!result) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.DATA_NOT_FOUND,
       });
@@ -285,7 +285,7 @@ exports.getTopStories = async (req, res, next) => {
     const { search, page, limit, questionId, } = req.query;
     const result = await getTopSTories(req.query);
     if (!result) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.DATA_NOT_FOUND,
       });
@@ -305,7 +305,7 @@ exports.getPostByID = async (req, res, next) => {
     const postId = req.query.postId;
     const result = await findforumQue({ _id: postId, status: { $in: [storyStatus.ACTIVE, storyStatus.PENDING] } });
     if (!result) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.DATA_NOT_FOUND,
       });
@@ -365,7 +365,7 @@ exports.likePost = async (req, res, next) => {
         status: status.ACTIVE,
       });
       if (!isPostExist) {
-        return res.status(statusCode.NotFound).send({
+        return res.status(statusCode.OK).send({
           statusCode: statusCode.NotFound,
           message: responseMessage.DATA_NOT_FOUND,
         });
@@ -431,7 +431,7 @@ exports.getTrendingStories = async (req, res, next) => {
     const { search, page, limit, questionId, userId } = req.query;
     const result = await getTopSTories(req.query);
     if (!result) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.DATA_NOT_FOUND,
       });

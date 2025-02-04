@@ -133,14 +133,14 @@ exports.getAmadeusTvo = async (req, res, next) => {
     result.totalTvoPages=tvoBookingresult.totalPages;
     if (tvoBookingresult.docs.length == 0) {
       return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
+        statusCode: statusCode.NotFound,
         message: responseMessage.DATA_NOT_FOUND,
       });
     }
     const amadeusresult=await aggregatePaginateGetUserAmadeusFlightBooking1(queryData);
     if (amadeusresult.docs.length == 0) {
         return res.status(statusCode.OK).send({
-          statusCode: statusCode.OK,
+          statusCode: statusCode.NotFound,
           message: responseMessage.DATA_NOT_FOUND,
         });
       }

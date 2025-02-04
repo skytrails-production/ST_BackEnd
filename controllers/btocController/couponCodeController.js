@@ -165,7 +165,7 @@ exports.getAllCoupons = async (req, res, next) => {
   try {
     const result = await findCouponData({ status: status.ACTIVE });
     if (!result) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });
@@ -184,7 +184,7 @@ exports.getCouponById = async (req, res, next) => {
   try {
     const result = await findCoupon({_id: req.query.couponId,status: status.ACTIVE});
     if (!result) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });

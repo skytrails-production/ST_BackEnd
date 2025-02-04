@@ -850,7 +850,7 @@ exports.getHolidayPackageFilterByCategory = async (req, res) => {
     if (seeAll == "true") {
       // for (const key of keywordsArray) {
       queryObj = {
-        [`insclusions.${keyword}`]: "true",
+        [`inclusions.${keyword}`]: "true",
         is_active: 1,
       };
       const results = await SkyTrailsPackageModel.find(queryObj)
@@ -871,15 +871,18 @@ exports.getHolidayPackageFilterByCategory = async (req, res) => {
 
     const categoryArray = await PackageCategoryModel.find();
     // Check if keyword exists and is an array
+    // console.log(categoryArray)
     if (categoryArray.length > 0) {
       const finalRes = [];
       const results = {};
       // Iterate over each keyword
       for (const key of categoryArray) {
         queryObj = {
-          [`insclusions.${key.inclusion}`]: "true",
+          [`inclusions.${key.inclusion}`]: 'true',
           is_active: 1,
         };
+
+        //  console.log(queryObj)
 
         // Perform pagination query
         const result = await SkyTrailsPackageModel.find(queryObj)

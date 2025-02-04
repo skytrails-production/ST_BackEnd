@@ -199,7 +199,7 @@ exports.getAllHotelBookingList = async (req, res, next) => {
     const result = await aggregatePaginateHotelBookingList(body);
     if (result.docs.length == 0) {
       return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
+        statusCode: statusCode.NotFound,
         message: responseMessage.DATA_NOT_FOUND,
       });
     }
@@ -229,7 +229,7 @@ exports.getUserHotelData = async (req, res, next) => {
     });
     if (!result) {
       return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
+        statusCode: statusCode.NotFound,
         message: responseMessage.DATA_NOT_FOUND,
       });
     }
@@ -247,7 +247,7 @@ exports.getUserHotelBookingById = async (req, res, next) => {
     });
     if (!response) {
       return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
+        statusCode: statusCode.NotFound,
         message: responseMessage.DATA_NOT_FOUND,
       });
     }

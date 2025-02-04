@@ -545,7 +545,7 @@ exports.getPost = async (req, res, next) => {
     if (post) {
       result.post = post;
     } else {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.DATA_NOT_FOUND,
       });
@@ -554,7 +554,7 @@ exports.getPost = async (req, res, next) => {
     if (unanswered) {
       result.unanswered = unanswered;
     } else {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.DATA_NOT_FOUND,
       });
@@ -569,7 +569,7 @@ exports.getPost = async (req, res, next) => {
         result: result,
       });
     } else {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.DATA_NOT_FOUND,
       });

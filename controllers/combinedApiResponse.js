@@ -610,8 +610,8 @@ exports.AMADEUSPriceSortOptimize = async (req, res, next) => {
         },
       });
     } else {
-      return res.status(statusCode.ERROR).send({
-        statusCode: statusCode.ERROR,
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
         tvoTraceId: null,
         result: [],

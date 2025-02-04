@@ -24,7 +24,7 @@ exports.createRequireDocument = async (req, res, next) => {
         const isCountryExist = await findWeeklyVisaPopulate({ countryName: visaCountry });
 
         if (!isCountryExist) {
-            return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.DATA_NOT_FOUND });
+            return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.DATA_NOT_FOUND });
         }
 
         const isvisaCategoryExist = await findVisaCategoryData({ categoryName: visaCategory });
@@ -77,7 +77,7 @@ exports.getRequireDocument=async(req,res,next)=>{
     try {
         const result=await requireDocListPopulate({});
         if(!result){
-            return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND,result: result,});
+            return res.status(statusCode.OK).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND,result: result,});
         }
         return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result: result,});
    
@@ -91,7 +91,7 @@ exports.getRequireDocumentById=async(req,res,next)=>{
         const {docId}=req.query;
         const result=await findRequireDocData({_id:docId});
         if(!result){
-            return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND,result: result,});
+            return res.status(statusCode.OK).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND,result: result,});
         }
         return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result: result,});
     } catch (error) {
@@ -105,7 +105,7 @@ exports.getRequireDocumentPerCountry=async(req,res,next)=>{
         const result=await findRequireDocData1({visaCountry:countryId});
         
         if(!result){
-            return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND,result: result,});
+            return res.status(statusCode.OK).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND,result: result,});
         }
         return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result: result,});
     } catch (error) {

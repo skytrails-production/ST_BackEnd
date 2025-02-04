@@ -352,6 +352,7 @@ exports.easebussPayment = async (req, res, next) => {
       _id: req.userId,
       status: status.ACTIVE,
     });
+    console.log("isUserExist==",isUserExist)
     if (!isUserExist) {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,

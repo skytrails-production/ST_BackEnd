@@ -374,7 +374,7 @@ exports.getEventBookingStatus=async(req,res,next)=>{
   try {
     const isUserExist = await findUserData({_id: req.userId,status: status.ACTIVE,});
     if (!isUserExist) {
-      return res.status(statusCode.NotFound).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.USERS_NOT_FOUND});
+      return res.status(statusCode.OK).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.USERS_NOT_FOUND});
     }
     const isBookingExist=await eventBookingListPopulated({userId:isUserExist._id});
     if(isBookingExist.length==0||!isBookingExist||isBookingExist===null){
@@ -391,7 +391,6 @@ exports.getEventBookingStatus=async(req,res,next)=>{
 exports.userEventBooking=async(req,res,next)=>{
   try {
     const {deviceToken,deviceType,eventId,price,noOfMember,bookingStatus,details,transactionId,isCoupanApplied, } = req.body;
-    console.log("details=======",req.body)
     const isUserExist = await findUserData({_id: req.userId,status: status.ACTIVE,});    
     if (!isUserExist) {
       return res.status(statusCode.OK).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.USERS_NOT_FOUND,});

@@ -123,7 +123,7 @@ exports.createEvent = async (req, res, next) => {
 
     const result = await createEvent(object);
     if (!result) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });
@@ -142,7 +142,7 @@ exports.getAllEvents = async (req, res, next) => {
   try {
     const result = await eventList({ status: status.ACTIVE });
     if (!result || result.length === 0) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });
@@ -205,7 +205,7 @@ exports.getTopEvents = async (req, res, next) => {
   try {
     const result = await allEvent({ status: status.ACTIVE });
     if (!result || result.length === 0) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });
@@ -225,7 +225,7 @@ exports.getAllEventsAggregate = async (req, res, next) => {
     const { page, limit, search } = req.query;
     const result = await getEvent(req.query);
     if (!result) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });
@@ -333,7 +333,7 @@ exports.createskyTrailsEvent=async(req,res,next)=>{
     }
     const result = await createEvent(object);
     if (!result) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });

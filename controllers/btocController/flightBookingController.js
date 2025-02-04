@@ -145,13 +145,13 @@ exports.getUserflightBooking = async (req, res, next) => {
     const result = await aggregatePaginateGetBooking(body);
     if (result.docs.length == 0) {
       return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
+        statusCode: statusCode.NotFound,
         message: responseMessage.DATA_NOT_FOUND,
       });
     }
     return res
       .status(statusCode.OK)
-      .send({ message: responseMessage.DATA_FOUND, result: result });
+      .send({  statusCode: statusCode.OK,message: responseMessage.DATA_FOUND, result: result });
   } catch (error) {
     return next(error);
   }
@@ -282,7 +282,7 @@ exports.getFlightBookingById=async(req,res,next)=>{
 const response=await findUserflightBooking({_id:req.params.bookingId});
 if(!response){
   return res.status(statusCode.OK).send({
-    statusCode: statusCode.OK,
+    statusCode: statusCode.NotFound,
     message: responseMessage.DATA_NOT_FOUND,
   });
 }

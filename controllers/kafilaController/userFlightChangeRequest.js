@@ -265,7 +265,7 @@ exports.getAllUserChangeFlight = async (req, res, next) => {
     const result = await flightKafilachangeRequestUserList(req.query);
     if (result.docs.length == 0) {
       return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
+        statusCode: statusCode.NotFound,
         message: responseMessage.DATA_NOT_FOUND,
       });
     }

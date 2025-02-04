@@ -25,7 +25,7 @@ exports.getCombineOffer=async(req,res,next)=>{
         const couponData1=await webAdvertisementList({status:status.ACTIVE,endDate: { $gte: currentDate }});
         combineData = combineData.concat(couponData1);
         if(combineData.length<1){
-            return res.status(statusCode.NotFound).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
+            return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.DATA_NOT_FOUND})
         }
         return res.status(statusCode.OK).send({statusCode:statusCode.OK,responseMessage:responseMessage.DATA_FOUND,result:combineData})
     } catch (error) {
@@ -51,7 +51,7 @@ exports.getOfferById=async(req,res,next)=>{
         }
 
         // If no data is found
-        return res.status(statusCode.NotFound).send({
+        return res.status(statusCode.OK).send({
             statusCode: statusCode.NotFound,
             responseMessage: responseMessage.DATA_NOT_FOUND,
         });
