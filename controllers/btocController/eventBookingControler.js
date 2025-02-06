@@ -402,6 +402,7 @@ exports.userEventBooking=async(req,res,next)=>{
     if (!isEventExist) {
       return res.status(statusCode.OK).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.EVENT_NOT_FOUND,});
     }
+    const eventTitle=isEventExist.title.split("-");
     const isBookingExist=await findBookingSkyEventData({$and:[{userId:isUserExist._id,eventId:isEventExist._id}]});
     if(isBookingExist){
       return res.status(statusCode.OK).send({statusCode: statusCode.Conflict,responseMessage: responseMessage.EVENT_ALREADY_BOOKED,});
@@ -430,11 +431,14 @@ exports.userEventBooking=async(req,res,next)=>{
   const result = await createBookingSkyEvent(object);
   const contactNo = `+91${result.details.contactNumber}`;
   const sendt=await sendSMS.sendSMSEventEnquiry(details.contactNumber,isEventExist.title);
-  console.log("sendt============",sendt);
-  
- const wsendts= await whatsappAPIUrl.sendMessageWhatsApp(contactNo,isEventExist.title,isEventExist.slot[0].startDate,"event4_v3");
- console.log("wsendts===",wsendts);
  
+  
+const sent=await whatsappAPIUrl.sendWhtsAppOTPAISensy(contactNo,[eventTitle[0]],"eventBooking");
+if(isUserExist.phone.mobile_number!=result.details.contactNumber){
+ const sent1= await whatsappAPIUrl.sendWhtsAppOTPAISensy(`+91${isUserExist.phone.mobile_number}`,[eventTitle[0]],"eventBooking");
+ 
+}
+// '+91'+data.phone,[String("Bus")],"booking_confirmation"
   return res.status(statusCode.OK).send({
     statusCode: statusCode.OK,
     responseMessage: responseMessage.SLOT_BOOKED,
@@ -453,7 +457,7 @@ exports.getEventBookingStatus1=async(req,res,next)=>{
     }
     const isBookingExist=await skyeventBookingListPopulated({userId:isUserExist._id});
     if(isBookingExist.length==0||!isBookingExist||isBookingExist===null){
-      return res.status(statusCode.OK).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND});
+      return res.status(statusCode.OK).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.BOOKING_NOT_FOUND});
     }
     // const dateMoment=
     return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result:isBookingExist});
