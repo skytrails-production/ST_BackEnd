@@ -23,5 +23,6 @@ module.exports = function (app) {
     app.get('/skyTrails/api/user/getEventBookingStatus',[authJwt.verifcationToken],eventBookingControler.getEventBookingStatus);
     app.put('/skyTrails/api/user/event/sendPassesUpdate',eventBookingControler.sendUpdatePasses);
     app.get('/skyTrails/api/user/event/getPromoBanner',eventPromoBannerControler.getPromotionalBanner);
-    app.post('/skyTrails/api/user/event/userEventBooking',[authJwt.verifcationToken],SchemaValidator(schemas.eventBookingSchemaNew),eventBookingControler.userEventBooking)
+    app.post('/skyTrails/api/user/event/userEventBooking',[authJwt.verifcationToken],SchemaValidator(schemas.eventBookingSchemaNew),eventBookingControler.userEventBooking);
+    app.get('/skyTrails/api/user/event/getEventBookingStatus',[authJwt.verifcationToken],eventBookingControler.getEventBookingStatus1);
 }

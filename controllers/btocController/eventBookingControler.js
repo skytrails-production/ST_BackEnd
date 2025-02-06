@@ -444,6 +444,23 @@ exports.userEventBooking=async(req,res,next)=>{
     return next(error);
   }
 }
+
+exports.getEventBookingStatus1=async(req,res,next)=>{
+  try {
+    const isUserExist = await findUserData({_id: req.userId,status: status.ACTIVE,});
+    if (!isUserExist) {
+      return res.status(statusCode.OK).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.USERS_NOT_FOUND});
+    }
+    const isBookingExist=await skyeventBookingListPopulated({userId:isUserExist._id});
+    if(isBookingExist.length==0||!isBookingExist||isBookingExist===null){
+      return res.status(statusCode.OK).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND});
+    }
+    // const dateMoment=
+    return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.DATA_FOUND,result:isBookingExist});
+  } catch (error) {
+    return next(error);
+  }
+}
 //*****************Geneerate all passes for eventBooking******************************************/
 exports.sendUpdatePasses=async(req,res,next)=>{
   try {

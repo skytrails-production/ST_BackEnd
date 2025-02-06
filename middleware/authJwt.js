@@ -144,7 +144,8 @@ verifcationToken = (req, res, next) => {
       throw res.status(404).send({statusCode:statusCode.OK,message:"You are not logged in,please signIn first(❁´◡`❁)"})
     }
   } catch (error) {
-    console.log("error=>>",error);
+    // console.log("error=>>",error);
+    return error;
   }
 };
 
