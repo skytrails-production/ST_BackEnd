@@ -159,7 +159,8 @@ const amadeusFlightBookingData = new mongoose.Schema(
       bookingStatus: {
         type: String,
         default: bookingStatus.PENDING
-      },      
+      },
+      bookingPartyType:{type:String,default:'Amadeus'}         
     },
     { timestamps: true }
   )

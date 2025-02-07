@@ -508,7 +508,6 @@ exports.sendUpdatePasses=async(req,res,next)=>{
 
 //generate function**************************************************************************
 
-
 async function generateUniqueRandomString(length) {
   const randomPart = crypto
     .randomBytes(Math.ceil(length / 2))

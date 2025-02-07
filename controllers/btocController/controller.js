@@ -2116,6 +2116,10 @@ exports.verifyUserOtpNew=async(req,res,next)=>{
       });
     }
     if (isUserExist.phone.mobile_number == "9999123232"){
+      const updateStaticUser = await updateUser(
+        { _id: isUserExist._id, status: status.ACTIVE },
+        { otpVerified: true, firstTime: false }
+      );
       const token = await commonFunction.getToken({
         _id: isUserExist._id,
         mobile_number: isUserExist.phone.mobile_number,

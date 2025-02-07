@@ -35,26 +35,7 @@ const mealDynamicSchema=new mongoose.Schema({
 });
 
 
-const seatDynamicSchema = new mongoose.Schema({
-  AirlineCode: String,
-  FlightNumber: String,
-  CraftType: String,
-  Origin: String,
-  Destination: String,
-  AvailabilityType: Number,
-  Description: Number,
-  Code: String,
-  RowNo: String,
-  SeatNo: String,
-  SeatType: Number,
-  SeatWayType: Number,
-  Compartment: Number,
-  Deck: Number,
-  Currency: String,
-  Price: Number
-});
-
-const flightBookingData = new mongoose.Schema(
+const kafilaFlightBookingData = new mongoose.Schema(
     {
       userId: {
         type: Schema.Types.ObjectId,
@@ -121,8 +102,7 @@ const flightBookingData = new mongoose.Schema(
         }
       },
       baggage: [baggageSchema],
-      mealDynamic:[mealDynamicSchema],     
-      seatDynamic:[seatDynamicSchema], 
+      mealDynamic:[mealDynamicSchema],      
       passengerDetails: {
         type: [
           {
@@ -144,12 +124,18 @@ const flightBookingData = new mongoose.Schema(
             DateOfBirth: {
               type: String,
             },
+            passportNo:{
+              type:String,
+              default:""
+            },
+            passportExpiry: {
+            type:String,
+            default:""
+          },
             email: {
               type: String,
               
             },
-            passportNo:String,
-            passportExpiry:String,
             addressLine1: {
               type: String,
             },
@@ -174,11 +160,12 @@ const flightBookingData = new mongoose.Schema(
         type: String,
         default: bookingStatus.PENDING
       },
-      bookingPartyType:{type:String,default:'TBO'}      
+      bookingPartyType:{type:String,default:'Kafila'}      
     },
     { timestamps: true }
   )
-  flightBookingData.plugin(mongoosePaginate);
-  flightBookingData.plugin(aggregatePaginate)
-  module.exports = mongoose.model("flightbookingdatas", flightBookingData);
+  kafilaFlightBookingData.plugin(mongoosePaginate);
+  kafilaFlightBookingData.plugin(aggregatePaginate)
+  module.exports = mongoose.model("KafilaAgentFlightBookings", kafilaFlightBookingData);
 
+  

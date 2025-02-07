@@ -1,5 +1,6 @@
 const flightBookingData = require("../model/flightBookingData.model");
 const amadeusFlightBookingData = require("../model/flightBookingAmadeus.model");
+const kafilaFlightBookingData = require("../model/flightBookingKafila.model");
 const User = require("../model/user.model");
 const Notification = require("../model/notification.model");
 const {
@@ -444,5 +445,39 @@ exports.generatePdf = async (req, res, next) => {
     actionCompleteResponse(res, response, "PDF Generated............");
   } catch (error) {
     return next(error);
+  }
+};
+
+
+
+
+
+exports.kafilaFlightBooking = async (req, res) => {
+  try {
+    const data = {
+      ...req.body,
+      bookingStatus: "BOOKED",
+    };
+    const response = await kafilaFlightBookingData.create(data);
+    const msg = "flight booking details added successfully";
+
+    if (response.bookingStatus === "BOOKED") {
+      const userName =
+        response.passengerDetails[0].firstName +
+        " " +
+        response.passengerDetails[0].lastName;
+      const message = `Hello,${userName}.We appreciate your flight booking with The Skytrails. Your booking has been verified! Click the following link to view details:https://b2b.theskytrails.com/Login`;
+      // await whatsAppMsg.sendWhatsAppMessage(response.passengerDetails[0].ContactNo, message);
+      await hawaiYatra.sendWhtsAppAISensy(
+        "+91" + data.passengerDetails[0].ContactNo,
+        [String("Flight")],
+        "booking_confirmation"
+      );
+      const send = await sendSMS.sendSMSForFlightBookingAgent(response);
+      await commonFunction.FlightBookingConfirmationMail(response);
+    }
+    actionCompleteResponse(res, response, msg);
+  } catch (error) {
+    sendActionFailedResponse(res, {}, error.message);
   }
 };
