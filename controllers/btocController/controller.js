@@ -2,6 +2,8 @@ const responseMessage = require("../../utilities/responses");
 const statusCode = require("../../utilities/responceCode");
 const status = require("../../enums/status");
 const bcrypt = require("bcryptjs");
+const axios = require('axios');
+const jwt = require('jsonwebtoken');
 const shortid = require("shortid");
 /**********************************SERVICES***********************************/
 const { userServices } = require("../../services/userServices");
@@ -1916,11 +1918,27 @@ exports.socialLogin = async (req, res, next) => {
       deviceType,
       deviceToken,
     } = req.body;
-    if (req.body.email) {
-      req.body.email = req.body.email.toLowerCase();
-    }
+    if (email) req.body.email = email.toLowerCase();
+    let isUserExist;
     // const newImageFile="";
-    const isUserExist = await findUser({ email: email });
+    obj = {
+        socialId,
+        socialType,
+        deviceType: deviceType !== "" ? deviceType : isUserExist.deviceType,
+        deviceToken: deviceToken !== "" ? deviceToken : isUserExist.deviceToken,
+        otpVerified: true,
+        firstTime: false,
+        isSocial: true,
+      };
+    if (deviceType === "ios" && socialType !== "google.com") {
+      isUserExist = await findUser({ socialId });
+    }else{
+      isUserExist = await findUser({email: email});
+      obj.username= username,
+      obj.dob=dob,
+      obj.profilePic=isUserExist.profilePic ? isUserExist.profilePic : profilePic,
+      obj.email= email
+    }
     const checkReward = await findReferralAmount({});
     if (!isUserExist) {
       const object = {
@@ -1937,7 +1955,7 @@ exports.socialLogin = async (req, res, next) => {
         otpVerified: true,
         firstTime: false,
         isSocial: true,
-       balance: checkReward.signUpAmount
+      balance: checkReward.signUpAmount
       };
       let result = await createUser(object);
       result = result.toObject();
@@ -1952,21 +1970,6 @@ exports.socialLogin = async (req, res, next) => {
         result: result,
       });
     }
-    const obj = {
-      username,
-      dob,
-      profilePic:isUserExist.profilePic ? isUserExist.profilePic : newImageFile,
-      email,
-      referrerCode,
-      socialId,
-      socialType,
-      deviceType,
-      deviceToken,
-      otpVerified: true,
-      firstTime: false,
-      isSocial: true,
-      balance:isUserExist.balance
-    };
     let result = await updateUser({ _id: isUserExist._id }, obj);
     const token = await commonFunction.getToken({
       _id: result._id,
@@ -2104,6 +2107,83 @@ exports.socialLoginVerifyOtp=async(req,res,next)=>{
     return next(error)
   }
 }
+// exports.appleSignIn=async(req,res,next)=>{
+//   try {
+//     const {
+//       username,
+//       dob,
+//       email,
+//       profilePic,
+//       referrerCode,
+//       socialId,
+//       socialType,
+//       mobile_number,
+//       newImageFile,
+//       deviceType,
+//       deviceToken,
+//     } = req.body;
+//     if (req.body.email) {
+//       req.body.email = req.body.email.toLowerCase();
+//     }
+//     const isUserExist = await findUser({ socialId: socialId ,email:email});
+//     const checkReward = await findReferralAmount({});
+//     if (!isUserExist) {
+//       const object = {
+//         username,
+//         dob,
+//         email,
+//         profilePic,
+//         referrerCode,
+//         socialId,
+//         socialType,
+//         deviceType,
+//         deviceToken,
+//         // phone: { mobile_number: mobile_number  },
+//         otpVerified: true,
+//         firstTime: false,
+//         isSocial: true,
+//        balance: checkReward.signUpAmount
+//       };
+//       let result = await createUser(object);
+//       result = result.toObject();
+//       const token = await commonFunction.getToken({
+//         _id: result._id,
+//         email: result.email,
+//       });
+//       result.token = token;
+//       return res.status(statusCode.OK).send({
+//         statusCode: statusCode.OK,
+//         responseMessage: responseMessage.SOCIAL_LOGIN_SUCCESS,
+//         result: result,
+//       });
+//     }
+//     const obj = {
+//       socialType,
+//       deviceType,
+//       deviceToken,
+//       otpVerified: true,
+//       firstTime: false,
+//       isSocial: true,
+//       balance:isUserExist.balance
+//     };
+//     let result = await updateUser({ _id: isUserExist._id }, obj);
+//     const token = await commonFunction.getToken({
+//       _id: result._id,
+//       email: result.email,
+//     });
+//     result = result.toObject();
+//     result.token = token;
+//     return res.status(statusCode.OK).send({
+//       statusCode: statusCode.OK,
+//       responseMessage: responseMessage.SOCIAL_LOGIN_SUCCESS,
+//       result: result,
+//     });
+//   } catch (error) {
+//     console.log("error while trying to apple SignIn",error);
+//     return next(error);
+    
+//   }
+// }
 //Auth Api changes-------------------------------------------------------------
 exports.verifyUserOtpNew=async(req,res,next)=>{
   try {
@@ -2374,3 +2454,25 @@ const validateOtp = (storedOtp, otpExpireTime, userOtp) => {
   }
   return true;
 };
+
+
+
+// async function verifyAppleIdToken(idToken) {
+//   try {
+//       // Get Apple Public Keys
+//       const appleKeys = await axios.get('https://appleid.apple.com/auth/keys');
+// console.log("const jwt = require('jsonwebtoken');=",appleKeys.data.keys[0])
+//       // Decode the Token
+//       const decodedToken = jwt.decode("dGLgVsRTqUhghsqYRMfjmR:APA91bHwGGxs2-67ju6ismCSVmSdUsg6b-J4yOXTrnNluiH9xLC5LmgRrWjzzxaksqJb7CRYQs6JcAxpoD-j-vDrn_QYh3kqVUxf_e7roXcFR10HJs56YY0", { complete: true });
+
+//       // Verify Token Signature
+//       jwt.verify("dGLgVsRTqUhghsqYRMfjmR:APA91bHwGGxs2-67ju6ismCSVmSdUsg6b-J4yOXTrnNluiH9xLC5LmgRrWjzzxaksqJb7CRYQs6JcAxpoD-j-vDrn_QYh3kqVUxf_e7roXcFR10HJs56YY0", appleKeys.data.keys[0], { algorithms: ['RS256'] });
+
+//       console.log("Apple ID Token Verified:", decodedToken.payload);
+//       return decodedToken.payload;
+//   } catch (error) {
+//       console.error("Apple ID Token verification failed:", error);
+//       throw new Error("Invalid Token");
+//   }
+// }
+// verifyAppleIdToken();

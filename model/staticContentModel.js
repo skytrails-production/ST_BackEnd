@@ -35,7 +35,7 @@ const staticContentSchema = new mongoose.Schema(
         staticContentsType.TRAINS,
         staticContentsType.TRAVELINSURENCE,
         staticContentsType.QUESTION,
-        staticContentsType.REFFAQ
+        staticContentsType.REFFAQ,
       ],
     },
     contactNumber: {

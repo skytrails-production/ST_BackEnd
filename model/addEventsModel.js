@@ -92,6 +92,7 @@ const eventsSchema = new mongoose.Schema(
       }],
       default: [],
     },
+    TNC:[],
     maxTicketsPerUser: { type: Number,max: 5}
   },
   { timestamps: true }
