@@ -22,4 +22,5 @@ module.exports = function (app) {
   app.post('/skyTrails/staticContent/hotelPayload/createStaticHotelPayload',upload.single("images"), hotelStaticPayloadControler.createStaticHotelPayload)
   app.get('/skyTrails/staticContent/hotelPayload/listStaticHotelPayload', hotelStaticPayloadControler.getListOfStaticHotelPayload);
   app.put('/skyTrails/staticContent/hotelPayload/updateTrading',hotelStaticPayloadControler.makeTrending);
+  app.get('/skyTrails/staticContent/loginEnable',controller.isLoginEssential);
 };

@@ -80,7 +80,7 @@ exports.createPost = async (req, res, next) => {
     const { content,location } = req.body;
     const isUser = await findUser({ _id: req.userId, status: status.ACTIVE });
     if (!isUser) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.USERS_NOT_FOUND,
       });
@@ -167,14 +167,14 @@ exports.deletePost = async (req, res, next) => {
   try {
     const isUser = await findUser({ _id: req.userId, status: status.ACTIVE });
     if (!isUser) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.USERS_NOT_FOUND,
       });
     }
     const isPostExist=await findforumQue({_id:req.body.postId,status:status.ACTIVE});
     if(!isPostExist){
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.POST_NOT_FOUND,
       });
@@ -202,7 +202,7 @@ exports.getPostOfUser = async (req, res, next) => {
       otpVerified: true,
     });
     if (!isUserExist) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.USERS_NOT_FOUND,
       });
@@ -353,7 +353,7 @@ exports.likePost = async (req, res, next) => {
       status: status.ACTIVE,
     });
     if (!isUser) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.USERS_NOT_FOUND,
       });
@@ -456,7 +456,7 @@ exports.postLike=async(req,res,next)=>{
       status: status.ACTIVE,
     });
     if (!isUser) {
-      return res.status(statusCode.NotFound).send({
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         message: responseMessage.USERS_NOT_FOUND,
       });

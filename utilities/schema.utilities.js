@@ -785,6 +785,9 @@ const schemas = {
     })).required(),
     maxCapacity:joi.number().optional(),
   }),
+  reportSchema:joi.object().keys({
+    reason: joi.string().required(),
+  })
 };
 
 module.exports = schemas;

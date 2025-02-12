@@ -25,5 +25,6 @@ module.exports = Object.freeze({
     REFTNC:'REFTNC',
     REFFAQ:'REFFAQ',
     TRIVIAFAQ:'TRIVIAFAQ',
-    VISA:'VISA'
+    VISA:'VISA',
+    LOGINTNC:'LOGINTNC'
 })

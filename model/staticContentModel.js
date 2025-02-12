@@ -36,6 +36,8 @@ const staticContentSchema = new mongoose.Schema(
         staticContentsType.TRAVELINSURENCE,
         staticContentsType.QUESTION,
         staticContentsType.REFFAQ,
+        staticContentsType.LOGINTNC,
+ 
       ],
     },
     contactNumber: {
@@ -64,6 +66,7 @@ const staticContentSchema = new mongoose.Schema(
       enum: [status.ACTIVE, status.BLOCK, status.BLOCK],
       default: status.ACTIVE,
     },
+    loginEnable:{type:Boolean}
   },
   { timestamps: true }
 );

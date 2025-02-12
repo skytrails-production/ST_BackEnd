@@ -158,3 +158,23 @@ exports.deleteStaticContent = async (req, res, next) => {
 
 
 
+exports.isLoginEssential = async (req, res, next) => {
+  try {
+    const isEnable = await findstaticContent({ type: staticContentType.LOGINTNC });
+    let userName = null; 
+    if (isEnable?.loginEnable === false) {
+      userName = "SkyUser";
+    }
+  
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      message: responseMessage.DATA_FOUND,
+      result: {
+        loginEnable: isEnable.loginEnable,
+        username: userName,
+      },
+    });
+  } catch (error) {
+    return next(error);
+  }
+};

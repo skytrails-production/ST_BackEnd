@@ -42,11 +42,11 @@ const {
         const { userId, questionId, content, commentId } = req.body;
         const isUser = await findUser({ _id: userId });
         if (!isUser) {
-            return res.status(statusCode.NotFound).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.USERS_NOT_FOUND})
+            return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.USERS_NOT_FOUND})
         }
         const isQuestionExist = await findforumQue({ _id: questionId });
         if (!isQuestionExist) {
-            return res.status(statusCode.NotFound).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.POST_NOT_FOUND})
+            return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.POST_NOT_FOUND})
         }
         if (commentId) {
             const parentComment = await findforumQueAnsComm({
@@ -66,7 +66,7 @@ const {
             return actionCompleteResponse(
                 res,
                 result,
-                "You are commented successfully"
+                responseMessage.COMMENTED_SUCCESS
             );
         }
         const comment = {
@@ -141,7 +141,7 @@ exports.getPostCommentsOfUser = async (req, res, next) => {
         const { search, page, limit, questionId, userId } = req.query;
         const isUserExist = await findUser({ _id: req.userId,status:status.ACTIVE,otpVerified:true });
         if (!isUserExist) {
-            return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
+            return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
         }
         req.query.userId=isUserExist._id;
         const result = await findforumQueAnsCommData(req.query);
@@ -166,7 +166,7 @@ exports.likeComments = async (req, res, next) => {
         const { userId, commentId } = req.body;
         const isUser = await findUser({ _id: userId });
         if (!isUser) {
-            return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
+            return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, message: responseMessage.USERS_NOT_FOUND });
 
         }
         const isCommentExist = await findforumQueAnsComm({
@@ -187,14 +187,14 @@ exports.likeComments = async (req, res, next) => {
             );
             updateResult._doc.ikeslength = updateResult.likes.length;
           
-            return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.REMOVE_FROM_LIKE ,result:updateResult});
+            return res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.REMOVE_FROM_LIKE ,result:updateResult});
         } else {
             const updateResult = await updatelikes(
                 { commentId: commentId, status: status.ACTIVE },
                 { $push: { likes: userId } }
             );
             updateResult._doc.likeslength = updateResult.likes.length;
-           res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.LIKED ,result:updateResult});
+           res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.LIKED ,result:updateResult});
         }
         const newLike = {
             commentId: commentId,
@@ -203,7 +203,7 @@ exports.likeComments = async (req, res, next) => {
         };
         const savedLike = await createlikes(newLike);
         savedLike._doc.likeslength = savedLike.likes.length;
-        return  res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.LIKED ,result:savedLike});
+        return  res.status(statusCode.OK).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.LIKED ,result:savedLike});
     } catch (error) {
         return next(error);
     }

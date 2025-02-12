@@ -413,7 +413,7 @@ exports.userEventBooking=async(req,res,next)=>{
     const object = {
       userId:isUserExist._id,
       bookingStatus:bookingStatus,
-      eventDate: isEventExist.slot[0].startDate,
+      eventDate: isEventExist.startDate,
       eventId: eventId,
       deviceToken: deviceToken,
       deviceType:deviceType,
