@@ -166,5 +166,6 @@ module.exports = {
 	CHAT_NOT_FIND:"No chat history found. It seems you haven't interacted with the chatbot before.",
 	ALREADY_REPORT:"You have already reported this post.",
 	COMMENTED_SUCCESS:"You are commented successfully",
-	REPORT_SUCCESS:"Post reported successfully."
+	REPORT_SUCCESS:"Post reported successfully.",
+	REPORT_NOT_FOUND:"No report found for this post."
 };

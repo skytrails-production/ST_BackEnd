@@ -48,8 +48,23 @@ exports.reportPost = async (req, res,next) => {
 
 exports.getReportedPosts=async(req,res,next)=>{
     try {
-        const reports = await popolateForeignKeys({})
+        const {postId}=req.params
+        const postExists = await findforumQue({ _id: postId });
+        if (!postExists) {
+            return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.POST_NOT_FOUND})
+        }
+        const reports = await popolateForeignKeys({postId:postId});
+        if(!reports){
+            return res.status(statusCode.OK).send({statusCode:statusCode.NotFound,responseMessage:responseMessage.REPORT_NOT_FOUND})
+        }
+        return res.status(statusCode.OK).send({
+            statusCode: statusCode.OK,
+            responseMessage: responseMessage.REPORT_SUCCESS,
+            result: reports,
+        });
+
     } catch (error) {
         return next(error);
     }
 }
+

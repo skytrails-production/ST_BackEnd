@@ -1936,7 +1936,6 @@ exports.socialLogin = async (req, res, next) => {
       isUserExist = await findUser({email: email});
       obj.username= username,
       obj.dob=dob,
-      obj.profilePic=isUserExist.profilePic ? isUserExist.profilePic : profilePic,
       obj.email= email
     }
     const checkReward = await findReferralAmount({});
@@ -1952,6 +1951,7 @@ exports.socialLogin = async (req, res, next) => {
         deviceType,
         deviceToken,
         // phone: { mobile_number: mobile_number  },
+        profilePic,
         otpVerified: true,
         firstTime: false,
         isSocial: true,

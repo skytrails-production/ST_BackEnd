@@ -14,5 +14,5 @@ module.exports = function (app) {
     app.post('/skyTrails/forumReport/createReport/:postId',[authJwt.verifcationToken], SchemaValidator(schemas.reportSchema), controller.reportPost);
     // app.post('/skyTrails/forumPost/uploadPost',handleFileUpload, [authJwt.verifcationToken], controller.createPost)
     // app.post('/skyTrails/forumReport/addBookmark',controller.addBookmark)
-    // app.get('/skyTrails/forumReport/getPost', controller.getPost);
+    app.get('/skyTrails/forumReport/getPostReport/:postId', controller.getReportedPosts);
 }

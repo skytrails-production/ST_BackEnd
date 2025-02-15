@@ -403,12 +403,15 @@ exports.userEventBooking=async(req,res,next)=>{
       return res.status(statusCode.OK).send({statusCode: statusCode.NotFound,responseMessage: responseMessage.EVENT_NOT_FOUND,});
     }
     const eventTitle=isEventExist.title.split("-");
+    const match = isEventExist.venue.match(/\(Gate no\.\d+\)/);
+    const passCollectionLocation=match ? match[0].replace(/[()]/g, "") : "";
+    
     const isBookingExist=await findBookingSkyEventData({$and:[{userId:isUserExist._id,eventId:isEventExist._id}]});
     if(isBookingExist){
       return res.status(statusCode.OK).send({statusCode: statusCode.Conflict,responseMessage: responseMessage.EVENT_ALREADY_BOOKED,});
     }
     const startTime=isEventExist.slot[0].startTime;
-    const data=await updateBookingSkyEvent({ _id: eventId, "slot.startTime": startTime},{ $inc: { "slot.$.peoples": -noOfMember } });
+ await updateBookingSkyEvent({ _id: eventId, "slot.startTime": startTime},{ $inc: { "slot.$.peoples": -noOfMember } });
     await updateUser({_id:isUserExist._id},{deviceToken:deviceToken});
     const object = {
       userId:isUserExist._id,
@@ -431,12 +434,14 @@ exports.userEventBooking=async(req,res,next)=>{
   const result = await createBookingSkyEvent(object);
   const contactNo = `+91${result.details.contactNumber}`;
   const sendt=await sendSMS.sendSMSEventEnquiry(details.contactNumber,isEventExist.title);
- 
+  const eventDate = new Date(isEventExist.startDate);
+  const localTime = eventDate.toLocaleTimeString("en-US", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", });
+const temPlateParams=[ String(eventTitle[0]), String(eventTitle[0]), String(isEventExist.venue), String(moment(isEventExist.startDate).format("DD-MM-YYYY")), String(localTime), String(passCollectionLocation)]
+const sent=await whatsappAPIUrl.sendWhtsAppOTPAISensy(contactNo,temPlateParams,"eventBookingConfirmation");
+
+if(isUserExist.phone.mobile_number!==result.details.contactNumber){
+  const sent=await whatsappAPIUrl.sendWhtsAppOTPAISensy(contactNo,temPlateParams,"eventBookingConfirmation");
   
-const sent=await whatsappAPIUrl.sendWhtsAppOTPAISensy(contactNo,[eventTitle[0]],"eventBooking");
-if(isUserExist.phone.mobile_number!=result.details.contactNumber){
- const sent1= await whatsappAPIUrl.sendWhtsAppOTPAISensy(`+91${isUserExist.phone.mobile_number}`,[eventTitle[0]],"eventBooking");
- 
 }
 // '+91'+data.phone,[String("Bus")],"booking_confirmation"
   return res.status(statusCode.OK).send({
