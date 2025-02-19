@@ -231,6 +231,8 @@ const {
   getBookingEvent,
   getEventPopulate,
 } = eventBookingServices;
+const {skyEventBookingServices}=require("../services/btocServices/skyTrailsEventBooking");
+const{findBookingSkyEventData,deleteBookingSkyEvent,skyeventBookingList,skyeventBookingListPopulated,updateBookingSkyEvent,countTotalBookingSkyEvent,getBookingSkyEvent}=skyEventBookingServices
 const { agentRewardServices } = require("../services/agentRewardServices");
 const {
   createAgentReward,
@@ -790,6 +792,7 @@ exports.getAllFlightBookingList = async (req, res, next) => {
 //**************DashBoard*************/
 exports.adminDashBoard = async (req, res, next) => {
   try {
+
     var result = {};
     const userFlightBooking = await countTotalUserFlightBooking({
       status: status.ACTIVE,
@@ -871,9 +874,10 @@ exports.adminDashBoard = async (req, res, next) => {
       userChangeBusBookingCount +
       userChangeHotelBookingCount +
       userChangeFlightBookingCount;
-    result.TotalEventBooking = await countTotalBookingEvent({
+    result.TotalEventBooking = await countTotalBookingSkyEvent({
       status: status.ACTIVE,
     });
+
     return res
       .status(statusCode.OK)
       .send({ message: responseMessage.DATA_FOUND, result: result });

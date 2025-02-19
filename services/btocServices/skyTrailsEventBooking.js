@@ -153,6 +153,9 @@ const skyEventBookingServices={
         };
         return await skyTrailsEventBookingModel.aggregatePaginate(aggregate, options);
       },
-    
+    getEventBookingByAggregate:async(query)=>{
+    const queryOpt=await skyTrailsEventBookingModel.aggregate(query);
+    return queryOpt[0].totalTickets;
+    }
 }
 module.exports ={skyEventBookingServices}

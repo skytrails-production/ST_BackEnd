@@ -1970,6 +1970,9 @@ exports.socialLogin = async (req, res, next) => {
         result: result,
       });
     }
+    if(profilePic){
+      obj.profilePic= profilePic;
+    }
     let result = await updateUser({ _id: isUserExist._id }, obj);
     const token = await commonFunction.getToken({
       _id: result._id,
@@ -2051,7 +2054,7 @@ exports.addProfileContactDetail=async(req,res,next)=>{
     });
     return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.LOGIN_SUCCESS, result: token });
   } catch (error) {
-    
+    return next(error);
   }
 }
 exports.socialLoginVerifyOtp=async(req,res,next)=>{

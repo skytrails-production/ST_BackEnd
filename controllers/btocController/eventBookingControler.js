@@ -2,6 +2,9 @@ const responseMessage = require("../../utilities/responses");
 const statusCode = require("../../utilities/responceCode");
 const status = require("../../enums/status");
 const crypto = require("crypto");
+const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
+
 const paymentStatus = require("../../enums/paymentStatus");
 const userType = require("../../enums/userType");
 const sendSMS = require("../../utilities/sendSms");
@@ -76,7 +79,7 @@ const {
   paginateCouponSearch,
 } = couponServices;
 const {skyEventBookingServices}=require("../../services/btocServices/skyTrailsEventBooking");
-const{createBookingSkyEvent,findBookingSkyEventData,deleteBookingSkyEvent,skyeventBookingList,skyeventBookingListPopulated,updateBookingSkyEvent,countTotalBookingSkyEvent,getBookingSkyEvent}=skyEventBookingServices
+const{createBookingSkyEvent,findBookingSkyEventData,deleteBookingSkyEvent,skyeventBookingList,skyeventBookingListPopulated,updateBookingSkyEvent,countTotalBookingSkyEvent,getBookingSkyEvent,getEventBookingByAggregate}=skyEventBookingServices
 const{pushNotificationServices}=require('../../services/pushNotificationServices');
 const { stringify } = require("querystring");
 const{createPushNotification,findPushNotification,findPushNotificationData,deletePushNotification,updatePushNotification,countPushNotification}=pushNotificationServices;
@@ -410,9 +413,19 @@ exports.userEventBooking=async(req,res,next)=>{
     if(isBookingExist){
       return res.status(statusCode.OK).send({statusCode: statusCode.Conflict,responseMessage: responseMessage.EVENT_ALREADY_BOOKED,});
     }
-    const startTime=isEventExist.slot[0].startTime;
- await updateBookingSkyEvent({ _id: eventId, "slot.startTime": startTime},{ $inc: { "slot.$.peoples": -noOfMember } });
-    await updateUser({_id:isUserExist._id},{deviceToken:deviceToken});
+    
+    const query = [
+      { 
+        $match: { eventId:ObjectId("67a73faec50c7176c6840c3a")} 
+      },
+      { 
+        $group: {
+          _id: ObjectId("67a73faec50c7176c6840c3a"),  
+          totalTickets: { $sum: { $size: "$tickets" } }
+        } 
+      }
+    ];   
+const totalTicket=await getEventBookingByAggregate(query);
     const object = {
       userId:isUserExist._id,
       bookingStatus:bookingStatus,
@@ -426,6 +439,14 @@ exports.userEventBooking=async(req,res,next)=>{
       isCoupanApplied: isCoupanApplied || false,
       price: price
     };
+    if(totalTicket>=1500){
+      object.isluckyUser=false
+    }
+
+    const startTime=isEventExist.slot[0].startTime;
+ await updateBookingSkyEvent({ _id: eventId, "slot.startTime": startTime},{ $inc: { "slot.$.peoples": -noOfMember } });
+    await updateUser({_id:isUserExist._id},{deviceToken:deviceToken});
+ 
     for (var i = 0; i < noOfMember; i++) {
       const ticketNumber = await generateUniqueRandomString(15);
    object.tickets.push(ticketNumber);
@@ -437,10 +458,10 @@ exports.userEventBooking=async(req,res,next)=>{
   const eventDate = new Date(isEventExist.startDate);
   const localTime = eventDate.toLocaleTimeString("en-US", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", });
 const temPlateParams=[ String(eventTitle[0]), String(eventTitle[0]), String(isEventExist.venue), String(moment(isEventExist.startDate).format("DD-MM-YYYY")), String(localTime), String(passCollectionLocation)]
-const sent=await whatsappAPIUrl.sendWhtsAppOTPAISensy(contactNo,temPlateParams,"eventBookingConfirmation");
+const sent=await whatsappAPIUrl.sendWhtsAppOTPAISensy(contactNo,temPlateParams,"EventBookingConfirmation");
 
 if(isUserExist.phone.mobile_number!==result.details.contactNumber){
-  const sent=await whatsappAPIUrl.sendWhtsAppOTPAISensy(contactNo,temPlateParams,"eventBookingConfirmation");
+  const sent=await whatsappAPIUrl.sendWhtsAppOTPAISensy(contactNo,temPlateParams,"EventBookingConfirmation");
   
 }
 // '+91'+data.phone,[String("Bus")],"booking_confirmation"

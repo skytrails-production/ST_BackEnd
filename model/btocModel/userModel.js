@@ -15,7 +15,7 @@ mongoose.pluralize(null);
 
 
 const usersSchema = new Schema({
-    username: { type: String },
+    username: { type: String,default:"skyUser" },
     email: { type: String },
     password: { type: String },
     roles: [
