@@ -33,7 +33,7 @@ const bookEventSchema = new mongoose.Schema(
     isCoupanApplied: { type: Boolean, default: false },
     deviceToken: { type: String },
     deviceType: { type: String },
-    isluckyUser: { type: Boolean, default: true },
+    isluckyUser: { type: Boolean, default: false },
 
     status: {
       type: String,

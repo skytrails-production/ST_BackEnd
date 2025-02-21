@@ -439,7 +439,7 @@ const totalTicket=await getEventBookingByAggregate(query);
       isCoupanApplied: isCoupanApplied || false,
       price: price
     };
-    if(totalTicket>=1500){
+    if(totalTicket>=500){
       object.isluckyUser=false
     }
 

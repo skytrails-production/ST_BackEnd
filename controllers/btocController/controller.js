@@ -2,15 +2,15 @@ const responseMessage = require("../../utilities/responses");
 const statusCode = require("../../utilities/responceCode");
 const status = require("../../enums/status");
 const bcrypt = require("bcryptjs");
-const axios = require('axios');
-const jwt = require('jsonwebtoken');
+const axios = require("axios");
+const jwt = require("jsonwebtoken");
 const shortid = require("shortid");
 /**********************************SERVICES***********************************/
 const { userServices } = require("../../services/userServices");
 const {
   createUser,
   findUser,
-  getUser,
+  userList,
   findUserData,
   updateUser,
   deleteUser,
@@ -536,8 +536,8 @@ exports.uploadImage = async (req, res, next) => {
       { profilePic: imageFiles }
     );
     const result = {
-      ...updatedUser._doc, 
-      token: token, 
+      ...updatedUser._doc,
+      token: token,
     };
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
@@ -747,7 +747,7 @@ exports.editProfile = async (req, res, next) => {
         .status(statusCode.Unauthorized)
         .send({ message: responseMessage.UNAUTHORIZED });
     }
-    
+
     if (mobile_number) {
       const isExistMobile = await findUser({
         "phone.mobile_number": mobile_number,
@@ -774,10 +774,10 @@ exports.editProfile = async (req, res, next) => {
       _id: isUser._id,
       mobile_number: mobile_number,
     });
-    const obj={
+    const obj = {
       username,
       email,
-      phone:{mobile_number:mobile_number},
+      phone: { mobile_number: mobile_number },
       gender,
       Nationality,
       City,
@@ -787,10 +787,9 @@ exports.editProfile = async (req, res, next) => {
       address,
       bio,
       coverPic,
-    }
+    };
     const result = await updateUser({ _id: isUser._id }, obj);
-    const data={...result._doc, 
-      token: token }
+    const data = { ...result._doc, token: token };
     return res
       .status(statusCode.OK)
       .send({ message: responseMessage.UPDATE_SUCCESS, result: data });
@@ -853,7 +852,6 @@ exports.getReachargeHistory = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-   
     return next(error);
   }
 };
@@ -882,7 +880,7 @@ exports.getAppLink = async (req, res, next) => {
 exports.updateDeviceToken = async (req, res, next) => {
   try {
     let { deviceToken, deviceType } = req.body;
-    let deviceTokens=[];
+    let deviceTokens = [];
     const isUserExist = await findUserData({
       _id: req.userId,
       status: status.ACTIVE,
@@ -898,7 +896,7 @@ exports.updateDeviceToken = async (req, res, next) => {
       // Add the deviceToken to the array
       deviceTokens.push(deviceToken);
     }
-    req.body.deviceTokens=deviceTokens
+    req.body.deviceTokens = deviceTokens;
     const result = await updateUser({ _id: isUserExist._id }, req.body);
     const updateEventDeviceToken = await updateBookingEvent(
       { userId: isUserExist._id },
@@ -1040,7 +1038,7 @@ exports.loginWithMailMobileLogin = async (req, res, next) => {
         otpExpireTime: otpExpireTime,
       };
       const createNewUser = await createUser(obj);
-      
+
       const token = await commonFunction.getToken({
         _id: createNewUser._id,
         email: createNewUser.email,
@@ -1056,7 +1054,7 @@ exports.loginWithMailMobileLogin = async (req, res, next) => {
         status: createNewUser.status.ACTIVE,
         token,
       };
-      
+
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.LOGIN_SUCCESS,
@@ -1065,7 +1063,10 @@ exports.loginWithMailMobileLogin = async (req, res, next) => {
     } else if (mobileRegex.test(phoneNumber)) {
       // Perform actions for login with mobile number
       const isExist = await findUser({ "phone.mobile_number": email });
-      const var1 = isExist && isExist.username !== undefined && isExist.username !== ""? isExist.username : "Dear";
+      const var1 =
+        isExist && isExist.username !== undefined && isExist.username !== ""
+          ? isExist.username
+          : "Dear";
       if (email === "9999123232") {
         let updatedNumber = await updateUser(
           { "phone.mobile_number": email, status: status.ACTIVE },
@@ -1316,8 +1317,8 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
       }
       obj = {
         username: fullName,
-        dob: dob ,
-        email: email ,
+        dob: dob,
+        email: email,
         otp: "",
         otpExpireTime: "",
         firstTime: false,
@@ -1381,7 +1382,7 @@ exports.verifyUserOtpMailMobile = async (req, res, next) => {
           $push: { walletHistory: walletObj1 },
         }
       );
-    }else {
+    } else {
       const walletObj = {
         amount: checkReward.signUpAmount,
         details: "Sign-up reward",
@@ -1557,7 +1558,7 @@ exports.resendOtpMailMobile = async (req, res, next) => {
         message: responseMessage.INVALID_INPUT,
       });
     }
-  
+
     const updateData = await updateUser(
       { _id: user._id, status: status.ACTIVE },
       { otp, otpExpireTime }
@@ -1700,7 +1701,7 @@ exports.getWalletHistory = async (req, res, next) => {
     let result = {};
     result.Earned = isUserExist.walletHistory.reverse();
     result.Redeemed = await userAllWalletHistory({ userId: isUserExist._id });
-    
+
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.WALLET_HISTORY_GET,
@@ -1725,28 +1726,34 @@ exports.redeemCoin = async (req, res, next) => {
       });
     }
     const coinDiff = isUserExist.balance - redeemCoin;
-      if (isUserExist.balance <= 100 ) {
+    if (isUserExist.balance <= 100) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.badRequest,
         responseMessage: `${responseMessage.REDEEM_NOT_ALLOW} 100`,
       });
     }
-  const maxRedeemableAmount = isUserExist.balance * 0.1;
-  if (redeemCoin > maxRedeemableAmount) {
-    return res.status(statusCode.OK).send({
-      statusCode: statusCode.badRequest,
-      responseMessage: `${responseMessage.ALLOWED_SKY_COIN}which is ${maxRedeemableAmount.toFixed(2)} coins.`,
-    });
-  }
+    const maxRedeemableAmount = isUserExist.balance * 0.1;
+    if (redeemCoin > maxRedeemableAmount) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.badRequest,
+        responseMessage: `${
+          responseMessage.ALLOWED_SKY_COIN
+        }which is ${maxRedeemableAmount.toFixed(2)} coins.`,
+      });
+    }
     const obj = {
       userId: isUserExist._id,
       source: source,
       amount: redeemCoin,
-      details: details || `You are using ${redeemCoin} coins for ${source} booking.`,
+      details:
+        details || `You are using ${redeemCoin} coins for ${source} booking.`,
       transactionType: "Debit",
     };
     result.wallHistory = await createUserWalletHistory(obj);
-    const updatedUser=await updateUser({_id:isUserExist._id}, {$inc: { balance: -redeemCoin }});
+    const updatedUser = await updateUser(
+      { _id: isUserExist._id },
+      { $inc: { balance: -redeemCoin } }
+    );
     result.redableCoin = coinDiff;
     result.remainingBalance = updatedUser.balance;
     return res.status(statusCode.OK).send({
@@ -1771,7 +1778,7 @@ exports.getUserBalance = async (req, res, next) => {
       });
     }
     const result = {
-      walletHistory:isUserExist.walletHistory,
+      walletHistory: isUserExist.walletHistory,
       balance: isUserExist.balance,
       _id: isUserExist._id,
     };
@@ -1922,21 +1929,19 @@ exports.socialLogin = async (req, res, next) => {
     let isUserExist;
     // const newImageFile="";
     obj = {
-        socialId,
-        socialType,
-        deviceType: deviceType !== "" ? deviceType : isUserExist.deviceType,
-        deviceToken: deviceToken !== "" ? deviceToken : isUserExist.deviceToken,
-        otpVerified: true,
-        firstTime: false,
-        isSocial: true,
-      };
+      socialId,
+      socialType,
+      deviceType: deviceType !== "" ? deviceType : isUserExist.deviceType,
+      deviceToken: deviceToken !== "" ? deviceToken : isUserExist.deviceToken,
+      otpVerified: true,
+      firstTime: false,
+      isSocial: true,
+    };
     if (deviceType === "ios" && socialType !== "google.com") {
       isUserExist = await findUser({ socialId });
-    }else{
-      isUserExist = await findUser({email: email});
-      obj.username= username,
-      obj.dob=dob,
-      obj.email= email
+    } else {
+      isUserExist = await findUser({ email: email });
+      (obj.username = username), (obj.dob = dob), (obj.email = email);
     }
     const checkReward = await findReferralAmount({});
     if (!isUserExist) {
@@ -1955,7 +1960,7 @@ exports.socialLogin = async (req, res, next) => {
         otpVerified: true,
         firstTime: false,
         isSocial: true,
-      balance: checkReward.signUpAmount
+        balance: checkReward.signUpAmount,
       };
       let result = await createUser(object);
       result = result.toObject();
@@ -1970,8 +1975,8 @@ exports.socialLogin = async (req, res, next) => {
         result: result,
       });
     }
-    if(profilePic){
-      obj.profilePic= profilePic;
+    if (profilePic) {
+      obj.profilePic = profilePic;
     }
     let result = await updateUser({ _id: isUserExist._id }, obj);
     const token = await commonFunction.getToken({
@@ -2008,7 +2013,10 @@ exports.addMobileNumber = async (req, res, next) => {
     if (isExistMobile) {
       return res
         .status(statusCode.OK)
-        .send({ statusCode:statusCode.Conflict,responseMessage: responseMessage.NUMBER_EXIST });
+        .send({
+          statusCode: statusCode.Conflict,
+          responseMessage: responseMessage.NUMBER_EXIST,
+        });
     }
     const token = await commonFunction.getToken({
       _id: isUserExist._id,
@@ -2021,13 +2029,16 @@ exports.addMobileNumber = async (req, res, next) => {
           temp_mobile_number: mobile_number,
           otp: otp,
           otpExpireTime: otpExpireTime,
-          otpVerified:false,
+          otpVerified: false,
         },
       }
     );
     const userMobile = +91 + mobile_number;
     await sendSMS.sendSMSForOtp(mobile_number, otp);
-    const var1 =isUserExist && isUserExist.username !== "" ? isUserExist.username : "Dear";
+    const var1 =
+      isUserExist && isUserExist.username !== ""
+        ? isUserExist.username
+        : "Dear";
     const templateParams = [String(var1), String(otp)];
     // const templateParams = [String(isUserExist.username), String(otp)];
     const sent = await whatsappAPIUrl.sendWhtsAppOTPAISensy(
@@ -2039,27 +2050,39 @@ exports.addMobileNumber = async (req, res, next) => {
     result.token = token;
     return res
       .status(statusCode.OK)
-      .send({statusCode: statusCode.OK,responseMessage: responseMessage.LOGIN_SUCCESS, result: token });
+      .send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.LOGIN_SUCCESS,
+        result: token,
+      });
   } catch (error) {
-   
     return next(error);
   }
 };
-exports.addProfileContactDetail=async(req,res,next)=>{
+exports.addProfileContactDetail = async (req, res, next) => {
   try {
-    const updateUser=await updateUser({_id:req.params.userId},{'phone.mobile_number':req.params.mobile_number});
+    const updateUser = await updateUser(
+      { _id: req.params.userId },
+      { "phone.mobile_number": req.params.mobile_number }
+    );
     const token = await commonFunction.getToken({
       _id: updateUser._id,
       mobile_number: req.params.mobile_number,
     });
-    return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.LOGIN_SUCCESS, result: token });
+    return res
+      .status(statusCode.OK)
+      .send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.LOGIN_SUCCESS,
+        result: token,
+      });
   } catch (error) {
     return next(error);
   }
-}
-exports.socialLoginVerifyOtp=async(req,res,next)=>{
+};
+exports.socialLoginVerifyOtp = async (req, res, next) => {
   try {
-    const {otp,mobileNumber}=req.body
+    const { otp, mobileNumber } = req.body;
     const isUserExist = await findUserData({ _id: req.userId });
     if (!isUserExist) {
       return res.status(statusCode.OK).send({
@@ -2079,16 +2102,16 @@ exports.socialLoginVerifyOtp=async(req,res,next)=>{
         message: responseMessage.OTP_EXPIRED,
       });
     }
-   
+
     const updation = await updateUser(
-      { _id: isUserExist._id},
-      { otp: " " ,'phone.mobile_number':mobileNumber}
+      { _id: isUserExist._id },
+      { otp: " ", "phone.mobile_number": mobileNumber }
     );
     const token = await commonFunction.getToken({
       _id: updation._id,
       mobile_number: updation.phone.mobile_number,
     });
-    const obj={
+    const obj = {
       firstTime: updation.firstTime,
       _id: updation._id,
       phone: updation.phone,
@@ -2097,19 +2120,19 @@ exports.socialLoginVerifyOtp=async(req,res,next)=>{
       otpVerified: updation.otpVerified,
       balance: updation.balance,
       status: updation.status,
-      walletHistory:updation.walletHistory,
+      walletHistory: updation.walletHistory,
       token: token,
-    }
+    };
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       message: responseMessage.OTP_VERIFY,
       result: obj,
-      updation
+      updation,
     });
   } catch (error) {
-    return next(error)
+    return next(error);
   }
-}
+};
 // exports.appleSignIn=async(req,res,next)=>{
 //   try {
 //     const {
@@ -2184,13 +2207,13 @@ exports.socialLoginVerifyOtp=async(req,res,next)=>{
 //   } catch (error) {
 //     console.log("error while trying to apple SignIn",error);
 //     return next(error);
-    
+
 //   }
 // }
 //Auth Api changes-------------------------------------------------------------
-exports.verifyUserOtpNew=async(req,res,next)=>{
+exports.verifyUserOtpNew = async (req, res, next) => {
   try {
-    let { otp} = req.body;
+    let { otp } = req.body;
     const isUserExist = await findUserData({ _id: req.userId });
     if (!isUserExist) {
       return res.status(statusCode.OK).send({
@@ -2198,7 +2221,7 @@ exports.verifyUserOtpNew=async(req,res,next)=>{
         responseMessage: responseMessage.USERS_NOT_FOUND,
       });
     }
-    if (isUserExist.phone.mobile_number == "9999123232"){
+    if (isUserExist.phone.mobile_number == "9999123232") {
       const updateStaticUser = await updateUser(
         { _id: isUserExist._id, status: status.ACTIVE },
         { otpVerified: true, firstTime: false }
@@ -2225,14 +2248,24 @@ exports.verifyUserOtpNew=async(req,res,next)=>{
       });
     }
     if (isUserExist.otp !== otp) {
-      return res.status(statusCode.OK).json({statusCode: statusCode.badRequest,responseMessage: responseMessage.INCORRECT_OTP,});
+      return res
+        .status(statusCode.OK)
+        .json({
+          statusCode: statusCode.badRequest,
+          responseMessage: responseMessage.INCORRECT_OTP,
+        });
     }
     if (new Date().getTime() > isUserExist.otpExpireTime) {
-      return res.status(statusCode.OK).json({statusCode: statusCode.badRequest,responseMessage: responseMessage.OTP_EXPIRED,});
+      return res
+        .status(statusCode.OK)
+        .json({
+          statusCode: statusCode.badRequest,
+          responseMessage: responseMessage.OTP_EXPIRED,
+        });
     }
     const updation = await updateUser(
       { _id: isUserExist._id, status: status.ACTIVE },
-      { otpVerified: true, otp: "",otpExpireTime:"" }
+      { otpVerified: true, otp: "", otpExpireTime: "" }
     );
     const token = await commonFunction.getToken({
       _id: updation._id,
@@ -2249,7 +2282,7 @@ exports.verifyUserOtpNew=async(req,res,next)=>{
       balance: updation.balance,
       status: updation.status,
       token: token,
-  };
+    };
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.OTP_VERIFY,
@@ -2257,43 +2290,46 @@ exports.verifyUserOtpNew=async(req,res,next)=>{
     });
   } catch (error) {
     return next(error);
-    
   }
-}
-exports.registration=async(req,res,next)=>{
+};
+exports.registration = async (req, res, next) => {
   try {
-    let {userName, dob, email, referrerCode}=req.body;
-    userName = userName?.trim() ;
+    let { userName, dob, email, referrerCode } = req.body;
+    userName = userName?.trim();
     dob = dob.trim();
     email = email.trim().toLowerCase();
     referrerCode = referrerCode ? referrerCode.trim() : "";
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const mobileRegex = /^(?!0)\d{9,}(\d)(?!\1{4})\d*$/;
-    const isUserExist = await findUserData({ _id: req.userId,firstTime:true });
+    const isUserExist = await findUserData({
+      _id: req.userId,
+      firstTime: true,
+    });
     if (!isUserExist) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.USERS_NOT_FOUND,
       });
     }
-    const generatedReferralCode  = await commonFunction.generateReferralCode();
+    const generatedReferralCode = await commonFunction.generateReferralCode();
     const checkReward = await findReferralAmount({});
-    var userObj  = { 
+    var userObj = {
       username: userName,
       dob: dob,
       firstTime: false,
-      referralCode: generatedReferralCode ,
-      balance: 0,};
-      let updateData = {};
-    if (emailRegex.test(email)){
-      const isEmailExist  = await findUser({ email: email });
-      if (isEmailExist ) {
+      referralCode: generatedReferralCode,
+      balance: 0,
+    };
+    let updateData = {};
+    if (emailRegex.test(email)) {
+      const isEmailExist = await findUser({ email: email });
+      if (isEmailExist) {
         return res.status(statusCode.OK).send({
           statusCode: statusCode.Conflict,
           message: responseMessage.EMAIL_ALREADY_EXIST,
         });
       }
-      userObj.email=email;
+      userObj.email = email;
       // obj = {
       //   username: fullName,
       //   dob: dob ,
@@ -2304,7 +2340,7 @@ exports.registration=async(req,res,next)=>{
       //   referralCode: refeerralCode,
       //   balance: 0,
       // };
-    }else if (mobileRegex.test(email)) {
+    } else if (mobileRegex.test(email)) {
       const isNumberExist = await findUser({ "phone.mobile_number": email });
       if (isNumberExist) {
         return res.status(statusCode.OK).send({
@@ -2312,12 +2348,12 @@ exports.registration=async(req,res,next)=>{
           message: responseMessage.MOBILE_EXIST,
         });
       }
-     userObj.phone = { mobile_number: email };
+      userObj.phone = { mobile_number: email };
     }
-    updateData = await updateUser({ _id: isUserExist._id }, userObj );
-    if (referrerCode){
-      const referrer  = await findUser({ referralCode: referrerCode });
-      if (!referrer ) {
+    updateData = await updateUser({ _id: isUserExist._id }, userObj);
+    if (referrerCode) {
+      const referrer = await findUser({ referralCode: referrerCode });
+      if (!referrer) {
         return res.status(statusCode.OK).send({
           statusCode: statusCode.badRequest,
           message: responseMessage.INCORRECT_REFERRAL,
@@ -2336,18 +2372,28 @@ exports.registration=async(req,res,next)=>{
           referrerCode: referrerCode,
           referredBy: referrer._id,
           $inc: { balance: checkReward.refereeAmount },
-          $push: { walletHistory: walletHistoryEntry(checkReward.refereeAmount, "Referral reward") },
+          $push: {
+            walletHistory: walletHistoryEntry(
+              checkReward.refereeAmount,
+              "Referral reward"
+            ),
+          },
         }
       );
       await updateUser(
-        { referralCode: referrerCode,_id: referrer._id  },
+        { referralCode: referrerCode, _id: referrer._id },
         {
           $inc: { balance: checkReward.referrerAmount },
-          $push: { walletHistory:  walletHistoryEntry(checkReward.referrerAmount, "Referee reward") },
+          $push: {
+            walletHistory: walletHistoryEntry(
+              checkReward.referrerAmount,
+              "Referee reward"
+            ),
+          },
         }
       );
-    }else {
-      const signUpBonus  = {
+    } else {
+      const signUpBonus = {
         amount: checkReward.signUpAmount,
         details: "Sign-up reward",
         transactionType: "credit",
@@ -2386,40 +2432,36 @@ exports.registration=async(req,res,next)=>{
       result: result,
     });
   } catch (error) {
-    return next(error)
-    
+    return next(error);
   }
-}
-exports.sentOtpForVerification=async(req,res,next)=>{
+};
+exports.sentOtpForVerification = async (req, res, next) => {
   try {
-    const {email}=req.body;
-    
+    const { email } = req.body;
+
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const mobileRegex = /^(?!0)\d{9,}(\d)(?!\1{4})\d*$/;
     const otp = commonFunction.getOTP();
     const otpExpireTime = new Date().getTime() + 300000;
-    const isUserExist = await findUserData({ _id: req.userId});
+    const isUserExist = await findUserData({ _id: req.userId });
     if (!isUserExist) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.USERS_NOT_FOUND,
       });
     }
-    
-    
-    if (emailRegex.test(email)){
-      
-      const isEmailExist  = await findUser({ email: email });
-      
-      if (isEmailExist ) {
+
+    if (emailRegex.test(email)) {
+      const isEmailExist = await findUser({ email: email });
+
+      if (isEmailExist) {
         return res.status(statusCode.OK).send({
           statusCode: statusCode.Conflict,
           message: responseMessage.EMAIL_ALREADY_EXIST,
         });
       }
-      const sendEmail= await commonFunction.sendEmailOtp(email, otp);
-      
-    }else if (mobileRegex.test(email)) {
+      const sendEmail = await commonFunction.sendEmailOtp(email, otp);
+    } else if (mobileRegex.test(email)) {
       const isNumberExist = await findUser({ "phone.mobile_number": email });
       if (isNumberExist) {
         return res.status(statusCode.OK).send({
@@ -2427,19 +2469,22 @@ exports.sentOtpForVerification=async(req,res,next)=>{
           message: responseMessage.MOBILE_EXIST,
         });
       }
-      let username=isUserExist.userName|| "Dear"
-     const templateParams = [String(username), String(otp)];
-       const sent = await whatsappAPIUrl.sendWhtsAppOTPAISensy(
+      let username = isUserExist.userName || "Dear";
+      const templateParams = [String(username), String(otp)];
+      const sent = await whatsappAPIUrl.sendWhtsAppOTPAISensy(
         `+91${isUserExist.phone.mobile_number}`,
         templateParams,
         "user_OTP"
       );
-      
+
       await sendSMS.sendSMSForOtp(isUserExist.phone.mobile_number, otp);
     }
-    
-    const updatedUser=await updateUser({ _id: isUserExist._id }, {$set:{otp:otp,otpExpireTime:otpExpireTime}} );
-    
+
+    const updatedUser = await updateUser(
+      { _id: isUserExist._id },
+      { $set: { otp: otp, otpExpireTime: otpExpireTime } }
+    );
+
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       message: responseMessage.OTP_SEND,
@@ -2447,18 +2492,37 @@ exports.sentOtpForVerification=async(req,res,next)=>{
     });
   } catch (error) {
     return next(error);
-    
   }
-}
+};
 
 const validateOtp = (storedOtp, otpExpireTime, userOtp) => {
   if (storedOtp !== userOtp || new Date().getTime() > otpExpireTime) {
-      return false;
+    return false;
   }
   return true;
 };
 
+exports.getNewRegisterUser = async (req, res, next) => {
+  try {
+    const fifteenDaysAgo = new Date();
+    fifteenDaysAgo.setUTCDate(fifteenDaysAgo.getUTCDate() - 15);
 
+    const date = req.query.fifteenDaysAgo || fifteenDaysAgo;
+    const noofUser = await userList({
+      createdAt: { $gte: date },
+      $sort: { createdAt: -1 },
+    });
+    const reversedUsers = noofUser.reverse();
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: reversedUsers,
+      noofUser: noofUser.length,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
 
 // async function verifyAppleIdToken(idToken) {
 //   try {

@@ -70,17 +70,17 @@ const {
 } = forumQueServices;
 const notifications = [
     {
-    message: ` Office se bore ho gye na!!🥺`,
-    body: `Trip par chale?🤩✈`,
+    message: `Travel ka mood hai par doston ka nahi?😩`,
+    body: `Solo Trip ka plan banayein?🧳😎`,
   },
   {
-    message: `Sirf Plan hi karna hai ?`,
-    body: `Ya kahin ghumne chaloge bhi🤬`,
+    message: `Garmi se pareshaan ho?🔥`,
+    body: `Hill Station chalein?⛄🏞️❄️`,
   },
 
   {
-    message: `Dost ke papa nahi maan rahe?😠`,
-    body: `Solo Trip book Kar du??😎✈`,
+    message: `Office ki chhutti approve nahi ho rahi?😤`,
+    body: `Weekend Getaway ka idea kaisa rahega?⛱️🍹`,
   },
  
   {
@@ -107,9 +107,9 @@ var taskPromotionalNotification = cron.schedule("45 09 * * *",async () => {
     });
     for (const user of users) {
       try { 
-        const notificationMessage = `6 mahine se kahin ghumne nahi gye ho na?✈`;
-        const messageBody = `Sab Pata chal raha hai🫦`;
-      const imageurl=`https://skytrails.s3.amazonaws.com/notification.jpg`;
+        const notificationMessage = `Bollywood ka maza, Punjab di shaan!🔥`;
+        const messageBody = `CGC Landran is set for PEFA 2025! Book your Free Passes Now! 🎭`;
+      const imageurl=`https://skytrails.s3.amazonaws.com/randomImages/uploadedFile_1738845021257_ArtboardPefa2025.jpg`;
         const lastSent = lastNotificationSent.get(user._id);
         if (lastSent && Date.now() - lastSent < 3600000) {
          

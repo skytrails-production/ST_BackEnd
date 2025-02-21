@@ -77,4 +77,5 @@ module.exports = function (app) {
   app.put("/skytrails/api/user/verifyUserOtpNew",[authJwt.verifcationToken],userController.verifyUserOtpNew);
   app.post("/skytrails/api/user/userSignUp",[authJwt.verifcationToken],userController.registration);
   app.put("/skytrails/api/user/checkValidNoOrEmail",[authJwt.verifcationToken],userController.sentOtpForVerification);
+  app.get("/skytrails/api/user/getNewRegisterCount",userController.getNewRegisterUser);
 };
