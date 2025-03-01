@@ -112,8 +112,7 @@ const getAiResponseCustomPackage = async (prompt,data) => {
       messages: [
         {
           role: "system",
-          content: `You are a customer support assistant for The Sky Trails.,suggest some packages which we have
-          `,
+          content: `You are a customer support assistant for The Sky Trails.,suggest some packages which we have`,
         },
         {
           role: "user",

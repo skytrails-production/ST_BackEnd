@@ -2505,7 +2505,10 @@ const validateOtp = (storedOtp, otpExpireTime, userOtp) => {
 exports.getNewRegisterUser = async (req, res, next) => {
   try {
     const fifteenDaysAgo = new Date();
-    fifteenDaysAgo.setUTCDate(fifteenDaysAgo.getUTCDate() - 15);
+    const dateBefore=req.query.dateBefore
+    const lastDate=dateBefore||15
+    
+    fifteenDaysAgo.setUTCDate(fifteenDaysAgo.getUTCDate() - lastDate);
 
     const date = req.query.fifteenDaysAgo || fifteenDaysAgo;
     const noofUser = await userList({

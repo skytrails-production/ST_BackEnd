@@ -462,7 +462,7 @@ exports.getDomesticorInternationPackages = async (req, res) => {
 
   // }
   const page = parseInt(req.query.page) || 1; // Default to page 1 if no page is provided
-  const limit = parseInt(req.query.limit) || 10; // Default to 10 items per page if no limit is provided
+  const limit = parseInt(req.query.limit) || 100; // Default to 10 items per page if no limit is provided
   const skip = (page - 1) * limit; // Calculate the number of items to skip
 
   // console.log(packageType, "packageType");
@@ -549,7 +549,7 @@ exports.getAllPackageDestinationOrCountryWise = async (req, res) => {
 
     // }
     const page = parseInt(req.query.page) || 1; // Default to page 1 if no page is provided
-    const limit = parseInt(req.query.limit) || 10; // Default to 10 items per page if no limit is provided
+    const limit = parseInt(req.query.limit) || 100; // Default to 10 items per page if no limit is provided
     const skip = (page - 1) * limit; // Calculate the number of items to skip
 
     // Create a case-insensitive regex pattern for the search

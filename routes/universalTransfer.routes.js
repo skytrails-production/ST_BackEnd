@@ -8,7 +8,7 @@ module.exports = function (app) {
   });
 
   //country data
-  app.post("/skytrails/transfer/staticData", controller.staticData);
+  app.post("/skytrails/transfer/staticdata", controller.staticData);
 
   //get destination search static data
   app.post(
@@ -16,10 +16,25 @@ module.exports = function (app) {
     controller.getDestinationSearchStaticData
   );
  
-//get transfer static data
+//get transfer static data for AirportData
   app.post(
-    "/skytrails/transfer/GetTransferStaticData",
-    controller.getTransferStaticData
+    "/skytrails/transfer/gettransferstaticdata/airport",
+    controller.getTransferStaticAirportData
+  );
+  //get transfer static data for PortData
+  app.post(
+    "/skytrails/transfer/gettransferstaticdata/port",
+    controller.getTransferStaticPortData
+  );
+  //get transfer static data for StationData 
+  app.post(
+    "/skytrails/transfer/gettransferstaticdata/station",
+    controller.getTransferStaticStationData
+  );
+  //get transfer static data for TransferAccomodationData 
+  app.post(
+    "/skytrails/transfer/gettransferstaticdata/hotel",
+    controller.getTransferStaticTransferAccomodationData 
   );
 
   //search transfer data

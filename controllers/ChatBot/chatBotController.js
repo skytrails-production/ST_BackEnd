@@ -7,7 +7,7 @@ const {
 const responseMessage = require("../../utilities/responses");
 const statusCode = require("../../utilities/responceCode");
 const { SkyTrailsPackageModel } = require("../../model/holidayPackage.model");
-
+const axios = require("axios");
 //  SERVICES
 const {
   chatBotServices,
@@ -56,7 +56,31 @@ const serviceKeywords = {
   visa: ["visa", "travel documents", "application"],
   package: ["package", "packages", "price", "amount", "cost", "rates"],
 };
+// const openai = new OpenAI({
+//   apiKey: process.env.OPENAI_SECRETKEY,
+// });
+async function correctGrammar(text) {
+  try {
+      const response = await axios.post(
+          "https://api.openai.com/v1/chat/completions",
+          {
+              model: "gpt-4o-mini",
+              messages: [{ role: "user", content: `Correct the grammar: "${text}"` }]
+          },
+          {
+              headers: { 
+                  "Authorization": `Bearer ${process.env.OPENAI_SECRETKEY}`, 
+                  "Content-Type": "application/json" // Ensure correct headers
+              }
+          }
+      );
+      return response.data.choices[0].message.content;
 
+  } catch (error) {
+      console.error("Error:", error.response?.data || error.message);
+      return "Error correcting grammar.";
+  }
+}
 // exports.initialiseBot = async (req, res, next) => {
 //   try {
 //     const userPrompt = req.body.userPrompt.trim().toLowerCase();
@@ -188,6 +212,7 @@ exports.initialiseBot = async (req, res, next) => {
         responseMessage: "User prompt is required.",
       });
     }
+    const corrected=correctGrammar(userPrompt);    
     const serviceType = getServiceType(userPrompt);
     let includeWords=["package", "packages", "price", "amount", "cost", "rates"]
     let botResponse;
@@ -234,7 +259,7 @@ exports.initialiseBot = async (req, res, next) => {
 
     let audioPath;
     try {
-      audioPath = await convertTextToSpeech(botResponse );
+      audioPath = await convertTextToSpeech(botResponse);
     } catch (error) {
       console.warn("Text-to-speech conversion failed:", error.message);
       audioPath = null;
