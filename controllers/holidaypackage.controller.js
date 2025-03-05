@@ -923,14 +923,14 @@ exports.getHolidayPackageFilterByCategory = async (req, res) => {
 exports.getHolidayPackageFilterBySpecialTag = async (req, res) => {
   try {
     const queryParams  = req.query;
-    console.log(queryParams);
+    // console.log(queryParams);
    
     const page = parseInt(req.query.page) || 1; // Default to page 1 if no page is provided
     const limit = parseInt(req.query.limit) || 100; // Default to 5 items per page if no limit is provided
     const skip = (page - 1) * limit; // Calculate the number of items to skip
 
     // Build a query object for mongoose
-    let filterQuery = {};
+    let filterQuery = { is_active: 1 }; // Include is_active: 1 by default
 
     // Loop through the query parameters to build the dynamic filter query
     Object.keys(queryParams).forEach((key) => {
