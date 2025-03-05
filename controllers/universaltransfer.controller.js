@@ -18,9 +18,39 @@ exports.staticData = async (req, res) => {
     };
 
     const response = await axios.post(`${api.staticData}`, data);
-    msg = "Get static data successfully!";
-    actionCompleteResponse(res, response.data, msg);
+
+    const xmlData = response?.data?.CountryList;
+
+    // Create an XML parser instance
+    const parser = new xml2js.Parser({ explicitArray: false });
+
+    // Parse the XML data to JSON
+    parser.parseString(xmlData, (err, result) => {
+      if (err) {
+        // Handle parsing error and send a failure response
+        sendActionFailedResponse(res, {}, "Error parsing XML data");
+        return;
+      }
+
+      let transformedData = { message: "No data found" }; // Default response if no countries found
+
+      if (
+        result?.Countries?.Country &&
+        Array.isArray(result?.Countries?.Country)
+      ) {
+        transformedData = {
+          Countries: result.Countries.Country.map((info) => ({
+            CountryCode: info?.Code,
+            CountryName: info?.Name,
+          })),
+        };
+      }
+
+      const msg = "Get static data successfully!";
+      actionCompleteResponse(res, transformedData, msg); // Sending transformed data in response
+    });
   } catch (err) {
+    // Handle other errors, like axios request failure
     sendActionFailedResponse(res, {}, err.message);
   }
 };
@@ -340,7 +370,6 @@ exports.getTransferStaticStationData = async (req, res) => {
   }
 };
 
-
 //get transfer static data for TransferAccomodationData
 
 exports.getTransferStaticTransferAccomodationData = async (req, res) => {
@@ -382,18 +411,18 @@ exports.getTransferStaticTransferAccomodationData = async (req, res) => {
             result?.ArrayOfTransferAccomodationInfo?.TransferAccomodationInfo.map(
               (info) => ({
                 HotelId: info?.$?.HotelId,
-              GiataId: info?.$?.GiataId,
-              HotelName: info?.$?.HotelName,
-              CityCode: info?.$?.CityCode,
-              CityName: info?.$?.cityName,
-              AddressLine1: info?.$?.AddressLine1,
-              AddressLine2: info?.$?.AddressLine2,
-              Latitude: info?.$?.Latitude,
-              Longitude: info?.$?.Longitude,
-              TBOCityId: info.$.TBOCityId,
-              CountryCode: info.$.CountryCode.trim(),
-              PostalCode: info?.$?.PostalCode,
-              IsTransferActive: info?.$?.IsTransferActive
+                GiataId: info?.$?.GiataId,
+                HotelName: info?.$?.HotelName,
+                CityCode: info?.$?.CityCode,
+                CityName: info?.$?.cityName,
+                AddressLine1: info?.$?.AddressLine1,
+                AddressLine2: info?.$?.AddressLine2,
+                Latitude: info?.$?.Latitude,
+                Longitude: info?.$?.Longitude,
+                TBOCityId: info.$.TBOCityId,
+                CountryCode: info.$.CountryCode.trim(),
+                PostalCode: info?.$?.PostalCode,
+                IsTransferActive: info?.$?.IsTransferActive,
               })
             ),
         };
@@ -421,7 +450,7 @@ exports.getTransferStaticTransferAccomodationData = async (req, res) => {
               TBOCityId: hotelInfo.TBOCityId,
               CountryCode: hotelInfo.CountryCodetrim(),
               PostalCode: hotelInfo?.PostalCode,
-              IsTransferActive: hotelInfo?.IsTransferActive
+              IsTransferActive: hotelInfo?.IsTransferActive,
             },
           ],
         };
@@ -445,8 +474,6 @@ exports.getTransferStaticTransferAccomodationData = async (req, res) => {
     sendActionFailedResponse(res, {}, err.message);
   }
 };
-
-
 
 // Transfer Searching
 

@@ -606,6 +606,7 @@ exports.getAllPackageDestinationOrCountryWise = async (req, res) => {
 
     // Calculate total pages
     const totalPages = Math.ceil(totalCount / limit);
+    
 
     // Send the response back with the found packages
     res.status(200).json({
@@ -910,6 +911,59 @@ exports.getHolidayPackageFilterByCategory = async (req, res) => {
         data: finalRes,
       });
     }
+  } catch (err) {
+    sendActionFailedResponse(res, {}, err.message);
+  }
+};
+
+
+
+// get holiday package by special tag
+
+exports.getHolidayPackageFilterBySpecialTag = async (req, res) => {
+  try {
+    const queryParams  = req.query;
+    console.log(queryParams);
+   
+    const page = parseInt(req.query.page) || 1; // Default to page 1 if no page is provided
+    const limit = parseInt(req.query.limit) || 100; // Default to 5 items per page if no limit is provided
+    const skip = (page - 1) * limit; // Calculate the number of items to skip
+
+    // Build a query object for mongoose
+    let filterQuery = {};
+
+    // Loop through the query parameters to build the dynamic filter query
+    Object.keys(queryParams).forEach((key) => {
+      if (queryParams[key] === 'true') {
+        // Only include the tag in the filter if its value is 'true'
+        filterQuery[`specialTag.${key}`] = true;
+      }
+    });
+   
+      const results = await SkyTrailsPackageModel.find(filterQuery)
+        .sort({ createdAt: -1 }) // Sort by creation date in descending order
+        .select(
+          "_id title days country coverImage destination packageAmount packageHighLight specialTag inclusions wishlist"
+        )
+        .exec();
+
+        const totalCount = await SkyTrailsPackageModel.countDocuments(filterQuery);
+        // console.log(totalCount,filterQuery)
+        const totalPages = Math.ceil(totalCount / limit);
+        
+
+      return res.status(200).send({
+        status: 200,
+        message: `Package Found`,
+        pagination: {
+          currentPage: page,
+          totalPages: totalPages,
+          totalCount: totalCount,
+          limit: limit,
+        },
+        data: results,        
+      });
+        
   } catch (err) {
     sendActionFailedResponse(res, {}, err.message);
   }

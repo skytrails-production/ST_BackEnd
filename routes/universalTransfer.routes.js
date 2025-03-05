@@ -8,11 +8,11 @@ module.exports = function (app) {
   });
 
   //country data
-  app.post("/skytrails/transfer/staticdata", controller.staticData);
+  app.post("/skytrails/transfer/countrylist", controller.staticData);
 
   //get destination search static data
   app.post(
-    "/skytrails/transfer/getdestinationsearchstaticdata",
+    "/skytrails/transfer/getdestinationselist",
     controller.getDestinationSearchStaticData
   );
  

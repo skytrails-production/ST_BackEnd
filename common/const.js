@@ -236,34 +236,36 @@ busCancelURL:
   //country list
 
   staticData:
-  "http://api.tektravels.com/SharedServices/SharedData.svc/rest/CountryList",
+    // "http://api.tektravels.com/SharedServices/SharedData.svc/rest/CountryList",
+    "https://sharedapi.tektravels.com/SharedData.svc/rest/CountryList",
 
-// GetDestinationSearchStaticData citywise or hotelwise
+  // GetDestinationSearchStaticData citywise or hotelwise
 
-getDestinationSearchStaticData:
-  "http://api.tektravels.com/SharedServices/StaticData.svc/rest/GetDestinationSearchStaticData",
+  getDestinationSearchStaticData:
+    // "http://api.tektravels.com/SharedServices/StaticData.svc/rest/GetDestinationSearchStaticData",
+    "http://sharedapi.tektravels.com/staticdata.svc/rest/GetDestinationSearchStaticData",
 
-// getTransferStaticData
+  // getTransferStaticData
 
-getTransferStaticData:
-  "http://sharedapi.tektravels.com/staticdata.svc/rest/GetTransferStaticData",
+  getTransferStaticData:
+    "http://sharedapi.tektravels.com/staticdata.svc/rest/GetTransferStaticData",
 
-// Transfer search
-transferSearch:
-  "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/Search",
+  // Transfer search
+  transferSearch:
+    "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/Search",
 
-// get Cancellation Policy
-getCancellationPolicy:
-  "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/GetCancellationPolicy/",
+  // get Cancellation Policy
+  getCancellationPolicy:
+    "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/GetCancellationPolicy/",
 
-//Booking
-  transferBooking:
-  "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/Book/",
+  //Booking
+    transferBooking:
+    "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/Book/",
 
-// Generate Voucher
-generateVoucher:
-  "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/GenerateVoucher/",
-
+  // Generate Voucher
+  generateVoucher:
+    "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/GenerateVoucher/",
+  
 //Retrieve Booking Detail
 retrieveBookingDetails:
   "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/GetBookingDetail/",
