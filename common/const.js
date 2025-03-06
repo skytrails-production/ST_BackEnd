@@ -252,33 +252,37 @@ busCancelURL:
 
   // Transfer search
   transferSearch:
-    "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/Search",
+    // "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/Search",
+    "https://TransferBE.tektravels.com/TransferService.svc/rest/Book",
 
   // get Cancellation Policy
   getCancellationPolicy:
-    "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/GetCancellationPolicy/",
+    // "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/GetCancellationPolicy/",
+    "https://TransferBE.tektravels.com/TransferService.svc/rest/GetCancellationPolicy",
 
   //Booking
     transferBooking:
-    "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/Book/",
+    // "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/Book/",
+    "https://TransferBE.tektravels.com/TransferService.svc/rest/Book",
 
   // Generate Voucher
   generateVoucher:
-    "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/GenerateVoucher/",
-  
-//Retrieve Booking Detail
-retrieveBookingDetails:
-  "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/GetBookingDetail/",
+    // "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/GenerateVoucher/",
+    "https://TransferBE.tektravels.com/TransferService.svc/rest/GenerateVoucher/",
 
-//Send Cancel Request
+  //Retrieve Booking  Transfer
+  retrieveBookingDetails:
+    // "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/GetBookingDetail/",
+    "https://TransferBE.tektravels.com/TransferService.svc/rest/GetBookingDetail",
 
-sendCancelRequest:
-  "http://b2b.tektravels.com/BETransferService/InternalTransferService.svc/rest/SendChangeRequest/",
+  //Send Cancel Request
 
-// get cancle request status Get Cancel Request Status
-getCancelRequeststatus:
-  "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/GetChangeRequestStatus/",
+  sendCancelRequest:
+    "http://b2b.tektravels.com/BETransferService/InternalTransferService.svc/rest/SendChangeRequest/",
 
+  // get cancle request status Get Cancel Request Status
+  getCancelRequeststatus:
+    "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/GetChangeRequestStatus/",
 
 
    // ==============================================> TRANSFER api end <===================================================//
