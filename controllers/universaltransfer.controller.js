@@ -536,6 +536,7 @@ exports.transferSearch = async (req, res) => {
     // Spanish = 14
 
     const response = await axios.post(`${api.transferSearch}`, data);
+    // console.log(response)
     msg = "Transfer search  successfully!";
     actionCompleteResponse(res, response.data, msg);
   } catch (err) {

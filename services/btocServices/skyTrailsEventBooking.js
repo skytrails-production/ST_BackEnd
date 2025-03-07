@@ -27,6 +27,12 @@ const skyEventBookingServices={
     skyeventBookingListPopulated: async (query) => {
         return await skyTrailsEventBookingModel.find(query).populate('eventId','location.coordinates image showType age venue').sort({createdAt: -1});
     },
+    skyEventBookingListPopulated: async (query) => {
+        return await skyTrailsEventBookingModel.find(query)
+            .populate('eventId', 'title location.coordinates image showType age venue')
+            .populate('userId','username email') 
+            .sort({ createdAt: -1 });
+    },
     updateBookingSkyEvent: async (query, updateObj) => {
         return await skyTrailsEventBookingModel.findOneAndUpdate(query, updateObj, { new: true });
     },

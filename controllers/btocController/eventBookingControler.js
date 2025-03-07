@@ -79,9 +79,10 @@ const {
   paginateCouponSearch,
 } = couponServices;
 const {skyEventBookingServices}=require("../../services/btocServices/skyTrailsEventBooking");
-const{createBookingSkyEvent,findBookingSkyEventData,deleteBookingSkyEvent,skyeventBookingList,skyeventBookingListPopulated,updateBookingSkyEvent,countTotalBookingSkyEvent,getBookingSkyEvent,getEventBookingByAggregate}=skyEventBookingServices
+const{createBookingSkyEvent,findBookingSkyEventData,deleteBookingSkyEvent,skyeventBookingList,skyeventBookingListPopulated,skyEventBookingListPopulated,updateBookingSkyEvent,countTotalBookingSkyEvent,getBookingSkyEvent,getEventBookingByAggregate}=skyEventBookingServices
 const{pushNotificationServices}=require('../../services/pushNotificationServices');
 const { stringify } = require("querystring");
+const { log } = require("util");
 const{createPushNotification,findPushNotification,findPushNotificationData,deletePushNotification,updatePushNotification,countPushNotification}=pushNotificationServices;
 
 
@@ -528,6 +529,64 @@ exports.sendUpdatePasses=async(req,res,next)=>{
 
   } catch (error) {
     return next(error)
+  }
+}
+
+exports.sentEmailToEventReg=async(req,res,next)=>{
+  try {
+    const getAllEventBooking =await skyEventBookingListPopulated({eventId:req.params.eventId});
+    if (!getAllEventBooking || getAllEventBooking.length === 0) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.EVENT_NOT_FOUND,
+      });
+    }
+    const eventTitle = getAllEventBooking[0].eventId?.title;
+    const subTitle = eventTitle?.split("-")[0];
+    for (const booking of getAllEventBooking) {
+      if (!booking.userId?.email) {
+        continue;
+      }
+      const mailData = {
+        subTitle: subTitle,
+        eventTitle: eventTitle,
+        email: booking.userId?.email,
+        userName: booking.userId?.username || "Guest",
+      };      
+      await commonFunction.sendEventUpdateToUser(mailData);
+    }
+   return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.EVENT_EMAIL_SENT,result:getAllEventBooking.length});
+  } catch (error) {
+    console.log("error while send email",error);
+    return next(error)
+  }
+}
+
+exports.sendEventUpdateOnWhatsApp=async(req,res,next)=>{
+  try {
+    const getAllEventBooking =await skyEventBookingListPopulated({eventId:req.params.eventId});
+    if (!getAllEventBooking || getAllEventBooking.length === 0) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.EVENT_NOT_FOUND,
+      });
+    }
+    const eventTitle = getAllEventBooking[0].eventId?.title;
+    const subTitle = eventTitle?.split("-")[0];
+    for (const booking of getAllEventBooking) {
+      if (!booking.details?.contactNumber) {
+        continue;
+      } 
+      const temPlateParams=[String(booking.details?.name),String(eventTitle)]    
+      const sent=await whatsappAPIUrl.sendWhtsAppOTPAISensy(`+91${booking.details?.contactNumber}`,temPlateParams,"eventUpdate");
+      const messageContent = `Hi ${booking.details?.name}, update: "${subTitle}" has been postponed. New date coming soon. Your booking remains active. Thanks, TheSkyTrails Team.`;
+      await sendSMS.sendEventUpdate(booking.details?.contactNumber,messageContent);
+    }
+   return res.status(statusCode.OK).send({statusCode: statusCode.OK,responseMessage: responseMessage.EVENT_EMAIL_SENT,result:getAllEventBooking.length});
+  } catch (error) {
+    console.log("error while trying to send",error);
+    return next(error)
+    
   }
 }
 

@@ -287,8 +287,8 @@ exports.makePhonePayPayment1 = async (req, res, next) => {
     encodedParams.set("amount", 200);
     encodedParams.set("productinfo", "travel");
     encodedParams.set("firstname", "charu");
-    encodedParams.set("phone", "8115199076");
-    encodedParams.set("email", "charuyadav594@gmail.com");
+    encodedParams.set("phone", "************");
+    encodedParams.set("email", "charuyadav123456@gmail.com");
     encodedParams.set("surl", "https://www.google.co.in");
     encodedParams.set("furl", "https://www.google.co.in");
     const hashComponents = [
@@ -297,7 +297,7 @@ exports.makePhonePayPayment1 = async (req, res, next) => {
       "200",
       "travel",
       "charu",
-      "charuyadav594@gmail.com",
+      "charuya12345678@gmail.com",
     ];
     const hashString = hashComponents.join("|");
     const inputString = `${hashString}|||||||||||DAH88E3UWQ`;

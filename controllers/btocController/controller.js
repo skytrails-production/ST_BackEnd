@@ -2527,6 +2527,8 @@ exports.getNewRegisterUser = async (req, res, next) => {
   }
 };
 
+
+
 // async function verifyAppleIdToken(idToken) {
 //   try {
 //       // Get Apple Public Keys

@@ -3279,6 +3279,232 @@ function offerUpdateSubscription(personalizedGreeting, email) {
 </html>`;
 }
 
+function eventUpdate(userName,eventTitle){
+return `<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+  xmlns:v="urn:schemas-microsoft-com:vml"
+>
+  <head>
+    <title>Minimum Average Balance Alert</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <!--[if mso]>
+      <xml>
+        <o:OfficeDocumentSettings>
+          <o:PixelsPerInch>96</o:PixelsPerInch>
+          <o:AllowPNG />
+        </o:OfficeDocumentSettings>
+      </xml>
+    <![endif]-->
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #ffffff;
+        font-family: Arial, sans-serif;
+      }
+      table {
+        border-spacing: 0;
+      }
+      td {
+        padding: 0;
+      }
+      img {
+        border: 0;
+      }
+      .wrapper {
+        width: 100%;
+        table-layout: fixed;
+        background-color: #ffffff;
+      }
+      .main-content {
+        max-width: 600px;
+        margin: 0 auto;
+        border: 1px solid #ddd;
+      }
+      .header,
+      .footer {
+        background-color: #e73c33; /* Replace with your brand color */
+        color: #ffffff;
+      }
+      .header-logo {
+        padding: 10px 20px;
+        text-align: left;
+      }
+      .header-logo img {
+        height: 40px; /* Adjust logo size as needed */
+      }
+      .body-section {
+        padding: 20px;
+      }
+      .body-section h1 {
+        font-size: 20px;
+        margin-bottom: 10px;
+      }
+      .body-section p {
+        font-size: 14px;
+        line-height: 1.6;
+        color: #333333;
+      }
+      .assistance-section {
+        background-color: #ffffff;
+        border-top: 1px solid #ddd;
+        padding: 20px;
+      }
+      .assistance-title {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+      .assistance-icons {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+      }
+      .assistance-icons a {
+        text-decoration: none;
+        color: #e4572e;
+        font-size: 12px;
+        text-align: center;
+        display: inline-block;
+        width: 70px;
+      }
+      .assistance-icons img {
+        width: 32px;
+        height: 32px;
+        margin-bottom: 5px;
+      }
+      .footer {
+        padding: 20px;
+        text-align: center;
+      }
+      .footer a {
+        color: #ffffff;
+        text-decoration: underline;
+      }
+      .footer-qr {
+        margin-top: 10px;
+      }
+      .qr-codes {
+        display: inline-block;
+        margin: 0 10px;
+      }
+      .qr-codes img {
+        width: 80px;
+        height: 80px;
+      }
+      /* Responsive Styles */
+      @media (max-width: 600px) {
+        .assistance-icons {
+          flex-direction: column;
+        }
+        .assistance-icons a {
+          margin-bottom: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <table class="wrapper" role="presentation" width="100%">
+      <tr>
+        <td align="center">
+          <!-- MAIN CONTENT WRAPPER -->
+          <table class="main-content" role="presentation">
+            <!-- HEADER -->
+            <tr>
+              <td class="header">
+                <table width="100%">
+                  <tr>
+                    <td class="header-logo">
+                      <!-- Replace with your logo image URL -->
+                      <img
+                        src="https://skytrails.s3.amazonaws.com/randomImages/uploadedFile_1740479634608_new_logo-02white-01-01.png"
+                        alt="Company Logo"
+                      />
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- BODY SECTION -->
+            <tr>
+              <td class="body-section">
+                <h1>Dear ${userName},</h1>
+                <p>
+                  We hope you are doing well. We are writing to inform you that " ${eventTitle}" has been postponed. The new event date will be announced soon, and we will notify you as soon as it is finalized.
+
+Please note that your booking remains valid, and you can still look forward to an unforgettable experience once the new date is set. We appreciate your understanding and continued support.
+                </p>
+                <p>
+                  If you have any questions or need further assistance, please feel free to contact us.
+                </p>
+                <p>
+                  We value your relationship with us.
+                </p>
+               
+                <p>Sincerely,<br />TheSkyTrails Team</p>
+              </td>
+            </tr>
+
+            <!-- ASSISTANCE SECTION -->
+            <tr>
+              <td class="assistance-section">
+                <div class="assistance-title">Follow Us:</div>
+                <div class="assistance-icons">
+                  <a href="https://www.instagram.com/theskytrails?igsh=MWZvbWN6ZnFtM2d3YQ==">
+                     <img
+                      src="https://cdn-icons-png.flaticon.com/512/1384/1384063.png"
+                      alt="Instagram Icon"
+                    />
+                    instagram
+                  </a>
+                   <a href="https://www.facebook.com/share/15ZgGRjvqN/">
+                     <img
+                      src="https://cdn-icons-png.flaticon.com/512/1384/1384053.png"
+                      alt="Facebook Icon"
+                    />
+                    facebook
+                  </a>
+                  <a href="https://youtube.com/@theskytrails?si=adKGtP0TLE3Pkp5-">
+                    <img
+                      src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png"
+                      alt="YouTube Icon"
+                    />
+                    youtube
+                  </a>
+                </div>
+              </td>
+            </tr>
+
+            <!-- FOOTER -->
+            <tr>
+              <td class="footer">
+                <p>
+                  <strong>Visit our website:</strong>
+                  <a href="https://theskytrails.com/" target="_blank"
+                    >https://theskytrails.com/</a
+                  >
+                </p>
+                <div class="footer-qr">
+                  <p>Download our app:</p>
+                  <div class="qr-codes">
+                    <img
+                      src="https://skytrails.s3.amazonaws.com/randomImages/uploadedFile_1740475863384_The_Skytrails%281%29.png"
+                      alt="Scan"
+                    />
+                  </div>
+                  
+                </div>
+                <p style="margin-top: 20px; font-size: 12px; color: #ccc;">
+                  © Skytrails Private Limited. All Rights Reserved.
+                </p>
+              </td>
+            </tr>
+`
+}
 module.exports = {
   flightMail,
   busMail,
@@ -3294,4 +3520,5 @@ module.exports = {
   RelationShipManagerResetPassword,
   InventoryPartnerResetPassword,
   offerUpdateSubscription,
+  eventUpdate
 };

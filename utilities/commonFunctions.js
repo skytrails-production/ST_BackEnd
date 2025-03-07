@@ -24,7 +24,8 @@ const {
   SubAdminResetPassword,
   RelationShipManagerResetPassword,
   InventoryPartnerResetPassword,
-  offerUpdateSubscription
+  offerUpdateSubscription,
+  eventUpdate
 } = require("./mailingFunction.js");
 let cloudinary = require("cloudinary");
 cloudinary.config({
@@ -5687,6 +5688,16 @@ module.exports = {
     }
   },
 
+  sendEventUpdateToUser:async(obj)=>{
+    const subjectTitle=obj.subTitle;
+    var mailOptions = {
+      from: process.env.DEFAULT_ZOHO_EMAIL,
+      to: obj.email,
+      subject:`Important Update: Postponement of "${subjectTitle}" Event`,
+      html: eventUpdate(obj.userName,obj.eventTitle),
+    };
+    return await nodemailerConfig.sendMail(mailOptions);
+    },
   //upload image on cloudinary***************************************
   getSecureUrl: async (base64) => {
     var result = await cloudinary.v2.uploader.upload(base64);

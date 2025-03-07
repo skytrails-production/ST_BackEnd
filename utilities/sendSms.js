@@ -20,6 +20,7 @@ const visaTempId = process.env.VISATEMPLATEID;
 const eventTempId = process.env.EVENTID;
 const packageTempId = process.env.PACKAGETEMPID;
 const PEFAID = process.env.PEFAID;
+const EVENTTEMPID=process.env.EVENT_UPDATE_TEMPLATEID
 const baseURL = "https://localhost:8000";
 
 module.exports = {
@@ -340,6 +341,23 @@ module.exports = {
     try {
       const response = await axios.get(url, { params: params });
       console.log("response====", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error occurred in axios request:", error);
+      // throw error;
+    }
+  },
+  sendEventUpdate: async (mobileNumber,messageContent) => {
+    const url = `http://sms.txly.in/vb/apikey.php?`;
+    const params = {
+      apikey: key,
+      senderid: senderid,
+      templateid: EVENTTEMPID,
+      number: mobileNumber,
+      message: messageContent,
+    };
+    try {
+      const response = await axios.get(url, { params: params });
       return response.data;
     } catch (error) {
       console.error("Error occurred in axios request:", error);
