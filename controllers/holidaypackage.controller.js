@@ -1027,3 +1027,59 @@ function shuffleArray(array) {
 
   return arr;
 }
+
+
+
+
+//getPackageByCategory
+
+
+exports.getPackageByCategory = async (req, res) => {
+  try {
+    const data = req.query.keyword;
+    const modified=data.replace(/\s+/g, '').toLowerCase();
+
+    let query={};
+   query[`specialTag.${modified}`] = true;
+    // Fetch all active packages from the database
+    const allPackages = await SkyTrailsPackageModel.find({ $and: [{ is_active: 1 }, query] })
+      .sort({ createdAt: -1 })
+      .select(
+        "_id title days country coverImage destination packageAmount packageHighLight specialTag inclusions wishlist"
+      )
+      .exec();
+
+      let msg='Data found successfully';
+    // If no packages are available, return an empty response
+    if (allPackages.length === 0) {
+       msg = "No active packages found";
+      return actionCompleteResponse(res, [], msg);
+    }
+
+    actionCompleteResponse(res, allPackages, msg);
+    // const data1= await client.set(cacheKey, JSON.stringify(packagesForToday),{ EX: 1800 });
+  } catch (error) {
+    sendActionFailedResponse(res, {}, error.message);
+  }
+};
+
+
+//  try {
+   
+   
+//    const result = await internationl.find({ $and: [{ is_active: 1 }, query] });
+//    if(result.length==0){
+//     return res.status(statusCode.OK).send({
+//       statusCode: statusCode.NotFound,
+//       responseMessage: responseMessage.DATA_NOT_FOUND,
+//       // result: result,
+//     });
+//    }
+//    return res.status(statusCode.OK).send({
+//     statusCode: statusCode.OK,
+//     responseMessage: responseMessage.DATA_FOUND,
+//     result: result,
+//   });
+//   } catch (error) {
+//     return next(error);
+//   }

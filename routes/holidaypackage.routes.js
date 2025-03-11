@@ -76,6 +76,7 @@ module.exports = function (app) {
 
 
     app.get("/skytrails/holidaypackage/latestpackages", controller.getLatestHolidayPackages);
+    app.get("/skytrails/holidaypackage/searchpackagebycategory", controller.getPackageByCategory)
 
     
 
