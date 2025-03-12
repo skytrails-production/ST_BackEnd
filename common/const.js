@@ -253,7 +253,7 @@ busCancelURL:
   // Transfer search
   transferSearch:
     // "http://api.tektravels.com/BookingEngineService_Transfer/TransferService.svc/rest/Search",
-    "https://TransferBE.tektravels.com/TransferService.svc/rest/Book",
+    "https://TransferBE.tektravels.com/TransferService.svc/rest/Search",
 
   // get Cancellation Policy
   getCancellationPolicy:
