@@ -230,6 +230,7 @@ require("./routes/kafilaBookingRoutes")(app);
 require("./routes/btocRoutes/promotionalEmail")(app)
 require("./routes/reviewRoutes/packagereviewRoutes")(app)
 require("./routes/forumRoutes/forumReportRoutes")(app)
+require("./routes/visaRoutes")(app)
 mongoose.connect(configs.mongoUrl.DEVELOPMENT, {useNewUrlParser: true,useUnifiedTopology: true,})
   .then(() => {
     initial();

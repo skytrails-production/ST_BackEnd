@@ -234,42 +234,21 @@ exports.initialiseBot = async (req, res, next) => {
         botResponse = await handlePackageQuery(userPrompt,includeWords);
         break;
       default:
-        botResponse = await await askOpenAIGeneralQuery(userPrompt);// General AI response
+        botResponse = await await askOpenAIGeneralQuery(corrected);
         break;
     }
-    // Fetch all packages
-    // const allPackages = await SkyTrailsPackageModel.find({})
-    //   .select("_id title packageAmount specialTag")
-    //   .sort({ "packageAmount.amount": -1, title: 1 });
-
-    // Check for package-related keywords
-    // if (keywords.some((keyword) => trimmedPrompt.includes(keyword))) {
-    // botResponse = await handlePackageQuery(trimmedPrompt, allPackages);
-    // } else {
-    //   botResponse = await getAiResponseCustomPackage(trimmedPrompt);
-    // }
-    //     const isChatExist=await findConversation({userId:userId,userPrompt:query})
-    //   if(isChatExist){
-    //     const updateChatHistory=await updateConversation({_id:isChatExist._id},{$push:{messages:{timestamp,botRespoense,userQuery,sender}}});
-    //     console.log("updateChatHistory====",updateChatHistory);
-
-    //   }
-    //     const newChatHistory=await createConversation(req.body);
-    // console.log("newChatHistory===",newChatHistory);
-
     let audioPath;
     try {
       audioPath = await convertTextToSpeech(botResponse);
     } catch (error) {
       console.warn("Text-to-speech conversion failed:", error.message);
-      audioPath = null;
     }
 
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.DATA_FOUND,
       response: botResponse,
-      audioUrl: audioPath,
+      audioUrl: audioPath || null,
     });
   } catch (error) {
     console.error("Error in initialiseBot:", error.message, error.stack);
@@ -433,3 +412,31 @@ const getServiceType = (userPrompt) => {
   }
   return "general"; // Default fallback
 };
+
+
+
+const params = {
+  access_key: 'e1bc3fb3d448e9acc6da45e4346f3cbc'
+}
+
+async function fetchLiveFlights(params) {
+  try {
+    const response = await axios.get('https://api.aviationstack.com/v1/flights', { params });
+    const apiResponse = response.data;
+    
+    console.log("API Response:", apiResponse.data[0]);
+
+    if (Array.isArray(apiResponse.results)) {
+      apiResponse.results.forEach(flight => {
+        if (!flight.live?.is_ground) {
+          console.log(`${flight.airline.name} flight ${flight.flight.iata},
+            from ${flight.departure.airport} (${flight.departure.iata}),
+            to ${flight.arrival.airport} (${flight.arrival.iata}) is in the air.`);
+        }
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching flights:", error.message);
+  }
+}
+// fetchLiveFlights(params);
