@@ -11,5 +11,6 @@ module.exports = Object.freeze({
     PACKAGES:'PACKAGES',
     FORALL:"FORALL",
     RECHARGE:"RECHARGE",
-    DEALS:"DEALS"
+    DEALS:"DEALS",
+    VISA:"VISA"
 })

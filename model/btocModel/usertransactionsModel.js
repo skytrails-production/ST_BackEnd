@@ -39,7 +39,7 @@ const transactionSchema = mongoose.Schema({
     returnDate:String,
     bookingType: {
         type: String,
-        enum: [offerType.FLIGHTS, offerType.HOTELS, offerType.BUS,offerType.EVENTS,offerType.RECHARGES],
+        enum: [offerType.FLIGHTS, offerType.HOTELS, offerType.BUS,offerType.EVENTS,offerType.RECHARGES,offerType.VISA],
     },
     transactionStatus: {
         type: String,

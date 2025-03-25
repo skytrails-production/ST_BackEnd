@@ -109,7 +109,7 @@ exports.packageBooking = async (req, res, next) => {
       });
     }
 
-    const isPackageExist = await SkyTrailsPackageModel .findOne({ _id: packageId });
+    const isPackageExist = await SkyTrailsPackageModel.findOne({ _id: packageId });
     if(!isPackageExist){
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
