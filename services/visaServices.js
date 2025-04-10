@@ -92,6 +92,20 @@ const visaServices = {
         ];     
         return await visaModel.paginate(query, options);
     },
+    aiVisaCounPaginate: async (validatedBody) => {
+        let query = { status:status.ACTIVE,aiListed:true};
+        const { page, limit} = validatedBody;
+        let options = {
+            page: Number(page) || 1,
+            limit: Number(limit) || 200,
+            sort: { createdAt: -1 ,},
+        };
+        // options.populate = [
+        //     { path: 'visaCategoryId',},
+        //     { path: 'requireDocumentId',select:'-createdAt -updatedAt -visaCountry -requiredDocumentCategories', populate: { path: 'visaCategory',select:'-description  -createdAt -updatedAt' }}
+        // ];     
+        return await visaModel.paginate(query, options);
+    },
 }
 
 module.exports = { visaServices };

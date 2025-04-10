@@ -1,5 +1,7 @@
 const controller = require("../../controllers/visaController/visaController");
-const visaBooking=require("../../controllers/visaController/visaBookingController")
+const visaBooking=require("../../controllers/visaController/visaBookingController");
+const aiVisaBooking=require("../../controllers/intelliVisaController/applyVisa");
+
 const auth = require("../../middleware/authJwt");
 const schemas = require("../../utilities/schema.utilities");
 const SchemaValidator = require("../../utilities/validations.utilities");
@@ -30,4 +32,6 @@ module.exports = function (app) {
     visaBooking.visaBooking
   );
   app.post("/skyTrails/api/visa/createMultipleVisa",upload.any("images"),SchemaValidator(schemas.weeklyVisaSchema),controller.createMultipleVisas);
+  app.get("/skyTrails/api/visa/getAIVisaCountry",controller.getAiVisaCountry);
+  app.post("/skyTrails/api/visa/applyForAiVisa",aiVisaBooking.visaApplicationsReg);
 };

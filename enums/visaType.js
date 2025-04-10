@@ -6,4 +6,5 @@ module.exports = Object.freeze({
     Crewmember: 'Crewmember',
     Business: 'Business',
     PR: 'PR',
+    Visitors:'Visitors'
 })

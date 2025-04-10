@@ -9,6 +9,9 @@ const visaSchema = new mongoose.Schema(
     countryName: {
       type: String,
     },
+    description: {
+      type: String,
+    },
     price: {
       type: Number,
     },
@@ -33,7 +36,7 @@ const visaSchema = new mongoose.Schema(
     },
     visaType: {
       type: String,
-      enum:[visaType.Business,visaType.Companion,visaType.Crewmember,visaType.Employment,visaType.PR,visaType.Student,visaType.Tourist]
+      enum:[visaType.Business,visaType.Companion,visaType.Crewmember,visaType.Employment,visaType.PR,visaType.Student,visaType.Tourist,visaType.Visitors]
     },
     governmentFees: {
       type: Number,
@@ -55,7 +58,8 @@ const visaSchema = new mongoose.Schema(
     requireDocumentId:{
       type: mongoose.Schema.Types.ObjectId,
       ref:'RequiredDocument'
-    }
+    },
+    aiListed:{type:Boolean}
   },
   { timestamps: true }
 );

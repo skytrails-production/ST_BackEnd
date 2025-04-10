@@ -2,11 +2,11 @@ let cloudinary = require("cloudinary");
 
 //*********SERVICES********************* */
 const { visaServices } = require('../../services/visaServices');
-const { createWeeklyVisa,createMultipleVisa, findWeeklyVisa,populatedVisaList, deleteWeeklyVisa, weeklyVisaList, updateWeeklyVisa, weeklyVisaListPaginate, getNoVisaByPaginate, montholyVisaListPaginate, onarrivalVisaListPaginate } = visaServices;
+const { createWeeklyVisa,createMultipleVisa, findWeeklyVisa,populatedVisaList, deleteWeeklyVisa, weeklyVisaList, updateWeeklyVisa, weeklyVisaListPaginate, getNoVisaByPaginate, montholyVisaListPaginate, onarrivalVisaListPaginate ,aiVisaCounPaginate} = visaServices;
 const { userServices } = require('../../services/userServices');
 const { createUser, findUser, getUser, findUserData, updateUser } = userServices;
 const {visaCategoryServices}=require("../../services/visaAppServices/visaCategoryServices");
-const {createVisaCategory,findVisaCategoryData,deleteVisaCategory,visaCategoryList,updateVisaCategory,countTotalVisaCategory,getVisaCategory}=visaCategoryServices;
+const {createVisaCategory,findVisaCategoryData,deleteVisaCategory,visaCategoryList,updateVisaCategory,countTotalVisaCategory,getVisaCategory,}=visaCategoryServices;
 
 const {
     actionCompleteResponse,
@@ -22,16 +22,17 @@ const { RecordingRulesList } = require("twilio/lib/rest/video/v1/room/roomRecord
 
 exports.createVisa = async (req, res, next) => {
     try {
-        const { countryName, price, validityPeriod, lengthOfStay, visaType, governmentFees, platFormFees, issuedType, continent ,visaCategoryName} = req.body;
+        const { countryName, price, validityPeriod, lengthOfStay, visaType, governmentFees, platFormFees, issuedType, continent ,visaCategoryName,aiListed,description} = req.body;
         const iscategoryIdExist=await findVisaCategoryData({visaCategoryName:visaCategoryName}); 
         if(!iscategoryIdExist){
             return res.status(statusCode.badRequest).send({ statusCode: statusCode.badRequest, responseMessage: responseMessage.CATEGORY_NOT_FOUND });
         }
         if (req.files) {
+            
             var galleryData = [];
             for (var i = 0; i < req.files.length; i++) {
                 const imageData = req.files[i];
-                var data = await commonFunctions.getImageUrlAWSByFolder(imageData,"VisaPictures");
+                var data = await commonFunctions.getImageUrlAWSByFolderSingle(imageData,"VisaPictures");
                 const imageUrl = data;
                 galleryData.push(imageUrl);
             }
@@ -321,4 +322,17 @@ try {
 } catch (error) {
     return next(error);
 }
+}
+
+exports.getAiVisaCountry=async(req,res,next)=>{
+    try {
+        const { page, limit } = req.query;
+        const result = await aiVisaCounPaginate(req.query);
+        if (!result) {
+            return res.status(statusCode.NotFound).send({ statusCode: statusCode.NotFound, responseMessage: responseMessage.NOT_FOUND, result: result })
+        }
+        return res.status(statusCode.OK).send({ statusCode: statusCode.OK, responseMessage: responseMessage.DATA_FOUND, result: result });
+    } catch (error) {
+        return next(error)
+    }
 }

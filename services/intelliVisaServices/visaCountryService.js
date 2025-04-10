@@ -22,14 +22,14 @@ const visaCountryServices={
     },
 
     countryList: async (query) => {
-        return await countryListModel.find(query)
+        return await countryListModel.find(query);
     },
     updatecountryList: async (query, updateObj) => {
         return await countryListModel.findOneAndUpdate(query, updateObj, { new: true });
     },
 
     countTotalcountryList: async (body) => {
-        return await countryListModel.countDocuments(body)
+        return await countryListModel.countDocuments(body);
     }    
 }
 module.exports ={visaCountryServices}
