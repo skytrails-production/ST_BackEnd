@@ -142,7 +142,7 @@ var taskPromotionalNotification = cron.schedule("45 09 * * *",async () => {
   timezone: "Asia/Kolkata", // Timezone setting
 }
 );
-taskPromotionalNotification.start(); // Start the task2
+// taskPromotionalNotification.start(); // Start the task2
 
 // Define and schedule task2 separately
 var taskPlatformNotification = cron.schedule("55 17 * * *",
