@@ -12,7 +12,7 @@ const { v4: uuidv4 } = require("uuid");
 const uuid = uuidv4();
 const client_secret = process.env.CASHFREE_API_KEY;
 const clientId = process.env.CASHFREE_API_ID;
-// const Cashfree=require("cashfree-pg"); 
+const {Cashfree}=require("cashfree-pg");
 // const Cashfree = require('cashfree-sdk');
 // Cashfree.XClientId = process.env.CASHFREE_API_ID;
 // Cashfree.XClientSecret = process.env.CASHFREE_API_KEY;
@@ -69,10 +69,30 @@ const {
   countTotalUserBookingFailed,
 } = userBookingFailedServices;
 
-const {refundModelServices}=require('../../services/btocServices/userRefundServices');
-const {createUsertransactionRefund,findUsertransactionRefund,getUsertransactionRefund,deleteUsertransactionRefund,userUsertransactionListRefund,updateUsertransactionRefund,countTotalUsertransactionRefund}=refundModelServices;
-const {appRefundModelServices}=require('../../services/btocServices/appRefundServices');
-const {createRefund,findUserRefund,getUserRefund,deleteUserRefund,userUserListRefund,updateUserRefund,countTotalUserRefund}=appRefundModelServices;
+const {
+  refundModelServices,
+} = require("../../services/btocServices/userRefundServices");
+const {
+  createUsertransactionRefund,
+  findUsertransactionRefund,
+  getUsertransactionRefund,
+  deleteUsertransactionRefund,
+  userUsertransactionListRefund,
+  updateUsertransactionRefund,
+  countTotalUsertransactionRefund,
+} = refundModelServices;
+const {
+  appRefundModelServices,
+} = require("../../services/btocServices/appRefundServices");
+const {
+  createRefund,
+  findUserRefund,
+  getUserRefund,
+  deleteUserRefund,
+  userUserListRefund,
+  updateUserRefund,
+  countTotalUserRefund,
+} = appRefundModelServices;
 
 var config = {
   key: process.env.EASEBUZZ_KEY,
@@ -82,7 +102,6 @@ var config = {
 };
 const currentDate = new Date();
 const newDate = new Date(currentDate.getTime() + 16 * 60000); // Adding 16 minutes in milliseconds (1 minute = 60,000 milliseconds)
-
 
 exports.transaction = async (req, res, next) => {
   try {
@@ -217,7 +236,6 @@ exports.paymentUrl = async (req, res, next) => {
       });
     }
 
-
     // In a real-world scenario, you would save the payment link or associated order details in your database.
 
     return res.status(statusCode.OK).send({
@@ -260,7 +278,6 @@ exports.bookingFailedUser = async (req, res, next) => {
       result: result,
     });
   } catch (error) {
-   
     return next(error);
   }
 };
@@ -277,7 +294,6 @@ const createRazorpayOrder = (orderOptions) => {
     });
   });
 };
-
 
 exports.makePhonePayPayment1 = async (req, res, next) => {
   try {
@@ -345,14 +361,14 @@ exports.easebussPayment = async (req, res, next) => {
       origin,
       destination,
       oneyWayDate,
-      returnDate
+      returnDate,
     } = req.body;
 
     const isUserExist = await findUser({
       _id: req.userId,
       status: status.ACTIVE,
     });
-    console.log("isUserExist==",isUserExist)
+    console.log("isUserExist==", isUserExist);
     if (!isUserExist) {
       return res.status(statusCode.NotFound).send({
         statusCode: statusCode.NotFound,
@@ -403,17 +419,17 @@ exports.easebussPayment = async (req, res, next) => {
       const redirectURL = `${env}/v2/pay/${data.data}`;
       const object = {
         userId: isUserExist._id,
-        firstName:firstname,
+        firstName: firstname,
         amount: amount,
         paymentId: txnId,
         bookingType: bookingType,
-        easeBuzzPayId:"NA",
-        email:email,
-        origin:origin,
-        destination:destination,
-        phone:phone,
-        oneyWayDate:oneyWayDate,
-        returnDate:returnDate
+        easeBuzzPayId: "NA",
+        email: email,
+        origin: origin,
+        destination: destination,
+        phone: phone,
+        oneyWayDate: oneyWayDate,
+        returnDate: returnDate,
       };
       const createData = await createUsertransaction(object);
       res.status(statusCode.OK).send({
@@ -432,7 +448,7 @@ exports.easebussPayment = async (req, res, next) => {
 //refund api*******************************************************
 exports.refundApi = async (req, res, next) => {
   try {
-    const { refund_amount, txnId, } = req.body;
+    const { refund_amount, txnId } = req.body;
     const isUserExist = await findUser({
       _id: req.userId,
       status: status.ACTIVE,
@@ -443,7 +459,9 @@ exports.refundApi = async (req, res, next) => {
         message: responseMessage.USERS_NOT_FOUND,
       });
     }
-    const isTransactionExist=await findUsertransaction({easeBuzzPayId:txnId});
+    const isTransactionExist = await findUsertransaction({
+      easeBuzzPayId: txnId,
+    });
     if (!isTransactionExist) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
@@ -473,30 +491,29 @@ exports.refundApi = async (req, res, next) => {
 
     try {
       const { data } = await axios.request(options);
-      if(data.status===true){
-        const obj={
-          userId:isUserExist._id,
-          amount:refund_amount,
-          refundId:txnId,
-          orderId:isTransactionExist.paymentId,
-          merchant_refund_id:data.merchant_refund_id,
-          requestId:data.refund_id
-        }
-        const refundEntry=await createUsertransactionRefund(obj);
+      if (data.status === true) {
+        const obj = {
+          userId: isUserExist._id,
+          amount: refund_amount,
+          refundId: txnId,
+          orderId: isTransactionExist.paymentId,
+          merchant_refund_id: data.merchant_refund_id,
+          requestId: data.refund_id,
+        };
+        const refundEntry = await createUsertransactionRefund(obj);
         return res.status(statusCode.OK).send({
           statusCode: statusCode.OK,
           responseMessage: responseMessage.REFUND_INITIATE,
-          result: data
+          result: data,
         });
-      }else{
+      } else {
         return res.status(statusCode.OK).send({
           statusCode: statusCode.badRequest,
           responseMessage: data.reason,
         });
       }
-      
+
       // return res.send({ data: data });
-     
     } catch (error) {
       console.error(error);
     }
@@ -596,7 +613,9 @@ exports.checkPaymentStatus = async (req, res, next) => {
         "X-MERCHANT-ID": process.env.PHONE_PAY_MERCHANT_ID,
       },
     };
-    axios.request(options).then(function (response) {
+    axios
+      .request(options)
+      .then(function (response) {
         return res.status(statusCode.OK).send({
           statusCode: statusCode.OK,
           responseMessage: responseMessage.OK,
@@ -614,7 +633,7 @@ exports.checkPaymentStatus = async (req, res, next) => {
 //success response********************************************************
 exports.paymentSuccess = async (req, res, next) => {
   try {
-    const easypayId=req.body.easeBuzzPayId
+    const easypayId = req.body.easeBuzzPayId;
     const { merchantTransactionId, transactionId } = req.query;
     const isTransactionExist = await findUsertransaction({
       paymentId: merchantTransactionId,
@@ -622,8 +641,10 @@ exports.paymentSuccess = async (req, res, next) => {
     if (isTransactionExist) {
       const result = await updateUsertransaction(
         { _id: isTransactionExist._id },
-        { transactionStatus: paymentStatus.SUCCESS,
-          easeBuzzPayId:easypayId||"" }
+        {
+          transactionStatus: paymentStatus.SUCCESS,
+          easeBuzzPayId: easypayId || "",
+        }
       );
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
@@ -643,7 +664,7 @@ exports.paymentFailure = async (req, res, next) => {
     const isTransactionExist = await findUsertransaction({
       paymentId: merchantTransactionId,
     });
-   
+
     if (isTransactionExist) {
       const result = await updateUsertransaction(
         { _id: isTransactionExist._id },
@@ -690,7 +711,7 @@ exports.paymentFailurePhonePe = async (req, res, next) => {
     const isTransactionExist = await findUsertransaction({
       paymentId: merchantTransactionId,
     });
-   
+
     if (isTransactionExist) {
       const result = await updateUsertransaction(
         { _id: isTransactionExist._id },
@@ -714,7 +735,14 @@ function generateSHA512Hash(input) {
 
 exports.makeCashfreePayment = async (req, res, next) => {
   try {
-    const { firstname, phone, email,amount, redirectUrl, bookingType} = req.body;
+    const {
+      firstname,
+      phone,
+      email,
+      amount,
+      redirectUrl,
+      bookingType,
+    } = req.body;
     const isUserExist = await findUser({
       _id: req.userId,
       status: status.ACTIVE,
@@ -737,14 +765,15 @@ exports.makeCashfreePayment = async (req, res, next) => {
         customer_id: merchantTransactionId,
         customer_email: email,
         customer_phone: phone,
-        customer_name:firstname,
+        customer_name: firstname,
         // customer_uid:uuid
       },
       order_id: OrderId,
-      "order_meta": {
-        "return_url": `https://www.cashfree.com/devstudio/preview/pg/mobile/android?order_id=${OrderId}`,
-        "notify_url": "https://www.cashfree.com/devstudio/preview/pg/webhooks/77891295"
-    },
+      order_meta: {
+        return_url: `https://www.cashfree.com/devstudio/preview/pg/mobile/android?order_id=${OrderId}`,
+        notify_url:
+          "https://www.cashfree.com/devstudio/preview/pg/webhooks/77891295",
+      },
       order_expiry_time: newDate,
       order_amount: amount,
       order_currency: "INR",
@@ -762,7 +791,7 @@ exports.makeCashfreePayment = async (req, res, next) => {
       data: object,
     };
     try {
-      const {data} = await axios.request(options);
+      const { data } = await axios.request(options);
       const objectData = {
         userId: isUserExist._id,
         amount: object.order_amount,
@@ -791,34 +820,34 @@ exports.checkCashfreePaymentStatus = async (req, res, next) => {
     const clientId = process.env.CASHFREE_API_ID;
     const orderId = req.query.orderid;
     const options = {
-      method: 'get',
+      method: "get",
       url: `https://api.cashfree.com/pg/orders/${orderId}`,
       headers: {
-        accept: 'application/json',
-        'x-api-version': '2023-08-01',
-        'content-type': 'application/json',
+        accept: "application/json",
+        "x-api-version": "2023-08-01",
+        "content-type": "application/json",
         "x-client-id": clientId,
         "x-client-secret": clientSecret,
       },
     };
     const { data } = await axios.request(options);
-    const orderStatus = data.order_status; // Adjust accordingly based on the API response structure
+    const orderStatus = data.order_status;
     const isTransactionExist = await findUsertransaction({
       paymentId: orderId,
     });
-    if (isTransactionExist){
+    if (isTransactionExist) {
       // Handle payment status as needed
-      if (orderStatus === 'PAID') {
+      if (orderStatus === "PAID") {
         const result = await updateUsertransaction(
-        { _id: isTransactionExist._id },
-        { transactionStatus: paymentStatus.SUCCESS }
-      );
-      return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.PAYMENT_SUCCESS,
-        result:result
-      });
-      } 
+          { _id: isTransactionExist._id },
+          { transactionStatus: paymentStatus.SUCCESS }
+        );
+        return res.status(statusCode.OK).send({
+          statusCode: statusCode.OK,
+          responseMessage: responseMessage.PAYMENT_SUCCESS,
+          result: result,
+        });
+      }
       await updateUsertransaction(
         { _id: isTransactionExist._id },
         { transactionStatus: paymentStatus.FAILED }
@@ -830,7 +859,9 @@ exports.checkCashfreePaymentStatus = async (req, res, next) => {
       });
     }
   } catch (error) {
-    return res.status(500).json({ status: 'error', message: 'Internal server error' });
+    return res
+      .status(500)
+      .json({ status: "error", message: "Internal server error" });
   }
 };
 
@@ -888,9 +919,9 @@ exports.CCEVENUEPayment1 = async (req, res, next) => {
   }
 };
 
-exports.cashfreeRefund=async(req,res,next)=>{
+exports.cashfreeRefund = async (req, res, next) => {
   try {
-    const{orderId,amount,refund_id,refund_speed}=req.body;
+    const { orderId, amount, refund_id, refund_speed } = req.body;
     const isUserExist = await findUser({
       _id: req.userId,
       status: status.ACTIVE,
@@ -901,7 +932,9 @@ exports.cashfreeRefund=async(req,res,next)=>{
         message: responseMessage.USERS_NOT_FOUND,
       });
     }
-    const isTransactionExist=await findUsertransaction({paymentId:orderId});
+    const isTransactionExist = await findUsertransaction({
+      paymentId: orderId,
+    });
     if (!isTransactionExist) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
@@ -913,56 +946,54 @@ exports.cashfreeRefund=async(req,res,next)=>{
     const requestData = {
       refund_amount: amount,
       refund_id: refundId,
-      refund_speed: refund_speed
-    };    
+      refund_speed: refund_speed,
+    };
     const options = {
       method: "post",
       url: `https://api.cashfree.com/pg/orders/${orderId}/refunds`,
-      headers:{
-        'accept': 'application/json',
-        'content-type': 'application/json',
-        'x-api-version': '2023-08-01',
+      headers: {
+        accept: "application/json",
+        "content-type": "application/json",
+        "x-api-version": "2023-08-01",
         "x-client-id": clientId,
         "x-client-secret": client_secret,
       },
       data: requestData,
     };
     try {
-      const response=await axios.request(options);
-      if(response.status===200){
-        const obj={
-          userId:isUserExist._id,
-          amount:amount,
-          refundId:response.data.refund_id,
-          orderId:response.data.order_id,
-          refundSpeed:response.data.refund_speed.accepted,
-          bookingType:isTransactionExist.bookingType,
-          refundCurrency:response.data.refund_currency,
-          refundStatus:'SUCCESS'
-        }
-        
-        const refundEntry=await createRefund(obj);
-      return res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.REFUND_INITIATE,
-        result: response.data,
-      });
+      const response = await axios.request(options);
+      if (response.status === 200) {
+        const obj = {
+          userId: isUserExist._id,
+          amount: amount,
+          refundId: response.data.refund_id,
+          orderId: response.data.order_id,
+          refundSpeed: response.data.refund_speed.accepted,
+          bookingType: isTransactionExist.bookingType,
+          refundCurrency: response.data.refund_currency,
+          refundStatus: "SUCCESS",
+        };
+
+        const refundEntry = await createRefund(obj);
+        return res.status(statusCode.OK).send({
+          statusCode: statusCode.OK,
+          responseMessage: responseMessage.REFUND_INITIATE,
+          result: response.data,
+        });
       }
     } catch (error) {
-      console.log("error==================",error);
+      console.log("error==================", error);
       return res.status(statusCode.OK).send({
         statusCode: error.response.status,
         responseMessage: responseMessage.INVALD_REQUEST,
         result: error.response.data,
       });
     }
-   
   } catch (error) {
-    console.log("error while refund====>>>",error);
+    console.log("error while refund====>>>", error);
     return next(error);
-
   }
-}
+};
 const nodeCCAvenue = require("node-ccavenue");
 const ccav = new nodeCCAvenue.Configure({
   merchant_id: process.env.CC_AVENUE_MERCHANT_ID,
@@ -973,44 +1004,58 @@ const ccav = new nodeCCAvenue.Configure({
 });
 exports.CCEVENUEPayment = async (req, res, next) => {
   try {
-    const {customerEmail,bookingType,customerPhone,customerAddress,country,customerName,orderId,amount,refund_id,refund_note,refund_speed,redirect_url,cancel_url} = req.body;
-      const url = "https://secure.ccavenue.com/transaction/initTrans";
-      const txnId = "orderId" + Date.now();
-      const data={
-        working_key:process.env.CC_AVENUE_WORKING_KEY,
-        access_code:process.env.CC_AVENUE_ACCESSCODE,
-        request_type:JSON
-      }
-      const checksum = ccav.encrypt(data);
-      // Prepare request data
-      const requestData = {
-        merchant_id: merchant_id,
-        order_id: txnId,
-        currency: "INR", // Change currency based on your requirement
-        amount: '1',
-        redirect_url: `http://localhost:8000//skyTrails/api/transaction/paymentSuccess?merchantTransactionId=${txnId}`,
-        cancel_url: `http://localhost:8000//skyTrails/api/transaction/paymentFailure?merchantTransactionId=${txnId}`,
-        language: "EN", // Change language as needed
-        billing_name: customerName, // Change customer name as needed
-        billing_address: customerAddress, // Change customer address as needed
-        billing_country: country, // Change country as needed
-        billing_tel: customerPhone, // Change customer phone as needed
-        billing_email: customerEmail, // Change customer email as needed
-      };
-      // Generate checksum
-     
-      const encryptedData = ccav.encrypt(requestData);
-      const decryptedData = ccav.decrypt(encryptedData);
-      try {
-        // Send request to CCAvenue
-        const response = await axios.post(url, checksum);
+    const {
+      customerEmail,
+      bookingType,
+      customerPhone,
+      customerAddress,
+      country,
+      customerName,
+      orderId,
+      amount,
+      refund_id,
+      refund_note,
+      refund_speed,
+      redirect_url,
+      cancel_url,
+    } = req.body;
+    const url = "https://secure.ccavenue.com/transaction/initTrans";
+    const txnId = "orderId" + Date.now();
+    const data = {
+      working_key: process.env.CC_AVENUE_WORKING_KEY,
+      access_code: process.env.CC_AVENUE_ACCESSCODE,
+      request_type: JSON,
+    };
+    const checksum = ccav.encrypt(data);
+    // Prepare request data
+    const requestData = {
+      merchant_id: merchant_id,
+      order_id: txnId,
+      currency: "INR", // Change currency based on your requirement
+      amount: "1",
+      redirect_url: `http://localhost:8000//skyTrails/api/transaction/paymentSuccess?merchantTransactionId=${txnId}`,
+      cancel_url: `http://localhost:8000//skyTrails/api/transaction/paymentFailure?merchantTransactionId=${txnId}`,
+      language: "EN", // Change language as needed
+      billing_name: customerName, // Change customer name as needed
+      billing_address: customerAddress, // Change customer address as needed
+      billing_country: country, // Change country as needed
+      billing_tel: customerPhone, // Change customer phone as needed
+      billing_email: customerEmail, // Change customer email as needed
+    };
+    // Generate checksum
 
-        // Redirect user to CCAvenue payment page
-      } catch (error) {
-        console.error("Error initiating payment:", error.message);
-        // Handle error
-      }
-    
+    const encryptedData = ccav.encrypt(requestData);
+    const decryptedData = ccav.decrypt(encryptedData);
+    try {
+      // Send request to CCAvenue
+      const response = await axios.post(url, checksum);
+
+      // Redirect user to CCAvenue payment page
+    } catch (error) {
+      console.error("Error initiating payment:", error.message);
+      // Handle error
+    }
+
     // Example function to initiate payment
     // async function initiatePayment(amount, orderId) {
     //     try {
@@ -1041,4 +1086,99 @@ exports.CCEVENUEPayment = async (req, res, next) => {
   }
 };
 
+exports.makeCashfreeRechargePayment = async (req, res, next) => {
+  try {
+    const {
+      firstname,
+      phone,
+      email,
+      amount,
+      redirectUrl,
+      bookingType,
+    } = req.body;
+    const currentDate = new Date();
+    const newDate = new Date(currentDate.getTime() + 16 * 60000); // Adding  minutes in milliseconds (1 minute = 60,000 milliseconds)
+    const client_secret = process.env.CASHFREE_API_KEY;
+    const clientId = process.env.CASHFREE_API_ID;
+    const payUrl = process.env.CASHFREE_URL;
+    const merchantTransactionId = "customer" + Date.now();
+    const OrderId = "ORDIDTST" + Date.now();
+    const object = {
+      customer_details: {
+        customer_id: merchantTransactionId,
+        customer_email: email,
+        customer_phone: phone,
+        customer_name: firstname,
+        // customer_uid:uuid
+      },
+      order_id: OrderId,
+      order_meta: {
+        return_url: `https://www.cashfree.com/devstudio/preview/pg/mobile/android?order_id=${OrderId}`,
+        notify_url:
+          "https://www.cashfree.com/devstudio/preview/pg/webhooks/77891295",
+      },
+      order_expiry_time: newDate,
+      order_amount: amount,
+      order_currency: "INR",
+    };
+    const options = {
+      method: "post",
+      url: `https://api.cashfree.com/pg/orders`,
+      headers: {
+        accept: "application/json",
+        "x-api-version": "2023-08-01",
+        "content-type": "application/json",
+        "x-client-id": clientId,
+        "x-client-secret": client_secret,
+      },
+      data: object,
+    };
+    try {
+      const { data } = await axios.request(options);
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.PAYMENT_INTIATE,
+        result: data,
+      });
+    } catch (error) {
+      console.log("error===================", error);
+      return next(error);
+    }
+  } catch (error) {
+    return next(error);
+  }
+};
+
+exports.fetchCashfreePayments = async (req, res, next) => {
+  try {
+    const { orderId } = req.query.orderId; 
+
+    const clientId = "TEST1009338104d5e3d4f1f2d46ae39a18339001";
+    const clientSecret = "cfsk_ma_test_2465e393bc943188fa8ce919d8f6f9d0_a3f68c24"
+// console.log("response=========",response);
+
+    const response = await axios.get(`https://sandbox.cashfree.com/pg/orders/${orderId}`, {
+      headers: {
+        accept: "application/json",
+        "x-api-version": "2028-01-01",
+        "x-client-id": clientId,
+        "x-client-secret": clientSecret,
+        "x-environment":"Sandbox"
+      },
+    });
+
+    return res.status(200).json({
+      statusCode: 200,
+      message: "Payment details fetched successfully",
+      data: response.data,
+    });
+  } catch (error) {
+    console.error("Fetch payment error:", error.response?.data || error.message);
+    return res.status(400).json({
+      statusCode: 400,
+      message: "Failed to fetch payment details",
+      error: error.response?.data || error.message,
+    });
+  }
+};
 

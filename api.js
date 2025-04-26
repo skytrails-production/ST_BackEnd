@@ -230,7 +230,14 @@ require("./routes/kafilaBookingRoutes")(app);
 require("./routes/btocRoutes/promotionalEmail")(app)
 require("./routes/reviewRoutes/packagereviewRoutes")(app)
 require("./routes/forumRoutes/forumReportRoutes")(app)
-require("./routes/visaRoutes")(app)
+require("./routes/visaRoutes")(app);
+
+//crm agent routes
+
+require("./routes/crmAgentFlightBooking.routes")(app);
+require("./routes/crmAgentBusBooking.routes")(app);
+require("./routes/crmAgentHotelBooking.routes")(app);
+
 mongoose.connect(configs.mongoUrl.DEVELOPMENT, {useNewUrlParser: true,useUnifiedTopology: true,})
   .then(() => {
     initial();

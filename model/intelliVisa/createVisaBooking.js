@@ -6,6 +6,7 @@ const paymentStatus=require("../../enums/paymentStatus")
 mongoose.pluralize(null);
 
 const createVisaApplySchema = new mongoose.Schema({
+  userId: { type: String },
   firstName: { type: String },
   lastName: { type: String },
   email: { type: String },
@@ -68,5 +69,5 @@ const createVisaApplySchema = new mongoose.Schema({
   },
 });
 
-const visaHistory = mongoose.model("createVisaApply", createVisaApplySchema);
+const visaHistory = mongoose.model("createIntellyVisaApply", createVisaApplySchema);
 module.exports = visaHistory;

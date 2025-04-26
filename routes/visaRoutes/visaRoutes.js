@@ -34,4 +34,5 @@ module.exports = function (app) {
   app.post("/skyTrails/api/visa/createMultipleVisa",upload.any("images"),SchemaValidator(schemas.weeklyVisaSchema),controller.createMultipleVisas);
   app.get("/skyTrails/api/visa/getAIVisaCountry",controller.getAiVisaCountry);
   app.post("/skyTrails/api/visa/applyForAiVisa",aiVisaBooking.visaApplicationsReg);
+  app.get("/skyTrails/api/visa/getVisaApplicationByUser",aiVisaBooking.getVisaApplicationByUser)
 };

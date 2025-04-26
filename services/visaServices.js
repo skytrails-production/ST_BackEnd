@@ -97,7 +97,7 @@ const visaServices = {
         const { page, limit} = validatedBody;
         let options = {
             page: Number(page) || 1,
-            limit: Number(limit) || 200,
+            limit: Number(limit) || 2000,
             sort: { createdAt: -1 ,},
         };
         // options.populate = [

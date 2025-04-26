@@ -46,7 +46,7 @@ const {createvisaBooking,findVisaBooking,findOneVisaBookingPop,deleteVisaBooking
 
 exports.visaApplicationsReg = async (req, res, next) => {
   try {
-    const { firstName, lastName, email, sex, mobileNumber, address, depCountyName, arrCountyName, fromDate, toDate, visaType, fee } = req.body;
+    const { userId,firstName, lastName, email, sex, mobileNumber, address, depCountyName, arrCountyName, fromDate, toDate, visaType, fee } = req.body;
     const result=await createvisaBooking(req.body);
     return res
       .status(statusCode.OK)
@@ -70,5 +70,29 @@ exports.getVisaApplications=async(req,res,next)=>{
     } catch (error) {
         return next(error);
     }
+}
+
+exports.getVisaApplicationByUser=async(req,res,next)=>{
+  try {
+    const result=await visaBookingList({userId:req.query.userId});
+    if(result.length<1){
+        return res
+        .status(statusCode.OK)
+        .send({ statusCode:statusCode.NotFound,responseMessage: responseMessage.DATA_NOT_FOUND, result: result });
+    }
+    return res
+  .status(statusCode.OK)
+  .send({ statusCode:statusCode.OK,responseMessage: responseMessage.DATA_FOUND, result: result });
+} catch (error) {
+    return next(error);
+}
+}
+
+exports.updateApplication=async(req,res,next)=>{
+  try {
+    
+  } catch (error) {
+    
+  }
 }
 

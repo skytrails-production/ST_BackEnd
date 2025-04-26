@@ -32,11 +32,11 @@ exports.getToken = async (req, res,next) => {
         });
   } catch (err) {
     console.log(err, "eror to get token");
-    return next(next);
+    return next(err);
   }
 };
 
-exports.createApplicant = async (req, res) => {
+exports.createApplicant = async (req, res, next) => {
   try {
     const url = `${baseUrl}/v1/applicant/createD2C`;
     let { applicant, access_token } = req.body;
@@ -66,7 +66,7 @@ exports.createApplicant = async (req, res) => {
   }
 };
 
-exports.getTokenExchange = async (req, res) => {
+exports.getTokenExchange = async (req, res, next) => {
   try {
     const baseURL = `${authbaseUrl}/realms/${realmName}/protocol/openid-connect/token`;
     const { subject_token, requested_subject } = req.body;
