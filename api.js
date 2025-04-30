@@ -237,6 +237,7 @@ require("./routes/visaRoutes")(app);
 require("./routes/crmAgentFlightBooking.routes")(app);
 require("./routes/crmAgentBusBooking.routes")(app);
 require("./routes/crmAgentHotelBooking.routes")(app);
+require("./routes/crmAgentPackageEnquiry.routes")(app);
 
 mongoose.connect(configs.mongoUrl.DEVELOPMENT, {useNewUrlParser: true,useUnifiedTopology: true,})
   .then(() => {

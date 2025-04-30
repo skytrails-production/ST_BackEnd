@@ -56,7 +56,7 @@ exports.getAgentSingleBusBooking = async (req, res) => {
     res.status(200).send({
       statusCode: 200,
       message: "Get user bus fetch successfully",
-      data: flight,
+      data: bus,
     });
   } catch (err) {
     const errorMsg = err.message || "Unknown error";
