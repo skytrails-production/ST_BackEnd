@@ -23,10 +23,10 @@ function escapeRegex(text) {
 exports.searchCityData = async (req, res) => {
   try {
 
-    const userIP = requestIp.getClientIp(req);
+    // const userIP = requestIp.getClientIp(req);
 
-    const userLocation = geoip.lookup(userIP);
-    // const userLocation = geoip.lookup('122.161.49.71');
+    // const userLocation = geoip.lookup(userIP);
+    const userLocation = geoip.lookup('122.161.49.71');
     // console.log("location", userLocation)
 
     var regex = new RegExp(`^${escapeRegex(req.query.keyword)}`, "i");
@@ -162,10 +162,10 @@ exports.searchCityBusData = async (req, res) => {
 exports.hotelCitySearch = async (req, res) => {
   try {
 
-    const userIP = requestIp.getClientIp(req);
+    // const userIP = requestIp.getClientIp(req);
 
-    const userLocation = geoip.lookup(userIP);
-    // const userLocation = geoip.lookup('122.161.49.71');
+    // const userLocation = geoip.lookup(userIP);
+    const userLocation = geoip.lookup('122.161.49.71');
     // console.log("location", userLocation)
 
 
