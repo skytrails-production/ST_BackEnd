@@ -84,7 +84,6 @@ var corsOptions = {
   origin: "*",
 };
 
-app.set('trust proxy', true);
 
 // middlware for cache bust
 app.use((req, res, next) => {
