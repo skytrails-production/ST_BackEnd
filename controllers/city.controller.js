@@ -26,7 +26,7 @@ exports.searchCityData = async (req, res) => {
     const userIP = requestIp.getClientIp(req);
 
     // const userLocation = geoip.lookup(userIP);
-    const userLocation = geoip.lookup(req.ip ||'122.161.49.71');
+    const userLocation = geoip.lookup(`${req.ip}`||'122.161.49.71');
     // console.log("location", userLocation)
 
     var regex = new RegExp(`^${escapeRegex(req.query.keyword)}`, "i");
@@ -165,7 +165,7 @@ exports.hotelCitySearch = async (req, res) => {
     const userIP = requestIp.getClientIp(req);
 
     // const userLocation = geoip.lookup(userIP);
-    const userLocation = geoip.lookup(req.ip || '122.161.49.71');
+    const userLocation = geoip.lookup(`${req.ip}` || '122.161.49.71');
     // console.log("location", userLocation)
 
 
