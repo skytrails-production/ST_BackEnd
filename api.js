@@ -84,7 +84,6 @@ var corsOptions = {
   origin: "*",
 };
 
-
 // middlware for cache bust
 app.use((req, res, next) => {
   res.setHeader(

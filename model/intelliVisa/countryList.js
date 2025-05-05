@@ -6,7 +6,7 @@ const countryVisaSchema = new mongoose.Schema({
   code: { type: String},
   alpha3Code: { type: String},
   visaCategories: [{ type: String}]
-});
+},{ timestamps: true });
 
 const CountryVisa = mongoose.model('IntellyCountryVisa', countryVisaSchema);
 module.exports = CountryVisa;

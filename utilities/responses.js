@@ -168,5 +168,6 @@ module.exports = {
 	COMMENTED_SUCCESS:"You are commented successfully",
 	REPORT_SUCCESS:"Post reported successfully.",
 	REPORT_NOT_FOUND:"No report found for this post.",
-	EVENT_EMAIL_SENT:"Email sent successfully to all registered users."
+	EVENT_EMAIL_SENT:"Email sent successfully to all registered users.",
+	APPLICATION_NOT_FOUND:"Application not found"
 };

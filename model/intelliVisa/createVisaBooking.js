@@ -67,7 +67,22 @@ const createVisaApplySchema = new mongoose.Schema({
     enum: [offerType.FLIGHTS, offerType.HOTELS, offerType.BUS, offerType.VISA],
     default: offerType.VISA,
   },
-});
+  sessionCredential:{
+    applicantUid:{type: String},
+    bearerToken:{type:String},
+    visaCategory:{type: String},
+    fromDate:{type:String},
+    toDate:{type: String},
+    sourceCountry:{type:String},
+    destinationCountry:{type: String},
+    applicationCreationKey:{type:String},
+  },
+  agentDetails:{
+    agentName:{type:String},
+    agentId:{type:String},
+    contactNumber:{type:String}
+  }
+},{ timestamps: true });
 
 const visaHistory = mongoose.model("createIntellyVisaApply", createVisaApplySchema);
 module.exports = visaHistory;

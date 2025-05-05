@@ -9,7 +9,7 @@ const realmName = process.env.VISA_realmName;
 const authbaseUrl=process.env.VISA_AUTH_BASE_URL;
 const baseUrl=process.env.VISA_BASE_URL;
 const frontURL=process.env.VISA_FRONT_URL;
-const VISA_TOKEN=process.env.VISA_TOKEN
+const VISA_TOKEN=process.env.VISA_TOKEN;
 exports.getToken = async (req, res,next) => {
   try {
     const BASE_URL = `${authbaseUrl}/realms/${realmName}/protocol/openid-connect/token`;
@@ -185,7 +185,7 @@ exports.createRedirectURL=async(req,res,next)=>{
 return res.status(statusCode.OK).send({
   statusCode: statusCode.OK,
   responseMessage: responseMessage.DATA_FOUND,
-  response: redirectURL,
+  response: redirectURL, 
 });
   } catch (error) {
     console.log("error while trying to create redircet url",error);
