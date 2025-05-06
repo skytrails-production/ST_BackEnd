@@ -9,6 +9,7 @@ const multer = require("multer");
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 const { authJwt } = require("../../middleware");
+const saveAIVisaApplData=require("../../controllers/intelliVisaController/visaAppWithOpenAI")
 module.exports = function (app) {
   app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
@@ -37,4 +38,5 @@ module.exports = function (app) {
   app.get("/skyTrails/api/visa/getVisaApplicationByUser",aiVisaBooking.getVisaApplicationByUser);
   app.put("/skyTrails/api/visa/updateApplicationDetails",aiVisaBooking.updateApplication);
   app.post("/skyTrails/api/visa/saveAiVisaData",upload.array("images"),aiVisaBooking.saveAIVisaApplData);
+  app.post("/skyTrails/api/visa/saveDetails",upload.array("images"),saveAIVisaApplData.ImageDetails);
 };

@@ -66,7 +66,6 @@ const {
 const {
   aiVisaApplicationServices,
 } = require("../../services/intelliVisaServices/aiVisaApplicationServices");
-const { logging } = require("googleapis/build/src/apis/logging");
 const {
   createAiVisaApplication,
   findAiVisaApplication,
