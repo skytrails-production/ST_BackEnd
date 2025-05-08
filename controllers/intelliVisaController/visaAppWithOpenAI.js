@@ -122,7 +122,6 @@ exports.uploadedDocsDetails = async (req, res, next) => {
     }
 
     let imageeDetails = [];
-
     for (const file of req.files) {
       const mimeType = file.mimetype;
 
@@ -180,10 +179,9 @@ Extract details as much as possible. Provide the response in JSON format with ke
             imageUrl,
           });
         }
-      } else if (mimeType.startsWith('image/')) {
+      } else if (mimeType.startsWith('image/')) {        
         const base64Image = file.buffer.toString('base64');
         const imageUrl = await commonFunction.getImageUrlAWSByFolderSingle(file, "aiVisaDocs");
-
         const response = await openai.chat.completions.create({
           model: 'gpt-4o-mini',
           messages: [
@@ -199,13 +197,13 @@ Extract details as much as possible. Provide the response in JSON format with ke
                 {
                   type: 'text',
                   text: `Please analyze the uploaded document image and provide the following:
-1. Document Type (e.g., Aadhaar card, PAN card, Passport, Passbook)
+1. Document Type (e.g., Aadhaar card, PAN card, Passport, Passbook,Photo)
 2. Extracted Details:
    - Name
    - Date of Birth
    - Document Number
    - Address (if available)
-Extract details as much as possible. Provide the response in JSON format with key-value pairs representing each piece of data found.`,
+Extract details as much as possible if photo just give response photo. Provide the response in JSON format with key-value pairs representing each piece of data found.`,
                 },
               ],
               response_format: { type: 'json_object' },
@@ -214,15 +212,16 @@ Extract details as much as possible. Provide the response in JSON format with ke
         });
 
         const content = response.choices[0].message.content;
+        
         const cleanedContent = content.replace(/```json\n([\s\S]*?)\n```/, '$1');
         const parsedData = JSON.parse(cleanedContent);
 
         imageeDetails.push({
           parsedData,
-          imageUrl,
+          imageUrl
         });
       } else {
-        // Unsupported file type
+        // Unsupported file type        
         continue;
       }
     }
