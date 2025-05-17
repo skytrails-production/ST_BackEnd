@@ -15,6 +15,10 @@ const crmAgentHotelBookingSchema = new mongoose.Schema(
     isHold: {
       type: Boolean,
     },
+    isCancel: {
+      type: Boolean,
+      default: false,
+    },
     holdAmount: Number,
     agnet_reference: String,
     booking_date: String,
@@ -100,6 +104,8 @@ const crmAgentHotelBookingSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+
 
 crmAgentHotelBookingSchema.plugin(mongoosePaginate);
 crmAgentHotelBookingSchema.plugin(aggregatePaginate);

@@ -1,4 +1,4 @@
-
+const cron = require("node-cron");
 
 const CrmAgentHotelBooking = require("../model/crmAgentHotelBooking.model");
 
@@ -15,6 +15,8 @@ const sendSMS = require("../utilities/sendSms");
 const PushNotification = require("../utilities/commonFunForPushNotification");
 const whatsApi = require("../utilities/whatsApi");
 const hawaiYatra = require("../utilities/b2bWhatsApp");
+const { autoCancellationGrnHoldHotel } = require("./grnconnect.controller");
+const { isCancel } = require("axios");
 
 
 exports.createCrmAgentHotelBooking = async (req, res) => {
@@ -22,6 +24,14 @@ exports.createCrmAgentHotelBooking = async (req, res) => {
     const data = {
       ...req.body,
     };
+
+   const isExistingData= await CrmAgentHotelBooking.findOne(req.body);
+    if(isExistingData) {
+      return res.status(409).send({
+        statusCode: 409,
+        message: "Booking already exists.",
+      });
+    }
     const response = await CrmAgentHotelBooking.create(data);
     const msg = "hotel booking details added successfully";
 
@@ -64,6 +74,25 @@ exports.getAgentSingleHotelBooking = async (req, res) => {
   }
 };
 
+exports.getSingleHotelBookingBookingReference = async (bookingReference) => {
+  try {
+    // console.log(bookingReference,"bookingRefernece");
+    const  hotel = await CrmAgentHotelBooking.findOne({'booking_reference':bookingReference});
+    
+    // console.log(hotel);
+    if (!hotel) {
+      return res.status(404).send({
+        statusCode: 404,
+        message: "No hotel found for this criteria",
+      });
+    }
+
+   return hotel;
+  } catch (err) {
+    return 'something went wrong'
+  }
+};
+
 //getAgenthotelBookingDataWithPagination
 
 exports.getAgentHotelBookingDataWithPagination = async (req, res) => {
@@ -102,6 +131,11 @@ exports.getAgentHotelBookingDataWithPagination = async (req, res) => {
     }
   };
 
+
+ 
+
+
+
 // AgentHotelBookingServicesWithPagination
 exports.AgentHotelBookingServicesWithPagination = async (page, limit, sorted, query) => {
     try {
@@ -130,3 +164,78 @@ exports.AgentHotelBookingServicesWithPagination = async (page, limit, sorted, qu
       throw new Error(error.message);
     }
   };
+
+
+   //cancellhold hotel 
+
+  const  autoCancellGrnHotelHold = async (todayTime, tomorrow)=> {
+    try {
+
+      const page =  1;
+      const limit =  10000;
+      const sorted = { createdAt: -1 };
+      const query = {        
+        isHold : true,
+        isCancel : false,
+        "hotel.cancellation_policy.cancel_by_date": { $gt: todayTime,$lt: tomorrow }
+      };
+  
+      const hoteldata = await exports.AgentHotelBookingServicesWithPagination(
+        page,
+        limit,
+        sorted,
+        query
+      );
+
+      if(hoteldata.data.length>0){
+        // console.log(hoteldata.data,"found result");
+
+      await processAllBookings(hoteldata.data);
+      return hoteldata.data;
+      }else{
+        // console.log("No record to cancel booking");
+        return "No Data Found."
+      }
+      
+    } catch (error) {
+      
+    }
+
+      
+  }
+const processAllBookings = async (hoteldata) => {
+  for (const booking of hoteldata) {
+    const reference = booking.booking_reference;
+    if (reference) {
+      // console.log(reference,"bookingReference")
+      const hotelData = await exports.getSingleHotelBookingBookingReference(reference);
+      // console.log(hotelData,"hotel data");
+      const res = await autoCancellationGrnHoldHotel(reference);
+      // console.log('res', res);
+      if(res==='confirmed'){
+        // console.log('hhhhh',hotelData.isCancel);
+        hotelData.isCancel = true;
+       await hotelData.save();
+      //  console.log('change',hotelData.isCancel);
+      }
+      
+      return res;
+    }
+  }
+};
+
+
+const task = cron.schedule("0 4 * * *", async () => {
+  const currentDate = new Date();
+  const tomorrow = new Date(currentDate);
+  tomorrow.setDate(tomorrow.getDate() + 1); // +1 day
+ 
+   
+    const data = await autoCancellGrnHotelHold(currentDate.toISOString(),tomorrow.toISOString());
+    // console.log("final data",data);
+
+
+}, {
+  scheduled: true,
+  timezone: "Asia/Kolkata"  // Indian Standard Time
+});

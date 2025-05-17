@@ -568,6 +568,35 @@ exports.hotelCancelBooking = async (req, res) => {
   }
 };
 
+
+
+exports.autoCancellationGrnHoldHotel = async ( cancelbookingId) => {
+
+  try{
+    // console.log(cancelbookingId,"booking id");
+
+   const response = await axios.delete(
+      `${baseurl}/api/v3/hotels/bookings/${cancelbookingId}`,
+      { headers }
+    );
+    // console.log("gggg",response?.data);
+    // console.log("gggg",response?.data, "hhahh",response?.data?.errors[0].messages);
+    if(response?.data?.status==='confirmed'){
+
+      return response?.data?.status;
+    }else{
+      return response?.data?.errors[0].messages[0];
+    }
+
+    
+  }catch (err) {
+    return "something went wrong."
+  }
+
+}
+
+
+
 exports.addHotelBooking = async (req, res) => {
   try {
     const data = {
