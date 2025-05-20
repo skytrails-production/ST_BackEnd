@@ -225,7 +225,7 @@ const processAllBookings = async (hoteldata) => {
 };
 
 
-const task = cron.schedule("*/2 * * * *", async () => {
+const task = cron.schedule("0 4 * * * *", async () => {
   const currentDate = new Date();
   const tomorrow = new Date(currentDate);
   tomorrow.setDate(tomorrow.getDate() + 1); // +1 day
