@@ -1,177 +1,201 @@
 const responseMessage = require("../../utilities/responses");
-const axios = require('axios');
+const axios = require("axios");
 const statusCode = require("../../utilities/responceCode");
-const { createWorker } = require('tesseract.js');
-const VISA_TOKEN=process.env.VISA_OPENAI_SECRET_KEY;
+const { createWorker } = require("tesseract.js");
+const VISA_TOKEN = process.env.VISA_OPENAI_SECRET_KEY;
 const commonFunction = require("../../utilities/commonFunctions");
 const OpenAI = require("openai");
 const openai = new OpenAI({
   apiKey: process.env.VISA_OPENAI_SECRET_KEY,
 });
-const openAIKey=process.env.VISA_OPENAI_SECRET_KEY
-const path = require('path');
-const { PDFDocument } = require('pdf-lib');
-const { fromPath } = require('pdf2pic');
+const openAIKey = process.env.VISA_OPENAI_SECRET_KEY;
+const path = require("path");
+const { PDFDocument } = require("pdf-lib");
+const { fromPath } = require("pdf2pic");
 const {
-    aiVisaDocServices,
+  aiVisaDocServices,
 } = require("../../services/intelliVisaServices/dynamicDb");
-const {createAiVisaDoc,findAiVisaDoc,deleteAiVisaDoc,aiVisaDocList,updateAiVisaDoc,countTotalAiVisaDoc,insertManyAiVisaDoc}=aiVisaDocServices;
+const {
+  createAiVisaDoc,
+  findAiVisaDoc,
+  deleteAiVisaDoc,
+  aiVisaDocList,
+  updateAiVisaDoc,
+  countTotalAiVisaDoc,
+  insertManyAiVisaDoc,
+} = aiVisaDocServices;
 
 //function========
 async function extractPages(pdfBuffer) {
-    const pdfDoc = await PDFDocument.load(pdfBuffer);
-    const pages = pdfDoc.getPages();
-    return pages;
-  }
+  const pdfDoc = await PDFDocument.load(pdfBuffer);
+  const pages = pdfDoc.getPages();
+  return pages;
+}
 
 async function convertPdfToImages(pdfPath) {
-    const options = {
-      density: 100,
-      saveFilename: "untitled",
-      savePath: "./images",
-      format: "png",
-      width: 600,
-      height: 800
-    };
-    
-    const storeAsImage = fromPath(pdfPath, options);
-    const pageToConvertAsImage = 1;
-  
-    const resolve = await storeAsImage(pageToConvertAsImage);
-    console.log("Page 1 is now converted as image");
-  }
+  const options = {
+    density: 100,
+    saveFilename: "untitled",
+    savePath: "./images",
+    format: "png",
+    width: 600,
+    height: 800,
+  };
 
+  const storeAsImage = fromPath(pdfPath, options);
+  const pageToConvertAsImage = 1;
+
+  const resolve = await storeAsImage(pageToConvertAsImage);
+  console.log("Page 1 is now converted as image");
+}
 
 exports.ImageDetails = async (req, res, next) => {
   try {
-    const {userId,applicantEmail}=req.body;
+    const { userId, applicantEmail } = req.body;
     if (!req.files || req.files.length === 0) {
-      return res.status(400).json({ error: 'No images uploaded' });
+      return res.status(400).json({ error: "No images uploaded" });
     }
 
     let imageeDetails = [];
     for (const imageData of req.files) {
       const imageBuffer = imageData.buffer;
       const mimeType = imageData.mimetype;
-      const base64Image = imageBuffer.toString('base64');
-       const imageUrl = await commonFunction.getImageUrlAWSByFolderSingle(imageData, "aiVisaDocs");
+      const base64Image = imageBuffer.toString("base64");
+      const imageUrl = await commonFunction.getImageUrlAWSByFolderSingle(
+        imageData,
+        "aiVisaDocs"
+      );
       const response = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
+        model: "gpt-4o-mini",
         messages: [
-           
           {
-            role: 'user',
+            role: "user",
             content: [
               {
-                type: 'image_url',
+                type: "image_url",
                 image_url: {
                   url: `data:${mimeType};base64,${base64Image}`,
                 },
               },
-              
+
               {
-                type: 'text',
+                type: "text",
                 text: `Please analyze the uploaded document image and provide the following:
 1. Document Type (e.g., Aadhaar card, PAN card, Passport, Passbook)
 2. Extracted Details:
+* If readable, I'll extract details such as:
    - Name
    - Date of Birth
    - Document Number
    - Address (if available)
-extract details as much as possible ,Provide the response in JSON format with key-value pairs representing each piece of  data found.`,
+   - Any other identifiable details
+* If not readable, Provide the Please provide Document Type Other
+extract details as much as possible ,Provide the response in JSON format with key-value pairs representing each piece of  data found.
+3. Automatically rotate it if it's in the wrong direction.`,
               },
             ],
-            response_format: { type: 'json_object' }
+            response_format: { type: "json_object" },
           },
-          
         ],
       });
-
       const content = response.choices[0].message.content;
-      
-      const cleanedContent = content.replace(/```json\n([\s\S]*?)\n```/, '$1');
-const parsedData = JSON.parse(cleanedContent);
-
-      imageeDetails.push({
-        parsedData,
-        imageUrl:imageUrl
-      });
+      console.log("content===", content);
+      if (content) {
+        const cleanedContent = content.replace(
+          /```json\n([\s\S]*?)\n```/,
+          "$1"
+        );
+        const parsedData = JSON.parse(cleanedContent);
+        imageeDetails.push({
+          parsedData,
+          imageUrl,
+        });
+      } else {
+        // fallback if no content
+        imageeDetails.push({ imageUrl });
+      }
     }
     if (imageeDetails.length > 0) {
-
-        const insertObj = { userId,applicantEmail,imageeDetails };
-        await createAiVisaDoc(insertObj);
-      }
-  
+      const insertObj = { userId, applicantEmail, imageeDetails };
+      await createAiVisaDoc(insertObj);
+    }
 
     // Send the imageeDetails back to the client
     res.json({ imageeDetails });
   } catch (error) {
-    console.error('Error processing images:', error.message);
+    console.log("error----------", error);
+
+    console.error("Error processing images:", error.message);
     return next(error.message);
   }
 };
-
-
 
 exports.uploadedDocsDetails = async (req, res, next) => {
   try {
     const { userId, applicantEmail } = req.body;
     if (!req.files || req.files.length === 0) {
-      return res.status(400).json({ error: 'No files uploaded' });
+      return res.status(400).json({ error: "No files uploaded" });
     }
 
     let imageeDetails = [];
     for (const file of req.files) {
       const mimeType = file.mimetype;
 
-      if (mimeType === 'application/pdf') {
+      if (mimeType === "application/pdf") {
         // Convert PDF pages to images
         const options = {
           density: 100,
-          format: 'png',
+          format: "png",
           width: 600,
           height: 800,
-          savePath: './images',
+          savePath: "./images",
         };
         const storeAsImage = fromBuffer(file.buffer, options);
         const pages = await storeAsImage.bulk(-1, true);
 
         for (const page of pages) {
           const base64Image = page.base64;
-          const imageUrl = await commonFunction.getImageUrlAWSByFolderSingle(page, "aiVisaDocs");
+          const imageUrl = await commonFunction.getImageUrlAWSByFolderSingle(
+            page,
+            "aiVisaDocs"
+          );
 
           const response = await openai.chat.completions.create({
-            model: 'gpt-4o-mini',
+            model: "gpt-4o-mini",
             messages: [
               {
-                role: 'user',
+                role: "user",
                 content: [
                   {
-                    type: 'image_url',
+                    type: "image_url",
                     image_url: {
                       url: `data:image/png;base64,${base64Image}`,
                     },
                   },
                   {
-                    type: 'text',
+                    type: "text",
                     text: `Please analyze the uploaded document image and provide the following:
-1. Document Type (e.g., Aadhaar card, PAN card, Passport, Passbook)
+1. Document Type (e.g., Aadhaar card, PAN card, Passport, Passbook,Photo)
 2. Extracted Details:
    - Name
    - Date of Birth
    - Document Number
    - Address (if available)
-Extract details as much as possible. Provide the response in JSON format with key-value pairs representing each piece of data found.`,
+   - Any other identifiable details
+Automatically rotate it if it's in the wrong direction.
+Extract details as much as possible if photo just give response photo. Provide the response in JSON format with key-value pairs representing each piece of data found.`,
                   },
                 ],
-                response_format: { type: 'json_object' },
+                response_format: { type: "json_object" },
               },
             ],
           });
 
           const content = response.choices[0].message.content;
-          const cleanedContent = content.replace(/```json\n([\s\S]*?)\n```/, '$1');
+          const cleanedContent = content.replace(
+            /```json\n([\s\S]*?)\n```/,
+            "$1"
+          );
           const parsedData = JSON.parse(cleanedContent);
 
           imageeDetails.push({
@@ -179,23 +203,26 @@ Extract details as much as possible. Provide the response in JSON format with ke
             imageUrl,
           });
         }
-      } else if (mimeType.startsWith('image/')) {        
-        const base64Image = file.buffer.toString('base64');
-        const imageUrl = await commonFunction.getImageUrlAWSByFolderSingle(file, "aiVisaDocs");
+      } else if (mimeType.startsWith("image/")) {
+        const base64Image = file.buffer.toString("base64");
+        const imageUrl = await commonFunction.getImageUrlAWSByFolderSingle(
+          file,
+          "aiVisaDocs"
+        );
         const response = await openai.chat.completions.create({
-          model: 'gpt-4o-mini',
+          model: "gpt-4o-mini",
           messages: [
             {
-              role: 'user',
+              role: "user",
               content: [
                 {
-                  type: 'image_url',
+                  type: "image_url",
                   image_url: {
                     url: `data:${mimeType};base64,${base64Image}`,
                   },
                 },
                 {
-                  type: 'text',
+                  type: "text",
                   text: `Please analyze the uploaded document image and provide the following:
 1. Document Type (e.g., Aadhaar card, PAN card, Passport, Passbook,Photo)
 2. Extracted Details:
@@ -203,25 +230,32 @@ Extract details as much as possible. Provide the response in JSON format with ke
    - Date of Birth
    - Document Number
    - Address (if available)
+   - Any other identifiable details
+ Automatically rotate it if it's in the wrong direction.
 Extract details as much as possible if photo just give response photo. Provide the response in JSON format with key-value pairs representing each piece of data found.`,
                 },
               ],
-              response_format: { type: 'json_object' },
+              response_format: { type: "json_object" },
             },
           ],
         });
-
         const content = response.choices[0].message.content;
-        
-        const cleanedContent = content.replace(/```json\n([\s\S]*?)\n```/, '$1');
-        const parsedData = JSON.parse(cleanedContent);
-
-        imageeDetails.push({
-          parsedData,
-          imageUrl
-        });
+        if (content) {
+          const cleanedContent = content.replace(
+            /```json\n([\s\S]*?)\n```/,
+            "$1"
+          );
+          const parsedData = JSON.parse(cleanedContent);
+          imageeDetails.push({
+            parsedData,
+            imageUrl,
+          });
+        } else {
+          // fallback if no content
+          imageeDetails.push({ imageUrl });
+        }
       } else {
-        // Unsupported file type        
+        // Unsupported file type
         continue;
       }
     }
@@ -231,9 +265,176 @@ Extract details as much as possible if photo just give response photo. Provide t
       await createAiVisaDoc(insertObj);
     }
 
+     res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.UPLOAD_SUCCESS,
+        imageeDetails
+      });
+  } catch (err) {
+    if (err.status === 429) {
+      res.status(statusCode.OK).send({
+        statusCode: statusCode.Exceed,
+        responseMessage: err.error.message,
+      });
+    }
+
+    // return next(err.message);
+  }
+};
+
+exports.uploadedDocsDetails1 = async (req, res, next) => {
+  try {
+    const { userId, applicantEmail } = req.body;
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ error: "No files uploaded" });
+    }
+ 
+    let imageeDetails = [];
+
+    for (const file of req.files) {
+      const mimeType = file.mimetype;
+
+      if (mimeType === "application/pdf") {
+        const options = {
+          density: 100,
+          format: "png",
+          width: 600,
+          height: 800,
+          savePath: "./images",
+        };
+        const storeAsImage = fromBuffer(file.buffer, options);
+        const pages = await storeAsImage.bulk(-1, true);
+
+        for (const page of pages) {
+          const base64Image = page.base64;
+          const imageUrl = await commonFunction.getImageUrlAWSByFolderSingle(
+            page,
+            "aiVisaDocs"
+          );
+
+          try {
+            const response = await openai.chat.completions.create({
+              model: "gpt-4o-mini",
+              messages: [
+                {
+                  role: "user",
+                  content: [
+                    {
+                      type: "image_url",
+                      image_url: {
+                        url: `data:image/png;base64,${base64Image}`,
+                      },
+                    },
+                    {
+                      type: "text",
+                      text: `Please analyze the uploaded document image and provide the following:
+1. Document Type (e.g., Aadhaar card, PAN card, Passport, Passbook, Photo)
+2. Extracted Details:
+   - Name
+   - Date of Birth
+   - Document Number
+   - Address (if available)
+   - Any other identifiable details
+If not readable, Provide the Document Type as "Other".
+Automatically rotate it if it's in the wrong direction.
+If it is a photo, respond with { "document_type": "Photo" }.
+Return all results as a pure JSON object.`,
+                    },
+                  ],
+                  response_format: { type: "json_object" },
+                },
+              ],
+            });
+
+            const content = response.choices?.[0]?.message?.content;
+            const cleanedContent = content.replace(
+              /```json\n([\s\S]*?)\n```/,
+              "$1"
+            );
+            const parsedData = JSON.parse(cleanedContent);
+
+            imageeDetails.push({
+              parsedData,
+              imageUrl,
+            });
+          } catch (err) {
+            console.error("OpenAI Error (PDF page):", err.message || err);
+            imageeDetails.push({ imageUrl });
+          }
+        }
+      } else if (mimeType.startsWith("image/")) {
+        const base64Image = file.buffer.toString("base64");
+        const imageUrl = await commonFunction.getImageUrlAWSByFolderSingle(
+          file,
+          "aiVisaDocs"
+        );
+
+        try {
+          const response = await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: [
+              {
+                role: "user",
+                content: [
+                  {
+                    type: "image_url",
+                    image_url: {
+                      url: `data:${mimeType};base64,${base64Image}`,
+                    },
+                  },
+                  {
+                    type: "text",
+                    text: `Please analyze the uploaded document image and provide the following:
+1. Document Type (e.g., Aadhaar card, PAN card, Passport, Passbook, Photo)
+2. Extracted Details:
+   - Name
+   - Date of Birth
+   - Document Number
+   - Address (if available)
+   - Any other identifiable details
+If not readable, Provide the Document Type as { "document_type": "Other" }.
+Automatically rotate it if it's in the wrong direction.
+If it is a photo, respond with { "document_type": "Photo" }.
+Return all results as a pure JSON object.`,
+                  },
+                ],
+                response_format: { type: "json_object" },
+              },
+            ],
+          });
+
+          const content = response.choices?.[0]?.message?.content;
+          const cleanedContent = content.replace(
+            /```json\n([\s\S]*?)\n```/,
+            "$1"
+          );
+          const parsedData = JSON.parse(cleanedContent);
+
+          imageeDetails.push({
+            parsedData,
+            imageUrl,
+          });
+        } catch (err) {
+          console.error("OpenAI Error (image):", err.message || err);
+          imageeDetails.push({ imageUrl });
+        }
+      } else {
+        continue; // skip unsupported file types
+      }
+    }
+
+    if (imageeDetails.length > 0) {
+      const insertObj = { userId, applicantEmail, imageeDetails };
+      await createAiVisaDoc(insertObj);
+    }
+
     res.json({ imageeDetails });
-  } catch (error) {
-    console.error('Error processing files:', error.message);
-    return next(error.message);
+  } catch (err) {
+    console.error("Unhandled error:", err?.message || err);
+    res.status(200).json({
+      statusCode: statusCode.Exceed,
+      responseMessage: err?.message || "Something went wrong",
+      imageeDetails,
+    });
   }
 };

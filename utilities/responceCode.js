@@ -12,6 +12,7 @@ module.exports = {
     NotAllowed:405,
     ReqTimeOut:408,
     Conflict:409,
+    Exceed:429,
     InternalError:500,
     NotImplemented:501,
     ServiceUnAvailable:502,
