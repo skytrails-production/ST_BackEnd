@@ -7,6 +7,7 @@ const { Timestamp } = require("@google-cloud/firestore");
 mongoose.pluralize(null);
 
 const aiIntellyVisaApplySchema = new mongoose.Schema({
+  applicantId:{type:mongoose.Types.ObjectId,ref:'createIntellyVisaApply'},
     userId:{type: String },
     applicantEmail: { type: String },
     applicantName: { type: String },

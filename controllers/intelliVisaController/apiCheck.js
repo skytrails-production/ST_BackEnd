@@ -10,6 +10,7 @@ const authbaseUrl=process.env.VISA_AUTH_BASE_URL;
 const baseUrl=process.env.VISA_BASE_URL;
 const frontURL=process.env.VISA_FRONT_URL;
 const VISA_TOKEN=process.env.VISA_TOKEN;
+
 exports.getToken = async (req, res,next) => {
   try {
     const BASE_URL = `${authbaseUrl}/realms/${realmName}/protocol/openid-connect/token`;
@@ -173,7 +174,7 @@ exports.createRedirectURL=async(req,res,next)=>{
       "Authorization": `Bearer ${accessToken}`,
       "realm-client-id": CLIENT_ID,
     };
-    const applicationCreationKey=await axios.post(url,{applicantUid},{headers});
+    const applCreationKey=await axios.post(url,{applicantUid},{headers});
    const redirectURL= `${frontURL}?token=${VISA_TOKEN}&applicantUid=${applicantUid}
 &bearerToken=${bearerToken}
 &visaCategory=${visaType}
@@ -181,11 +182,12 @@ exports.createRedirectURL=async(req,res,next)=>{
 &toDate=${toDate}
 &sourceCountry=${sourceCountry}
 &destinationCountry=${destinationCountry}
-&applicationCreationKey=${applicationCreationKey.data.creationKey}`;
+&applicationCreationKey=${applCreationKey.data.creationKey}`;
 return res.status(statusCode.OK).send({
   statusCode: statusCode.OK,
   responseMessage: responseMessage.DATA_FOUND,
   response: redirectURL, 
+  applicationCreationKey:applCreationKey.data.creationKey
 });
   } catch (error) {
     console.log("error while trying to create redircet url",error);
@@ -193,3 +195,4 @@ return res.status(statusCode.OK).send({
     
   }
 }
+

@@ -134,7 +134,12 @@ exports.uploadedDocsDetails = async (req, res, next) => {
   try {
     const { userId, applicantEmail } = req.body;
     if (!req.files || req.files.length === 0) {
-      return res.status(400).json({ error: "No files uploaded" });
+      //  res.status(400).json({ error: "No files uploaded" });
+      
+    return res.status(statusCode.OK).send({
+        statusCode: statusCode.badRequest,
+        responseMessage: "No files uploaded",
+      });
     }
 
     let imageeDetails = [];
@@ -182,6 +187,8 @@ exports.uploadedDocsDetails = async (req, res, next) => {
    - Document Number
    - Address (if available)
    - Any other identifiable details
+   - Bank Name 
+   - extract as much data extract
 Automatically rotate it if it's in the wrong direction.
 Extract details as much as possible if photo just give response photo. Provide the response in JSON format with key-value pairs representing each piece of data found.`,
                   },
@@ -231,6 +238,8 @@ Extract details as much as possible if photo just give response photo. Provide t
    - Document Number
    - Address (if available)
    - Any other identifiable details
+    - Bank Name 
+   - extract as much data extract
  Automatically rotate it if it's in the wrong direction.
 Extract details as much as possible if photo just give response photo. Provide the response in JSON format with key-value pairs representing each piece of data found.`,
                 },

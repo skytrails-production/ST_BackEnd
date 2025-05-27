@@ -40,4 +40,6 @@ module.exports = function (app) {
   app.post("/skyTrails/api/visa/saveAiVisaData",upload.array("images"),aiVisaBooking.saveAIVisaApplData);
   app.post("/skyTrails/api/visa/saveDetails",upload.array("images"),saveAIVisaApplData.ImageDetails);
   app.post("/skyTrails/api/visa/uploadedDocsDetails",upload.array("images"),saveAIVisaApplData.uploadedDocsDetails);
+  app.get("/skyTrails/api/visa/listAllApplicant",aiVisaBooking.listAllApplicant);
+   app.put("/skyTrails/api/visa/updateApplicationDetails",aiVisaBooking.updateApplicationReg);
 };
