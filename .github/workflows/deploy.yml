@@ -21,5 +21,6 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           port: ${{ secrets.PORT }}
-          key: ${{ secrets.SSHKEY }}
+          key: |
+              ${{ secrets.SSHKEY }}
           script: "cd /home/ubuntu/ST_BackEnd && ./.scripts/deploy.sh"
