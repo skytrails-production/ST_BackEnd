@@ -129,7 +129,7 @@ app.use((req, res, next) => {
 
 app.get("/", (req, res) => {
   res.status(200).json({
-    message: "Hello Production DB Updated",
+    message: "Hello000 Production DB Updated",
     url: `${req.protocol}://${req.get("host")}`,
   });
 });
