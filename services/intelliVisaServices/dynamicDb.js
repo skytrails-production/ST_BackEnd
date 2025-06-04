@@ -18,6 +18,9 @@ const aiVisaDocServices={
     findAiVisaDoc: async (query) => {
         return await aiVisaDocModel.findOne(query) ;
     },
+    findAiVisaDocPop: async (query) => {
+        return await aiVisaDocModel.findOne(query).populate('userId') ;
+    },
     deleteAiVisaDoc: async (query) => {
         return await aiVisaDocModel.deleteOne(query);
     },

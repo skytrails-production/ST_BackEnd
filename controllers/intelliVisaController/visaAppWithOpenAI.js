@@ -18,6 +18,7 @@ const {
 const {
   createAiVisaDoc,
   findAiVisaDoc,
+  findAiVisaDocPop,
   deleteAiVisaDoc,
   aiVisaDocList,
   updateAiVisaDoc,
@@ -241,6 +242,8 @@ Extract details as much as possible if photo just give response photo. Provide t
     - Bank Name 
    - extract as much data extract
  Automatically rotate it if it's in the wrong direction.
+ if image contains wrong details please provide error with indicate image details
+Detected Errors in the Image - e.g., blurry photo, missing corners, unrecognizable text, signature cut off, outdated document, etc.
 Extract details as much as possible if photo just give response photo. Provide the response in JSON format with key-value pairs representing each piece of data found.`,
                 },
               ],
@@ -447,3 +450,23 @@ Return all results as a pure JSON object.`,
     });
   }
 };
+ 
+exports.getApplicationDocDerails=async(req,res,next)=>{
+  try{
+    const {appID}=req.query
+   const getAppDocDetail= await findAiVisaDocPop({_id:appID});
+   if(!getAppDocDetail){
+    res.status(statusCode.OK).send({
+        statusCode: statusCode.Exceed,
+        responseMessage: responseMessage.DATA_NOT_FOUND,
+      });
+   }
+   res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.DATA_FOUND,
+        result:getAppDocDetail
+      });
+  }catch(error){
+    return next(error)
+  }
+}

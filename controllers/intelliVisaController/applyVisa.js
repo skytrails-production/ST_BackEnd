@@ -74,6 +74,18 @@ const {
   updateAiVisaApplication,
   countTotalAiVisaApplication,
 } = aiVisaApplicationServices;
+const {
+  aiVisaDocServices,
+} = require("../../services/intelliVisaServices/dynamicDb");
+const {
+  createAiVisaDoc,
+  findAiVisaDoc,
+  deleteAiVisaDoc,
+  aiVisaDocList,
+  updateAiVisaDoc,
+  countTotalAiVisaDoc,
+  insertManyAiVisaDoc,
+} = aiVisaDocServices;
 exports.visaApplicationsReg = async (req, res, next) => {
   try {
     const {
