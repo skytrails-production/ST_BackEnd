@@ -181,18 +181,61 @@ exports.uploadedDocsDetails = async (req, res, next) => {
                   },
                   {
                     type: "text",
-                    text: `Please analyze the uploaded document image and provide the following:
-1. Document Type (e.g., Aadhaar card, PAN card, Passport, Passbook,Photo)
-2. Extracted Details:
-   - Name
-   - Date of Birth
-   - Document Number
-   - Address (if available)
-   - Any other identifiable details
-   - Bank Name 
-   - extract as much data extract
-Automatically rotate it if it's in the wrong direction.
-Extract details as much as possible if photo just give response photo. Provide the response in JSON format with key-value pairs representing each piece of data found.`,
+                    text: `You are a document analysis system.
+Analyze the uploaded image. Rotate it if needed for correct orientation.
+Return the extracted information strictly in the following JSON format — even if some fields are missing or only partially present.
+
+{
+  "Document_Type": " make sure always provide example key name .e.g., Aadhaar card, PAN card, Passport, Bank Statement, Marriage Certificate, Photo",
+  "Extracted_Details": {
+    "Name": "Name if available, otherwise ''",
+    "Date_of_Birth": "Extracted DOB or ''",
+    "Document_Number": "Extracted or ''",
+    "Address":{"Village","VTC","PO","District","Sub District","State","PinCode",:  "Extracted or ''"},,
+
+    "Other_Identifiable_Details": {
+      "VID": "If Aadhaar VID is found",
+      "Bank_Name": "If bank name is found",
+      "Bride Name": "If marriage certificate",
+      "Groom Name": "If marriage certificate",
+      "Transactions": [
+        {
+          "Txn_Date": "DD MMM YYYY",
+          "Description": "Transaction detail",
+          "Debit": 0.0,
+          "Credit": 0.0,
+          "Balance": 0.0
+        }
+      ]
+    }
+  },
+  "Detected_Errors": [
+    "Blurry image",
+    "Missing corners",
+    "No identifiable fields found",
+    "Signature cut off",
+    "Document not aligned",
+    "Unrecognizable content",
+    "Photo without text",
+    "Document expired",
+    "No caption or heading",
+    "Incorrect format"
+  ]
+}
+
+If it's a photo only (no text), set:
+{
+  "Document_Type": "Photo",
+  "Extracted_Details": {},
+  "Detected_Errors": ["No identifiable information. Image is a photo."]
+}
+
+If the AI cannot process due to privacy filter or access limitations, return:
+{
+  "Document_Type": "Unknown",
+  "Extracted_Details": {},
+  "Detected_Errors": ["System unable to extract due to restrictions or unsupported format."]
+                  }`,
                   },
                 ],
                 response_format: { type: "json_object" },
@@ -247,7 +290,7 @@ Analyze the uploaded image. Rotate it if needed for correct orientation.
 Return the extracted information strictly in the following JSON format — even if some fields are missing or only partially present.
 
 {
-  "Document_Type": "e.g., Aadhaar card, PAN card, Passport, Bank Statement, Marriage Certificate, Photo",
+  "Document_Type": " make sure always provide example key name .e.g., Aadhaar card, PAN card, Passport, Bank Statement, Marriage Certificate, Photo",
   "Extracted_Details": {
     "Name": "Name if available, otherwise ''",
     "Date_of_Birth": "Extracted DOB or ''",
