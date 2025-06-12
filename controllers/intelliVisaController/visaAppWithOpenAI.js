@@ -116,13 +116,14 @@ extract details as much as possible ,Provide the response in JSON format with ke
         imageeDetails.push({ imageUrl });
       }
     }
+    let result;
     if (imageeDetails.length > 0) {
       const insertObj = { userId, applicantEmail, imageeDetails };
-      await createAiVisaDoc(insertObj);
+      result = await createAiVisaDoc(insertObj);
     }
 
     // Send the imageeDetails back to the client
-    res.json({ imageeDetails });
+    res.json({ result });
   } catch (error) {
     console.log("error----------", error);
 
@@ -136,8 +137,8 @@ exports.uploadedDocsDetails = async (req, res, next) => {
     const { userId, applicantEmail } = req.body;
     if (!req.files || req.files.length === 0) {
       //  res.status(400).json({ error: "No files uploaded" });
-      
-    return res.status(statusCode.OK).send({
+
+      return res.status(statusCode.OK).send({
         statusCode: statusCode.badRequest,
         responseMessage: "No files uploaded",
       });
@@ -212,77 +213,151 @@ Extract details as much as possible if photo just give response photo. Provide t
           });
         }
       } else if (mimeType.startsWith("image/")) {
-        const base64Image = file.buffer.toString("base64");
-        const imageUrl = await commonFunction.getImageUrlAWSByFolderSingle(
-          file,
-          "aiVisaDocs"
-        );
-        const response = await openai.chat.completions.create({
-          model: "gpt-4o-mini",
-          messages: [
-            {
-              role: "user",
-              content: [
-                {
-                  type: "image_url",
-                  image_url: {
-                    url: `data:${mimeType};base64,${base64Image}`,
-                  },
-                },
-                {
-                  type: "text",
-                  text: `Please analyze the uploaded document image and provide the following:
-1. Document Type (e.g., Aadhaar card, PAN card, Passport, Passbook,Photo)
-2. Extracted Details:
-   - Name
-   - Date of Birth
-   - Document Number
-   - Address (if available)
-   - Any other identifiable details
-    - Bank Name 
-   - extract as much data extract
- Automatically rotate it if it's in the wrong direction.
- if image contains wrong details please provide error with indicate image details
-Detected Errors in the Image - e.g., blurry photo, missing corners, unrecognizable text, signature cut off, outdated document, etc.
-Extract details as much as possible if photo just give response photo. Provide the response in JSON format with key-value pairs representing each piece of data found.`,
-                },
-              ],
-              response_format: { type: "json_object" },
-            },
-          ],
-        });
-        const content = response.choices[0].message.content;
-        if (content) {
-          const cleanedContent = content.replace(
-            /```json\n([\s\S]*?)\n```/,
-            "$1"
+        try {
+          if (!file?.buffer || !mimeType) {
+            return res.status(statusCode.badRequest).json({
+              statusCode: statusCode.badRequest,
+              responseMessage: "Invalid image file or MIME type",
+            });
+          }
+
+          const base64Image = file.buffer.toString("base64");
+
+          const imageUrl = await commonFunction.getImageUrlAWSByFolderSingle(
+            file,
+            "aiVisaDocs"
           );
-          const parsedData = JSON.parse(cleanedContent);
-          imageeDetails.push({
-            parsedData,
-            imageUrl,
+
+          const response = await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: [
+              {
+                role: "user",
+                content: [
+                  {
+                    type: "image_url",
+                    image_url: {
+                      url: `data:${mimeType};base64,${base64Image}`,
+                    },
+                  },
+                  {
+                    type: "text",
+                    text: `You are a document analysis system.
+Analyze the uploaded image. Rotate it if needed for correct orientation.
+Return the extracted information strictly in the following JSON format — even if some fields are missing or only partially present.
+
+{
+  "Document_Type": "e.g., Aadhaar card, PAN card, Passport, Bank Statement, Marriage Certificate, Photo",
+  "Extracted_Details": {
+    "Name": "Name if available, otherwise ''",
+    "Date_of_Birth": "Extracted DOB or ''",
+    "Document_Number": "Extracted or ''",
+    "Address":{"Village","VTC","PO","District","Sub District","State","PinCode",:  "Extracted or ''"},,
+
+    "Other_Identifiable_Details": {
+      "VID": "If Aadhaar VID is found",
+      "Bank_Name": "If bank name is found",
+      "Bride Name": "If marriage certificate",
+      "Groom Name": "If marriage certificate",
+      "Transactions": [
+        {
+          "Txn_Date": "DD MMM YYYY",
+          "Description": "Transaction detail",
+          "Debit": 0.0,
+          "Credit": 0.0,
+          "Balance": 0.0
+        }
+      ]
+    }
+  },
+  "Detected_Errors": [
+    "Blurry image",
+    "Missing corners",
+    "No identifiable fields found",
+    "Signature cut off",
+    "Document not aligned",
+    "Unrecognizable content",
+    "Photo without text",
+    "Document expired",
+    "No caption or heading",
+    "Incorrect format"
+  ]
+}
+
+If it's a photo only (no text), set:
+{
+  "Document_Type": "Photo",
+  "Extracted_Details": {},
+  "Detected_Errors": ["No identifiable information. Image is a photo."]
+}
+
+If the AI cannot process due to privacy filter or access limitations, return:
+{
+  "Document_Type": "Unknown",
+  "Extracted_Details": {},
+  "Detected_Errors": ["System unable to extract due to restrictions or unsupported format."]
+}`,
+                  },
+                ],
+              },
+            ],
+            response_format: { type: "json_object" },
           });
-        } else {
-          // fallback if no content
-          imageeDetails.push({ imageUrl });
+
+          const content = response.choices[0].message.content?.trim();
+          if (content) {
+            // Remove ```json ... ``` if it exists
+            let cleanedContent = content;
+            if (cleanedContent.startsWith("```json")) {
+              cleanedContent = cleanedContent
+                .replace(/```json\s*([\s\S]*?)\s*```/, "$1")
+                .trim();
+            }
+
+            try {
+              const parsedData = JSON.parse(cleanedContent);
+              imageeDetails.push({ parsedData, imageUrl });
+            } catch (jsonErr) {
+              console.error(
+                "Failed to parse JSON from OpenAI:",
+                jsonErr.message
+              );
+              imageeDetails.push({
+                imageUrl,
+                error: "Invalid JSON structure from OpenAI",
+                rawResponse: cleanedContent,
+              });
+            }
+          } else {
+            imageeDetails.push({
+              imageUrl,
+              error: "Empty response from OpenAI",
+            });
+          }
+        } catch (err) {
+          console.error("Error in image processing:", err);
+          imageeDetails.push({
+            imageUrl: file.originalname || "Unknown",
+            error: "Exception while processing image with OpenAI",
+          });
         }
       } else {
-        // Unsupported file type
         continue;
       }
     }
-
+    let result;
     if (imageeDetails.length > 0) {
       const insertObj = { userId, applicantEmail, imageeDetails };
-      await createAiVisaDoc(insertObj);
+      result = await createAiVisaDoc(insertObj);
     }
 
-     res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.UPLOAD_SUCCESS,
-        imageeDetails
-      });
+    res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.UPLOAD_SUCCESS,
+      result,
+    });
   } catch (err) {
+    console.log("error====", err);
     if (err.status === 429) {
       res.status(statusCode.OK).send({
         statusCode: statusCode.Exceed,
@@ -300,7 +375,6 @@ exports.uploadedDocsDetails1 = async (req, res, next) => {
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ error: "No files uploaded" });
     }
- 
     let imageeDetails = [];
 
     for (const file of req.files) {
@@ -431,7 +505,7 @@ Return all results as a pure JSON object.`,
           imageeDetails.push({ imageUrl });
         }
       } else {
-        continue; // skip unsupported file types
+        continue;
       }
     }
 
@@ -450,23 +524,23 @@ Return all results as a pure JSON object.`,
     });
   }
 };
- 
-exports.getApplicationDocDerails=async(req,res,next)=>{
-  try{
-    const {appID}=req.query
-   const getAppDocDetail= await findAiVisaDocPop({_id:appID});
-   if(!getAppDocDetail){
-    res.status(statusCode.OK).send({
+
+exports.getApplicationDocDerails = async (req, res, next) => {
+  try {
+    const { appID } = req.query;
+    const getAppDocDetail = await findAiVisaDocPop({ _id: appID });
+    if (!getAppDocDetail) {
+      res.status(statusCode.OK).send({
         statusCode: statusCode.Exceed,
         responseMessage: responseMessage.DATA_NOT_FOUND,
       });
-   }
-   res.status(statusCode.OK).send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.DATA_FOUND,
-        result:getAppDocDetail
-      });
-  }catch(error){
-    return next(error)
+    }
+    res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: getAppDocDetail,
+    });
+  } catch (error) {
+    return next(error);
   }
-}
+};

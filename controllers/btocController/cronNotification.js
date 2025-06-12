@@ -97,51 +97,51 @@ const notifications = [
 
 const lastNotificationSent = new Map();
 
-var taskPromotionalNotification = cron.schedule("45 09 * * *",async () => {
-  try {
-    // 'phone.mobile_number':'8115199076'
-    const users = await userList({
-    // 'phone.mobile_number':{ $in: ['8115199076','7830130697'] },
-      status: status.ACTIVE,
-      deviceToken: { $exists: true, $ne: "" },
-    });
-    for (const user of users) {
-      try { 
-        const notificationMessage = `Bollywood ka maza, Punjab di shaan!🔥`;
-        const messageBody = `CGC Landran is set for PEFA 2025! Book your Free Passes Now! 🎭`;
-      const imageurl=`https://skytrails.s3.amazonaws.com/randomImages/uploadedFile_1738845021257_ArtboardPefa2025.jpg`;
-        const lastSent = lastNotificationSent.get(user._id);
-        if (lastSent && Date.now() - lastSent < 3600000) {
+// var taskPromotionalNotification = cron.schedule("45 09 * * *",async () => {
+//   try {
+//     // 'phone.mobile_number':'8115199076'
+//     const users = await userList({
+//     // 'phone.mobile_number':{ $in: ['8115199076','7830130697'] },
+//       status: status.ACTIVE,
+//       deviceToken: { $exists: true, $ne: "" },
+//     });
+//     for (const user of users) {
+//       try { 
+//         const notificationMessage = `Bollywood ka maza, Punjab di shaan!🔥`;
+//         const messageBody = `CGC Landran is set for PEFA 2025! Book your Free Passes Now! 🎭`;
+//       const imageurl=`https://skytrails.s3.amazonaws.com/randomImages/uploadedFile_1738845021257_ArtboardPefa2025.jpg`;
+//         const lastSent = lastNotificationSent.get(user._id);
+//         if (lastSent && Date.now() - lastSent < 3600000) {
          
-          continue; // Skip sending notification
-        }
-        await pushNotificationAfterDepricate(
-          user.deviceToken,
-          notificationMessage,
-          messageBody,
-          // imageurl
-        );
+//           continue; // Skip sending notification
+//         }
+//         await pushNotificationAfterDepricate(
+//           user.deviceToken,
+//           notificationMessage,
+//           messageBody,
+//           // imageurl
+//         );
 
-        // Update the last notification sent time for this user
-        lastNotificationSent.set(user._id, Date.now());
-      } catch (pushError) {
-        // Handle if any user is not registered
+//         // Update the last notification sent time for this user
+//         lastNotificationSent.set(user._id, Date.now());
+//       } catch (pushError) {
+//         // Handle if any user is not registered
        
-        // continue to the next user even if one fails
-        continue;
-      }
-      // Stop the cron job after execution
-      taskPromotionalNotification.stop();
-    }
-  } catch (error) {
-    // console.log("error when running task2", error);
-  }
-},
-{
-  scheduled: true,
-  timezone: "Asia/Kolkata", // Timezone setting
-}
-);
+//         // continue to the next user even if one fails
+//         continue;
+//       }
+//       // Stop the cron job after execution
+//       taskPromotionalNotification.stop();
+//     }
+//   } catch (error) {
+//     // console.log("error when running task2", error);
+//   }
+// },
+// {
+//   scheduled: true,
+//   timezone: "Asia/Kolkata", // Timezone setting
+// }
+// );
 // taskPromotionalNotification.start(); // Start the task2
 
 // Define and schedule task2 separately

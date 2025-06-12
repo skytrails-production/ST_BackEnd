@@ -32,6 +32,7 @@ const {
 
 exports.createDayWiseActivity = async (req, res, next) => {
   try {
+    // Sanitize all string fields in req.body
     const sanitizeRequestBody = (body) => {
       for (let key in body) {
         if (body.hasOwnProperty(key) && typeof body[key] === "string") {
@@ -39,26 +40,63 @@ exports.createDayWiseActivity = async (req, res, next) => {
         }
       }
     };
-    // Sanitize req.body values without changing keys
+
     sanitizeRequestBody(req.body);
-    let { destination, origin, dayAt,activities ,noOfDays} = req.body;
-    const object = {
+
+    let { destination, origin, dayAt, activities, noOfDays } = req.body;
+
+    // Validate required fields
+    if (!destination || !origin || !dayAt || !activities || !noOfDays) {
+      return res.status(400).json({
+        statusCode: 400,
+        responseMessage: "All fields (destination, origin, dayAt, activities, noOfDays) are required.",
+      });
+    }
+
+    // Build base object
+    const itineraryData = {
       destination,
       origin,
-      dayAt,
-      activities,
-      noOfDays
+      dayAt: dayAt, 
+      activities: activities, 
+      noOfDays,
     };
-    const result = await createDayWiseItinerary(object);
+
+    // Check if a matching itinerary exists
+    const isExist = await finOneDayWiseItinerary({
+      destination,
+      origin,
+      noOfDays,
+    });
+
+    let result;
+
+    if (isExist) {
+      // Update existing document by pushing to arrays
+      result = await updateDayWiseItinerary(
+        { _id: isExist._id },
+        {
+          $push: {
+            dayAt: dayAt,
+            activities: activities,
+          },
+        }
+      );
+    } else {
+      // Create new itinerary document
+      result = await createDayWiseItinerary(itineraryData);
+    }
+
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.CREATED_SUCCESS,
-      result: result,
+      result,
     });
   } catch (error) {
     return next(error);
   }
 };
+
 
 exports.getDayWiseActivity = async (req, res, next) => {
   try {
