@@ -427,7 +427,7 @@ exports.updateApplicationReg = async (req, res, next) => {
 exports.visaApplDocCreation = async (req, res, next) => {
   try {
     const { payload } = req.body;
-    const isApplicationExist = await findAiVisaApplication({
+    const isApplicationExist = await findVisaBooking({
       _id: payload.userId,
     });
     if (!isApplicationExist) {
@@ -448,3 +448,11 @@ exports.visaApplDocCreation = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.MyApplication=async(req,res,next)=>{
+  try {
+    
+  } catch (error) {
+    return next(error)
+  }
+}
