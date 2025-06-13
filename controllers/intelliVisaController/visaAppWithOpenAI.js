@@ -391,9 +391,8 @@ If the AI cannot process due to privacy filter or access limitations, return:
     let result;
     if (imageeDetails.length > 0) {
       const insertObj = { userId, applicantEmail, imageeDetails };
-      result = await createAiVisaDoc(insertObj);
+      result = insertObj;
     }
-
     res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.UPLOAD_SUCCESS,
@@ -587,3 +586,4 @@ exports.getApplicationDocDerails = async (req, res, next) => {
     return next(error);
   }
 };
+

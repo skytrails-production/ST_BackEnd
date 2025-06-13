@@ -143,13 +143,11 @@ exports.visaApplicationsReg = async (req, res, next) => {
       },
     };
     const result = await createvisaBooking(object);
-    return res
-      .status(statusCode.OK)
-      .send({
-        statusCode: statusCode.OK,
-        responseMessage: responseMessage.DATA_FOUND,
-        result: result,
-      });
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: result,
+    });
   } catch (error) {
     return next(error);
   }
@@ -231,12 +229,10 @@ exports.updateApplication = async (req, res, next) => {
     };
     const isUserExist = await findVisaBooking({ userId: userId, email: email });
     if (!isUserExist) {
-      return res
-        .status(statusCode.OK)
-        .send({
-          statusCode: statusCode.NotFound,
-          responseMessage: responseMessage.APPLICATION_NOT_FOUND,
-        });
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.APPLICATION_NOT_FOUND,
+      });
     }
     const updateUserData = await updateVisaBooking(
       { _id: isUserExist._id },
@@ -324,19 +320,15 @@ exports.listAllApplicant = async (req, res, next) => {
   try {
     const result = await visaBookingList();
     return !result || result.length === 0
-      ? res
-          .status(statusCode.OK)
-          .send({
-            statusCode: statusCode.NotFound,
-            responseMessage: responseMessage.DATA_NOT_FOUND,
-          })
-      : res
-          .status(statusCode.OK)
-          .send({
-            statusCode: statusCode.OK,
-            responseMessage: responseMessage.DATA_FOUND,
-            result,
-          });
+      ? res.status(statusCode.OK).send({
+          statusCode: statusCode.NotFound,
+          responseMessage: responseMessage.DATA_NOT_FOUND,
+        })
+      : res.status(statusCode.OK).send({
+          statusCode: statusCode.OK,
+          responseMessage: responseMessage.DATA_FOUND,
+          result,
+        });
   } catch (error) {
     return next(error);
   }
@@ -417,16 +409,42 @@ exports.updateApplicationReg = async (req, res, next) => {
       "sessionCredential.bearerToken": bearerToken,
     });
     if (isApplicationExist) {
-      const result = await updateVisaBooking({_id:isApplicationExist._id},{ redirectUrl: url });
-      return res
-        .status(statusCode.OK)
-        .send({
-          statusCode: statusCode.OK,
-          responseMessage: responseMessage.UPDATE_SUCCESS,
-          result: result,
-        });
+      const result = await updateVisaBooking(
+        { _id: isApplicationExist._id },
+        { redirectUrl: url }
+      );
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.OK,
+        responseMessage: responseMessage.UPDATE_SUCCESS,
+        result: result,
+      });
     }
   } catch (error) {
+    return next(error);
+  }
+};
+
+exports.visaApplDocCreation = async (req, res, next) => {
+  try {
+    const { payload } = req.body;
+    const isApplicationExist = await findAiVisaApplication({
+      _id: payload.userId,
+    });
+    if (!isApplicationExist) {
+      res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.APPLICATION_NOT_FOUND,
+      });
+    }
+
+    const result = await createAiVisaDoc(payload);
+    res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.UPLOAD_SUCCESS,
+      result,
+    });
+  } catch (error) {
+    console.log("error while trying to create doc Details", error);
     return next(error);
   }
 };
