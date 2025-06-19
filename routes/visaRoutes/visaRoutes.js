@@ -41,7 +41,7 @@ module.exports = function (app) {
   app.post("/skyTrails/api/visa/saveDetails",upload.array("images"),saveAIVisaApplData.ImageDetails);
   app.post("/skyTrails/api/visa/uploadedDocsDetails",upload.array("images"),saveAIVisaApplData.uploadedDocsDetails);
   app.get("/skyTrails/api/visa/listAllApplicant",aiVisaBooking.listAllApplicant);
-   app.put("/skyTrails/api/visa/updateApplicationDetails",aiVisaBooking.updateApplicationReg);
+   app.put("/skyTrails/api/visa/updateApplicationGuideLine",aiVisaBooking.updateApplicationReg);
   app.get('/skyTrails/api/visa/getDacDetails',saveAIVisaApplData.getApplicationDocDerails);
   app.post("/skyTrails/api/visa/openai/visaApplDocCreation",aiVisaBooking.visaApplDocCreation);
 };

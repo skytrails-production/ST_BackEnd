@@ -9,7 +9,7 @@ const createVisaApplySchema = new mongoose.Schema({
   userId: { type: String },
   firstName: { type: String },
   lastName: { type: String },
-  email: { type: String },
+  email: { type: String ,unique:true},
   sex: { type: String },
   mobileNumber: { phone: { type: String } },
   address: {
@@ -82,7 +82,8 @@ const createVisaApplySchema = new mongoose.Schema({
     agentId:{type:String},
     contactNumber:{type:String}
   },
-  redirectUrl:{type:String}
+  redirectUrl:{type:String},
+  guideLines:[{type:String}]
 },{ timestamps: true });
 
 const visaHistory = mongoose.model("createIntellyVisaApply", createVisaApplySchema);

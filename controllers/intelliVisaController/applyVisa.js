@@ -59,6 +59,7 @@ const {
   findOneVisaBookingPop,
   deleteVisaBooking,
   visaBookingList,
+  visaBookingListExcludeKeys,
   visaBookingListPop,
   updateVisaBooking,
   countTotalVisaBooking,
@@ -77,6 +78,7 @@ const {
 const {
   aiVisaDocServices,
 } = require("../../services/intelliVisaServices/dynamicDb");
+// const { application } = require("express");
 const {
   createAiVisaDoc,
   findAiVisaDoc,
@@ -156,6 +158,7 @@ exports.visaApplicationsReg = async (req, res, next) => {
 exports.getVisaApplications = async (req, res, next) => {
   try {
     const result = await visaBookingList();
+
     if (result.length < 1) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
@@ -175,23 +178,43 @@ exports.getVisaApplications = async (req, res, next) => {
 
 exports.getVisaApplicationByUser = async (req, res, next) => {
   try {
-    const result = await visaBookingList({ userId: req.query.userId });
+    const result = await visaBookingListExcludeKeys(
+      { userId: req.query.userId },
+      { sessionCredential: 0 }
+    );
+
     if (result.length < 1) {
       return res.status(statusCode.OK).send({
         statusCode: statusCode.NotFound,
         responseMessage: responseMessage.DATA_NOT_FOUND,
-        result: result,
+        result: [],
       });
     }
+
+    const enrichedResults = await Promise.all(result.map(async (application) => {
+      const getAppDoc = await findAiVisaDoc({ applicantEmail: application.email });
+
+      const documents = (getAppDoc?.imageeDetails || []).map(item => ({
+        imageUrl: item.imageUrl,
+        documentType: item.parsedData?.Document_Type || null,
+      }));
+
+      return {
+        ...application._doc,
+        documents,
+      };
+    }));
+
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.DATA_FOUND,
-      result: result,
+      result: enrichedResults,
     });
   } catch (error) {
     return next(error);
   }
 };
+
 
 exports.updateApplication = async (req, res, next) => {
   try {
@@ -404,21 +427,27 @@ exports.saveAIVisaApplData1 = async (req, res, next) => {
 
 exports.updateApplicationReg = async (req, res, next) => {
   try {
-    const { url, bearerToken } = req.body;
+    const { email, guideLines } = req.body;
+
     const isApplicationExist = await findVisaBooking({
-      "sessionCredential.bearerToken": bearerToken,
+      email: email,
     });
     if (isApplicationExist) {
       const result = await updateVisaBooking(
         { _id: isApplicationExist._id },
-        { redirectUrl: url }
+        { $set: { guideLines: guideLines } }
       );
+
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.UPDATE_SUCCESS,
         result: result,
       });
     }
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.NotFound,
+      responseMessage: responseMessage.APPLICATION_NOT_FOUND,
+    });
   } catch (error) {
     return next(error);
   }
@@ -449,10 +478,9 @@ exports.visaApplDocCreation = async (req, res, next) => {
   }
 };
 
-exports.MyApplication=async(req,res,next)=>{
+exports.MyApplication = async (req, res, next) => {
   try {
-    
   } catch (error) {
-    return next(error)
+    return next(error);
   }
-}
+};

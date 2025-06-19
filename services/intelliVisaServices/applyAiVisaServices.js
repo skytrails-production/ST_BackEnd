@@ -27,6 +27,10 @@ const visaBookingServices={
     visaBookingList: async (query) => {
         return await visaBookingModel.find(query);
     },
+    
+    visaBookingListExcludeKeys: async (query,keys) => {
+        return await visaBookingModel.find(query,keys);
+    },
     visaBookingListPop: async (query) => {
         return await visaBookingModel.find(query).populate('visaCountryId');
     },
