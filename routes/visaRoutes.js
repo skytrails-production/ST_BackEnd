@@ -18,6 +18,6 @@ module.exports = function (app) {
   app.post('/api/skyTrails/getTokenExchange', checkapi.getTokenExchange);
   app.get('/api/skyTrails/getApplicationCreationKey', checkapi.getApplicationCreationKey);
   app.get('/api/skyTrails/getCountryList', visaCountryList.getCountryList);
-  app.get('/api/skyTrails/createRedirectURL',checkapi.createRedirectURL)
+  app.get('/api/skyTrails/createRedirectURL',checkapi.createRedirectURL);
   };
   

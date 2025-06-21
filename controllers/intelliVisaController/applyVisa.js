@@ -82,6 +82,7 @@ const {
 const {
   createAiVisaDoc,
   findAiVisaDoc,
+  findAiVisaDocKeys,
   deleteAiVisaDoc,
   aiVisaDocList,
   updateAiVisaDoc,
@@ -191,19 +192,23 @@ exports.getVisaApplicationByUser = async (req, res, next) => {
       });
     }
 
-    const enrichedResults = await Promise.all(result.map(async (application) => {
-      const getAppDoc = await findAiVisaDoc({ applicantEmail: application.email });
+    const enrichedResults = await Promise.all(
+      result.map(async (application) => {
+        const getAppDoc = await findAiVisaDoc({
+          applicantEmail: application.email,
+        });
 
-      const documents = (getAppDoc?.imageeDetails || []).map(item => ({
-        imageUrl: item.imageUrl,
-        documentType: item.parsedData?.Document_Type || null,
-      }));
+        const documents = (getAppDoc?.imageeDetails || []).map((item) => ({
+          imageUrl: item.imageUrl,
+          documentType: item.parsedData?.Document_Type || null,
+        }));
 
-      return {
-        ...application._doc,
-        documents,
-      };
-    }));
+        return {
+          ...application._doc,
+          documents,
+        };
+      })
+    );
 
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
@@ -214,7 +219,6 @@ exports.getVisaApplicationByUser = async (req, res, next) => {
     return next(error);
   }
 };
-
 
 exports.updateApplication = async (req, res, next) => {
   try {
@@ -481,6 +485,21 @@ exports.visaApplDocCreation = async (req, res, next) => {
 exports.MyApplication = async (req, res, next) => {
   try {
   } catch (error) {
+    return next(error);
+  }
+};
+
+exports.getApppDocById = async (req, res, next) => {
+  try {
+    const { appId } = req.query;
+    const getAppDoc = await findAiVisaDocKeys({ userId: appId });
+     return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: getAppDoc,
+    });
+  } catch (error) {
+    console.log("error while trying to get documents", error);
     return next(error);
   }
 };

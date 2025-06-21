@@ -34,6 +34,9 @@ const aiVisaDocServices={
 
     countTotalAiVisaDoc: async (body) => {
         return await aiVisaDocModel.countDocuments(body);
-    }    
+    } ,
+    findAiVisaDocKeys: async (query) => {
+        return await aiVisaDocModel.findOne(query, { 'imageeDetails.parsedData.Document_Type': 1, 'imageeDetails.imageUrl': 1,}) ;
+    },   
 }
 module.exports ={aiVisaDocServices}
