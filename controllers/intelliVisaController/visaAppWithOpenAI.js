@@ -188,16 +188,15 @@ Return the extracted information strictly in the following JSON format — even 
 {
   "Document_Type": " make sure always provide example key name .e.g., Aadhaar card, PAN card, Passport, Bank Statement, Marriage Certificate, Photo",
   "Extracted_Details": {
-    "Name": "Name if available, otherwise ''",
-    "Date_of_Birth": "Extracted DOB or ''",
-    "Document_Number": "Extracted or ''",
+    "Name": "Name if available, otherwise "",
+    "Date_of_Birth": "Extracted DOB or remove key,
+    "Document_Number": "Extracted or remove key,
     "Address":{"Village","VTC","PO","District","Sub District","State","PinCode",:  "Extracted or ''"},,
-
-    "Other_Identifiable_Details": {
-      "VID": "If Aadhaar VID is found",
-      "Bank_Name": "If bank name is found",
-      "Bride Name": "If marriage certificate",
-      "Groom Name": "If marriage certificate",
+"Other_Identifiable_Details": {
+      "VID": "If Aadhaar VID is found"||remove key,
+      "Bank_Name": "If bank name is found"||remove key,
+      "Bride Name": "If marriage certificate"||remove key,
+      "Groom Name": "If marriage certificate"||remove key,
       "Transactions": [
         {
           "Txn_Date": "DD MMM YYYY",
@@ -206,8 +205,8 @@ Return the extracted information strictly in the following JSON format — even 
           "Credit": 0.0,
           "Balance": 0.0
         }
-      ]
-    }
+      ]||remove key
+    }||remove key
   },
   "Detected_Errors": [
     "Blurry image",
@@ -235,7 +234,7 @@ If the AI cannot process due to privacy filter or access limitations, return:
   "Document_Type": "Unknown",
   "Extracted_Details": {},
   "Detected_Errors": ["System unable to extract due to restrictions or unsupported format."]
-                  }`,
+}`,
                   },
                 ],
                 response_format: { type: "json_object" },
@@ -292,16 +291,15 @@ Return the extracted information strictly in the following JSON format — even 
 {
   "Document_Type": " make sure always provide example key name .e.g., Aadhaar card, PAN card, Passport, Bank Statement, Marriage Certificate, Photo",
   "Extracted_Details": {
-    "Name": "Name if available, otherwise ''",
-    "Date_of_Birth": "Extracted DOB or ''",
-    "Document_Number": "Extracted or ''",
+    "Name": "Name if available, otherwise "",
+    "Date_of_Birth": "Extracted DOB or remove key,
+    "Document_Number": "Extracted or remove key,
     "Address":{"Village","VTC","PO","District","Sub District","State","PinCode",:  "Extracted or ''"},,
-
-    "Other_Identifiable_Details": {
-      "VID": "If Aadhaar VID is found",
-      "Bank_Name": "If bank name is found",
-      "Bride Name": "If marriage certificate",
-      "Groom Name": "If marriage certificate",
+"Other_Identifiable_Details": {
+      "VID": "If Aadhaar VID is found"||remove key,
+      "Bank_Name": "If bank name is found"||remove key,
+      "Bride Name": "If marriage certificate"||remove key,
+      "Groom Name": "If marriage certificate"||remove key,
       "Transactions": [
         {
           "Txn_Date": "DD MMM YYYY",
@@ -310,8 +308,8 @@ Return the extracted information strictly in the following JSON format — even 
           "Credit": 0.0,
           "Balance": 0.0
         }
-      ]
-    }
+      ]||remove key
+    }||remove key
   },
   "Detected_Errors": [
     "Blurry image",
