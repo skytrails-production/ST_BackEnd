@@ -1,7 +1,7 @@
 const path = require("path");
 const fs = require("fs");
-const PdfConverter = require("pdf-poppler");
-
+const { Poppler } = require("node-poppler");
+const poppler = new Poppler();
 const convertPdfToImages = async (pdfBuffer) => {
   const tempDir = path.join(__dirname, "../temp");
   if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir);
@@ -16,14 +16,20 @@ const convertPdfToImages = async (pdfBuffer) => {
 
   // Conversion
   const options = {
-    format: "png",
-    out_dir: outputDir,
-    out_prefix: "page",
-    scale: 1024,
+    firstPageToConvert: 1,
+    lastPageToConvert: 0, // 0 = convert all pages
+    pngFile: true,
+    // optional — default output resolution is 150 DPI
+    resolutionXYAxis: 150,
+    // optional — scale long side to this px (e.g. 1024)
+    scalePageTo: 1024,
+    antialias: "good",
   };
 
   try {
-    await PdfConverter.convert(pdfPath, options);
+    const outputTemplate = path.join(outputDir, "page.png");
+    const res = await poppler.pdfToCairo(pdfPath, outputTemplate, options);
+    console.log("Poppler output:", res);
 
     const imagePaths = fs
       .readdirSync(outputDir)
@@ -38,4 +44,3 @@ const convertPdfToImages = async (pdfBuffer) => {
 };
 
 module.exports = convertPdfToImages;
-        
