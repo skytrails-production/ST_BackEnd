@@ -132,7 +132,7 @@ extract details as much as possible ,Provide the response in JSON format with ke
   }
 };
 
-exports.uploadedDocsDetails = async (req, res, next) => {
+exports.uploadedDocsDetails1 = async (req, res, next) => {
   try {
     const { userId, applicantEmail } = req.body;
     if (!req.files || req.files.length === 0) {
@@ -477,161 +477,229 @@ Rules:
   }
 };
 
-exports.uploadedDocsDetails1 = async (req, res, next) => {
+exports.uploadedDocsDetails = async (req, res) => {
   try {
     const { userId, applicantEmail } = req.body;
-    if (!req.files || req.files.length === 0) {
-      return res.status(400).json({ error: "No files uploaded" });
+    const files = req.files || [];
+
+    if (!files.length) {
+      return res.status(statusCode.OK).send({
+        statusCode: statusCode.badRequest,
+        responseMessage: "No files uploaded",
+      });
     }
-    let imageeDetails = [];
 
-    for (const file of req.files) {
-      const mimeType = file.mimetype;
+    const imageeDetails = await Promise.all(
+      files.map(async (file) => {
+        const mimeType = file.mimetype;
 
-      if (mimeType === "application/pdf") {
-        const options = {
-          density: 100,
-          format: "png",
-          width: 600,
-          height: 800,
-          savePath: "./images",
-        };
-        const storeAsImage = fromBuffer(file.buffer, options);
-        const pages = await storeAsImage.bulk(-1, true);
-
-        for (const page of pages) {
-          const base64Image = page.base64;
-          const imageUrl = await commonFunction.getImageUrlAWSByFolderSingle(
-            page,
-            "aiVisaDocs"
-          );
-
+        // 🧾 Handle PDF
+        if (mimeType === "application/pdf") {
           try {
-            const response = await openai.chat.completions.create({
-              model: "gpt-4o-mini",
-              messages: [
-                {
-                  role: "user",
-                  content: [
-                    {
-                      type: "image_url",
-                      image_url: {
-                        url: `data:image/png;base64,${base64Image}`,
-                      },
-                    },
-                    {
-                      type: "text",
-                      text: `Please analyze the uploaded document image and provide the following:
-1. Document Type (e.g., Aadhaar card, PAN card, Passport, Passbook, Photo)
-2. Extracted Details:
-   - Name
-   - Date of Birth
-   - Document Number
-   - Address (if available)
-   - Any other identifiable details
-If not readable, Provide the Document Type as "Other".
-Automatically rotate it if it's in the wrong direction.
-If it is a photo, respond with { "document_type": "Photo" }.
-Return all results as a pure JSON object.`,
-                    },
-                  ],
-                  response_format: { type: "json_object" },
-                },
-              ],
-            });
+            const { imagePaths, outputDir, tempPdfPath } = await convertPdfToImages(file.buffer);
 
-            const content = response.choices?.[0]?.message?.content;
-            const cleanedContent = content.replace(
-              /```json\n([\s\S]*?)\n```/,
-              "$1"
+            const perPageDetails = await Promise.all(
+              imagePaths.map(async (imagePath) => {
+                try {
+                  const imageBuffer = fs.readFileSync(imagePath);
+                  const base64Image = imageBuffer.toString("base64");
+
+                  const fileObject = {
+                    buffer: imageBuffer,
+                    originalname: path.basename(imagePath),
+                    mimetype: "image/png",
+                  };
+
+                  const imageUrl = await commonFunction.getImageUrlAWSByFolderSingle(fileObject, "aiVisaDocs");
+
+                  const gptResponse = await callGPTAnalysisPrompt(base64Image, "image/png");
+
+                  return {
+                    parsedData: gptResponse,
+                    imageUrl,
+                  };
+                } catch (innerErr) {
+                  return {
+                    imageUrl: null,
+                    error: `Failed to process PDF image: ${innerErr.message}`,
+                  };
+                }
+              })
             );
-            const parsedData = JSON.parse(cleanedContent);
 
-            imageeDetails.push({
-              parsedData,
-              imageUrl,
-            });
+            // Cleanup
+            if (outputDir) fs.rmSync(outputDir, { recursive: true, force: true });
+            if (tempPdfPath) fs.rmSync(tempPdfPath, { force: true });
+
+            return perPageDetails;
           } catch (err) {
-            console.error("OpenAI Error (PDF page):", err.message || err);
-            imageeDetails.push({ imageUrl });
+            return [{ error: `PDF processing failed: ${err.message}` }];
           }
         }
-      } else if (mimeType.startsWith("image/")) {
-        const base64Image = file.buffer.toString("base64");
-        const imageUrl = await commonFunction.getImageUrlAWSByFolderSingle(
-          file,
-          "aiVisaDocs"
-        );
 
-        try {
-          const response = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
-            messages: [
-              {
-                role: "user",
-                content: [
-                  {
-                    type: "image_url",
-                    image_url: {
-                      url: `data:${mimeType};base64,${base64Image}`,
-                    },
-                  },
-                  {
-                    type: "text",
-                    text: `Please analyze the uploaded document image and provide the following:
-1. Document Type (e.g., Aadhaar card, PAN card, Passport, Passbook, Photo)
-2. Extracted Details:
-   - Name
-   - Date of Birth
-   - Document Number
-   - Address (if available)
-   - Any other identifiable details
-If not readable, Provide the Document Type as { "document_type": "Other" }.
-Automatically rotate it if it's in the wrong direction.
-If it is a photo, respond with { "document_type": "Photo" }.
-Return all results as a pure JSON object.`,
-                  },
-                ],
-                response_format: { type: "json_object" },
-              },
-            ],
-          });
+        // 🖼️ Handle image
+        else if (mimeType.startsWith("image/")) {
+          try {
+            const base64Image = file.buffer.toString("base64");
 
-          const content = response.choices?.[0]?.message?.content;
-          const cleanedContent = content.replace(
-            /```json\n([\s\S]*?)\n```/,
-            "$1"
-          );
-          const parsedData = JSON.parse(cleanedContent);
+            const imageUrl = await commonFunction.getImageUrlAWSByFolderSingle(file, "aiVisaDocs");
 
-          imageeDetails.push({
-            parsedData,
-            imageUrl,
-          });
-        } catch (err) {
-          console.error("OpenAI Error (image):", err.message || err);
-          imageeDetails.push({ imageUrl });
+            const gptResponse = await callGPTAnalysisPrompt(base64Image, mimeType);
+
+            return {
+              parsedData: gptResponse,
+              imageUrl,
+            };
+          } catch (err) {
+            return {
+              imageUrl: file.originalname || "Unknown",
+              error: `Image processing failed: ${err.message}`,
+            };
+          }
         }
-      } else {
-        continue;
-      }
-    }
 
-    if (imageeDetails.length > 0) {
-      const insertObj = { userId, applicantEmail, imageeDetails };
-      await createAiVisaDoc(insertObj);
-    }
+        // ❌ Unsupported file
+        return {
+          error: `Unsupported file type: ${mimeType}`,
+          imageUrl: file.originalname,
+        };
+      })
+    );
 
-    res.json({ imageeDetails });
+    // Flatten nested results (from PDFs)
+    const flatDetails = imageeDetails.flat();
+
+    const result = {
+      userId,
+      applicantEmail,
+      imageeDetails: flatDetails,
+    };
+
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.UPLOAD_SUCCESS,
+      result,
+    });
   } catch (err) {
-    console.error("Unhandled error:", err?.message || err);
-    res.status(200).json({
-      statusCode: statusCode.Exceed,
-      responseMessage: err?.message || "Something went wrong",
-      imageeDetails,
+    console.error("Unexpected Error:", err);
+    return res.status(statusCode.OK).send({
+      statusCode: err.status || statusCode.internalServerError,
+      responseMessage: err.message || "Server error occurred",
     });
   }
 };
+
+// 📦 Modular GPT call logic
+async function callGPTAnalysisPrompt(base64Image, mimeType) {
+  // use your OpenAI setup
+
+  const promptText = `You are a document analysis system.
+
+Analyze the uploaded image. Rotate if needed to correct orientation.  
+Return only valid JSON in the below format.  
+⚠️ Omit any key (and its nested keys) if the value is missing or empty. Do not return null or empty strings or arrays.
+
+Format:
+{
+  "Document_Type": "Aadhaar card | PAN card | Bank Statement | Passport | Photo | IncomeTax | etc.",
+  "Extracted_Details": {
+    "Name": "if found",
+    "Date_of_Birth": "if found",
+    "Document_Number": "if found (e.g., Aadhaar Number, PAN Number, Acknowledgement Number, etc.)",
+    "Address": {
+      "Village": "...",
+      "VTC": "...",
+      "PO": "...",
+      "District": "...",
+      "Sub_District": "...",
+      "State": "...",
+      "PinCode": "..."
+    },
+    "Other_Identifiable_Details": {
+      "VID": "...",
+      "Bank_Name": "...",
+      "Bride_Name": "...",
+      "Groom_Name": "...",
+      "Transactions": [
+        {
+          "Txn_Date": "DD MMM YYYY",
+          "Description": "...",
+          "Debit": 0.0,
+          "Credit": 0.0,
+          "Balance": 0.0
+        }
+      ]
+    },
+    "IncomeTax_Important_Details": {
+      "Assessment_Year": "...",
+      "PAN": "...",
+      "Acknowledgement_Number": "...",
+      "Filing_Date": "DD-MMM-YYYY",
+      "Gross_Total_Income": 0.0,
+      "Total_Taxable_Income": 0.0,
+      "Total_Tax_Payable": 0.0,
+      "Employer_Name": "..."
+    }
+  },
+  "Detected_Errors": ["..."]
+}
+
+Rules:
+- If the document is a **photo** (e.g., personal image with no document), return:
+{
+  "Document_Type": "Photo",
+  "Extracted_Details": {},
+  "Detected_Errors": ["No identifiable information. Image is a photo."]
+}
+
+- If the system fails to recognize the document or format, return:
+{
+  "Document_Type": "Unknown",
+  "Extracted_Details": {},
+  "Detected_Errors": ["System unable to extract due to restrictions or unsupported format."]
+}
+`;
+
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [
+      {
+        role: "user",
+        content: [
+          {
+            type: "image_url",
+            image_url: {
+              url: `data:${mimeType};base64,${base64Image}`,
+            },
+          },
+          {
+            type: "text",
+            text: promptText,
+          },
+        ],
+      },
+    ],
+    response_format: { type: "json_object" },
+  });
+
+  let content = response.choices[0]?.message?.content?.trim() || "";
+
+  if (content.startsWith("```json")) {
+    content = content.replace(/```json\s*([\s\S]*?)\s*```/, "$1").trim();
+  }
+
+  try {
+    return JSON.parse(content);
+  } catch {
+    const unescaped = content
+      .replace(/\\"/g, '"')
+      .replace(/\\n/g, "")
+      .replace(/\\r/g, "")
+      .replace(/\\\\/g, "\\");
+    return JSON.parse(unescaped);
+  }
+}
+
 
 exports.getApplicationDocDerails = async (req, res, next) => {
   try {
