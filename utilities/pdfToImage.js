@@ -33,8 +33,8 @@ const convertPdfToImages = async (pdfBuffer) => {
 
     const imagePaths = fs
       .readdirSync(outputDir)
-      .filter((f) => f.endsWith(".png"))
-      .map((f) => path.join(outputDir, f));
+      .filter(f => /\.png$/i.test(f))
+    .map(f => path.join(outputDir, f));
 
     return { imagePaths, outputDir, tempPdfPath: pdfPath };
   } catch (err) {

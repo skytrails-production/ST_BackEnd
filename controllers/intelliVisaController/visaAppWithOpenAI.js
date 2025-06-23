@@ -302,9 +302,11 @@ Rules:
               });
             }
             // 🧹 Clean up temp files
-            fs.rmSync(outputDir, { recursive: true, force: true });
-            fs.rmSync(tempPdfPath);
+            // fs.rmSync(outputDir, { recursive: true, force: true });
+            // fs.rmSync(tempPdfPath);
           }
+           if (outputDir) fs.rmSync(outputDir, { recursive: true, force: true });
+          if (tempPdfPath) fs.rmSync(tempPdfPath, { force: true });
         } catch (err) {
           console.error("PDF processing failed:", err);
         }
