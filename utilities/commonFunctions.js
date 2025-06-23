@@ -6532,6 +6532,7 @@ module.exports = {
     }
   },
   getImageUrlAWSByFolderSingle: async (file,folderName) => {
+    
     const params = {
       Bucket: process.env.AWS_BUCKET_NAME,
       Key: `${folderName}/uploadedFile_${Date.now()}_${file.originalname.replace(/\s/g, "")}`,
