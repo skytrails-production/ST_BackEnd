@@ -1,7 +1,6 @@
 const responseMessage = require("../../utilities/responses");
 const axios = require("axios");
 const statusCode = require("../../utilities/responceCode");
-const { createWorker } = require("tesseract.js");
 const VISA_TOKEN = process.env.VISA_OPENAI_SECRET_KEY;
 const commonFunction = require("../../utilities/commonFunctions");
 const OpenAI = require("openai");
