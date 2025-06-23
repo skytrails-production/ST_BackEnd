@@ -11,7 +11,6 @@ const openai = new OpenAI({
 const openAIKey = process.env.VISA_OPENAI_SECRET_KEY;
 const path = require("path");
 const { PDFDocument } = require("pdf-lib");
-const { fromPath } = require("pdf2pic");
 const {
   aiVisaDocServices,
 } = require("../../services/intelliVisaServices/dynamicDb");
