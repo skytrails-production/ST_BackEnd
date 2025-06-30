@@ -461,7 +461,7 @@ exports.visaApplDocCreation = async (req, res, next) => {
   try {
     const { payload } = req.body;
     const isApplicationExist = await findVisaBooking({
-      _id: payload.userId,
+      userId: payload.userId,
     });
     if (!isApplicationExist) {
       res.status(statusCode.OK).send({
@@ -489,17 +489,25 @@ exports.MyApplication = async (req, res, next) => {
   }
 };
 
-exports.getApppDocById = async (req, res, next) => {
+exports.getAppDocById = async (req, res, next) => {
   try {
     const { appId } = req.query;
-    const getAppDoc = await findAiVisaDocKeys({ userId: appId });
-     return res.status(statusCode.OK).send({
+
+    const [applicationDetail, getAppDoc] = await Promise.all([
+      visaBookingListExcludeKeys({ _id: appId }, { sessionCredential: 0 }),
+      findAiVisaDocKeys({ userId: appId }),
+    ]);
+
+    // Merge — later keys win if duplicates exist
+    const mergedResult = { applicationDetail,getAppDoc };
+
+    return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.DATA_FOUND,
-      result: getAppDoc,
+      result: mergedResult,                      // <-- one flat object
     });
   } catch (error) {
-    console.log("error while trying to get documents", error);
+    console.log('error while trying to get documents', error);
     return next(error);
   }
 };

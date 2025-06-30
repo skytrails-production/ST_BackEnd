@@ -44,5 +44,5 @@ module.exports = function (app) {
    app.put("/skyTrails/api/visa/updateApplicationGuideLine",aiVisaBooking.updateApplicationReg);
   app.get('/skyTrails/api/visa/getDacDetails',saveAIVisaApplData.getApplicationDocDerails);
   app.post("/skyTrails/api/visa/openai/visaApplDocCreation",aiVisaBooking.visaApplDocCreation);
-  app.get("/skyTrails/api/visa/documents/applicantDocDetails",aiVisaBooking.getApppDocById)
+  app.get("/skyTrails/api/visa/documents/applicantDocDetails",aiVisaBooking.getAppDocById)
 };
