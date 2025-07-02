@@ -499,7 +499,7 @@ exports.getAppDocById = async (req, res, next) => {
 
     const [applicationDetail, getAppDoc] = await Promise.all([
       visaBookingListExcludeKeys({ _id: appId }, { sessionCredential: 0 }),
-      findAiVisaDocKeys({ userId: appId }),
+      findAiVisaDoc({ userId: appId }),
     ]);
 
     // Merge — later keys win if duplicates exist
