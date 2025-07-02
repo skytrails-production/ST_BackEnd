@@ -89,6 +89,10 @@ const {
   countTotalAiVisaDoc,
   insertManyAiVisaDoc,
 } = aiVisaDocServices;
+
+const {countryViseApplyServices}=require('../../services/intelliVisaServices/countryWiseAppServices')
+const {createVisaAppCountryWise,insertManyVisaAppCountryWise,findVisaAppCountryWise,findVisaAppCountryWisePop,deleteVisaAppCountryWise,countryViseApplyList,updateVisaAppCountryWise,countTotalVisaAppCountryWise,findVisaAppCountryWiseKeys}=countryViseApplyServices;
+
 exports.visaApplicationsReg = async (req, res, next) => {
   try {
     const {
@@ -461,7 +465,7 @@ exports.visaApplDocCreation = async (req, res, next) => {
   try {
     const { payload } = req.body;
     const isApplicationExist = await findVisaBooking({
-      userId: payload.userId,
+      _id: payload.userId,
     });
     if (!isApplicationExist) {
       res.status(statusCode.OK).send({
@@ -511,3 +515,35 @@ exports.getAppDocById = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.createCountryWiseApp=async(req,res,next)=>{
+  try {
+    const {data}=req.body;
+    const isApplicationExist = await findVisaBooking({
+      _id: data.applicantId,
+    });
+    if (!isApplicationExist) {
+      res.status(statusCode.OK).send({
+        statusCode: statusCode.NotFound,
+        responseMessage: responseMessage.APPLICATION_NOT_FOUND,
+      });
+    }
+
+    const result = await createVisaAppCountryWise(data);
+    res.status(statusCode.OK).send({
+      statusCode: statusCode.created,
+      responseMessage: responseMessage.CREATED_SUCCESS,
+      result,
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+exports.getCountryWiseApp=async(req,res,next)=>{
+  try {
+    
+  } catch (error) {
+    return next(error)
+  }
+}

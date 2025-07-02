@@ -601,7 +601,7 @@ Return only valid JSON in the below format.
 
 Format:
 {
-  "Document_Type": "Aadhaar card | PAN card | Bank Statement | Passport | Photo | IncomeTax | etc.",
+  "Document_Type": "Aadhaar card | PAN card | Bank Statement | Passport | Photo | IncomeTax | GST Registration Documnet| GSTIN Document| GST Registration Details | GST Document | Certificate of Marriage |etc.",
   "Extracted_Details": {
     "Name": "if found",
     "Date_of_Birth": "if found",

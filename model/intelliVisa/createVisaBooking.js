@@ -89,7 +89,7 @@ const createVisaApplySchema = new mongoose.Schema(
       contactNumber: { type: String },
     },
     redirectUrl: { type: String },
-    guideLines: [{ type: String }],
+    guideLines: [],
     isgovProgress: { type: Boolean, default: false },
    
     

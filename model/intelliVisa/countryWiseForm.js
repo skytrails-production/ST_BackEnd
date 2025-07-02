@@ -2,7 +2,7 @@ const { Timestamp } = require('@google-cloud/firestore');
 const mongoose = require('mongoose');
 
 const countryWiseVisaFormSchema = new mongoose.Schema({
-// userId:{type:mongoose.Types.ObjectId,ref:'createIntellyVisaApply'},
+applicantId:{type:mongoose.Types.ObjectId,ref:'createIntellyVisaApply'},
 
 }, { strict: false },{Timestamp:true});
 const countryWiseModel = mongoose.model('visaFormCountryWise', countryWiseVisaFormSchema);
