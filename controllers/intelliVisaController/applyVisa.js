@@ -90,8 +90,20 @@ const {
   insertManyAiVisaDoc,
 } = aiVisaDocServices;
 
-const {countryViseApplyServices}=require('../../services/intelliVisaServices/countryWiseAppServices')
-const {createVisaAppCountryWise,insertManyVisaAppCountryWise,findVisaAppCountryWise,findVisaAppCountryWisePop,deleteVisaAppCountryWise,countryViseApplyList,updateVisaAppCountryWise,countTotalVisaAppCountryWise,findVisaAppCountryWiseKeys}=countryViseApplyServices;
+const {
+  countryViseApplyServices,
+} = require("../../services/intelliVisaServices/countryWiseAppServices");
+const {
+  createVisaAppCountryWise,
+  insertManyVisaAppCountryWise,
+  findVisaAppCountryWise,
+  findVisaAppCountryWisePop,
+  deleteVisaAppCountryWise,
+  countryViseApplyList,
+  updateVisaAppCountryWise,
+  countTotalVisaAppCountryWise,
+  findVisaAppCountryWiseKeys,
+} = countryViseApplyServices;
 
 exports.visaApplicationsReg = async (req, res, next) => {
   try {
@@ -503,22 +515,22 @@ exports.getAppDocById = async (req, res, next) => {
     ]);
 
     // Merge — later keys win if duplicates exist
-    const mergedResult = { applicationDetail,getAppDoc };
+    const mergedResult = { applicationDetail, getAppDoc };
 
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.DATA_FOUND,
-      result: mergedResult,                      // <-- one flat object
+      result: mergedResult, // <-- one flat object
     });
   } catch (error) {
-    console.log('error while trying to get documents', error);
+    console.log("error while trying to get documents", error);
     return next(error);
   }
 };
 
-exports.createCountryWiseApp=async(req,res,next)=>{
+exports.createCountryWiseApp = async (req, res, next) => {
   try {
-    const {data}=req.body;
+    const { data } = req.body;
     const isApplicationExist = await findVisaBooking({
       _id: data.applicantId,
     });
@@ -538,12 +550,17 @@ exports.createCountryWiseApp=async(req,res,next)=>{
   } catch (error) {
     return next(error);
   }
-}
+};
 
-exports.getCountryWiseApp=async(req,res,next)=>{
-  try {
-    
+exports.getCountryWiseApp = async (req, res, next) => {
+  try {    
+    const isDataExist = await findVisaAppCountryWise({ applicantId: req.query.applicantId });
+    return res.status(statusCode.OK).send({
+      statusCode: statusCode.OK,
+      responseMessage: responseMessage.DATA_FOUND,
+      result: isDataExist,
+    });
   } catch (error) {
-    return next(error)
+    return next(error);
   }
-}
+};

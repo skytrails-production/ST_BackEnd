@@ -46,4 +46,5 @@ module.exports = function (app) {
   app.post("/skyTrails/api/visa/openai/visaApplDocCreation",aiVisaBooking.visaApplDocCreation);
   app.get("/skyTrails/api/visa/documents/applicantDocDetails",aiVisaBooking.getAppDocById);
   app.post("/skyTrails/api/visa/countrywise/applyForAiVisa",aiVisaBooking.createCountryWiseApp);
+   app.get("/skyTrails/api/visa/countrywise/getApplicationCountryWise",aiVisaBooking.getCountryWiseApp);
 };
