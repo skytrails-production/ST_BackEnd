@@ -45,7 +45,8 @@ const transactionSchema = mongoose.Schema({
         type: String,
         enum: [paymentStatus.PENDING, paymentStatus.SUCCESS, paymentStatus.FAILED],
         default: paymentStatus.PENDING
-    }
+    },
+    isCRM:{type:Boolean,default:false}
 
 }, { timestamps: true })
 

@@ -1135,6 +1135,17 @@ exports.makeCashfreeRechargePayment = async (req, res, next) => {
     };
     try {
       const { data } = await axios.request(options);
+       const objectData = {
+        userId: userId,
+        amount: amount,
+        paymentId: data.order_id,
+        orderId: data.cf_order_id,
+        signature: data.customer_details.customer_id,
+        bookingType: bookingType,
+        isCRM:true
+        // object.order_currency,
+      };
+      const createData = await createUsertransaction(objectData);
       return res.status(statusCode.OK).send({
         statusCode: statusCode.OK,
         responseMessage: responseMessage.PAYMENT_INTIATE,

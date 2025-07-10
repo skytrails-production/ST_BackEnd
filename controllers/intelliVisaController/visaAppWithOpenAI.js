@@ -597,6 +597,7 @@ async function callGPTAnalysisPrompt(base64Image, mimeType) {
 
 Analyze the uploaded image. Rotate if needed to correct orientation.  
 Return only valid JSON in the below format.  
+Analyze the uploaded PDF document and determine if it has been edited or altered in any way. Check for signs of text modifications, image manipulations, or metadata changes. Provide a detailed report on your findings, including any evidence of editing or alteration.
 ⚠️ Omit any key (and its nested keys) if the value is missing or empty. Do not return null or empty strings or arrays.
 
 Format:
