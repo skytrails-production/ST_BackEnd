@@ -540,8 +540,12 @@ exports.createCountryWiseApp = async (req, res, next) => {
         responseMessage: responseMessage.APPLICATION_NOT_FOUND,
       });
     }
-
-    const result = await createVisaAppCountryWise(data);
+    let result;
+    const isformExist=await findVisaAppCountryWise({applicantId:data.applicantId});
+    if(isformExist){
+      result=await updateVisaAppCountryWise(data);
+    }
+     result = await createVisaAppCountryWise(data);
     res.status(statusCode.OK).send({
       statusCode: statusCode.created,
       responseMessage: responseMessage.CREATED_SUCCESS,

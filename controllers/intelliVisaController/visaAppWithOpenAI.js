@@ -305,7 +305,7 @@ Rules:
             // fs.rmSync(outputDir, { recursive: true, force: true });
             // fs.rmSync(tempPdfPath);
           }
-           if (outputDir) fs.rmSync(outputDir, { recursive: true, force: true });
+          if (outputDir) fs.rmSync(outputDir, { recursive: true, force: true });
           if (tempPdfPath) fs.rmSync(tempPdfPath, { force: true });
         } catch (err) {
           console.error("PDF processing failed:", err);
@@ -496,7 +496,11 @@ exports.uploadedDocsDetails = async (req, res) => {
         // 🧾 Handle PDF
         if (mimeType === "application/pdf") {
           try {
-            const { imagePaths, outputDir, tempPdfPath } = await convertPdfToImages(file.buffer);
+            const {
+              imagePaths,
+              outputDir,
+              tempPdfPath,
+            } = await convertPdfToImages(file.buffer);
 
             const perPageDetails = await Promise.all(
               imagePaths.map(async (imagePath) => {
@@ -510,9 +514,15 @@ exports.uploadedDocsDetails = async (req, res) => {
                     mimetype: "image/png",
                   };
 
-                  const imageUrl = await commonFunction.getImageUrlAWSByFolderSingle(fileObject, "aiVisaDocs");
+                  const imageUrl = await commonFunction.getImageUrlAWSByFolderSingle(
+                    fileObject,
+                    "aiVisaDocs"
+                  );
 
-                  const gptResponse = await callGPTAnalysisPrompt(base64Image, "image/png");
+                  const gptResponse = await callGPTAnalysisPrompt(
+                    base64Image,
+                    "image/png"
+                  );
 
                   return {
                     parsedData: gptResponse,
@@ -528,7 +538,8 @@ exports.uploadedDocsDetails = async (req, res) => {
             );
 
             // Cleanup
-            if (outputDir) fs.rmSync(outputDir, { recursive: true, force: true });
+            if (outputDir)
+              fs.rmSync(outputDir, { recursive: true, force: true });
             if (tempPdfPath) fs.rmSync(tempPdfPath, { force: true });
 
             return perPageDetails;
@@ -542,9 +553,15 @@ exports.uploadedDocsDetails = async (req, res) => {
           try {
             const base64Image = file.buffer.toString("base64");
 
-            const imageUrl = await commonFunction.getImageUrlAWSByFolderSingle(file, "aiVisaDocs");
+            const imageUrl = await commonFunction.getImageUrlAWSByFolderSingle(
+              file,
+              "aiVisaDocs"
+            );
 
-            const gptResponse = await callGPTAnalysisPrompt(base64Image, mimeType);
+            const gptResponse = await callGPTAnalysisPrompt(
+              base64Image,
+              mimeType
+            );
 
             return {
               parsedData: gptResponse,
@@ -597,7 +614,11 @@ async function callGPTAnalysisPrompt(base64Image, mimeType) {
 
 Analyze the uploaded image. Rotate if needed to correct orientation.  
 Return only valid JSON in the below format.  
-Analyze the uploaded PDF document and determine if it has been edited or altered in any way. Check for signs of text modifications, image manipulations, or metadata changes. Provide a detailed report on your findings, including any evidence of editing or alteration.
+Carefully review the document for any signs of tampering, editing, or alteration. Check:
+   - Text-level changes: font inconsistencies, spacing errors, misalignment, overwritten content, replaced names/numbers.
+   - Image manipulation: pasted elements, unnatural blurring, mismatched shadows, compression artifacts, cloned regions.
+   - Metadata: creation/modification timestamps, editing tools used, inconsistency with document content.
+
 ⚠️ Omit any key (and its nested keys) if the value is missing or empty. Do not return null or empty strings or arrays.
 
 Format:
@@ -660,7 +681,85 @@ Rules:
   "Detected_Errors": ["System unable to extract due to restrictions or unsupported format."]
 }
 `;
+//   const promptText = `You are a document analysis system.
 
+// Analyze the uploaded image or PDF document.
+
+// 1. Rotate the document if needed to correct orientation.
+// 2. Carefully review the document for any signs of tampering, editing, or alteration. Check:
+//    - Text-level changes: font inconsistencies, spacing errors, misalignment, overwritten content, replaced names/numbers.
+//    - Image manipulation: pasted elements, unnatural blurring, mismatched shadows, compression artifacts, cloned regions.
+//    - Metadata: creation/modification timestamps, editing tools used, inconsistency with document content.
+
+// 3. Extract all identifiable information, such as:
+//    - Name, Date of Birth, Document Number (Aadhaar, PAN, etc.)
+//    - Address details (Village, District, State, etc.)
+//    - Income Tax details (Assessment Year, PAN, Tax Payable, etc.)
+//    - Bank transaction details (date, amount, balance)
+//    - Certificate details (Bride/Groom name)
+
+// 4. Return only valid JSON in this structure:
+
+// {
+//   "Document_Type": "Aadhaar card | PAN card | Bank Statement | Passport | Photo | IncomeTax | GST Registration Document | etc.",
+//   "Extracted_Details": {
+//     "Name": "...",
+//     "Date_of_Birth": "...",
+//     "Document_Number": "...",
+//     "Address": {
+//       "Village": "...",
+//       "VTC": "...",
+//       "PO": "...",
+//       "District": "...",
+//       "Sub_District": "...",
+//       "State": "...",
+//       "PinCode": "..."
+//     },
+//     "Other_Identifiable_Details": {
+//       "VID": "...",
+//       "Bank_Name": "...",
+//       "Bride_Name": "...",
+//       "Groom_Name": "...",
+//       "Transactions": [
+//         {
+//           "Txn_Date": "DD MMM YYYY",
+//           "Description": "...",
+//           "Debit": 0.0,
+//           "Credit": 0.0,
+//           "Balance": 0.0
+//         }
+//       ]
+//     },
+//     "IncomeTax_Important_Details": {
+//       "Assessment_Year": "...",
+//       "PAN": "...",
+//       "Acknowledgement_Number": "...",
+//       "Filing_Date": "DD-MMM-YYYY",
+//       "Gross_Total_Income": 0.0,
+//       "Total_Taxable_Income": 0.0,
+//       "Total_Tax_Payable": 0.0,
+//       "Employer_Name": "..."
+//     }
+//   },
+//   "Detected_Errors": ["List of anomalies, e.g., 'Font mismatch in PAN number', 'Photoshop detected', etc."]
+// }
+
+// ⚠️ Rules:
+// - Omit any key (and its nested keys) if the value is missing or empty.
+// - Do **not** return 'null' , empty string '""', or empty array '[]''.
+// - If the document is a **photo**, return:
+//   {
+//     "Document_Type": "Photo",
+//     "Extracted_Details": {},
+//     "Detected_Errors": ["No identifiable information. Image is a photo."]
+//   }
+// - If the document is **unrecognized or unsupported**, return:
+//   {
+//     "Document_Type": "Unknown",
+//     "Extracted_Details": {},
+//     "Detected_Errors": ["System unable to extract due to restrictions or unsupported format."]
+//   }
+// `;
   const response = await openai.chat.completions.create({
     model: "gpt-4o-mini",
     messages: [
@@ -700,7 +799,6 @@ Rules:
     return JSON.parse(unescaped);
   }
 }
-
 
 exports.getApplicationDocDerails = async (req, res, next) => {
   try {

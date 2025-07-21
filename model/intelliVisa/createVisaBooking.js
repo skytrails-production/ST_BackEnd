@@ -30,7 +30,7 @@ const createVisaApplySchema = new mongoose.Schema(
     fromDate: { type: String },
     toDate: { type: String },
     visaType: { type: String },
-    fee: { processingFee: { type: String,default:"999" }, platformFee: { type: String,default:"100" } },
+    fee: { processingFee: { type: String,default:"999" }, platformFee: { type: String,default:"100" },isgovPay:{type:Boolean,default:false} },
     paymentStatus: {
       type: String,
       enum: [
