@@ -541,11 +541,14 @@ exports.createCountryWiseApp = async (req, res, next) => {
       });
     }
     let result;
-    const isformExist=await findVisaAppCountryWise({applicantId:data.applicantId});
-    if(isformExist){
-      result=await updateVisaAppCountryWise(data);
+    const isformExist = await findVisaAppCountryWise({
+      applicantId: data.applicantId,
+    });
+    if (isformExist) {
+      result = await updateVisaAppCountryWise({ applicantId: data.applicantId},data);
+    } else {
+      result = await createVisaAppCountryWise(data);
     }
-     result = await createVisaAppCountryWise(data);
     res.status(statusCode.OK).send({
       statusCode: statusCode.created,
       responseMessage: responseMessage.CREATED_SUCCESS,
@@ -557,8 +560,10 @@ exports.createCountryWiseApp = async (req, res, next) => {
 };
 
 exports.getCountryWiseApp = async (req, res, next) => {
-  try {    
-    const isDataExist = await findVisaAppCountryWise({ applicantId: req.query.applicantId });
+  try {
+    const isDataExist = await findVisaAppCountryWise({
+      applicantId: req.query.applicantId,
+    });
     return res.status(statusCode.OK).send({
       statusCode: statusCode.OK,
       responseMessage: responseMessage.DATA_FOUND,

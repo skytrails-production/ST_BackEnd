@@ -3,6 +3,6 @@ const mongoose = require('mongoose');
 
 const dynamicSchema = new mongoose.Schema({
 applicantId:{type:mongoose.Types.ObjectId,ref:'createIntellyVisaApply'},
-}, { strict: false },{Timestamp:true});
+}, { strict: false },{timeStamp:true});
 const DynamicModel = mongoose.model('countryWiseVisaApplications', dynamicSchema);
 module.exports = DynamicModel;
