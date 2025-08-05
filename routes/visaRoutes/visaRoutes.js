@@ -1,7 +1,7 @@
 const controller = require("../../controllers/visaController/visaController");
 const visaBooking=require("../../controllers/visaController/visaBookingController");
 const aiVisaBooking=require("../../controllers/intelliVisaController/applyVisa");
-
+const visaEnquiryController=require("../../controllers/intelliVisaController/visaEnquiryController")
 const auth = require("../../middleware/authJwt");
 const schemas = require("../../utilities/schema.utilities");
 const SchemaValidator = require("../../utilities/validations.utilities");
@@ -47,4 +47,6 @@ module.exports = function (app) {
   app.get("/skyTrails/api/visa/documents/applicantDocDetails",aiVisaBooking.getAppDocById);
   app.post("/skyTrails/api/visa/countrywise/applyForAiVisa",aiVisaBooking.createCountryWiseApp);
    app.get("/skyTrails/api/visa/countrywise/getApplicationCountryWise",aiVisaBooking.getCountryWiseApp);
+   app.post("/skyTrails/api/visa/createVisaEnquiry",visaEnquiryController.createVisaEnquiry);
+    app.get("/skyTrails/api/visa/getListOfVisaEnquiry",visaEnquiryController.getListOfVisaEnquiry);
 };

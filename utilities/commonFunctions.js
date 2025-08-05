@@ -7132,6 +7132,667 @@ module.exports = {
     }
   },
 
+  visaEnquiryConfirmationMailToUser:async(to)=>{
+    let htmlContent=` <!DOCTYPE html>
+    <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
+    <head>
+      <title></title>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 0; }
+        a[x-apple-data-detectors] { color: inherit !important; text-decoration: inherit !important; }
+        #MessageViewBody a { color: inherit; text-decoration: none; }
+        p { line-height: inherit }
+        .desktop_hide, .desktop_hide table { mso-hide: all; display: none; max-height: 0px; overflow: hidden; }
+        .image_block img+div { display: none; }
+        @media (max-width:620px) {
+          .mobile_hide { display: none; }
+          .row-content { width: 100% !important; }
+          .stack .column { width: 100%; display: block; }
+          .mobile_hide { min-height: 0; max-height: 0; max-width: 0; overflow: hidden; font-size: 0px; }
+          .desktop_hide, .desktop_hide table { display: table !important; max-height: none !important; }
+        }
+      </style>
+    </head>
+    <body style="margin: 0; background-color: #ffffff; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
+      <table class="nl-container" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff;">
+        <tbody>
+          <tr>
+            <td>
+              <!-- Header Section -->
+              <table class="row row-1" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f6e2e2; background-size: auto;">
+                <tbody>
+                  <tr>
+                    <td>
+                      <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-size: auto; background-color: #ffffff; color: #000000; width: 600px; margin: 0 auto;" width="600">
+                        <tbody>
+                          <tr>
+                            <td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top;">
+                              <table class="image_block block-1" width="100%" border="0" cellpadding="15" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                                <tr>
+                                  <td class="pad">
+                                    <div class="alignment" align="right" style="line-height:10px;background:#fff">
+                                      <div style="max-width: 210px; background:#fff">
+                                        <img src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/mailingImages/logo.png" style="display: block; height: auto; border: 0; width: 100%;" width="210">
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <!-- Main Content Section -->
+              <table class="row row-2" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f6e2e2;">
+                <tbody>
+                  <tr>
+                    <td>
+                      <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; background-image: url('https://d15k2d11r6t6rl.cloudfront.net/public/users/Integrators/BeeProAgency/1140088_1125713/editor_images/91aa7b8a-e39c-47a0-9fa3-890ca6510d09.png'); background-repeat: no-repeat; background-size: cover; color: #000000; width: 600px; margin: 0 auto;" width="600">
+                        <tbody>
+                          <tr>
+                            <td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top;">
+                              
+                              <!-- Header Text -->
+                              <table class="text_block block-1" width="100%" border="0" cellpadding="15" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+                                <tr>
+                                  <td class="pad">
+                                    <div style="font-family: sans-serif">
+                                      <div style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.4px; color: #555555; line-height: 1.2;">
+                                        <p style="margin: 0; font-size: 20px; text-align: center; mso-line-height-alt: 24px;">
+                                          <span style="color:#000000; text-shadow: 1px 1px 2px rgba(255,255,255,0.8); background-color: rgba(255,255,255,0.9); padding: 4px 8px; border-radius: 4px;"><strong>Visa Enquiry Confirmation</strong></span>
+                                        </p>
+                                        <p style="margin: 10px 0 0 0; font-size: 16px; text-align: center; mso-line-height-alt: 19.2px;">
+                                          <span style="color:#000000; background-color: rgba(255,255,255,0.9); padding: 2px 6px; border-radius: 3px;">Thank you for your visa enquiry!</span>
+                                        </p>
+                                        <p style="margin: 5px 0 0 0; font-size: 16px; text-align: center; mso-line-height-alt: 19.2px;">
+                                          <span style="color:#000000; background-color: rgba(255,255,255,0.9); padding: 2px 6px; border-radius: 3px;">We have received your request and will contact you soon.</span>
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+
+                              <!-- Enquiry Details -->
+                              <table class="text_block block-2" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+                                <tr>
+                                  <td class="pad">
+                                    <div style="font-family: sans-serif">
+                                      <div style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.4px; color: #555555; line-height: 1.2;">
+                                        <p style="margin: 0; font-size: 18px; mso-line-height-alt: 21.6px;">
+                                          <span style="font-size:16px;color:#000000; background-color: rgba(255,255,255,0.9); padding: 4px 8px; border-radius: 4px;"><strong>Your Enquiry Details:</strong></span>
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+
+                              <table class="text_block block-3" width="100%" border="0" cellpadding="5" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+                                <tr>
+                                  <td class="pad">
+                                    <div style="font-family: sans-serif">
+                                      <div style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.4px; color: #555555; line-height: 1.2;">
+                                        <p style="margin: 0; font-size: 14px; mso-line-height-alt: 16.8px;">
+                                          <span style="font-size:14px;color:#000000; background-color: rgba(255,255,255,0.9); padding: 2px 6px; border-radius: 3px;"><strong>Name:</strong> ${to.name}</span>
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+
+                              <table class="text_block block-4" width="100%" border="0" cellpadding="5" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+                                <tr>
+                                  <td class="pad">
+                                    <div style="font-family: sans-serif">
+                                      <div style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.4px; color: #555555; line-height: 1.2;">
+                                        <p style="margin: 0; font-size: 14px; mso-line-height-alt: 16.8px;">
+                                          <span style="color:#000000;font-size:14px; background-color: rgba(255,255,255,0.9); padding: 2px 6px; border-radius: 3px;"><strong>Visa Type:</strong> ${to.visa_type}</span>
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+
+                              <table class="text_block block-5" width="100%" border="0" cellpadding="5" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+                                <tr>
+                                  <td class="pad">
+                                    <div style="font-family: sans-serif">
+                                      <div style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.4px; color: #555555; line-height: 1.2;">
+                                        <p style="margin: 0; font-size: 14px; mso-line-height-alt: 16.8px;">
+                                          <span style="color:#000000;font-size:14px; background-color: rgba(255,255,255,0.9); padding: 2px 6px; border-radius: 3px;"><strong>Country:</strong> ${to.country}</span>
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+
+                              <table class="text_block block-6" width="100%" border="0" cellpadding="5" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+                                <tr>
+                                  <td class="pad">
+                                    <div style="font-family: sans-serif">
+                                      <div style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.4px; color: #555555; line-height: 1.2;">
+                                        <p style="margin: 0; font-size: 14px; mso-line-height-alt: 16.8px;">
+                                          <span style="color:#000000;font-size:14px; background-color: rgba(255,255,255,0.9); padding: 2px 6px; border-radius: 3px;"><strong>Phone:</strong> ${to.phone}</span>
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+
+                              <table class="text_block block-7" width="100%" border="0" cellpadding="5" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+                                <tr>
+                                  <td class="pad">
+                                    <div style="font-family: sans-serif">
+                                      <div style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.4px; color: #555555; line-height: 1.2;">
+                                        <p style="margin: 0; font-size: 14px; mso-line-height-alt: 16.8px;">
+                                          <span style="color:#000000;font-size:14px; background-color: rgba(255,255,255,0.9); padding: 2px 6px; border-radius: 3px;"><strong>Email:</strong> ${to.email}</span>
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+
+                              <!-- Next Steps -->
+                              <table class="text_block block-8" width="100%" border="0" cellpadding="15" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+                                <tr>
+                                  <td class="pad">
+                                    <div style="font-family: sans-serif">
+                                      <div style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; mso-line-height-alt: 14.4px; color: #555555; line-height: 1.2;">
+                                        <p style="margin: 0; font-size: 16px; text-align: center; mso-line-height-alt: 19.2px;">
+                                          <span style="color:#000000; background-color: rgba(255,255,255,0.9); padding: 4px 8px; border-radius: 4px;"><strong>What's Next?</strong></span>
+                                        </p>
+                                        <p style="margin: 10px 0 0 0; font-size: 14px; text-align: center; mso-line-height-alt: 16.8px;">
+                                          <span style="color:#000000; background-color: rgba(255,255,255,0.9); padding: 2px 6px; border-radius: 3px;">Our visa experts will review your enquiry and contact you within 24 hours with detailed information and next steps.</span>
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <!-- Images Section -->
+              <table class="row row-3" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f6e2e2;">
+                <tbody>
+                  <tr>
+                    <td>
+                      <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; border-radius: 1px; color: #000000; width: 600px; margin: 0 auto;" width="600">
+                        <tbody>
+                          <tr>
+                            <td class="column column-1" width="50%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-left: 15px; padding-top: 20px; vertical-align: top;">
+                              <table class="image_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                                <tr>
+                                  <td class="pad" style="width:100%;">
+                                    <div class="alignment" align="center" style="line-height:10px">
+                                      <div style="max-width: 285px;">
+                                        <img src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/mailingImages/packageCreate2.png" style="display: block; height: auto; border: 0; width: 100%;" width="285">
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                            <td class="column column-2" width="50%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top;">
+                              <table class="image_block block-1" width="100%" border="0" cellpadding="20" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                                <tr>
+                                  <td class="pad">
+                                    <div class="alignment" align="center" style="line-height:10px">
+                                      <div style="max-width: 300px;">
+                                        <img src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/mailingImages/whyus.jpeg" style="display: block; height: auto; border: 0; width: 100%;" width="300">
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <!-- Contact Section -->
+              <table class="row row-4" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f6e2e2;">
+                <tbody>
+                  <tr>
+                    <td>
+                      <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-radius: 0; color: #000000; width: 600px; margin: 0 auto;" width="600">
+                        <tbody>
+                          <tr>
+                            <td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; vertical-align: top;">
+                              <table class="image_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                                <tr>
+                                  <td class="pad" style="width:100%;">
+                                    <div class="alignment" align="center" style="line-height:10px">
+                                      <div style="max-width: 600px;">
+                                        <img src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/mailingImages/contactus.jpeg" style="display: block; height: auto; border: 0; width: 100%;" width="600">
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </body>
+    </html>
+  `
+   const passengerEmail = to.email;
+      const mailOptions = {
+        from: process.env.DEFAULT_ZOHO_EMAIL,
+        to: passengerEmail,
+        subject: "Visa Enquiry Confirmation",
+        html: htmlContent
+      };
+      await nodemailerConfig.verify();
+      const info = await nodemailerConfig.sendMail(mailOptions);
+      // console.log("Email sent: " + info.response);
+      return info;
+  ;
+  },
+
+  visaEnquiryConfirmationMailToAdmin:async(to)=>{
+ let htmlContent = `
+    <!DOCTYPE html>
+    <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
+    <head>
+      <title></title>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 0; }
+        a[x-apple-data-detectors] { color: inherit !important; text-decoration: inherit !important; }
+        #MessageViewBody a { color: inherit; text-decoration: none; }
+        p { line-height: inherit }
+        .desktop_hide, .desktop_hide table { mso-hide: all; display: none; max-height: 0px; overflow: hidden; }
+        .image_block img+div { display: none; }
+        @media (max-width:620px) {
+          .mobile_hide { display: none; }
+          .row-content { width: 100% !important; }
+          .stack .column { width: 100%; display: block; }
+          .mobile_hide { min-height: 0; max-height: 0; max-width: 0; overflow: hidden; font-size: 0px; }
+          .desktop_hide, .desktop_hide table { display: table !important; max-height: none !important; }
+        }
+      </style>
+    </head>
+    <body style="margin: 0; background-color: #ffffff; padding: 0;">
+      <!-- Email content with actual data -->
+      <table class="nl-container" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background-color: #ffffff;">
+        <tbody>
+          <tr>
+            <td>
+              <!-- Header -->
+              <table class="row row-1" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background-color: #f6e2e2;">
+                <tbody>
+                  <tr>
+                    <td>
+                      <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background-color: #ffffff; color: #000000; width: 600px; margin: 0 auto;" width="600">
+                        <tbody>
+                          <tr>
+                            <td class="column column-1" width="100%" style="font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top;">
+                              <table class="image_block block-1" width="100%" border="0" cellpadding="15" cellspacing="0" role="presentation">
+                                <tr>
+                                  <td class="pad">
+                                    <div class="alignment" align="right" style="line-height:10px;background:#fff">
+                                      <div style="max-width: 210px; background:#fff">
+                                        <img src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/mailingImages/logo.png" style="display: block; height: auto; border: 0; width: 100%;" width="210">
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <!-- Main Content -->
+              <table class="row row-2" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background-color: #f6e2e2;">
+                <tbody>
+                  <tr>
+                    <td>
+                      <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background-color: #ffffff; background-image: url('https://d15k2d11r6t6rl.cloudfront.net/public/users/Integrators/BeeProAgency/1140088_1125713/editor_images/91aa7b8a-e39c-47a0-9fa3-890ca6510d09.png'); background-repeat: no-repeat; background-size: cover; color: #000000; width: 600px; margin: 0 auto;" width="600">
+                        <tbody>
+                          <tr>
+                            <td class="column column-1" width="100%" style="font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top;">
+                              
+                              <!-- Alert Header -->
+                              <table class="text_block block-1" width="100%" border="0" cellpadding="15" cellspacing="0" role="presentation" style="word-break: break-word;">
+                                <tr>
+                                  <td class="pad">
+                                    <div style="font-family: sans-serif">
+                                      <div style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #555555; line-height: 1.2;">
+                                        <p style="margin: 0; font-size: 20px; text-align: center;">
+                                          <span style="color:#000000; background-color: rgba(255,255,255,0.9); padding: 4px 8px; border-radius: 4px;"><strong>🚨 New Visa Enquiry Received</strong></span>
+                                        </p>
+                                        <p style="margin: 10px 0 0 0; font-size: 16px; text-align: center;">
+                                          <span style="color:#000000; background-color: rgba(255,255,255,0.9); padding: 2px 6px; border-radius: 3px;">A new visa enquiry has been submitted through your website.</span>
+                                        </p>
+                                        <p style="margin: 5px 0 0 0; font-size: 14px; text-align: center;">
+                                          <span style="color:#000000; background-color: rgba(255,255,255,0.9); padding: 2px 6px; border-radius: 3px;">Please review the details below and follow up promptly.</span>
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+
+                              <!-- Customer Details -->
+                              <table class="text_block block-2" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="word-break: break-word;">
+                                <tr>
+                                  <td class="pad">
+                                    <div style="font-family: sans-serif">
+                                      <div style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #555555; line-height: 1.2;">
+                                        <p style="margin: 0; font-size: 16px;">
+                                          <span style="color:#000000; background-color: rgba(255,255,255,0.9); padding: 4px 8px; border-radius: 4px;"><strong>📋 Customer Details:</strong></span>
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+
+                              <table class="text_block block-3" width="100%" border="0" cellpadding="5" cellspacing="0" role="presentation" style="word-break: break-word;">
+                                <tr>
+                                  <td class="pad">
+                                    <div style="font-family: sans-serif">
+                                      <div style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #555555; line-height: 1.2;">
+                                        <p style="margin: 0; font-size: 14px;">
+                                          <span style="color:#000000; background-color: rgba(255,255,255,0.9); padding: 2px 6px; border-radius: 3px;"><strong>👤 Full Name:</strong> ${to.name}</span>
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+
+                              <table class="text_block block-4" width="100%" border="0" cellpadding="5" cellspacing="0" role="presentation" style="word-break: break-word;">
+                                <tr>
+                                  <td class="pad">
+                                    <div style="font-family: sans-serif">
+                                      <div style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #555555; line-height: 1.2;">
+                                        <p style="margin: 0; font-size: 14px;">
+                                          <span style="color:#000000; background-color: rgba(255,255,255,0.9); padding: 2px 6px; border-radius: 3px;"><strong>📞 Phone Number:</strong> ${to.phone}</span>
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+
+                              <table class="text_block block-5" width="100%" border="0" cellpadding="5" cellspacing="0" role="presentation" style="word-break: break-word;">
+                                <tr>
+                                  <td class="pad">
+                                    <div style="font-family: sans-serif">
+                                      <div style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #555555; line-height: 1.2;">
+                                        <p style="margin: 0; font-size: 14px;">
+                                          <span style="color:#000000; background-color: rgba(255,255,255,0.9); padding: 2px 6px; border-radius: 3px;"><strong>📧 Email Address:</strong> <a href="mailto:${to.email}" style="color:#0066cc; text-decoration: underline;">${to.email}</a></span>
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+
+                              <table class="text_block block-6" width="100%" border="0" cellpadding="5" cellspacing="0" role="presentation" style="word-break: break-word;">
+                                <tr>
+                                  <td class="pad">
+                                    <div style="font-family: sans-serif">
+                                      <div style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #555555; line-height: 1.2;">
+                                        <p style="margin: 0; font-size: 14px;">
+                                          <span style="color:#000000; background-color: rgba(255,255,255,0.9); padding: 2px 6px; border-radius: 3px;"><strong>💬 WhatsApp Available:</strong> ${to.whatsapp ? 'Yes ✅' : 'No ❌'}</span>
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+
+                              <!-- Visa Details -->
+                              <table class="text_block block-7" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="word-break: break-word;">
+                                <tr>
+                                  <td class="pad">
+                                    <div style="font-family: sans-serif">
+                                      <div style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #555555; line-height: 1.2;">
+                                        <p style="margin: 0; font-size: 16px;">
+                                          <span style="color:#000000; background-color: rgba(255,255,255,0.9); padding: 4px 8px; border-radius: 4px;"><strong>🛂 Visa Requirements:</strong></span>
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+
+                              <table class="text_block block-8" width="100%" border="0" cellpadding="5" cellspacing="0" role="presentation" style="word-break: break-word;">
+                                <tr>
+                                  <td class="pad">
+                                    <div style="font-family: sans-serif">
+                                      <div style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #555555; line-height: 1.2;">
+                                        <p style="margin: 0; font-size: 14px;">
+                                          <span style="color:#000000; background-color: rgba(255,255,255,0.9); padding: 2px 6px; border-radius: 3px;"><strong>🏷️ Visa Type:</strong> ${to.visa_type}</span>
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+
+                              <table class="text_block block-9" width="100%" border="0" cellpadding="5" cellspacing="0" role="presentation" style="word-break: break-word;">
+                                <tr>
+                                  <td class="pad">
+                                    <div style="font-family: sans-serif">
+                                      <div style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #555555; line-height: 1.2;">
+                                        <p style="margin: 0; font-size: 14px;">
+                                          <span style="color:#000000; background-color: rgba(255,255,255,0.9); padding: 2px 6px; border-radius: 3px;"><strong>🌍 Destination Country:</strong> ${to.country}</span>
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+
+                              <!-- Additional Info -->
+                              <table class="text_block block-10" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="word-break: break-word;">
+                                <tr>
+                                  <td class="pad">
+                                    <div style="font-family: sans-serif">
+                                      <div style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #555555; line-height: 1.2;">
+                                        <p style="margin: 0; font-size: 16px;">
+                                          <span style="color:#000000; background-color: rgba(255,255,255,0.9); padding: 4px 8px; border-radius: 4px;"><strong>ℹ️ Additional Information:</strong></span>
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+
+                              <table class="text_block block-12" width="100%" border="0" cellpadding="5" cellspacing="0" role="presentation" style="word-break: break-word;">
+                                <tr>
+                                  <td class="pad">
+                                    <div style="font-family: sans-serif">
+                                      <div style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #555555; line-height: 1.2;">
+                                        <p style="margin: 0; font-size: 14px;">
+                                          <span style="color:#000000; background-color: rgba(255,255,255,0.9); padding: 2px 6px; border-radius: 3px;"><strong>🔗 Lead Source:</strong> ${to.source || 'Website'}</span>
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+
+                              <table class="text_block block-13" width="100%" border="0" cellpadding="5" cellspacing="0" role="presentation" style="word-break: break-word;">
+                                <tr>
+                                  <td class="pad">
+                                    <div style="font-family: sans-serif">
+                                      <div style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #555555; line-height: 1.2;">
+                                        <p style="margin: 0; font-size: 14px;">
+                                          <span style="color:#000000; background-color: rgba(255,255,255,0.9); padding: 2px 6px; border-radius: 3px;"><strong>🕐 Submitted At:</strong> ${new Date().toLocaleString()}</span>
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+
+                              <!-- Action Required -->
+                              <table class="text_block block-14" width="100%" border="0" cellpadding="15" cellspacing="0" role="presentation" style="word-break: break-word;">
+                                <tr>
+                                  <td class="pad">
+                                    <div style="font-family: sans-serif">
+                                      <div style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; color: #555555; line-height: 1.2;">
+                                        <p style="margin: 0; font-size: 16px; text-align: center;">
+                                          <span style="color:#000000; background-color: rgba(255,255,255,0.9); padding: 4px 8px; border-radius: 4px;"><strong>⚡ Action Required</strong></span>
+                                        </p>
+                                        <p style="margin: 10px 0 0 0; font-size: 14px; text-align: center;">
+                                          <span style="color:#000000; background-color: rgba(255,255,255,0.9); padding: 2px 6px; border-radius: 3px;">Please contact this customer within 24 hours to discuss their visa requirements and provide assistance.</span>
+                                        </p>
+                                        <p style="margin: 10px 0 0 0; font-size: 14px; text-align: center;">
+                                          <span style="color:#000000; background-color: rgba(255,255,255,0.9); padding: 2px 6px; border-radius: 3px;">A confirmation email has already been sent to the customer.</span>
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <!-- Images Section -->
+              <table class="row row-3" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background-color: #f6e2e2;">
+                <tbody>
+                  <tr>
+                    <td>
+                      <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background-color: #ffffff; border-radius: 1px; color: #000000; width: 600px; margin: 0 auto;" width="600">
+                        <tbody>
+                          <tr>
+                            <td class="column column-1" width="50%" style="font-weight: 400; text-align: left; padding-bottom: 5px; padding-left: 15px; padding-top: 20px; vertical-align: top;">
+                              <table class="image_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation">
+                                <tr>
+                                  <td class="pad" style="width:100%;">
+                                    <div class="alignment" align="center" style="line-height:10px">
+                                      <div style="max-width: 285px;">
+                                        <img src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/mailingImages/packageCreate2.png" style="display: block; height: auto; border: 0; width: 100%;" width="285">
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                            <td class="column column-2" width="50%" style="font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top;">
+                              <table class="image_block block-1" width="100%" border="0" cellpadding="20" cellspacing="0" role="presentation">
+                                <tr>
+                                  <td class="pad">
+                                    <div class="alignment" align="center" style="line-height:10px">
+                                      <div style="max-width: 300px;">
+                                        <img src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/mailingImages/whyus.jpeg" style="display: block; height: auto; border: 0; width: 100%;" width="300">
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <!-- Contact Section -->
+              <table class="row row-4" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background-color: #f6e2e2;">
+                <tbody>
+                  <tr>
+                    <td>
+                      <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-radius: 0; color: #000000; width: 600px; margin: 0 auto;" width="600">
+                        <tbody>
+                          <tr>
+                            <td class="column column-1" width="100%" style="font-weight: 400; text-align: left; padding-bottom: 5px; vertical-align: top;">
+                              <table class="image_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation">
+                                <tr>
+                                  <td class="pad" style="width:100%;">
+                                    <div class="alignment" align="center" style="line-height:10px">
+                                      <div style="max-width: 600px;">
+                                        <img src="https://raw.githubusercontent.com/The-SkyTrails/Images/main/mailingImages/contactus.jpeg" style="display: block; height: auto; border: 0; width: 100%;" width="600">
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </body>
+    </html>
+  `;
+   const passengerEmail = to.email;
+      const mailOptions = {
+        from: process.env.DEFAULT_ZOHO_EMAIL,
+        to: "charuyadav594@gmail.com",
+        subject: "Visa Enquiry Confirmation",
+        html: htmlContent
+      };
+      await nodemailerConfig.verify();
+      const info = await nodemailerConfig.sendMail(mailOptions);
+      // console.log("Email sent: " + info.response);
+      return info;
+  ;
+  }
+  
 };
 
 
